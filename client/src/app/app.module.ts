@@ -11,6 +11,11 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { HomepageComponent } from './pages/homepage/homepage.component';
+import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
+import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
+import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
+import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 
 /**
  * Main module that is used in main.ts.
@@ -19,8 +24,15 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
  * Otherwise Angular Cli will not know in which module to put new component
  */
 @NgModule({
-    declarations: [AppComponent, GamePageComponent, MainPageComponent, MaterialPageComponent, PlayAreaComponent, SidebarComponent],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
+    declarations: [AppComponent, GamePageComponent, MainPageComponent, MaterialPageComponent, PlayAreaComponent, SidebarComponent, HomepageComponent, ClassicGameComponent, Log2990GameComponent, LeaderboardComponent, HeaderBarComponent],
+    imports: [
+        AppMaterialModule, 
+        AppRoutingModule, 
+        BrowserAnimationsModule, 
+        BrowserModule, 
+        FormsModule, 
+        HttpClientModule
+        ],
     providers: [],
     bootstrap: [AppComponent],
 })
