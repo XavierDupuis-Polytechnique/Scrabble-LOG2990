@@ -11,10 +11,15 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
-import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
+import { HeaderBarComponent } from './components/header-bar/header-bar.component';
+import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
+import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
 import { HorseComponent } from './pages/game-page/horse/horse.component';
+import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
+import { HomepageComponent } from './pages/homepage/homepage.component';
+import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
+import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
 
 /**
  * Main module that is used in main.ts.
@@ -34,6 +39,11 @@ import { HorseComponent } from './pages/game-page/horse/horse.component';
         ChatBoxComponent,
         BoardComponent,
         HorseComponent,
+        HomepageComponent,
+        ClassicGameComponent,
+        Log2990GameComponent,
+        LeaderboardComponent,
+        HeaderBarComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
