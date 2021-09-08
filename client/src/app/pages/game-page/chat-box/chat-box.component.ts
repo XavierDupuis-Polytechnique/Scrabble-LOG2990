@@ -1,15 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-chat-box',
-  templateUrl: './chat-box.component.html',
-  styleUrls: ['./chat-box.component.scss']
+    selector: 'app-chat-box',
+    templateUrl: './chat-box.component.html',
+    styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-}
+export class ChatBoxComponent {}
