@@ -11,23 +11,21 @@
     height: 100%;
   }
 
-  .Info {
-      grid-area: Info;
-      border-style: solid;
-    }
-
-  .Chat {
-      grid-area: Chat;
-      border-style: solid;
+app-info-box{
+    grid-area: Info;
+    border-style: solid;
 }
 
-  .Board {
-      grid-area: Board;
-      border-style: solid;
-    }
+app-chat-box{
+    grid-area: Chat;
+    border-style: solid;
+}
+app-board{
+    grid-area: Board;
+    border-style: solid;
+}
 
-  .Horse {
-      grid-area: Horse;
-      border-style: solid;
-    }
-
+app-horse{
+    grid-area: Horse;
+    border-style: solid;
+}
