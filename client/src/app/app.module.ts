@@ -24,15 +24,20 @@ import { HeaderBarComponent } from './components/header-bar/header-bar.component
  * Otherwise Angular Cli will not know in which module to put new component
  */
 @NgModule({
-    declarations: [AppComponent, GamePageComponent, MainPageComponent, MaterialPageComponent, PlayAreaComponent, SidebarComponent, HomepageComponent, ClassicGameComponent, Log2990GameComponent, LeaderboardComponent, HeaderBarComponent],
-    imports: [
-        AppMaterialModule, 
-        AppRoutingModule, 
-        BrowserAnimationsModule, 
-        BrowserModule, 
-        FormsModule, 
-        HttpClientModule
-        ],
+    declarations: [
+        AppComponent,
+        GamePageComponent,
+        MainPageComponent,
+        MaterialPageComponent,
+        PlayAreaComponent,
+        SidebarComponent,
+        HomepageComponent,
+        ClassicGameComponent,
+        Log2990GameComponent,
+        LeaderboardComponent,
+        HeaderBarComponent,
+    ],
+    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
     bootstrap: [AppComponent],
 })
