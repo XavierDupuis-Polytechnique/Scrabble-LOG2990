@@ -1,0 +1,27 @@
+<mat-card >
+  <mat-card-title>
+    Nouvelle Partie Solo
+  </mat-card-title>
+  <mat-card-content>
+    <form class="new-solo-game-form">
+      <mat-form-field appearance="fill">
+        <mat-label>Nom de joueur</mat-label>
+        <input matInput>
+      </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Difficulté de votre adversaire</mat-label>
+        <mat-select value>
+          <mat-option matNativeControl required>
+            <option value="easy">Débutant</option>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-label>Temps par tour</mat-label>
+      <mat-slider></mat-slider>
+    </form>
+  </mat-card-content>
+  <mat-card-footer>
+    <button mat-button>Annuler</button>
+    <button mat-button>Jouer</button>
+  </mat-card-footer>
+</mat-card>
