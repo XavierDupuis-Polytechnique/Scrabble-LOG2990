@@ -1,29 +1,23 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { SoloGameSettings } from './solo-game-settings.interface';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { newSoloGameSettings, SoloGameSettings } from './solo-game-settings.interface';
 
 @Component({
     selector: 'app-new-solo-game-form',
     templateUrl: './new-solo-game-form.component.html',
     styleUrls: ['./new-solo-game-form.component.scss'],
 })
-export class NewSoloGameFormComponent implements OnInit {
+export class NewSoloGameFormComponent {
     @Output() cancelClick = new EventEmitter<void>();
-    
-    soloGameSettings: SoloGameSettings = {
-        playerName: undefined,
-        adversaryLevel: undefined,
-        timePerTurn: null,
-    };
+    @Output() playClick = new EventEmitter<void>();
 
-    ngOnInit() {
-        console.log(this.soloGameSettings);
-    }
+    soloGameSettings: SoloGameSettings = newSoloGameSettings();
 
     playGame(): void {
-        console.log(this.soloGameSettings);
+        this.playClick.emit();
     }
 
-    onCancelClick(): void {
+    cancel(): void {
+        this.soloGameSettings = newSoloGameSettings();
         this.cancelClick.next();
     }
 }

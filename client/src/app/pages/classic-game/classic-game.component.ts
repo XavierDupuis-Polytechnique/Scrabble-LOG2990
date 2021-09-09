@@ -1,15 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-classic-game',
     templateUrl: './classic-game.component.html',
     styleUrls: ['./classic-game.component.scss'],
 })
-export class ClassicGameComponent implements OnInit {
+export class ClassicGameComponent {
     hideSoloGameForm: boolean = true;
-    ngOnInit(): void {
-        return;
-    }
+    constructor(private router: Router) {}
 
     openSoloGameForm() {
         this.hideSoloGameForm = false;
@@ -17,6 +16,9 @@ export class ClassicGameComponent implements OnInit {
 
     closeSoloGameForm() {
         this.hideSoloGameForm = true;
-        console.log("hidden");
+    }
+
+    startSoloGame() {
+        this.router.navigate(['/game']);
     }
 }
