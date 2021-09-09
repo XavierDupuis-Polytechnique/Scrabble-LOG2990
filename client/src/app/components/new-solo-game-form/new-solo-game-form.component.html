@@ -3,20 +3,20 @@
     Nouvelle Partie Solo
   </mat-card-title>
   <mat-card-content>
-    <form class="new-solo-game-form">
+    <form class="new-solo-game-form" [formGroup]="soloGameSettingsForm">
       <mat-form-field appearance="fill">
         <mat-label>Nom de joueur</mat-label>
-        <input matInput [(ngModel)]="soloGameSettings.playerName" name="playerName">
+        <input matInput [formControlName]="'playerName'">
         <mat-hint>Hint for name</mat-hint>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Difficulté de votre adversaire</mat-label>
-        <mat-select [(value)]="soloGameSettings.adversaryLevel">
+        <mat-select [formControlName]="'adversaryDifficulty'">
           <mat-option matNativeControl required value="easy">Débutant</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-label>Temps par tour</mat-label>
-      <mat-slider [(value)]="soloGameSettings.timePerTurn"></mat-slider>
+      <mat-slider [formControlName]="'timePerTurn'"></mat-slider>
     </form>
   </mat-card-content>
   <mat-card-footer>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { newSoloGameSettings, SoloGameSettings } from './solo-game-settings.interface';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-new-solo-game-form',
@@ -10,14 +10,18 @@ export class NewSoloGameFormComponent {
     @Output() cancelClick = new EventEmitter<void>();
     @Output() playClick = new EventEmitter<void>();
 
-    soloGameSettings: SoloGameSettings = newSoloGameSettings();
+    soloGameSettingsForm = new FormGroup({
+        playerName: new FormControl(''),
+        adversaryDifficulty: new FormControl(''),
+        timePerTurn: new FormControl(''),
+    });
 
     playGame(): void {
         this.playClick.emit();
     }
 
     cancel(): void {
-        this.soloGameSettings = newSoloGameSettings();
+        this.soloGameSettingsForm.reset();
         this.cancelClick.next();
     }
 }
