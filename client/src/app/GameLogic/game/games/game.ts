@@ -1,5 +1,6 @@
 import { Player } from '@app/GameLogic/player/player';
 import { LetterBag } from '../letter-bag';
+import { TimerService } from '../timer/timer.service';
 
 
 export class Game {
@@ -10,10 +11,10 @@ export class Game {
     consecutivePass: number;
     isEnded: boolean = false;
 
-    constructor(public timePerTurn:number){
-
-
-    }
+    constructor(
+        public timePerTurn:number,
+        private timer: TimerService
+    ){ }
 
     startGame(): void {
         this.pickFirstPlayer();
@@ -35,8 +36,8 @@ export class Game {
     }
 
     startTurn() {
-        const end$ = 
-        
+        const timerEnd$ = this.timer.start(this.timePerTurn);
+        timerEnd$.subscribe(this.endOfTurn);
     }
     
     endOfTurn(){

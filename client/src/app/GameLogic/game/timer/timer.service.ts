@@ -1,20 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Observable, Subject, timer } from 'rxjs';
 
 const TIMER_STEP: number = 1000; // one second
-@Component({
-  selector: 'app-timer',
-  templateUrl: './timer.component.html',
-  styleUrls: ['./timer.component.scss']
+@Injectable({
+  providedIn: 'root'
 })
-export class TimerComponent implements OnInit {
+export class TimerService {
   source: Observable<number>;
   readonly timePerStep: number = TIMER_STEP;
 
   constructor() { 
-  }
-
-  ngOnInit(): void {
   }
 
   start(interval: number) {
@@ -28,5 +23,4 @@ export class TimerComponent implements OnInit {
     })
     return end$
   }
-
 }
