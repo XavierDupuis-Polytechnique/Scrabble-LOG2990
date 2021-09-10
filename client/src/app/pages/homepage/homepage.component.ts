@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { GameManager } from '@app/GameLogic/game/game-manager';
+import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
-
 
 @Component({
     selector: 'app-homepage',
@@ -10,8 +11,11 @@ import { User } from '@app/GameLogic/player/user';
 export class HomepageComponent implements OnInit {
 
     ngOnInit(): void {
-        let user:User = new User("test");
-        user.hello();
+        let p1:Player = new User("Xavier");
+        p1.hello();
+        let gameManager: GameManager = new GameManager(p1);
+        gameManager.createGame();
+
         return;
     }
 }
