@@ -2,6 +2,7 @@ import { GameLetter } from '../game/game-letter';
 
 export class Player {
     static defaultName = 'QWERTY';
+    points: number = 0;
 
     name: string;
     isActive: boolean;

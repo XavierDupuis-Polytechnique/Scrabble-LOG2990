@@ -2,8 +2,7 @@ import { Player } from './player';
 
 export class Bot extends Player {
     static botNames = ['BlaboBlabo', 'Pingu', 'Kirbo'];
-    static actionProabibility = { Play: 0.8, Exchange: 0.1, Pass: 0.1 };
-
+    
     // Bot constructor takes opponent name as argument to prevent same name
     constructor(name: string) {
         super('PlaceholderName');
@@ -18,6 +17,18 @@ export class Bot extends Player {
     generateBotName(opponentName: string): string {
         const generatedName = Bot.botNames[this.getRandomInt(Bot.botNames.length)];
         return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
+    }
+
+
+
+    // generateWordList(board, availableLetter):string[] {
+        // TO DO : a LOT of stuff goes here
+    //      this.letterRack
+            
+    //}
+
+    playTurn() {
+        
     }
 
     hello(): void {
