@@ -9,11 +9,10 @@ import { User } from '@app/GameLogic/player/user';
     styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent implements OnInit {
-
     ngOnInit(): void {
-        let p1:Player = new User("Xavier");
+        const p1: Player = new User('Xavier');
         p1.hello();
-        let gameManager: GameManager = new GameManager(p1);
+        const gameManager: GameManager = new GameManager(p1);
         gameManager.createGame();
 
         return;
