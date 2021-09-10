@@ -1,4 +1,4 @@
-export class Tile {
+export class GameLetter {
     letter: string;
     value: number;
 

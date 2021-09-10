@@ -1,11 +1,11 @@
-import { Tile } from '../game/tile';
+import { GameLetter } from '../game/game-letter';
 
 export class Player {
     static defaultName = 'QWERTY';
 
     name: string;
     isActive: boolean;
-    letterRack: Tile[];
+    letterRack: GameLetter[];
 
     constructor(name?: string) {
         typeof name === 'undefined' ? (this.name = Player.defaultName) : (this.name = name);
@@ -15,7 +15,7 @@ export class Player {
         console.log('hello from Player ' + this.name);
     }
 
-    displayTiles(): void {
+    displayGameLetters(): void {
         console.log(this.letterRack);
     }
 }

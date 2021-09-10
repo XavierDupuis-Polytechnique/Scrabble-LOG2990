@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GameManager } from '@app/GameLogic/game/game-manager';
+import { Game } from '@app/GameLogic/game/games/game';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 
@@ -9,12 +9,11 @@ import { User } from '@app/GameLogic/player/user';
     styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent implements OnInit {
+    game: Game;
     ngOnInit(): void {
         const p1: Player = new User('Xavier');
         p1.hello();
-        const gameManager: GameManager = new GameManager(p1);
-        gameManager;
-
+        this.game = new Game(p1);
         return;
     }
 }
