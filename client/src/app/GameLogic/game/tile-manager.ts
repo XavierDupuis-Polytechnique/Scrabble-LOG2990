@@ -31,7 +31,7 @@ export class TileManager {
         '*',
     ];
 
-    //Lint est pas parfait : https://github.com/typescript-eslint/typescript-eslint/issues/945
+    // Lint est pas parfait : https://github.com/typescript-eslint/typescript-eslint/issues/945
     static tilesCount = [9, 2, 2, 3, 15, 2, 2, 2, 8, 1, 1, 5, 3, 6, 6, 2, 1, 6, 6, 6, 6, 2, 1, 1, 1, 1, 2];
     static tilesValue = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0];
     static playerTileCount = 7;
@@ -56,6 +56,9 @@ export class TileManager {
     }
 
     drawTiles(count: number = 1): Tile[] {
+        if (count > this.tilesBag.length) {
+            throw new Error('Not enough tiles in bag (' + this.tilesBag.length + ') to draw ' + count + ' tiles.');
+        }
         const drawedTiles: Tile[] = [];
         let drawedTileIndex = -1;
         for (let i = 0; i < count; i++) {

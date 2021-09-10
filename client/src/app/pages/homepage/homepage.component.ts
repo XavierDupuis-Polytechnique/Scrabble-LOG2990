@@ -13,7 +13,7 @@ export class HomepageComponent implements OnInit {
         const p1: Player = new User('Xavier');
         p1.hello();
         const gameManager: GameManager = new GameManager(p1);
-        gameManager.createGame();
+        gameManager;
 
         return;
     }

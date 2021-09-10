@@ -8,11 +8,12 @@ export class GameManager {
 
     constructor(p1: Player, p2?: Player) {
         this.tileManager = new TileManager();
-        this.allocatePlayers(p1, p2);
-        this.allocateTiles();
+        this.createGame(p1, p2);
     }
 
-    createGame() {
+    createGame(p1: Player, p2?: Player) {
+        this.allocatePlayers(p1, p2);
+        this.allocateTiles();
         console.log(' P1 : ' + this.players[0].name);
         console.log(' P2 : ' + this.players[1].name);
     }
@@ -20,14 +21,13 @@ export class GameManager {
     allocatePlayers(p1: Player, p2?: Player) {
         this.players = [];
         this.players.push(p1);
-        console.log(this.players.length);
         typeof p2 === 'undefined' ? this.players.push(new Bot(p1.name)) : this.players.push(p2);
     }
 
     allocateTiles() {
-        for (let i = 0; i < this.players.length; i++) {
-            this.players[i].letterRack = this.tileManager.drawGameTiles();
-            this.players[i].displayTiles();
+        for (const player of this.players) {
+            player.letterRack = this.tileManager.drawGameTiles();
+            player.displayTiles();
             this.tileManager.displayNumberTilesLeft();
         }
     }
