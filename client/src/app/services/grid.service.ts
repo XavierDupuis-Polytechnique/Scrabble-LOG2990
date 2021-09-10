@@ -5,6 +5,7 @@ import { Vec2 } from '@app/classes/vec2';
 export const DEFAULT_WIDTH = 500;
 export const DEFAULT_HEIGHT = 500;
 export const NUMBER_GRID_CELL = 15;
+export const PADDING = 100;
 
 @Injectable({
     providedIn: 'root',
@@ -23,42 +24,41 @@ export class GridService {
     /* eslint-disable @typescript-eslint/no-magic-numbers */
     // Remove later
     drawGrid() {
-        this.gridContext.beginPath();
+        this.calculateMinMax();
+        this.maxGridSize -= 2 * PADDING;
+        const step = this.maxGridSize / NUMBER_GRID_CELL;
+
+        for (let x = 0; x <= this.maxGridSize; x += step) {
+            this.gridContext.moveTo(0.5 + x + PADDING, PADDING);
+            this.gridContext.lineTo(0.5 + x + PADDING, this.maxGridSize + PADDING);
+        }
+
+        for (let x = 0; x <= this.maxGridSize; x += step) {
+            this.gridContext.moveTo(PADDING, 0.5 + x + PADDING);
+            this.gridContext.lineTo(this.maxGridSize + PADDING, 0.5 + x + PADDING);
+            this.gridContext.stroke();
+        }
+
         this.gridContext.strokeStyle = 'black';
-        this.gridContext.lineWidth = 3;
-
-        this.gridContext.moveTo((this.width * 3) / 10, (this.height * 4) / 10);
-        this.gridContext.lineTo((this.width * 7) / 10, (this.height * 4) / 10);
-
-        this.gridContext.moveTo((this.width * 3) / 10, (this.height * 6) / 10);
-        this.gridContext.lineTo((this.width * 7) / 10, (this.height * 6) / 10);
-
-        this.gridContext.moveTo((this.width * 4) / 10, (this.height * 3) / 10);
-        this.gridContext.lineTo((this.width * 4) / 10, (this.height * 7) / 10);
-
-        this.gridContext.moveTo((this.width * 6) / 10, (this.height * 3) / 10);
-        this.gridContext.lineTo((this.width * 6) / 10, (this.height * 7) / 10);
-
+        this.gridContext.lineWidth = 2;
         this.gridContext.stroke();
     }
 
-    drawBoard() {
-        this.calculateMinMax();
+    drawIndicator() {
+        this.gridContext.font = '10px Arial';
         const step = this.maxGridSize / NUMBER_GRID_CELL;
-        // size of canvas
-        for (let x = 0; x <= this.maxGridSize; x += step) {
-            this.gridContext.moveTo(0.5 + x, 0);
-            this.gridContext.lineTo(0.5 + x, this.maxGridSize);
+        for (let x = 0, s = PADDING; x < NUMBER_GRID_CELL; x++, s += step) {
+            this.gridContext.fillText(String.fromCharCode(65 + x), s, PADDING);
         }
-
-        for (let x = 0; x <= this.maxGridSize; x += step) {
-            this.gridContext.moveTo(0, 0.5 + x);
-            this.gridContext.lineTo(this.maxGridSize, 0.5 + x);
+        // Why not working
+        for (let x = 0, s = PADDING; x < NUMBER_GRID_CELL; x++, s += step) {
+            this.gridContext.fillText(x.toString(), 0, s);
         }
+    }
 
-        this.gridContext.strokeStyle = 'black';
-        this.gridContext.lineWidth = 3;
-        this.gridContext.stroke();
+    drawBoard() {
+        this.drawGrid();
+        this.drawIndicator();
     }
 
     drawWord(word: string) {
