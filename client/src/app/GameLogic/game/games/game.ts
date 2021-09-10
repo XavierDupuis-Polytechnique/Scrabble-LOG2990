@@ -1,18 +1,29 @@
 import { Player } from '@app/GameLogic/player/player';
 import { LetterBag } from '../letter-bag';
 
+
 export class Game {
     static maxConsecutivePass = 6;
     letterBag: LetterBag;
     players: Player[];
+    activePlayerIndex: number;
     consecutivePass: number;
     isEnded: boolean = false;
 
+    constructor(public timePerTurn:number){
+
+
+    }
+
     startGame(): void {
-        while (!this.isEndOfGame()) {
-            this.startTurn();
-        }
-        this.onEndOfGame();
+        this.pickFirstPlayer();
+        this.startTurn();
+    }
+
+    pickFirstPlayer() {
+        const max = this.players.length;
+        const firstPlayer = Math.floor(Math.random() * max);
+        this.activePlayerIndex = firstPlayer;
     }
 
     allocateGameLetters() {
@@ -24,7 +35,12 @@ export class Game {
     }
 
     startTurn() {
-        //while ()
+        const end$ = 
+        
+    }
+    
+    endOfTurn(){
+
     }
 
     isEndOfGame() {
