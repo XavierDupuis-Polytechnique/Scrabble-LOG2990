@@ -1,25 +1,15 @@
-import { newTile, Tile } from './tile';
-
-export const GRID_CELL_NUMBER = 15;
-
+import { Tile } from './tile';
+const NUM_TILES = 15;
 export class Board {
     grid: Tile[][];
 
     constructor() {
         this.grid = [];
-        for (let i = 0; i < GRID_CELL_NUMBER; i++) {
+        for (let i = 0; i < NUM_TILES; i++) {
             this.grid[i] = [];
-            for (let j = 0; j < GRID_CELL_NUMBER; j++) {
-                this.grid[i][j] = newTile();
+            for (let j = 0; j < NUM_TILES; j++) {
+                this.grid[i][j] = new Tile();
             }
         }
-    }
-
-    getTile(i: number, j: number): Tile {
-        return this.grid[i][j];
-    }
-
-    setTile(i: number, j: number, tile: Tile): void {
-        this.grid[i][j] = tile;
     }
 }

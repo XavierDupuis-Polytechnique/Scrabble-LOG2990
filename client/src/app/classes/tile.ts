@@ -1,11 +1,19 @@
-export interface Tile {
-    multiplicator: number;
-    value: string;
-}
+export class Tile {
+    letter: string;
+    value: number;
+    letterMultiplicator: number;
+    wordMultiplicator: number;
 
-export const newTile = (): Tile => {
-    return {
-        multiplicator: 1,
-        value: '',
-    };
-};
+    constructor(lMul?: number, wMul?: number) {
+        this.letter = '';
+        this.value = 1;
+        this.letterMultiplicator = 1;
+        this.wordMultiplicator = 1;
+        if (lMul !== undefined) {
+            this.letterMultiplicator = lMul;
+        }
+        if (wMul !== undefined) {
+            this.wordMultiplicator = wMul;
+        }
+    }
+}
