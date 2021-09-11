@@ -12,6 +12,7 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
+import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
@@ -45,7 +46,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         LeaderboardComponent,
         HeaderBarComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
+    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, GameLogicModule],
     providers: [],
     bootstrap: [AppComponent],
 })
