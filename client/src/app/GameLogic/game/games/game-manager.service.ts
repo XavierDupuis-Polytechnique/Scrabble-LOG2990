@@ -12,7 +12,7 @@ export class GameManagerService {
     game: Game;
     constructor(private timer: TimerService) {}
 
-    createGame(gameSettings: any): Game {
+    createGame(gameSettings: any): void {
         this.game = new Game(gameSettings.timePerTurn, this.timer);
         // create players
         this.game.letterBag = new LetterBag();
@@ -20,10 +20,12 @@ export class GameManagerService {
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(this.game, players);
-        return this.game;
     }
 
-    startGame() {
+    startGame(): void {
+        if (!this.game) {
+            throw Error("No game created yet");
+        }
         this.game.start();
     }
 
