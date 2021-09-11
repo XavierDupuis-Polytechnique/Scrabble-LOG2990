@@ -47,4 +47,8 @@ export class NewSoloGameFormComponent {
     get formValid() {
         return this.soloGameSettingsForm.valid;
     }
+
+    get settings() {
+        return this.soloGameSettingsForm.value;
+    }
 }
