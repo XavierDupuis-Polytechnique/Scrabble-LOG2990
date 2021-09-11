@@ -26,15 +26,16 @@ export class GameManagerService {
     startGame() {
         this.game.start();
     }
+
     // Change botDifficulty 
-    createPlayers(playerName: string, botDifficulty: string): Player[] {
+    private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
         const player = new Player(playerName);
         const bot = new Bot("ajskdfjks");
         return [player, bot];
     }
 
-    allocatePlayers(game: Game, players: Player[]) {
+    private allocatePlayers(game: Game, players: Player[]) {
         game.players = players;
     }
 }

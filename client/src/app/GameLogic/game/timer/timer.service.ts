@@ -21,7 +21,7 @@ export class TimerService {
       if (step == numberOfStep) {
         end$.next();
       }
-    })
-    return end$
+    });
+    return end$;
   }
 }
