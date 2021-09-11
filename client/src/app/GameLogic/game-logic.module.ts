@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 @NgModule({
-    declarations: [],
+    declarations: [
+      
+  ],
 })
 export class GameLogicModule {}
