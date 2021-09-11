@@ -5,29 +5,30 @@ import { TimerService } from '../timer/timer.service';
 
 export class Game {
     static maxConsecutivePass = 6;
-    letterBag: LetterBag;
-    players: Player[];
+    letterBag: LetterBag = new LetterBag();
+    players: Player[] = [];
     activePlayerIndex: number;
     consecutivePass: number;
     isEnded: boolean = false;
 
     constructor(
-        public timePerTurn:number,
+        public timePerTurn: number,
         private timer: TimerService
     ){ }
 
-    startGame(): void {
+    start(): void {
+        this.drawGameLetters();
         this.pickFirstPlayer();
         this.startTurn();
     }
 
-    pickFirstPlayer() {
+    private pickFirstPlayer() {
         const max = this.players.length;
         const firstPlayer = Math.floor(Math.random() * max);
         this.activePlayerIndex = firstPlayer;
     }
 
-    allocateGameLetters() {
+    private drawGameLetters() {
         for (const player of this.players) {
             player.letterRack = this.letterBag.drawEmptyRackLetters();
             player.displayGameLetters();
@@ -35,13 +36,23 @@ export class Game {
         }
     }
 
-    startTurn() {
+    private startTurn() {
+        console.log('its', this.players[this.activePlayerIndex], 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn);
-        timerEnd$.subscribe(this.endOfTurn);
+        timerEnd$.subscribe(this.endOfTurn());
+        // TODO merge with player.action$ observable
     }
     
-    endOfTurn(){
+    private endOfTurn(){
+        return () => {
+            console.log('end of turn');
+            this.nextPlayer();
+            this.startTurn();
+        }
+    }
 
+    nextPlayer() {
+        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
     isEndOfGame() {

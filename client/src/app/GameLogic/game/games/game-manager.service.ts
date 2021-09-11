@@ -2,26 +2,39 @@ import { Injectable } from '@angular/core';
 import { Bot } from '@app/GameLogic/player/bot';
 import { Player } from '@app/GameLogic/player/player';
 import { LetterBag } from '../letter-bag';
+import { TimerService } from '../timer/timer.service';
 import { Game } from './game';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GameManagerService {
-    constructor() {}
+    game: Game;
+    constructor(private timer: TimerService) {}
 
-    createGame(p1: Player, p2?: Player): Game {
-        let newGame = new Game();
-        newGame.letterBag = new LetterBag();
-        this.allocatePlayers(newGame, p1, p2);
-        console.log(' P1 : ' + newGame.players[0].name);
-        console.log(' P2 : ' + newGame.players[1].name);
-        return newGame;
+    createGame(gameSettings: any): Game {
+        this.game = new Game(gameSettings.timePerTurn, this.timer);
+        // create players
+        this.game.letterBag = new LetterBag();
+        const playerName = gameSettings.playerName;
+        const botDifficulty = gameSettings.botDifficulty;
+        const players = this.createPlayers(playerName, botDifficulty);
+        this.allocatePlayers(this.game, players);
+        return this.game;
     }
 
-    allocatePlayers(game: Game, p1: Player, p2?: Player) {
-        game.players = [];
-        game.players.push(p1);
-        typeof p2 === 'undefined' ? game.players.push(new Bot(p1.name)) : game.players.push(p2);
+    startGame() {
+        this.game.start();
+    }
+    // Change botDifficulty 
+    createPlayers(playerName: string, botDifficulty: string): Player[] {
+        // TODO CREATE PLAYER
+        const player = new Player(playerName);
+        const bot = new Bot("ajskdfjks");
+        return [player, bot];
+    }
+
+    allocatePlayers(game: Game, players: Player[]) {
+        game.players = players;
     }
 }
