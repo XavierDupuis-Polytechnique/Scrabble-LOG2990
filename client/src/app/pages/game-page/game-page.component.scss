@@ -8,7 +8,9 @@
       "Board Board Board Info"
       "Board Board Board Chat"
       "Horse Horse Horse Chat";
-    height: 100%;
+      height: 100vh;//100% view height
+      width: 100vw;// 100% view width
+      overflow: hidden;
   }
 
 app-info-box{
@@ -19,6 +21,7 @@ app-info-box{
 app-chat-box{
     grid-area: Chat;
     border-style: solid;
+    
 }
 app-board{
     grid-area: Board;
