@@ -4,12 +4,14 @@ export class Player {
     static defaultName = 'QWERTY';
     points: number = 0;
 
-    name: string;
+    name: string = Player.defaultName;
     isActive: boolean;
     letterRack: GameLetter[];
 
     constructor(name?: string) {
-        typeof name === 'undefined' ? (this.name = Player.defaultName) : (this.name = name);
+        if (name) {
+            this.name = name;
+        }
     }
 
     hello(): void {
