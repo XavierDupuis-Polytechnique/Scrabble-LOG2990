@@ -7,7 +7,7 @@ export class PassTurn extends Action {
         super(player);
     }
 
-    execute(game: Game) {
+    protected insideExecute(game: Game) {
         console.log(this.player.name, 'passed his turn');
         return;
     }

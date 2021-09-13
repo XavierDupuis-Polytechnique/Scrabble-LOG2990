@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Player } from '@app/GameLogic/player/player';
@@ -7,12 +8,14 @@ import { mapTo } from 'rxjs/operators';
 import { LetterBag } from '../letter-bag';
 import { TimerService } from '../timer/timer.service';
 
+const MAX_CONSECUTIVE_PASS = 6;
+
 export class Game {
-    static maxConsecutivePass = 6;
+    static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
     activePlayerIndex: number;
-    consecutivePass: number;
+    consecutivePass: number = 0;
     isEnded: boolean = false;
 
     constructor(public timePerTurn: number, private timer: TimerService, private pointCalculator: PointCalculatorService) {}
@@ -84,5 +87,13 @@ export class Game {
         // Afficher le gagnant ou les deux si egale
         // Afficher les lettres restantes
         // Enregistrer dans meilleurs scores
+    }
+
+    doAction(action: Action) {
+        if (action instanceof PassTurn) {
+            this.consecutivePass += 1;
+        } else {
+            this.consecutivePass = 0;
+        }
     }
 }

@@ -7,7 +7,7 @@ export class PlaceLetter extends Action {
         super(player);
     }
 
-    execute(game: Game) {
+    protected insideExecute(game: Game) {
         return;
     }
 }
