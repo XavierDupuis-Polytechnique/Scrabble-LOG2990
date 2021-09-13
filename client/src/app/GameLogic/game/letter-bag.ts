@@ -71,4 +71,8 @@ export class LetterBag {
     getRandomInt(max: number) {
         return Math.floor(Math.random() * max);
     }
+
+    get isEmpty(): boolean {
+        return this.gameLetters.length === 0;
+    }
 }

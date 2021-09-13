@@ -1,11 +1,11 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Player } from '@app/GameLogic/player/player';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 import { LetterBag } from '../letter-bag';
 import { TimerService } from '../timer/timer.service';
-
 
 export class Game {
     static maxConsecutivePass = 6;
@@ -15,10 +15,7 @@ export class Game {
     consecutivePass: number;
     isEnded: boolean = false;
 
-    constructor(
-        public timePerTurn: number,
-        private timer: TimerService
-    ){ }
+    constructor(public timePerTurn: number, private timer: TimerService, private pointCalculator: PointCalculatorService) {}
 
     start(): void {
         this.drawGameLetters();
@@ -44,15 +41,18 @@ export class Game {
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
         console.log('its', activePlayer, 'turns');
-        const timerEnd$ = this.timer.start(this.timePerTurn).pipe(
-            mapTo(new PassTurn(activePlayer)));
+        const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
-        turnEnds$.subscribe(action => this.endOfTurn(action));
+        turnEnds$.subscribe((action) => this.endOfTurn(action));
     }
     // TODO implement action execute
-    private endOfTurn(action: Action){
+    private endOfTurn(action: Action) {
         action.execute(this);
         console.log('end of turn');
+        if (this.isEndOfGame()) {
+            this.onEndOfGame();
+            return;
+        }
         this.nextPlayer();
         this.startTurn();
     }
@@ -60,10 +60,29 @@ export class Game {
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
-
-    isEndOfGame() {
-        return 0; //this.letterBag.gameLetters.length === 0 || this.consecutivePass === Game.maxConsecutivePass;
+    getActivePlayer(): Player {
+        return this.players[this.activePlayerIndex];
     }
 
-    onEndOfGame() {}
+    isEndOfGame() {
+        if (this.letterBag.isEmpty) {
+            for (const player of this.players) {
+                if (player.letterRackIsEmpty) {
+                    return true;
+                }
+            }
+        }
+        if (this.consecutivePass >= Game.maxConsecutivePass) {
+            return true;
+        }
+        return false;
+    }
+
+    onEndOfGame() {
+        this.pointCalculator.endOfGamePointdeduction(this);
+
+        // Afficher le gagnant ou les deux si egale
+        // Afficher les lettres restantes
+        // Enregistrer dans meilleurs scores
+    }
 }

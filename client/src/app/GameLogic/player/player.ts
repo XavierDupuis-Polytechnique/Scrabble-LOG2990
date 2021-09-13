@@ -24,5 +24,9 @@ export class Player {
         console.log(this.letterRack);
     }
 
+    get letterRackIsEmpty(): boolean {
+        return this.letterRack.length === 0;
+    }
+
     action$: Subject<Action> = new Subject();
 }
