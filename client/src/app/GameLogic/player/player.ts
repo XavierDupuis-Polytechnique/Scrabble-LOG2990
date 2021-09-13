@@ -1,3 +1,5 @@
+import { Subject } from 'rxjs';
+import { Action } from '../actions/action';
 import { GameLetter } from '../game/game-letter';
 
 export class Player {
@@ -21,4 +23,6 @@ export class Player {
     displayGameLetters(): void {
         console.log(this.letterRack);
     }
+
+    action$: Subject<Action>;
 }
