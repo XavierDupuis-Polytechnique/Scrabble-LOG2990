@@ -47,16 +47,14 @@ export class Game {
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(
             mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
-        turnEnds$.subscribe(action => this.endOfTurn()(action));
+        turnEnds$.subscribe(action => this.endOfTurn(action));
     }
     // TODO implement action execute
-    private endOfTurn(){
-        return (action: Action) => {
-            action.execute(this);
-            console.log('end of turn');
-            this.nextPlayer();
-            this.startTurn();
-        }
+    private endOfTurn(action: Action){
+        action.execute(this);
+        console.log('end of turn');
+        this.nextPlayer();
+        this.startTurn();
     }
 
     nextPlayer() {
