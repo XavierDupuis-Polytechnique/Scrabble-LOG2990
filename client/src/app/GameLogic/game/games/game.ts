@@ -26,6 +26,42 @@ export class Game {
         this.startTurn();
     }
 
+    nextPlayer() {
+        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
+    }
+    getActivePlayer(): Player {
+        return this.players[this.activePlayerIndex];
+    }
+
+    isEndOfGame() {
+        if (this.letterBag.isEmpty) {
+            for (const player of this.players) {
+                if (player.letterRackIsEmpty) {
+                    return true;
+                }
+            }
+        }
+        if (this.consecutivePass >= Game.maxConsecutivePass) {
+            return true;
+        }
+        return false;
+    }
+
+    onEndOfGame() {
+        this.pointCalculator.endOfGamePointdeduction(this);
+        // Afficher le gagnant ou les deux si egale
+        // Afficher les lettres restantes
+        // Enregistrer dans meilleurs scores
+    }
+
+    doAction(action: Action) {
+        if (action instanceof PassTurn) {
+            this.consecutivePass += 1;
+        } else {
+            this.consecutivePass = 0;
+        }
+    }
+
     private pickFirstPlayer() {
         const max = this.players.length;
         const firstPlayer = Math.floor(Math.random() * max);
@@ -58,42 +94,5 @@ export class Game {
         }
         this.nextPlayer();
         this.startTurn();
-    }
-
-    nextPlayer() {
-        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
-    }
-    getActivePlayer(): Player {
-        return this.players[this.activePlayerIndex];
-    }
-
-    isEndOfGame() {
-        if (this.letterBag.isEmpty) {
-            for (const player of this.players) {
-                if (player.letterRackIsEmpty) {
-                    return true;
-                }
-            }
-        }
-        if (this.consecutivePass >= Game.maxConsecutivePass) {
-            return true;
-        }
-        return false;
-    }
-
-    onEndOfGame() {
-        this.pointCalculator.endOfGamePointdeduction(this);
-
-        // Afficher le gagnant ou les deux si egale
-        // Afficher les lettres restantes
-        // Enregistrer dans meilleurs scores
-    }
-
-    doAction(action: Action) {
-        if (action instanceof PassTurn) {
-            this.consecutivePass += 1;
-        } else {
-            this.consecutivePass = 0;
-        }
     }
 }
