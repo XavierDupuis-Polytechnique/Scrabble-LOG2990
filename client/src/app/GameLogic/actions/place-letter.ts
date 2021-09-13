@@ -3,10 +3,7 @@ import { Player } from "../player/player";
 import { Action } from "./action";
 
 export class PlaceLetter extends Action {
-    constructor(player: Player) {
-        super(player);
-    }
-
+    // TODO implement placeLetter action
     protected insideExecute(game: Game) {
         return;
     }
