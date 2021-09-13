@@ -7,7 +7,7 @@ export class ExchangeLetter extends Action {
         super(player);
     }
 
-    execute(game: Game) {
+    protected insideExecute(game: Game) {
         return;
     }
 }

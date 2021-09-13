@@ -12,7 +12,7 @@ export class Game {
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
     activePlayerIndex: number;
-    consecutivePass: number;
+    consecutivePass: number = 0;
     isEnded: boolean = false;
 
     constructor(
@@ -66,4 +66,12 @@ export class Game {
     }
 
     onEndOfGame() {}
+
+    doAction(action: Action) {
+        if (action instanceof PassTurn) {
+            this.consecutivePass += 1;
+        } else {
+            this.consecutivePass = 0;
+        }
+    }
 }
