@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-imports */
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Player } from '@app/GameLogic/player/player';
