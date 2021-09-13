@@ -48,7 +48,6 @@ export class Game {
             mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.subscribe(action => this.endOfTurn()(action));
-);
     }
     // TODO implement action execute
     private endOfTurn(){
