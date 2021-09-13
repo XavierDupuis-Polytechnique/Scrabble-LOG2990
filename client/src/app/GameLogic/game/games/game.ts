@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Player } from '@app/GameLogic/player/player';
@@ -6,19 +7,17 @@ import { mapTo } from 'rxjs/operators';
 import { LetterBag } from '../letter-bag';
 import { TimerService } from '../timer/timer.service';
 
+const MAX_CONSECUTIVE_PASS = 6;
 
 export class Game {
-    static maxConsecutivePass = 6;
+    static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
     activePlayerIndex: number;
     consecutivePass: number = 0;
     isEnded: boolean = false;
 
-    constructor(
-        public timePerTurn: number,
-        private timer: TimerService
-    ){ }
+    constructor(public timePerTurn: number, private timer: TimerService) {}
 
     start(): void {
         this.drawGameLetters();
@@ -44,10 +43,9 @@ export class Game {
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
         console.log('its', activePlayer, 'turns');
-        const timerEnd$ = this.timer.start(this.timePerTurn).pipe(
-            mapTo(new PassTurn(activePlayer)));
+        const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
-        turnEnds$.subscribe(action => this.endOfTurn(action));
+        turnEnds$.subscribe((action) => this.endOfTurn(action));
     }
     // TODO implement action execute
     private endOfTurn(action: Action){
