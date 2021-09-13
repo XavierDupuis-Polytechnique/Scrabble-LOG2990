@@ -24,5 +24,5 @@ export class Player {
         console.log(this.letterRack);
     }
 
-    action$: Subject<Action>;
+    action$: Subject<Action> = new Subject();
 }
