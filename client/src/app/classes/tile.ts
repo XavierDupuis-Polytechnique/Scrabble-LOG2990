@@ -5,7 +5,7 @@ export class Tile {
     wordMultiplicator: number;
 
     constructor(lMul?: number, wMul?: number) {
-        this.letter = '';
+        this.letter = ' ';
         this.value = 1;
         this.letterMultiplicator = 1;
         this.wordMultiplicator = 1;

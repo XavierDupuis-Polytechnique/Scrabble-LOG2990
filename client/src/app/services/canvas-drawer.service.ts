@@ -4,7 +4,7 @@ const NUM_TILE_FAKE = 16;
 const NUM_TILE = 15;
 const paddingValue = 0.004;
 const asciiStartPos = 65;
-const pourcentageOffset = 0.75;
+//const pourcentageOffset = 0.5;
 @Injectable({
     providedIn: 'root',
 })
@@ -15,12 +15,18 @@ export class CanvasDrawerService {
     private board: Board;
 
     private canvasPadding: number;
-    private widthLenght: number;
     private tempWidth: number;
     private padding: number;
     private tileWidth: number;
     private yOffset: number;
     private fontSize: number;
+
+    private letterFontSize: number;
+    private maxLetterFontSize: number;
+    private valueFontSize: number;
+    private maxValueFontSize: number;
+    private maxLetterFontWidth: number;
+    private maxValueFontWidth: number;
 
     update(board: Board): void {
         this.board = board;
@@ -51,14 +57,13 @@ export class CanvasDrawerService {
     private fitToContainer(): void {
         this.gridContext.canvas.width = this.gridContext.canvas.offsetWidth;
         this.gridContext.canvas.height = this.gridContext.canvas.offsetHeight;
-        this.widthLenght = this.gridContext.canvas.width;
 
-        this.tempWidth = this.widthLenght / NUM_TILE_FAKE;
-        this.padding = paddingValue * this.widthLenght;
+        this.tempWidth = this.gridContext.canvas.width / NUM_TILE_FAKE;
+        this.padding = paddingValue * this.gridContext.canvas.width;
         this.tileWidth = this.tempWidth - 2 * this.padding;
         this.canvasPadding = this.tileWidth + 2 * this.padding;
 
-        this.widthLenght -= this.canvasPadding;
+        this.calculateFont();
 
         this.fontSize = this.calculateMaxFontSize(this.tileWidth);
     }
@@ -99,10 +104,14 @@ export class CanvasDrawerService {
 
         this.gridContext.fillRect(xPos, yPos, this.tileWidth, this.tileWidth);
         this.gridContext.fillStyle = 'black';
-        this.gridContext.fillText(this.board.grid[i][j].letter, xPos, yPos + this.calculateMaxFontSize(this.tileWidth));
-        this.gridContext.font = `${this.fontSize}px Verdana`;
+        // set font size for letter
+        this.gridContext.font = `${this.letterFontSize}px Arial`;
+        this.gridContext.fillText(this.board.grid[i][j].letter, xPos, yPos + this.letterFontSize);
+        // set font size for value
+        this.gridContext.font = `${this.valueFontSize}px Arial`;
         const tileValue = this.board.grid[i][j].letter === '' ? '' : this.board.grid[i][j].value;
-        this.gridContext.fillText(tileValue.toString(), xPos + this.tileWidth * pourcentageOffset, yPos + this.yOffset);
+        const xOffset = this.gridContext.measureText(tileValue.toString()).width;
+        this.gridContext.fillText(tileValue.toString(), xPos + this.tileWidth - xOffset, yPos + this.yOffset);
     }
 
     private fillColor(i: number, j: number): void {
@@ -125,5 +134,29 @@ export class CanvasDrawerService {
                 this.gridContext.fillStyle = 'rgb(255, 0, 0)';
                 break;
         }
+    }
+
+    private calculateFont(): void {
+        let letterSize = 0;
+        let valueSize = 0;
+        let width = 0;
+
+        while (width < this.tileWidth) {
+            this.maxValueFontWidth = this.gridContext.measureText((10).toString()).width;
+            this.maxLetterFontWidth = this.gridContext.measureText('W').width;
+
+            this.gridContext.font = `${letterSize}px Verdana`;
+            width = this.gridContext.measureText('W').width;
+            this.gridContext.font = `${valueSize}px Verdana`;
+            width += this.gridContext.measureText((10).toString()).width;
+            letterSize += 2;
+            valueSize += 1;
+        }
+        this.maxLetterFontSize = letterSize;
+        this.maxValueFontSize = valueSize;
+        this.letterFontSize = this.maxLetterFontSize;
+        this.valueFontSize = this.maxValueFontSize;
+        // to be removed
+        width = this.maxValueFontWidth + this.maxLetterFontWidth + this.valueFontSize + this.letterFontSize;
     }
 }

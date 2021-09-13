@@ -21,6 +21,7 @@ import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component'
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
+import { TileComponent } from './pages/game-page/board/tile/tile.component';
 
 /**
  * Main module that is used in main.ts.
@@ -45,6 +46,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         Log2990GameComponent,
         LeaderboardComponent,
         HeaderBarComponent,
+        TileComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, GameLogicModule],
     providers: [],
