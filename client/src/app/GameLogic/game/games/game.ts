@@ -48,6 +48,7 @@ export class Game {
 
     onEndOfGame() {
         this.pointCalculator.endOfGamePointdeduction(this);
+        console.log('game ended');
         // Afficher le gagnant ou les deux si egale
         // Afficher les lettres restantes
         // Enregistrer dans meilleurs scores

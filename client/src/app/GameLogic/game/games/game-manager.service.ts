@@ -13,7 +13,7 @@ export class GameManagerService {
     game: Game;
     constructor(private timer: TimerService, private pointCalculator: PointCalculatorService) {}
 
-    createGame(gameSettings: unknown): void {
+    createGame(gameSettings: any): void {
         this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator);
         // create players
         this.game.letterBag = new LetterBag();
