@@ -2,7 +2,7 @@ import { Player } from './player';
 
 export class Bot extends Player {
     static botNames = ['BlaboBlabo', 'Pingu', 'Kirbo'];
-    
+
     // Bot constructor takes opponent name as argument to prevent same name
     constructor(name: string) {
         super('PlaceholderName');
@@ -19,17 +19,13 @@ export class Bot extends Player {
         return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
     }
 
-
-
     // generateWordList(board, availableLetter):string[] {
-        // TO DO : a LOT of stuff goes here
+    // TO DO : a LOT of stuff goes here
     //      this.letterRack
-            
-    //}
 
-    playTurn() {
-        
-    }
+    // }
+
+    playTurn() {}
 
     hello(): void {
         console.log('hello from bot ' + this.name);

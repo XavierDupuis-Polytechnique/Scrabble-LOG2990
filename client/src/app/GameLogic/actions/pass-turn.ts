@@ -1,9 +1,8 @@
-import { Game } from "../game/games/game";
-import { Player } from "../player/player";
-import { Action } from "./action";
+import { Game } from '../game/games/game';
+import { Player } from '../player/player';
+import { Action } from './action';
 
 export class PassTurn extends Action {
-
     // TODO implement PassTurn action
     protected insideExecute(game: Game) {
         console.log(this.player.name, 'passed his turn');
