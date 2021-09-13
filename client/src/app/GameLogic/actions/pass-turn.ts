@@ -8,6 +8,7 @@ export class PassTurn extends Action {
     }
 
     execute(game: Game) {
+        console.log(this.player.name, 'passed his turn');
         return;
     }
 }

@@ -1,4 +1,8 @@
+import { Action } from '@app/GameLogic/actions/action';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Player } from '@app/GameLogic/player/player';
+import { merge } from 'rxjs';
+import { mapTo } from 'rxjs/operators';
 import { LetterBag } from '../letter-bag';
 import { TimerService } from '../timer/timer.service';
 
@@ -37,14 +41,19 @@ export class Game {
     }
 
     private startTurn() {
-        console.log('its', this.players[this.activePlayerIndex], 'turns');
-        const timerEnd$ = this.timer.start(this.timePerTurn);
-        timerEnd$.subscribe(this.endOfTurn());
-        // TODO merge with player.action$ observable
+        // TODO timerends emits passturn action + feed action in end turn arguments
+        const activePlayer = this.players[this.activePlayerIndex];
+        console.log('its', activePlayer, 'turns');
+        const timerEnd$ = this.timer.start(this.timePerTurn).pipe(
+            mapTo(new PassTurn(activePlayer)));
+        const turnEnds$ = merge(activePlayer.action$, timerEnd$);
+        turnEnds$.subscribe(action => this.endOfTurn()(action));
+);
     }
-    
+    // TODO implement action execute
     private endOfTurn(){
-        return () => {
+        return (action: Action) => {
+            action.execute(this);
             console.log('end of turn');
             this.nextPlayer();
             this.startTurn();
