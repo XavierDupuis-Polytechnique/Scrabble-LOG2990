@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 //import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-//import { Letter } from 'src/app/GameLogic/game/letter.interface';
+import { Letter } from 'src/app/GameLogic/game/letter.interface';
 //import { Player } from '@app/GameLogic/player/player';
-//import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
 enum Command {
   Debug = '!debug',
   Help = '!aide',
@@ -22,75 +22,53 @@ export class CommandParserService {
 
   constructor() { }
 
-  /* stringToLetter(letter: string) {
-     let lettersToExchange: Letter[] = [];
-     if (letter == null) return;
-     if (letter.length > 0) {
-       console.log(letter);/*
-       for (var _i = 0; _i < letter.length; _i++) {
-         lettersToExchange[_i].char = letter[_i];
-         lettersToExchange[_i].value = LetterBag.gameLettersValue[letter.charCodeAt(_i) - 72];
- 
-       }
-       for (var _i = 0; _i < letter.length; _i++) {
-         console.log(lettersToExchange[_i].value);
-       }
-       return lettersToExchange;
- 
-     }
-     return;
-   }*/
+  stringToLetter(letters: string) {
+    let lettersToExchange: Letter[] = [];
 
-  isCommand(toVerify: string, Message: HTMLParagraphElement): [HTMLParagraphElement, boolean] {
+    if (letters == null) return;
+    if (letters.length > 0) {
+      for (let charIndex = 0; charIndex < letters.length; charIndex++) {
+        lettersToExchange[charIndex] = { char: letters[charIndex], value: LetterBag.gameLettersValue[letters.charCodeAt(charIndex) - 97] };
+      }
+      return lettersToExchange;
+    }
+    return;
+  }
+
+  verifyCommand(input: string, Message: HTMLParagraphElement): [HTMLParagraphElement, boolean] {
     // Couper l'entry par espace pour verifier s'il s'agit d'une commande
-    console.log(toVerify.split(' ')[0]);
-    const commandCondition = toVerify.split(' ')[0];
+    const toVerify = input.split(' ');
+    console.log(toVerify);
+    const commandCondition = toVerify[0];
     if (commandCondition[0] == '!') {
       Message.style.color = 'red';
+      Message.classList.add('systemMessage');
+      Message.innerHTML = 'Commande: ';
 
       switch (commandCondition) {
 
         case Command.Place: {
-          Message.classList.add('systemMessage');
-          Message.innerHTML = ' Commande ';
-
           return [Message, true];
         }
         case Command.Exchange: {
-          // this.stringToLetter(toVerify.split(' ')[1]);
-          Message.classList.add('systemMessage');
+          this.stringToLetter(toVerify[1]);
+          //const comExchange: ExchangeLetter = new ExchangeLetter(player, this.stringToLetter(toVerify[1]));
           return [Message, true];
-          // const comExchange: ExchangeLetter = new ExchangeLetter(player, this.stringToLetter(toVerify.split(' ')[1]));
         }
-
-
         case Command.Pass: {
-          Message.classList.add('systemMessage');
-          Message.innerHTML = 'Commande ';
-
           return [Message, true];
         }
         case Command.Debug: {
-          Message.classList.add('systemMessage');
-          Message.innerHTML = 'Commande ';
-
           return [Message, true];
         }
         case Command.Help: {
-          Message.classList.add('systemMessage');
-          Message.innerHTML = 'Commande ';
-
           return [Message, true];
-
         }
         default: {
-          Message.classList.add('systemMessage');
-          Message.innerHTML = 'Commande invalide';
-
+          Message.innerHTML += 'invalide';
           return [Message, true];
 
         }
-
       }
     }
     return [Message, false];

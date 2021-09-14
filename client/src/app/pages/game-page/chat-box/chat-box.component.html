@@ -1,9 +1,12 @@
 <div class='chatContainer'>
-    <div #Chat id='sharedChat' class="chat">    </div>
+    <div #chat class="sharedChat">
+        <div *ngFor="let message of messages" >
+            <div id='m{{message.id}}'>{{message.from}} : {{message.content}}</div>
+        </div>
+    </div>
 
-    <input #userEntry matInput type='text' value="" id='userEntry' 
-    maxlength="512" class='chat' (keyup.enter)="sendChat()">
-    
-    <button mat-button  (click)='sendChat()'> Jhonny</button>
+    <input #userEntry matInput [(ngModel)]='userInput' type='text' value="" maxlength="512" class='chat'
+        (keyup.enter)="sendChat()">
 
+    <button mat-button (click)='sendChat()'> Jhonny</button>
 </div>
