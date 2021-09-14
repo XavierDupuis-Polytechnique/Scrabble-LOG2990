@@ -48,11 +48,13 @@ export class Game {
 
     onEndOfGame() {
         console.log('Game ended');
+        
         this.pointCalculator.endOfGamePointdeduction(this);
         // TODO: Afficher les lettres restantes
         for (const player of this.getWinner()) {
             console.log('Congratulations!', player.name, 'is the winner.');
         }
+        console.log(this.getWinner());
     }
 
     doAction(action: Action) {
@@ -85,6 +87,7 @@ export class Game {
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.subscribe((action) => this.endOfTurn(action));
     }
+
     // TODO implement action execute
     private endOfTurn(action: Action) {
         action.execute(this);
@@ -96,6 +99,7 @@ export class Game {
         this.nextPlayer();
         this.startTurn();
     }
+
     private getWinner(): Player[] {
         let highestScore = -1;
         let winners: Player[] = [];

@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { Action } from '../actions/action';
-import { GameLetter } from '../game/game-letter';
+import { Letter } from '../game/letter.interface';
 
 export class Player {
     static defaultName = 'QWERTY';
@@ -8,7 +8,7 @@ export class Player {
 
     name: string = Player.defaultName;
     isActive: boolean;
-    letterRack: GameLetter[];
+    letterRack: Letter[];
 
     constructor(name?: string) {
         if (name) {

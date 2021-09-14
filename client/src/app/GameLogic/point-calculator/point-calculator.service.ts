@@ -25,10 +25,10 @@ export class PointCalculatorService {
     }
 
     calculatePointsOfRack(player: Player) {
-        const sumOfRack = 0;
-        // for(const letter in player.letterRack){
-        //     sumOfRack += letter.point;
-        // }
+        let sumOfRack = 0;
+        for(const letter of player.letterRack){
+            sumOfRack += letter.value;
+        }
         return sumOfRack;
     }
 }
