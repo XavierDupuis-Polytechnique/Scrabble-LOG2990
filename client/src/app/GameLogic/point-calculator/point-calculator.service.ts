@@ -31,8 +31,4 @@ export class PointCalculatorService {
         // }
         return sumOfRack;
     }
-
-    // if player1.letterRack.!isempty && player2.letterrack.!isepmty
-    // calculate player1 et player2 score (total - points)
-    // else players1 + player2.calculatePoints() ; player2.score - player2.calculatepoint()
 }
