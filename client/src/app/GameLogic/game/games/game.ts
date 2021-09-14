@@ -47,11 +47,12 @@ export class Game {
     }
 
     onEndOfGame() {
+        console.log('Game ended');
         this.pointCalculator.endOfGamePointdeduction(this);
-        console.log('game ended');
-        // Afficher le gagnant ou les deux si egale
-        // Afficher les lettres restantes
-        // Enregistrer dans meilleurs scores
+        // TODO: Afficher les lettres restantes
+        for (const player of this.getWinner()) {
+            console.log('Congratulations!', player.name, 'is the winner.');
+        }
     }
 
     doAction(action: Action) {
@@ -94,5 +95,19 @@ export class Game {
         }
         this.nextPlayer();
         this.startTurn();
+    }
+    private getWinner(): Player[] {
+        let highestScore = -1;
+        let winners: Player[] = [];
+        for (const player of this.players) {
+            if (player.points === highestScore) {
+                winners.push(player);
+            }
+            if (player.points > highestScore) {
+                highestScore = player.points;
+                winners = [player];
+            }
+        }
+        return winners;
     }
 }
