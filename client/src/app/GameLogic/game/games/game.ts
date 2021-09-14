@@ -3,6 +3,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 

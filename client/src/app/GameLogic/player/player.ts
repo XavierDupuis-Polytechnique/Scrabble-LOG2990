@@ -1,6 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Subject } from 'rxjs';
-import { Letter } from '../game/letter.interface';
 
 export abstract class Player {
     static defaultName = 'QWERTY';
@@ -10,7 +10,6 @@ export abstract class Player {
     name: string = Player.defaultName;
     isActive: boolean;
     letterRack: Letter[];
-    action$: Subject<Action> = new Subject();
 
     constructor(name?: string) {
         if (name) {

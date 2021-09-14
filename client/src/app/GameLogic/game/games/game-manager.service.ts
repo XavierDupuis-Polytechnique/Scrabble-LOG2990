@@ -3,6 +3,7 @@ import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { BotService } from '@app/GameLogic/player/bot.service';
 import { Player } from '@app/GameLogic/player/player';
+import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { Game } from './game';
 import { GameSettings } from './game-settings.interface';
