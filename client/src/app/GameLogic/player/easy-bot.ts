@@ -19,20 +19,20 @@ export class EasyBot extends Bot {
 
     // randomWordPicker()
 
-    play(){
+    play() {
         return;
     }
 
-    exchange(){
-        let numberOfLettersToExchange = this.getRandomInt(LetterBag.playerLetterCount,1);
+    exchange() {
+        const numberOfLettersToExchange = this.getRandomInt(LetterBag.playerLetterCount, 1);
         let lettersToExchangeIndex;
-        let lettersToExchange = [];
-        let indexArray = [];
+        const lettersToExchange = [];
+        const indexArray = [];
         let randomInt;
-        for(let i = 0; i < LetterBag.playerLetterCount; i++) {
-            indexArray.push(i)
+        for (let i = 0; i < LetterBag.playerLetterCount; i++) {
+            indexArray.push(i);
         }
-        for(let i = 0; i < numberOfLettersToExchange; i++) {
+        for (let i = 0; i < numberOfLettersToExchange; i++) {
             randomInt = this.getRandomInt(indexArray.length);
             lettersToExchangeIndex = indexArray[randomInt];
             indexArray.splice(randomInt, 1);
@@ -41,7 +41,7 @@ export class EasyBot extends Bot {
         this.action$.next(new ExchangeLetter(this, lettersToExchange));
     }
 
-    pass(){
+    pass() {
         this.action$.next(new PassTurn(this));
     }
 }

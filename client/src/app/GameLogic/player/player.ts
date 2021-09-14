@@ -17,9 +17,9 @@ export abstract class Player {
         }
     }
 
-    abstract play():void;
-    abstract exchange():void;
-    abstract pass():void;
+    abstract play(): void;
+    abstract exchange(): void;
+    abstract pass(): void;
 
     hello(): void {
         console.log('hello from Player ' + this.name);
@@ -32,5 +32,4 @@ export abstract class Player {
     get letterRackIsEmpty(): boolean {
         return this.letterRack.length === 0;
     }
-
 }

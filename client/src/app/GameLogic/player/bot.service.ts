@@ -4,17 +4,16 @@ import { EasyBot } from './easy-bot';
 import { HardBot } from './hard-bot';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class BotService {
-  constructor() { }
+    constructor() {}
 
-  createBot(playerName: string, botDifficulty: string):Bot {
-    if(botDifficulty === "hard"){
-      return new HardBot(playerName)
+    createBot(playerName: string, botDifficulty: string): Bot {
+        if (botDifficulty === 'hard') {
+            return new HardBot(playerName);
+        } else {
+            return new EasyBot(playerName);
+        }
     }
-    else {
-      return new EasyBot(playerName)
-    }
-  }
 }

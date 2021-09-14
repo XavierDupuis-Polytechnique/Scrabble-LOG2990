@@ -1,4 +1,4 @@
-import { Letter } from "./letter.interface";
+import { Letter } from './letter.interface';
 
 const GAME_LETTERS = [
     'A',
@@ -46,7 +46,7 @@ export class LetterBag {
     constructor() {
         for (let letterIndex = 0; letterIndex < LetterBag.gameLetters.length; letterIndex++) {
             for (let count = 0; count < LetterBag.gameLettersCount[letterIndex]; count++) {
-                this.gameLetters.push({char: LetterBag.gameLetters[letterIndex], value: LetterBag.gameLettersValue[letterIndex]});
+                this.gameLetters.push({ char: LetterBag.gameLetters[letterIndex], value: LetterBag.gameLettersValue[letterIndex] });
             }
         }
         this.displayNumberGameLettersLeft();

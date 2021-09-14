@@ -10,7 +10,7 @@ export abstract class Bot extends Player {
     }
 
     getRandomInt(max: number, min: number = 0) {
-        return Math.floor(Math.random() * (max-min)+min);
+        return Math.floor(Math.random() * (max - min) + min);
     }
 
     // Devra probablement être déplacé dans un component UI pour afficher le nom
