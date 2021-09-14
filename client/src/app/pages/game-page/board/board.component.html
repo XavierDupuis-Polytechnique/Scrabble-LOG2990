@@ -17,8 +17,10 @@
     <mat-grid-tile>O</mat-grid-tile>
     <div *ngFor="let row of board.grid; let i=index">
       <mat-grid-tile>{{i + 1}}</mat-grid-tile>
-      <mat-grid-tile *ngFor="let item of row" class="grid">
+      <mat-grid-tile *ngFor="let item of row" class="grid" [style]="getFont()">
           <app-tile [tile]="item"></app-tile>
       </mat-grid-tile>
     </div>
 </mat-grid-list>
+<button (click)="increaseFont()">Up</button>
+<button (click)="decreaseFont()">Down</button>

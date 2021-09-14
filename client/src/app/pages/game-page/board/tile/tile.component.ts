@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Tile } from '@app/classes/tile';
+import { Tile } from '@app/GameLogic/game/tile';
 
 @Component({
     selector: 'app-tile',

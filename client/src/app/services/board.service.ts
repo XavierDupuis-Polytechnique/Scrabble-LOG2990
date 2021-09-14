@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Board } from '@app/classes/board';
+import { Board } from '@app/GameLogic/game/board';
 
 @Injectable({
     providedIn: 'root',

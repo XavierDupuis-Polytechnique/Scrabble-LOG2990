@@ -1,12 +1,11 @@
+import { Letter } from '@app/GameLogic/game/letter';
+
 export class Tile {
-    letter: string;
-    value: number;
+    letterO: Letter = new Letter();
     letterMultiplicator: number;
     wordMultiplicator: number;
 
     constructor(lMul?: number, wMul?: number) {
-        this.letter = ' ';
-        this.value = 1;
         this.letterMultiplicator = 1;
         this.wordMultiplicator = 1;
         if (lMul !== undefined) {
