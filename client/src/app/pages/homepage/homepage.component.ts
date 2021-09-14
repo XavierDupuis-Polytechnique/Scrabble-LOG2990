@@ -9,15 +9,13 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
 })
 export class HomepageComponent implements OnInit {
     game001: Game;
-    constructor(private gms: GameManagerService) {
-
-    }
+    constructor(private gms: GameManagerService) {}
     ngOnInit(): void {
         const settings = {
             playerName: 'Xavier',
             botDifficulty: 'easy',
-            timePerTurn: 3000
-        }
+            timePerTurn: 3000,
+        };
         this.gms.createGame(settings);
         this.gms.startGame();
         console.log(this.gms.game);

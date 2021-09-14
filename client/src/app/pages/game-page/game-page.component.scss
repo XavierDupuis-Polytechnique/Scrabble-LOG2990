@@ -4,28 +4,35 @@
     grid-template-rows: 1fr 1fr 1.3fr 0.7fr;
     gap: 0px 0px;
     grid-template-areas:
-      "Board Board Board Info"
-      "Board Board Board Info"
-      "Board Board Board Chat"
-      "Horse Horse Horse Chat";
-      height: 100%;
-  }
+        'Board Board Board Info'
+        'Board Board Board Info'
+        'Board Board Board Chat'
+        'Horse Horse Horse Chat';
+    height: 100%;
+}
 
-app-info-box{
+app-info-box {
     grid-area: Info;
-    border-style: solid;
+    // border: 1px solid grey; //A Enlever
+    padding: 1%;
+    // border-style: solid;
 }
 
-app-chat-box{
+app-chat-box {
     grid-area: Chat;
-    border-style: solid;
+    padding: 1%;
+    border: 1px solid grey; //A Enlever
+    // border-style: solid;
 }
-app-board{
+app-board {
     grid-area: Board;
-    border-style: solid;
+    padding: 1%;
+    border: 2px solid black;
+    // border-style: solid;
 }
 
-app-horse{
+app-horse {
     grid-area: Horse;
-    border-style: solid;
+    border: 1px solid grey;
+    // border-style: solid;
 }

@@ -1,4 +1,4 @@
-<mat-grid-list cols="16" gutterSize="5px" [rowHeight]="'fit'" style="height: 80%;">
+<mat-grid-list cols="16" gutterSize="5px" [rowHeight]="'fit'" style="height: 80%">
     <mat-grid-tile></mat-grid-tile>
     <mat-grid-tile>A</mat-grid-tile>
     <mat-grid-tile>B</mat-grid-tile>
@@ -15,12 +15,12 @@
     <mat-grid-tile>M</mat-grid-tile>
     <mat-grid-tile>N</mat-grid-tile>
     <mat-grid-tile>O</mat-grid-tile>
-    <div *ngFor="let row of board.grid; let i=index">
-      <mat-grid-tile>{{i + 1}}</mat-grid-tile>
-      <mat-grid-tile *ngFor="let item of row" class="grid" [style]="getFont()">
-          <app-tile [tile]="item"></app-tile>
-      </mat-grid-tile>
+    <div *ngFor="let row of board.grid; let i = index">
+        <mat-grid-tile>{{ i + 1 }}</mat-grid-tile>
+        <mat-grid-tile *ngFor="let item of row" class="grid" [style]="getFont()">
+            <app-tile [tile]="item"></app-tile>
+        </mat-grid-tile>
     </div>
 </mat-grid-list>
-<button (click)="increaseFont()">Up</button>
-<button (click)="decreaseFont()">Down</button>
+<button mat-button (click)="increaseFont()">Up</button>
+<button mat-button (click)="decreaseFont()">Down</button>
