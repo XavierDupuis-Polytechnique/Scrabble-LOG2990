@@ -1,4 +1,4 @@
-import { Game } from '../game/games/game';
+import { Game } from '@app/GameLogic/game/games/game';
 import { Action } from './action';
 
 export class PassTurn extends Action {

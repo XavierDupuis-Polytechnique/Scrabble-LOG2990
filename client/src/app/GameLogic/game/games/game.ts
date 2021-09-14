@@ -1,11 +1,13 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
-import { LetterBag } from '../letter-bag';
-import { TimerService } from '../timer/timer.service';
+import { Board } from '@app/GameLogic/game/board';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -13,11 +15,19 @@ export class Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
+    board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
     isEnded: boolean = false;
 
-    constructor(public timePerTurn: number, private timer: TimerService, private pointCalculator: PointCalculatorService) {}
+    constructor(
+        public timePerTurn: number,
+        private timer: TimerService,
+        private pointCalculator: PointCalculatorService,
+        private boardService: BoardService,
+    ) {
+        this.boardService.board = this.board;
+    }
 
     start(): void {
         this.drawGameLetters();
@@ -100,17 +110,17 @@ export class Game {
         this.nextPlayer();
         this.startTurn();
     }
-    
-    private displayLettersLeft(){
-        console.log("Fin de partie - lettres restantes");
+
+    private displayLettersLeft() {
+        console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            if(!player.letterRackIsEmpty){
+            if (!player.letterRackIsEmpty) {
                 // TODO Envoyer dans la boite de communication
-                console.log(player.name, ":", player.letterRack);
+                console.log(player.name, ':', player.letterRack);
             }
         }
     }
-    
+
     private getWinner(): Player[] {
         let highestScore = -1;
         let winners: Player[] = [];

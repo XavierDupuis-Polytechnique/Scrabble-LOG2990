@@ -1,6 +1,6 @@
-import { ExchangeLetter } from '../actions/exchange-letter';
-import { PassTurn } from '../actions/pass-turn';
-import { LetterBag } from '../game/letter-bag';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Bot } from './bot';
 
 export class EasyBot extends Bot {

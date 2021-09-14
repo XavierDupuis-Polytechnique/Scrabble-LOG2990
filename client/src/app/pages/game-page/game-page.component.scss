@@ -1,15 +1,31 @@
 .container {
-    height: 100%;
-    display: flex;
-}
-
-.play-area-container {
-    overflow: auto;
-    flex: 1 1 auto;
-}
-
-.play-area {
     display: grid;
-    width: min-content;
-    outline: none;
+    grid-template-columns: 1fr 1fr 0.8fr 1.2fr;
+    grid-template-rows: 1fr 1fr 1.3fr 0.7fr;
+    gap: 0px 0px;
+    grid-template-areas:
+      "Board Board Board Info"
+      "Board Board Board Info"
+      "Board Board Board Chat"
+      "Horse Horse Horse Chat";
+      height: 100%;
+  }
+
+app-info-box{
+    grid-area: Info;
+    border-style: solid;
+}
+
+app-chat-box{
+    grid-area: Chat;
+    border-style: solid;
+}
+app-board{
+    grid-area: Board;
+    border-style: solid;
+}
+
+app-horse{
+    grid-area: Horse;
+    border-style: solid;
 }
