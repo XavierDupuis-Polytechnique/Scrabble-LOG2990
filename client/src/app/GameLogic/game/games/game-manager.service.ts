@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Bot } from '@app/GameLogic/player/bot';
+import { BotService } from '@app/GameLogic/player/bot.service';
 import { Player } from '@app/GameLogic/player/player';
+import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { LetterBag } from '../letter-bag';
 import { TimerService } from '../timer/timer.service';
@@ -12,6 +13,7 @@ import { GameSettings } from './game-settings.interface';
 })
 export class GameManagerService {
     game: Game;
+    botService: BotService;
     constructor(private timer: TimerService, private pointCalculator: PointCalculatorService) {}
 
     createGame(gameSettings: GameSettings): void {
@@ -34,8 +36,9 @@ export class GameManagerService {
     // Change botDifficulty
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
-        const player = new Player(playerName);
-        const bot = new Bot('ajskdfjks');
+        const player = new User(playerName);
+        this.botService = new BotService();
+        const bot = this.botService.createBot(playerName, botDifficulty);
         return [player, bot];
     }
 

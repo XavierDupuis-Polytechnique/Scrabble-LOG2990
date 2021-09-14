@@ -8,4 +8,9 @@ export class User extends Player {
     hello(): void {
         console.log('hello from User ' + this.name);
     }
+
+    play(){}
+    exchange(){}
+    pass(){}
+
 }
