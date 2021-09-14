@@ -1,7 +1,7 @@
 import { Letter } from './letter.interface';
 
 export class Tile {
-    letterO: Letter = { char: ' ', value: 0 };
+    letterObject: Letter = { char: ' ', value: 0 };
     letterMultiplicator: number = 1;
     wordMultiplicator: number = 1;
 
