@@ -9,8 +9,10 @@ export class ExchangeLetter extends Action {
         super (player);
     }
     protected insideExecute(game: Game) {
+        
         console.log(this.player.name, 'exchanged letters');
-        console.log(this.player.letterRack); 
+        console.log("Letters to exchanged: ", this.lettersToExchange); 
+
         let newLetters: Letter[];
         try {
             game.letterBag.drawGameLetters(this.lettersToExchange.length);
@@ -18,18 +20,26 @@ export class ExchangeLetter extends Action {
             throw e;
         }
         newLetters = game.letterBag.drawGameLetters(this.lettersToExchange.length);
+        
         const exchangeLetterSet = new Set(this.lettersToExchange);
         const newLetterRack: Letter[] = [];
+    
         for (const letter of this.player.letterRack){
             if (!exchangeLetterSet.has(letter)){
-                newLetterRack.push(letter);
+                newLetterRack.push({...letter});
             }
         }
         for (const letter of newLetters){
-            newLetterRack.push(letter); //TODO: Ask charge for the point point
+            newLetterRack.push({...letter}); 
         }
         this.player.letterRack = newLetterRack;
-        console.log(this.player.letterRack); 
+
+        for (const letter of this.lettersToExchange){
+            game.letterBag.addLetter({...letter});
+        }
+        console.log("New letters: ", this.player.letterRack); 
+        
         //TODO: Display letterRack
     }
+    
 }

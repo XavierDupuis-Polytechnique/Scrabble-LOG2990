@@ -50,7 +50,7 @@ export class Game {
         console.log('Game ended');
         
         this.pointCalculator.endOfGamePointdeduction(this);
-        // TODO: Afficher les lettres restantes
+        this.displayLettersLeft();
         for (const player of this.getWinner()) {
             console.log('Congratulations!', player.name, 'is the winner.');
         }
@@ -99,7 +99,17 @@ export class Game {
         this.nextPlayer();
         this.startTurn();
     }
-
+    
+    private displayLettersLeft(){
+        console.log("Fin de partie - lettres restantes");
+        for (const player of this.players) {
+            if(!player.letterRackIsEmpty){
+                // TODO Envoyer dans la boite de communication
+                console.log(player.name, ":", player.letterRack);
+            }
+        }
+    }
+    
     private getWinner(): Player[] {
         let highestScore = -1;
         let winners: Player[] = [];
