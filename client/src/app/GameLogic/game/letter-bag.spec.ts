@@ -34,11 +34,11 @@ describe('LetterBag', () => {
 
     it('should return an error when no more GameLetters can be drawn', () => {
         const numberOfGameLettersToBeDrawn = letterBag.gameLetters.length + 1;
-        const GameLettersBagError = new Error(
+        const gameLettersBagError = new Error(
             'Not enough GameLetters in bag (' + letterBag.gameLetters.length + ') to draw ' + numberOfGameLettersToBeDrawn + ' GameLetters.',
         );
-        expect(function () {
-            letterBag.drawGameLetters(numberOfGameLettersToBeDrawn).length;
-        }).toThrow(GameLettersBagError);
+        expect(() => {
+            letterBag.drawGameLetters(numberOfGameLettersToBeDrawn);
+        }).toThrow(gameLettersBagError);
     });
 });

@@ -17,7 +17,7 @@ export class TimerService {
     const numberOfStep = Math.ceil(interval/TIMER_STEP);
     this.source = timer(TIMER_STEP, TIMER_STEP);
     this.source.pipe(takeUntil(end$)).subscribe(step => {
-      console.log(step*this.timePerStep);
+    //   console.log(step*this.timePerStep);
       if (step == numberOfStep) {
         end$.next();
       }

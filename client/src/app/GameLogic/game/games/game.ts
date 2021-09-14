@@ -1,20 +1,21 @@
 import { Player } from '@app/GameLogic/player/player';
-import { LetterBag } from '../letter-bag';
-import { TimerService } from '../timer/timer.service';
-
+import { BoardService } from '@app/services/board.service';
+import { Board } from '@app/GameLogic/game/board';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 
 export class Game {
     static maxConsecutivePass = 6;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
+    board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number;
     isEnded: boolean = false;
 
-    constructor(
-        public timePerTurn: number,
-        private timer: TimerService
-    ){ }
+    constructor(public timePerTurn: number, private timer: TimerService, private boardService: BoardService) {
+        this.boardService.board = this.board;
+    }
 
     start(): void {
         this.drawGameLetters();
@@ -42,7 +43,7 @@ export class Game {
         timerEnd$.subscribe(this.endOfTurn());
         // TODO merge with player.action$ observable
     }
-    
+
     private endOfTurn(){
         return () => {
             console.log('end of turn');

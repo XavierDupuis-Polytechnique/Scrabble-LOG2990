@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Board } from '@app/classes/board';
+import { Board } from '@app/GameLogic/game/board';
 const NUM_TILE_FAKE = 16;
 const NUM_TILE = 15;
 const paddingValue = 0.004;
