@@ -5,6 +5,7 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { LetterBag } from '../letter-bag';
 import { TimerService } from '../timer/timer.service';
 import { Game } from './game';
+import { GameSettings } from './game-settings.interface';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +14,7 @@ export class GameManagerService {
     game: Game;
     constructor(private timer: TimerService, private pointCalculator: PointCalculatorService) {}
 
-    createGame(gameSettings: any): void {
+    createGame(gameSettings: GameSettings): void {
         this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator);
         // create players
         this.game.letterBag = new LetterBag();
