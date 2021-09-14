@@ -1,4 +1,5 @@
 import { Player } from './player';
+import { ValidWord } from './valid-word';
 
 export abstract class Bot extends Player {
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
@@ -19,11 +20,10 @@ export abstract class Bot extends Player {
         return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
     }
 
-    // generateWordList(board, availableLetter):string[] {
-    // TO DO : a LOT of stuff goes here
-    //      this.letterRack
-
-    // }
+    generateWordList(/*board, availableLetter*/): ValidWord[] {
+        //TO DO : a LOT of stuff goes here
+        this.letterRack;
+    }
 
     hello(): void {
         console.log('hello from bot ' + this.name);
