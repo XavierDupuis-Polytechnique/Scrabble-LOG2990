@@ -8,7 +8,7 @@ import { Log2990GameComponent } from '@app/pages/log2990-game/log2990-game.compo
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 
-const routes: Routes = [
+export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomepageComponent },
     { path: 'classic', component: ClassicGameComponent },

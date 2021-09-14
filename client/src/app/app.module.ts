@@ -14,9 +14,14 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
+import { BoardComponent } from './pages/game-page/board/board.component';
+import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
+import { HorseComponent } from './pages/game-page/horse/horse.component';
+import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
+import { TileComponent } from './pages/game-page/board/tile/tile.component';
 
 /**
  * Main module that is used in main.ts.
@@ -32,11 +37,16 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
+        InfoBoxComponent,
+        ChatBoxComponent,
+        BoardComponent,
+        HorseComponent,
         HomepageComponent,
         ClassicGameComponent,
         Log2990GameComponent,
         LeaderboardComponent,
         HeaderBarComponent,
+        TileComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, GameLogicModule],
     providers: [],
