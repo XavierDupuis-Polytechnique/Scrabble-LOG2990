@@ -2,12 +2,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 const MAX_NAME_LENGTH = 50;
-const MIN_NAME_LENGTH = 4;
+const MIN_NAME_LENGTH = 3;
 
 const DEFAULT_TIME_PER_TURN = 60000;
 const MIN_TIME_PER_TURN = 30000;
 const MAX_TIME_PER_TURN = 300000;
 const STEP_TIME_PER_TURN = 30000;
+const NO_WHITE_SPACE_RGX = /^\S*$/;
 
 @Component({
     selector: 'app-new-solo-game-form',
@@ -18,7 +19,12 @@ export class NewSoloGameFormComponent {
     @Output() cancelClick = new EventEmitter<void>();
     @Output() playClick = new EventEmitter<void>();
     soloGameSettingsForm = new FormGroup({
-        playerName: new FormControl('', [Validators.required, Validators.minLength(MIN_NAME_LENGTH), Validators.maxLength(MAX_NAME_LENGTH)]),
+        playerName: new FormControl('', [
+            Validators.required,
+            Validators.minLength(MIN_NAME_LENGTH),
+            Validators.maxLength(MAX_NAME_LENGTH),
+            Validators.pattern(NO_WHITE_SPACE_RGX),
+        ]),
         adversaryDifficulty: new FormControl('', [Validators.required]),
         timePerTurn: new FormControl(DEFAULT_TIME_PER_TURN, [
             Validators.required,
