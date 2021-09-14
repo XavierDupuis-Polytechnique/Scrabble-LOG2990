@@ -1,5 +1,7 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
@@ -7,7 +9,6 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
-import { Board } from '@app/GameLogic/game/board';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -18,7 +19,7 @@ export class Game {
     board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
-    isEnded: boolean = false;
+    avs: ActionValidatorService = new ActionValidatorService();
 
     constructor(
         public timePerTurn: number,
@@ -101,7 +102,12 @@ export class Game {
     // TODO implement action execute
     private endOfTurn(action: Action) {
         this.timer.stop();
-        action.execute(this);
+
+        const passTurnAction = new PassTurn(this.getActivePlayer());
+        console.log(passTurnAction);
+        this.avs.validateAction(passTurnAction, this);
+
+        // action.execute(this);
         console.log('end of turn');
         if (this.isEndOfGame()) {
             this.onEndOfGame();
