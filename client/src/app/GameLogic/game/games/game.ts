@@ -48,7 +48,7 @@ export class Game {
 
     onEndOfGame() {
         console.log('Game ended');
-        
+
         this.pointCalculator.endOfGamePointdeduction(this);
         // TODO: Afficher les lettres restantes
         for (const player of this.getWinner()) {
@@ -90,6 +90,7 @@ export class Game {
 
     // TODO implement action execute
     private endOfTurn(action: Action) {
+        this.timer.stop();
         action.execute(this);
         console.log('end of turn');
         if (this.isEndOfGame()) {
