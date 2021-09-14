@@ -23,8 +23,6 @@ export class Game {
         this.drawGameLetters();
         this.pickFirstPlayer();
         this.startTurn();
-        this.isEndOfGame();
-        this.onEndOfGame();
     }
 
     nextPlayer() {

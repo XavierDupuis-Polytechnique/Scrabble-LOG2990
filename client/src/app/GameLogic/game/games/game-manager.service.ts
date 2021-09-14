@@ -30,6 +30,7 @@ export class GameManagerService {
         if (!this.game) {
             throw Error('No game created yet');
         }
+        console.log('GAME STARTED');
         this.game.start();
     }
 
