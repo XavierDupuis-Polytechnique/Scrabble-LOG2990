@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { GameLetter } from '@app/GameLogic/game/game-letter';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 
 @Component({
     selector: 'app-horse',
@@ -7,5 +7,5 @@ import { GameLetter } from '@app/GameLogic/game/game-letter';
     styleUrls: ['./horse.component.scss'],
 })
 export class HorseComponent {
-    playerRack: GameLetter[];
+    playerRack: Letter[];
 }
