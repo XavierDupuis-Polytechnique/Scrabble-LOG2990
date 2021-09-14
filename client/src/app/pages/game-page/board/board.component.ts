@@ -13,7 +13,6 @@ export class BoardComponent {
 
     constructor(private boardService: BoardService) {
         this.board = this.boardService.board;
-        this.boardService.board.grid[0][0].letterO.char = 'A';
     }
 
     increaseFont(): void {
