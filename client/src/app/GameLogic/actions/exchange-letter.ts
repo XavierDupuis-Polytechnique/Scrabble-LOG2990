@@ -25,6 +25,6 @@ export class ExchangeLetter extends Action {
         }
         this.player.letterRack = newLetterRack;
         console.log(this.player.letterRack);
-        //TODO: Display letterRack
+        // TODO: Display letterRack
     }
 }

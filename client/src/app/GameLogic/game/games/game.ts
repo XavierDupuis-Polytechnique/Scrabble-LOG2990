@@ -48,7 +48,7 @@ export class Game {
 
     onEndOfGame() {
         console.log('Game ended');
-        
+
         this.pointCalculator.endOfGamePointdeduction(this);
         // TODO: Afficher les lettres restantes
         for (const player of this.getWinner()) {
