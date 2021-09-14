@@ -4,8 +4,10 @@ import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
+import { Board } from '@app/GameLogic/game/board';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -13,11 +15,19 @@ export class Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
+    board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
     isEnded: boolean = false;
 
-    constructor(public timePerTurn: number, private timer: TimerService, private pointCalculator: PointCalculatorService) {}
+    constructor(
+        public timePerTurn: number,
+        private timer: TimerService,
+        private pointCalculator: PointCalculatorService,
+        private boardService: BoardService,
+    ) {
+        this.boardService.board = this.board;
+    }
 
     start(): void {
         this.drawGameLetters();

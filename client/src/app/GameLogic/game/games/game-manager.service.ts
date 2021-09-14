@@ -5,6 +5,7 @@ import { BotService } from '@app/GameLogic/player/bot.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { BoardService } from '@app/services/board.service';
 import { Game } from './game';
 import { GameSettings } from './game-settings.interface';
 
@@ -17,7 +18,7 @@ export class GameManagerService {
     constructor(private timer: TimerService, private pointCalculator: PointCalculatorService) {}
 
     createGame(gameSettings: GameSettings): void {
-        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator);
+        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, new BoardService());
         // create players
         this.game.letterBag = new LetterBag();
         const playerName = gameSettings.playerName;
