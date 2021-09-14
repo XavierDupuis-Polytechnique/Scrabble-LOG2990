@@ -1,6 +1,7 @@
 .chat {
     width     : 100%;
     resize    : none;
+    size: 25%;
     box-sizing: border-box;
 }
 
@@ -18,8 +19,9 @@
 }
 
 .systemMessage {
-    color: red;
-    forced-color-adjust: red;
+    color: red !important;
+    font: red !important ;
+    font-family: cursive;
 }
 
 .playerMessage {

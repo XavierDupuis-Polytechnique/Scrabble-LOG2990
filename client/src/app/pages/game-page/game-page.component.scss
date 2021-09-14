@@ -21,7 +21,9 @@ app-info-box{
 app-chat-box{
     grid-area: Chat;
     border-style: solid;
-    
+    width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 app-board{
     grid-area: Board;
