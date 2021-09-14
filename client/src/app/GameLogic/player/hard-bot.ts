@@ -1,2 +1,1 @@
-export class HardBot {
-}
+export class HardBot {}

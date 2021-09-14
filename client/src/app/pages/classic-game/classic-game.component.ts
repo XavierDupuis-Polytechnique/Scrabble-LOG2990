@@ -11,10 +11,7 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
 export class ClassicGameComponent {
     @ViewChild('gameSettingsForm') gameFormComponent: NewSoloGameFormComponent;
     hideSoloGameForm: boolean = true;
-    constructor(
-        private router: Router,
-        private gameManager: GameManagerService
-    ) {}
+    constructor(private router: Router, private gameManager: GameManagerService) {}
 
     openSoloGameForm() {
         this.hideSoloGameForm = false;
@@ -26,7 +23,7 @@ export class ClassicGameComponent {
 
     startSoloGame() {
         const gameSettings = this.gameFormComponent.settings;
-        this.gameManager.createGame(gameSettings)
+        this.gameManager.createGame(gameSettings);
         this.router.navigate(['/game']);
     }
 }

@@ -4,13 +4,13 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { CanvasDrawerService } from './canvas-drawer.service';
 
 describe('Service: CanvasDrawer', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [CanvasDrawerService]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [CanvasDrawerService],
+        });
     });
-  });
 
-  it('should ...', inject([CanvasDrawerService], (service: CanvasDrawerService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should ...', inject([CanvasDrawerService], (service: CanvasDrawerService) => {
+        expect(service).toBeTruthy();
+    }));
 });

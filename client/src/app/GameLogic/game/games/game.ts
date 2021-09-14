@@ -1,7 +1,6 @@
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
-import { LetterBag } from '../letter-bag';
-import { TimerService } from '../timer/timer.service';
-
 
 export class Game {
     static maxConsecutivePass = 6;
@@ -11,15 +10,14 @@ export class Game {
     consecutivePass: number;
     isEnded: boolean = false;
 
-    constructor(
-        public timePerTurn: number,
-        private timer: TimerService
-    ){ }
+    constructor(public timePerTurn: number, private timer: TimerService) {}
 
     start(): void {
         this.drawGameLetters();
         this.pickFirstPlayer();
         this.startTurn();
+        this.isEndOfGame();
+        this.onEndOfGame();
     }
 
     private pickFirstPlayer() {
@@ -42,22 +40,24 @@ export class Game {
         timerEnd$.subscribe(this.endOfTurn());
         // TODO merge with player.action$ observable
     }
-    
-    private endOfTurn(){
+
+    private endOfTurn() {
         return () => {
             console.log('end of turn');
             this.nextPlayer();
             this.startTurn();
-        }
+        };
     }
 
-    nextPlayer() {
+    private nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
-    isEndOfGame() {
-        return 0; //this.letterBag.gameLetters.length === 0 || this.consecutivePass === Game.maxConsecutivePass;
+    private isEndOfGame() {
+        return 0; // this.letterBag.gameLetters.length === 0 || this.consecutivePass === Game.maxConsecutivePass;
     }
 
-    onEndOfGame() {}
+    private onEndOfGame() {
+        return;
+    }
 }

@@ -4,7 +4,7 @@ const NUM_TILE_FAKE = 16;
 const NUM_TILE = 15;
 const paddingValue = 0.004;
 const asciiStartPos = 65;
-//const pourcentageOffset = 0.5;
+// const pourcentageOffset = 0.5;
 @Injectable({
     providedIn: 'root',
 })

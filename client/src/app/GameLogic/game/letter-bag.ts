@@ -1,7 +1,7 @@
 import { GameLetter } from './game-letter';
 
 export class LetterBag {
-    static GameLettersLetters = [
+    static gameLetters = [
         'A',
         'B',
         'C',
@@ -39,9 +39,9 @@ export class LetterBag {
     gameLetters: GameLetter[] = [];
 
     constructor() {
-        for (let letterIndex = 0; letterIndex < LetterBag.GameLettersLetters.length; letterIndex++) {
+        for (let letterIndex = 0; letterIndex < LetterBag.gameLetters.length; letterIndex++) {
             for (let count = 0; count < LetterBag.gameLettersCount[letterIndex]; count++) {
-                this.gameLetters.push(new GameLetter(LetterBag.GameLettersLetters[letterIndex], LetterBag.gameLettersValue[letterIndex]));
+                this.gameLetters.push(new GameLetter(LetterBag.gameLetters[letterIndex], LetterBag.gameLettersValue[letterIndex]));
             }
         }
         this.displayNumberGameLettersLeft();

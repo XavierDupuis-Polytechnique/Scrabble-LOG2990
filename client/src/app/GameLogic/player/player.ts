@@ -1,11 +1,12 @@
+import { Action } from '@app/GameLogic/actions/action';
+import { GameLetter } from '@app/GameLogic/game/game-letter';
 import { Subject } from 'rxjs';
-import { Action } from '../actions/action';
-import { GameLetter } from '../game/game-letter';
 
 export class Player {
     static defaultName = 'QWERTY';
-    points: number = 0;
+    action$: Subject<Action> = new Subject();
 
+    points: number = 0;
     name: string = Player.defaultName;
     isActive: boolean;
     letterRack: GameLetter[];
@@ -23,6 +24,4 @@ export class Player {
     displayGameLetters(): void {
         console.log(this.letterRack);
     }
-
-    action$: Subject<Action> = new Subject();
 }
