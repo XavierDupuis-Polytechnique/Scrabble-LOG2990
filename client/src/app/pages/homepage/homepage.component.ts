@@ -20,7 +20,7 @@ export class HomepageComponent implements OnInit {
         this.gms.createGame(settings);
         this.gms.startGame();
         const player = this.gms.game.getActivePlayer();
-        const lettersToExchange = [...player.letterRack]
+        const lettersToExchange = [...player.letterRack];
         player.action$.next(new ExchangeLetter(player, lettersToExchange));
         console.log(this.gms.game);
 

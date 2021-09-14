@@ -1,7 +1,7 @@
-import { Letter } from '@app/GameLogic/game/letter';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 
 export class Tile {
-    letterO: Letter = new Letter();
+    letterObject: Letter = { char: ' ', value: 0 };
     letterMultiplicator: number;
     wordMultiplicator: number;
 
