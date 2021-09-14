@@ -19,7 +19,7 @@ describe('Board test', () => {
     it('Board default value', () => {
         board.grid.forEach((row) => {
             row.forEach((tile) => {
-                tile.letterO.letter = ' ';
+                tile.letterObject.char = ' ';
                 tile.letterMultiplicator = 1;
                 tile.wordMultiplicator = 1;
             });
