@@ -12,13 +12,13 @@ export class ExchangeLetter extends Action {
         console.log(this.player.name, 'exchanged letters');
         console.log('Letters to exchanged: ', this.lettersToExchange);
 
-        let newLetters: Letter[];
+        
         try {
             game.letterBag.drawGameLetters(this.lettersToExchange.length);
         } catch (e) {
             throw e;
         }
-        newLetters = game.letterBag.drawGameLetters(this.lettersToExchange.length);
+        const newLetters: Letter[] = game.letterBag.drawGameLetters(this.lettersToExchange.length);
 
         const exchangeLetterSet = new Set(this.lettersToExchange);
         const newLetterRack: Letter[] = [];
