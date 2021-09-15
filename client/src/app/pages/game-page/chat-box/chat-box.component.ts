@@ -24,7 +24,7 @@ export class ChatBoxComponent {
 
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
 
-    sendChat() {
+    sendMessage() {
         if (!this.messageValid) {
             return;
         }
