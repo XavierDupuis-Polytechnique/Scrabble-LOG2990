@@ -4,6 +4,8 @@ mat-grid-tile {
 }
 
 mat-grid-list {
+    display: flex;
+    justify-content: center;
     // border: 2px solid black;
 }
 app-tile {
@@ -19,7 +21,12 @@ app-tile {
     background-color: rgb(129, 82, 63);
 }
 .zoomPolice {
-    display: inline-flex;
-    width: 35%;
+    // font-size: 80%;
+    // margin-left: 75%;
+    // margin-top: 1%;
+    // width: 25%;
+    // height: 5%;
+    border-radius: 3%;
+    background-color: rgb(235, 235, 235);
     // TODO : ajuster zoom
 }

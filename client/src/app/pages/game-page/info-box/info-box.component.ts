@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 
 @Component({
     selector: 'app-info-box',
@@ -6,15 +7,12 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./info-box.component.scss'],
 })
 export class InfoBoxComponent implements OnInit {
-    public timerLeft: any;
     //TODO:Feed avec PlayerService
     myName = 'Player1';
     myScore = 55;
     activePlayer = 'Bot';
-    constructor(/*private readonly timer: TimerService*/) {}
+    constructor(public readonly timer: TimerService) {}
     ngOnInit() {
-        // this.timerLeft = this.timer.source;
-        // console.log('Info-box: ', this.timerLeft);
         // TODO: doesn't feed timer value..
     }
 }

@@ -9,8 +9,8 @@
         'Board Board Board Chat'
         'Horse Horse Horse Chat';
     height: fit-content;
-    // max-width: 100%; //TODO:SPECIFER
-    // max-height: 75%;
+    max-width: 100%; //TODO:SPECIFER
+    max-height: 100%;
 }
 
 app-info-box {
@@ -28,7 +28,7 @@ app-chat-box {
 }
 app-board {
     grid-area: Board;
-    padding: 1%;
+    padding: 3%; //TODO:Tochange
     border: 2px solid black;
     // border-style: solid;
 }
