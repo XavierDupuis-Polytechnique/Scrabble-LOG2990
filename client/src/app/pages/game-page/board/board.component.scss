@@ -1,5 +1,6 @@
 mat-grid-tile {
-    background-color: rgb(224, 236, 245);
+    // background-color: rgb(224, 236, 245);
+    background-color: rgb(240, 231, 216);
 }
 
 mat-grid-list {
@@ -12,8 +13,10 @@ app-tile {
 .boardContainer {
     display: inherit;
     padding: 2%;
-    border: 10px solid rgb(56, 47, 36);
-    background-color: rgb(95, 69, 44);
+    // border: 10px solid rgb(56, 47, 36);
+    border: 10px solid rgb(16, 0, 7);
+    // background-color: rgb(95, 69, 44);
+    background-color: rgb(129, 82, 63);
 }
 .zoomPolice {
     display: inline-flex;

@@ -8,7 +8,9 @@
         'Board Board Board Info'
         'Board Board Board Chat'
         'Horse Horse Horse Chat';
-    height: 100%;
+    height: fit-content;
+    // max-width: 100%; //TODO:SPECIFER
+    // max-height: 75%;
 }
 
 app-info-box {

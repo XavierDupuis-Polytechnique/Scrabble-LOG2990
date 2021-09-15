@@ -1,5 +1,8 @@
 mat-grid-tile {
-    border: 1px solid;
+    border: 2px solid rgb(0, 0, 0);
+    font-weight: 700;
+    border-radius: 10%;
+    background-color: rgb(240, 231, 216);
 }
 
 mat-grid-list {
@@ -9,5 +12,14 @@ mat-grid-list {
     height: 90%;
     // width: 90%;
 }
-
-
+sub {
+    padding-top: 15%;
+    padding-left: 5%;
+}
+.rackContainer {
+    background-color: rgb(129, 82, 63);
+    border: 1% solid black;
+    margin: 3%;
+    padding: 2%;
+    // max-width: 80%;
+}
