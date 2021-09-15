@@ -6,23 +6,22 @@ import { DebugElement } from '@angular/core';
 import { ChatMessagesComponent } from './chat-messages.component';
 
 describe('ChatMessagesComponent', () => {
-  let component: ChatMessagesComponent;
-  let fixture: ComponentFixture<ChatMessagesComponent>;
+    let component: ChatMessagesComponent;
+    let fixture: ComponentFixture<ChatMessagesComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ChatMessagesComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [ChatMessagesComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ChatMessagesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ChatMessagesComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

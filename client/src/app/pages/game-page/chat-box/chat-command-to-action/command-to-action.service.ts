@@ -2,28 +2,16 @@ import { Injectable } from '@angular/core';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root',
 })
 export class CommandToActionService {
+    constructor() {}
 
-  constructor() { }
+    DebugCommand() {}
 
+    HelpCommand() {}
 
-  DebugCommand() {
-
-  }
-
-  HelpCommand() {
-
-  }
-  
-  PlaceCommand() {
-
-  }
-  ExchangeCommand(lettersToExchange: Letter[]) {
-
-  }
-  PassCommand() {
-
-  }
+    PlaceCommand() {}
+    ExchangeCommand(lettersToExchange: Letter[]) {}
+    PassCommand() {}
 }
