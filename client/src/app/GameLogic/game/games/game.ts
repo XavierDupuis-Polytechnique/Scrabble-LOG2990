@@ -70,6 +70,7 @@ export class Game {
     doAction(action: Action) {
         if (action instanceof PassTurn) {
             this.consecutivePass += 1;
+            this.nextPlayer();
         } else {
             this.consecutivePass = 0;
         }

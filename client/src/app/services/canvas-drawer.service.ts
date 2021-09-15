@@ -106,10 +106,10 @@ export class CanvasDrawerService {
         this.gridContext.fillStyle = 'black';
         // set font size for letter
         this.gridContext.font = `${this.letterFontSize}px Arial`;
-        this.gridContext.fillText(this.board.grid[i][j].letterO.char, xPos, yPos + this.letterFontSize);
+        this.gridContext.fillText(this.board.grid[i][j].letterObject.char, xPos, yPos + this.letterFontSize);
         // set font size for value
         this.gridContext.font = `${this.valueFontSize}px Arial`;
-        const tileValue = this.board.grid[i][j].letterO.char === '' ? '' : this.board.grid[i][j].letterO.value;
+        const tileValue = this.board.grid[i][j].letterObject.char === '' ? '' : this.board.grid[i][j].letterObject.value;
         const xOffset = this.gridContext.measureText(tileValue.toString()).width;
         this.gridContext.fillText(tileValue.toString(), xPos + this.tileWidth - xOffset, yPos + this.yOffset);
     }
