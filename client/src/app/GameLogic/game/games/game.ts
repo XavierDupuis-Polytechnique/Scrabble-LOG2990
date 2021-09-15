@@ -1,5 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
@@ -8,7 +9,7 @@ import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { first, mapTo } from 'rxjs/operators';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -20,6 +21,7 @@ export class Game {
     activePlayerIndex: number;
     consecutivePass: number = 0;
     avs: ActionValidatorService = new ActionValidatorService();
+    turnNumber: number = 0;
 
     constructor(
         public timePerTurn: number,
@@ -59,7 +61,6 @@ export class Game {
 
     onEndOfGame() {
         console.log('Game ended');
-
         this.pointCalculator.endOfGamePointdeduction(this);
         this.displayLettersLeft();
         for (const player of this.getWinner()) {
@@ -71,7 +72,6 @@ export class Game {
     doAction(action: Action) {
         if (action instanceof PassTurn) {
             this.consecutivePass += 1;
-            console.log('consecutivePass : ', this.consecutivePass);
         } else {
             this.consecutivePass = 0;
         }
@@ -92,15 +92,30 @@ export class Game {
     }
 
     /// ////////////////////////// ///
+    getRandomInt(max: number) {
+        return Math.floor(Math.random() * max);
+    }
+
     private simulatePlayerInput(g: Game) {
+        const fakeLetter = { char: 'A', value: 1 };
+        g.getActivePlayer().letterRack[0] = fakeLetter;
+        const exchangeLetterAction = new ExchangeLetter(g.getActivePlayer(), [fakeLetter]);
         const passTurnAction = new PassTurn(g.getActivePlayer());
-        console.log(passTurnAction);
-        g.avs.validateAction(passTurnAction, g);
+        if (this.getRandomInt(2) === 1) {
+            console.log('exchangeLetterAction ', exchangeLetterAction.id);
+            g.avs.validateAction(exchangeLetterAction, g);
+        } else {
+            console.log('passTurnAction ', exchangeLetterAction.id);
+            g.avs.validateAction(passTurnAction, g);
+        }
     }
     /// ////////////////////////// ///
 
     private startTurn() {
+        this.turnNumber++;
         /// ////////////////////////// ///
+        console.log(' ');
+        console.log('--- Turn No. : ', this.turnNumber, ' ---');
         setTimeout(() => {
             this.simulatePlayerInput(this);
         }, 2500);
@@ -111,13 +126,12 @@ export class Game {
         console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
-        turnEnds$.subscribe((action) => this.endOfTurn(action));
+        turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
     }
 
     // TODO implement action execute
     private endOfTurn(action: Action) {
         this.timer.stop();
-
         action.perform(this);
         console.log('end of turn');
         if (this.isEndOfGame()) {
