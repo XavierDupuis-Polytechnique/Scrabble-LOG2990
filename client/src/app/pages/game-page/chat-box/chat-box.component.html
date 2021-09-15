@@ -6,10 +6,10 @@
     </div>
     <input 
         matInput
-        [formControl]="messageForm"
         type='text'
-        maxlength="512"
         class='chat'
+        [formControl]="messageForm"
+        autocomplete="off"
         (keyup.enter)="sendChat()">
     <button mat-button [disabled]="!messageValid" (click)='sendChat()'>Send</button>
 </div>
