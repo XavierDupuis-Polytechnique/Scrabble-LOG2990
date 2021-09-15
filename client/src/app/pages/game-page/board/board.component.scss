@@ -1,8 +1,22 @@
-mat-grid-tile{
-    border: 1px solid;
+mat-grid-tile {
+    background-color: rgb(224, 236, 245);
 }
 
+mat-grid-list {
+    // border: 2px solid black;
+}
 app-tile {
     height: 100%;
     width: 100%;
+}
+.boardContainer {
+    display: inherit;
+    padding: 2%;
+    border: 10px solid rgb(56, 47, 36);
+    background-color: rgb(95, 69, 44);
+}
+.zoomPolice {
+    display: inline-flex;
+    width: 35%;
+    // TODO : ajuster zoom
 }
