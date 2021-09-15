@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 export abstract class Player {
     static defaultName = 'QWERTY';
     action$: Subject<Action> = new Subject();
+    nextAction: Action;
 
     points: number = 0;
     name: string = Player.defaultName;

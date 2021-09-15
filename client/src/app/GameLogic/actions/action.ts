@@ -4,10 +4,10 @@ import { Player } from '@app/GameLogic/player/player';
 export abstract class Action {
     constructor(readonly player: Player) {}
 
-    execute(game: Game): void {
+    perform(game: Game): void {
         game.doAction(this);
-        this.insideExecute(game);
+        this.execute(game);
     }
 
-    protected abstract insideExecute(game: Game): void;
+    protected abstract execute(game: Game): void;
 }

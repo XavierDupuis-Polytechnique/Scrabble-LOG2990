@@ -71,6 +71,7 @@ export class Game {
     doAction(action: Action) {
         if (action instanceof PassTurn) {
             this.consecutivePass += 1;
+            console.log('consecutivePass : ', this.consecutivePass);
         } else {
             this.consecutivePass = 0;
         }
@@ -90,7 +91,21 @@ export class Game {
         }
     }
 
+    /// ////////////////////////// ///
+    private simulatePlayerInput(g: Game) {
+        const passTurnAction = new PassTurn(g.getActivePlayer());
+        console.log(passTurnAction);
+        g.avs.validateAction(passTurnAction, g);
+    }
+    /// ////////////////////////// ///
+
     private startTurn() {
+        /// ////////////////////////// ///
+        setTimeout(() => {
+            this.simulatePlayerInput(this);
+        }, 2500);
+        /// ////////////////////////// ///
+
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
         console.log('its', activePlayer, 'turns');
@@ -103,11 +118,7 @@ export class Game {
     private endOfTurn(action: Action) {
         this.timer.stop();
 
-        const passTurnAction = new PassTurn(this.getActivePlayer());
-        console.log(passTurnAction);
-        this.avs.validateAction(passTurnAction, this);
-
-        // action.execute(this);
+        action.perform(this);
         console.log('end of turn');
         if (this.isEndOfGame()) {
             this.onEndOfGame();

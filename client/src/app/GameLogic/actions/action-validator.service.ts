@@ -11,35 +11,44 @@ import { PlaceLetter } from './place-letter';
 export class ActionValidatorService {
     // constructor() {}
 
+    validateTurn(action: Action, game: Game): boolean {
+        console.log(game.getActivePlayer() === action.player);
+        return game.getActivePlayer() === action.player;
+    }
     validateAction(action: Action, game: Game) {
-        console.log('action', action);
-        switch (typeof action) {
-            case typeof PlaceLetter:
-                this.validatePlaceLetter(action, game);
-                break;
-            case typeof ExchangeLetter:
-                this.validateExchangeLetter(action, game);
-                break;
-            case typeof PassTurn:
-                this.validatePassTurn(action, game);
-                break;
-            default:
-                throw new Error("Action couldn't be parsed");
+        if (this.validateTurn(action, game)) {
+            switch (true) {
+                case action instanceof PlaceLetter:
+                    this.validatePlaceLetter(action, game);
+                    break;
+                case action instanceof ExchangeLetter:
+                    this.validateExchangeLetter(action, game);
+                    break;
+                case action instanceof PassTurn:
+                    this.validatePassTurn(action, game);
+                    break;
+                case action instanceof Action:
+                default:
+                    throw new Error("Action couldn't be parsed");
+            }
         }
     }
     validatePlaceLetter(action: Action, game: Game) {
-        const castAction = <PlaceLetter>action;
+        const castAction = action as PlaceLetter;
         console.log(castAction.player);
-        throw new Error('Method not implemented.');
     }
     validateExchangeLetter(action: Action, game: Game) {
-        const castAction = <ExchangeLetter>action;
+        const castAction = action as ExchangeLetter;
         console.log(castAction.player);
-        throw new Error('Method not implemented.');
     }
     validatePassTurn(action: Action, game: Game) {
-        const castAction = <PassTurn>action;
-        console.log(castAction.player);
-        throw new Error('Method not implemented.');
+        const castAction = action as PassTurn;
+        const player = castAction.player;
+        // player.nextAction = action;
+        console.log('PassTurn for ', player.name, ' was validated');
+        this.sendValidAction(action);
+    }
+    sendValidAction(action: Action) {
+        action.player.action$.next(action);
     }
 }
