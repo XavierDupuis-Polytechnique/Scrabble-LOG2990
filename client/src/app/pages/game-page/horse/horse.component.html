@@ -1,6 +1,8 @@
-<!-- <mat-grid-list cols="7" [rowHeight]="'fit'" gutterSize="15px">
-    <mat-grid-tile *ngFor="let letter of playerRack">
-        {{letter.letter}}
-        <sub>{{letter.value}}</sub>
-    </mat-grid-tile>
-</mat-grid-list> -->
+<div class="rackContainer">
+    <mat-grid-list cols="7" rowHeight="1:1" gutterSize="8px">
+        <mat-grid-tile *ngFor="let letter of playerRack">
+            {{ letter.char }}
+            <sub>{{ letter.value }}</sub>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>
