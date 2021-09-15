@@ -1,11 +1,11 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
-import { LetterBag } from '../letter-bag';
-import { TimerService } from '../timer/timer.service';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -54,7 +54,6 @@ export class Game {
         for (const player of this.getWinner()) {
             console.log('Congratulations!', player.name, 'is the winner.');
         }
-        console.log(this.getWinner());
     }
 
     doAction(action: Action) {
@@ -100,19 +99,19 @@ export class Game {
         this.nextPlayer();
         this.startTurn();
     }
-    
-    private displayLettersLeft(){
-        console.log("Fin de partie - lettres restantes");
+
+    private displayLettersLeft() {
+        console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            if(!player.letterRackIsEmpty){
+            if (!player.letterRackIsEmpty) {
                 // TODO Envoyer dans la boite de communication
-                console.log(player.name, ":", player.letterRack);
+                console.log(player.name, ':', player.letterRack);
             }
         }
     }
-    
+
     private getWinner(): Player[] {
-        let highestScore = -1;
+        let highestScore = Number.MIN_SAFE_INTEGER;
         let winners: Player[] = [];
         for (const player of this.players) {
             if (player.points === highestScore) {

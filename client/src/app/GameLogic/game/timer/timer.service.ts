@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, Subscription, timer } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 
 const TIMER_STEP = 1000; // one second
 @Injectable({
@@ -8,6 +8,7 @@ const TIMER_STEP = 1000; // one second
 })
 export class TimerService {
     source: Observable<number>;
+    timeLeft: Observable<number>;
     readonly timePerStep: number = TIMER_STEP;
     end$$: Subscription;
 
@@ -16,6 +17,7 @@ export class TimerService {
         const end$: Subject<void> = new Subject();
         const numberOfStep = Math.ceil(interval / TIMER_STEP);
         this.source = timer(TIMER_STEP, TIMER_STEP);
+        this.timeLeft = this.source.pipe(map((step) => interval - (step + 1) * this.timePerStep));
         this.end$$ = this.source.pipe(takeUntil(end$)).subscribe((step) => {
             console.log((step + 1) * this.timePerStep);
             if (step >= numberOfStep - 1) {
@@ -27,5 +29,6 @@ export class TimerService {
 
     stop() {
         this.end$$.unsubscribe();
+        this.source = new Subject();
     }
 }
