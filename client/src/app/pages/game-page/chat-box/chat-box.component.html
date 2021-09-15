@@ -1,12 +1,16 @@
 <div class='chatContainer'>
     <div #chat class="sharedChat">
         <div *ngFor="let message of messages" >
-            <div id='m{{message.id}}'>{{message.from}} : {{message.content}}</div>
+           {{message.from}} : {{message.content}}
         </div>
     </div>
-
-    <input #userEntry matInput [(ngModel)]='userInput' type='text' value="" maxlength="512" class='chat'
+    <input 
+        matInput
+        [formControl]="messageForm"
+        [(ngModel)]='userInput'
+        type='text'
+        maxlength="512"
+        class='chat'
         (keyup.enter)="sendChat()">
-
-    <button mat-button (click)='sendChat()'> Jhonny</button>
+    <button mat-button [disabled]="!messageValid" (click)='sendChat()'>Send</button>
 </div>
