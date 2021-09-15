@@ -1,6 +1,6 @@
 // import { TestBed } from '@angular/core/testing';
 
-import { Board } from './board';
+import { Board, wordMultiplicator } from './board';
 
 describe('Board test', () => {
     let board: Board;
@@ -16,15 +16,9 @@ describe('Board test', () => {
         });
     });
 
-    it('Board default value', () => {
-        board.grid.forEach((row) => {
-            row.forEach((tile) => {
-                tile.letterO.letter = ' ';
-                tile.letterMultiplicator = 1;
-                tile.wordMultiplicator = 1;
-            });
+    it('Board default value at right place', () => {
+        wordMultiplicator.forEach((elem) => {
+            expect(board.grid[elem.x - 1][elem.y.charCodeAt(0)].wordMultiplicator).toBe(elem.v);
         });
     });
-
-    // Todo check default multiplicator in right place
 });
