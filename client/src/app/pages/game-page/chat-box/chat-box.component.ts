@@ -39,9 +39,10 @@ export class ChatBoxComponent implements OnInit {
         this.messages.push(newMessage);
         const messageId = newMessage.id;
         this.cdRef.detectChanges();
+        
         if (messageId !== null) {
             console.log('query', 'm'+messageId);
-            const elem = document.querySelector('m'+messageId);
+            const elem = document.querySelector('#m'+messageId);
             console.log(elem);
             elem?.scrollIntoView(true);
         }
