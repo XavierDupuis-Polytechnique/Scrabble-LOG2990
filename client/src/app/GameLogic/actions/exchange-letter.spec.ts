@@ -1,17 +1,19 @@
 import { User } from '@app/GameLogic/player/user';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { ExchangeLetter } from './exchange-letter';
+import { Game } from '@app/GameLogic/game/games/game';
+import { BoardService } from '@app/services/board.service';
+import { Player } from '@app/GameLogic/player/player';
 
 describe('ExchangeLetter', () => {
-    let gameManager: GameManagerService;
-
+    let game: Game;
+    const player: Player = new User('Tim');
     beforeEach(() => {
-        gameManager = new GameManagerService(new TimerService(), new PointCalculatorService());
-        gameManager.createGame({ playerName: 'Tim', timePerTurn: 6000, botDifficulty: 'beginner' });
-        gameManager.startGame();
+        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService());
+        game.players[0] = player;
+        game.start();
     });
 
     it('should create an instance', () => {
@@ -19,16 +21,17 @@ describe('ExchangeLetter', () => {
         expect(new ExchangeLetter(new User('Tim'), letters)).toBeTruthy();
     });
 
-    it('should change letters', () => {
-        const initialLetterRack: Letter[] = gameManager.game.players[0].letterRack;
+    it('letter rack should be different when exchanging letters', () => {
+        const initialLetterRack: Letter[] = player.letterRack;
         const lettersToExchange: Letter[] = initialLetterRack.slice(0, 3);
-        const exchangeAction = new ExchangeLetter(gameManager.game.players[0], lettersToExchange);
+        const exchangeAction = new ExchangeLetter(player, lettersToExchange);
 
-        exchangeAction.execute(gameManager.game);
+        exchangeAction.execute(game);
 
-        const finalLetterRack: Letter[] = gameManager.game.players[0].letterRack;
+        const finalLetterRack: Letter[] = player.letterRack;
         initialLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
         finalLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
+
         expect(initialLetterRack !== finalLetterRack).toBeTrue();
     });
 });

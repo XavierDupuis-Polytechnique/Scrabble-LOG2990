@@ -1,12 +1,13 @@
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { BoardService } from '@app/services/board.service';
 import { PlaceLetter, PlacementSetting } from './place-letter';
 
 describe('PlaceLetter', () => {
-    let gameManager: GameManagerService;
     const letterToPlace: Letter[] = [
         { char: 'A', value: 1 },
         { char: 'L', value: 1 },
@@ -19,21 +20,26 @@ describe('PlaceLetter', () => {
         y: 0,
         direction: 'H',
     };
+    let game: Game;
+    const player1: Player = new User('Tim');
+    const player2: Player = new User('George');
     beforeEach(() => {
-        gameManager = new GameManagerService(new TimerService(), new PointCalculatorService());
-        gameManager.createGame({ playerName: 'Tim', botDifficulty: 'beginner', timePerTurn: 6000 });
-        gameManager.startGame();
+        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService());
+        game.players.push(player1);
+        game.players.push(player2);
+
+        game.start();
     });
 
     it('should create an instance', () => {
-        expect(new PlaceLetter(new User('Tim'), letterToPlace, placement)).toBeTruthy();
+        expect(new PlaceLetter(game.getActivePlayer(), letterToPlace, placement)).toBeTruthy();
     });
 
-    it('should place letter', () => {
-        const placeAction = new PlaceLetter(gameManager.game.players[0], letterToPlace, placement);
-        placeAction.execute(gameManager.game);
+    it('should place letter at right place', () => {
+        const placeAction = new PlaceLetter(game.getActivePlayer(), letterToPlace, placement);
+        placeAction.execute(game);
         for (let i = 0; i < letterToPlace.length; i++) {
-            expect(gameManager.game.board.grid[i][0].letterObject.char).toBe(letterToPlace[i].char);
+            expect(game.board.grid[i][0].letterObject.char).toBe(letterToPlace[i].char);
         }
     });
 });

@@ -53,7 +53,7 @@ export class LetterBag {
     }
 
     displayNumberGameLettersLeft() {
-        console.log('There are ' + this.gameLetters.length + ' GameLetters left');
+        // console.log('There are ' + this.gameLetters.length + ' GameLetters left');
     }
 
     drawEmptyRackLetters(): Letter[] {

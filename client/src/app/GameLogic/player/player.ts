@@ -26,7 +26,7 @@ export abstract class Player {
     }
 
     displayGameLetters(): void {
-        console.log(this.letterRack);
+        // console.log(this.letterRack);
     }
 
     get letterRackIsEmpty(): boolean {
