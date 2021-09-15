@@ -118,7 +118,7 @@ export class Game {
     private endOfTurn(action: Action) {
         this.timer.stop();
 
-        action.perform(this);
+        action.execute(this);
         console.log('end of turn');
         if (this.isEndOfGame()) {
             this.onEndOfGame();

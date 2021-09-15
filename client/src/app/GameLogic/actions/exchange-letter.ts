@@ -8,7 +8,7 @@ export class ExchangeLetter extends Action {
     constructor(player: Player, readonly lettersToExchange: Letter[]) {
         super(player);
     }
-    protected execute(game: Game) {
+    protected perform(game: Game) {
         console.log(this.player.name, 'exchanged letters');
         console.log('Letters to exchanged: ', this.lettersToExchange);
 

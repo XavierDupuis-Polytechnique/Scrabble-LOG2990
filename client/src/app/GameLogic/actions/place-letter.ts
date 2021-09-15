@@ -3,7 +3,7 @@ import { Action } from './action';
 
 export class PlaceLetter extends Action {
     // TODO implement placeLetter action
-    protected execute(game: Game) {
+    protected perform(game: Game) {
         return;
     }
 }

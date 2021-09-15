@@ -3,7 +3,7 @@ import { Action } from './action';
 
 export class PassTurn extends Action {
     // TODO implement PassTurn action
-    protected execute(game: Game) {
+    protected perform(game: Game) {
         console.log(this.player.name, 'passed his turn');
         return;
     }
