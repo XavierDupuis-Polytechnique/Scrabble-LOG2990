@@ -1,13 +1,12 @@
 <div class='chatContainer'>
     <div #chat class="sharedChat">
-        <div *ngFor="let message of messages" >
+        <div *ngFor="let message of messages$ | async" >
            {{message.from}} : {{message.content}}
         </div>
     </div>
     <input 
         matInput
         [formControl]="messageForm"
-        [(ngModel)]='userInput'
         type='text'
         maxlength="512"
         class='chat'

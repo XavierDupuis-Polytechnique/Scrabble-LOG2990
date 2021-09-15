@@ -1,8 +1,9 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Message } from '@app/GameLogic/messages/message.interface';
-// import { CommandParserService } from './command-parser/command-parser.service';
-//import { MatInput } from '@angular/material/input';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { Observable } from 'rxjs';
+
 const NOT_ONLY_SPACE_RGX = '.*[^ ].*';
 @Component({
     selector: 'app-chat-box',
@@ -16,27 +17,26 @@ export class ChatBoxComponent {
     // Avoir une autre fonction linker/binder aver le placement etc...
     @ViewChild('chat') chat: ElementRef;
 
-    messages: Message[] = [{ content: "test1", from: "player1" }];
-    messageForm: FormControl = new FormControl('', [
-        Validators.required,
-        Validators.pattern(NOT_ONLY_SPACE_RGX),
-    ]);
-    userInput: string;
+    messageForm: FormControl = new FormControl('', [Validators.required, Validators.pattern(NOT_ONLY_SPACE_RGX)]);
 
-    constructor(private cdRef: ChangeDetectorRef) {}
+    constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
 
     sendChat() {
         if (!this.messageValid) {
             return;
         }
 
-        const content = this.userInput;
-        const newMessage = { content, from: "player1"};
-        this.messages.push(newMessage);
+        const content = this.messageForm.value;
+        const newMessage = { content, from: 'player1' };
+        this.messageService.receiveMessage(newMessage);
 
         this.messageForm.reset();
         this.cdRef.detectChanges();
         this.scrollDownChat();
+    }
+
+    get messages$(): Observable<Message[]> {
+        return this.messageService.messages$;
     }
 
     get messageValid(): boolean {
@@ -44,7 +44,7 @@ export class ChatBoxComponent {
     }
 
     scrollDownChat() {
-        const chatNativeElement = this.chat.nativeElement
+        const chatNativeElement = this.chat.nativeElement;
         chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
     }
 }
