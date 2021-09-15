@@ -1,5 +1,11 @@
 <div class="justified">
-    <button mat-button [routerLink]="['/']">Jouer une partie en solo</button>
+    <button mat-button (click)="openSoloGameForm()">Jouer une partie en solo</button>
     <button mat-button [routerLink]="['/']">Créer une partie multijoueur</button>
     <button mat-button [routerLink]="['/']">Joindre une partie multijoueur</button>
 </div>
+<app-new-solo-game-form
+    #gameSettingsForm
+    (playClick)="startSoloGame()"
+    (cancelClick)="closeSoloGameForm()"
+    [ngClass]="{'hidden': hideSoloGameForm}"
+></app-new-solo-game-form>

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TimerService } from './timer.service';
+import { PointCalculatorService } from './point-calculator.service';
 
-describe('TimerService', () => {
-    let service: TimerService;
+describe('PointCalculatorService', () => {
+    let service: PointCalculatorService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(TimerService);
+        service = TestBed.inject(PointCalculatorService);
     });
 
     it('should be created', () => {

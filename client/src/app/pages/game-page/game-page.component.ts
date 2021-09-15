@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 
 @Component({
     selector: 'app-game-page',
@@ -6,14 +8,14 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnInit {
-    boardHeight: number;
-    boardWidth: number;
+    constructor(private gameManager: GameManagerService, private router: Router) {}
 
-    ngOnInit(): void {
-        const myBoard = document.getElementById('gridContainer');
-        if (myBoard?.clientWidth !== undefined && myBoard.clientWidth !== undefined) {
-            this.boardHeight = myBoard?.clientHeight;
-            this.boardWidth = myBoard?.clientWidth;
+    ngOnInit() {
+        try {
+            this.gameManager.startGame();
+        } catch (e) {
+            alert("Pas de partie crée pour l'instant");
+            this.router.navigate(['/']);
         }
     }
 }
