@@ -53,6 +53,12 @@ export class ActionValidatorService {
             }
         }
 
+        if (castAction.lettersToExchange.length > game.letterBag.gameLetters.length) {
+            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Invalid exchange : not enough letters in LetterBag');
+            return;
+        }
+
         console.log('Valid exchange');
         this.sendValidAction(action);
     }
