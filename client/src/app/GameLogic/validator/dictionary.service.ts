@@ -23,7 +23,7 @@ export class DictionaryService {
         });
     }
 
-    isWordValid(word: string): boolean {
+    isWordInDict(word: string): boolean {
         return this.dynamicWordList.has(word);
     }
 
@@ -41,7 +41,7 @@ export class DictionaryService {
     //TODO to be removed
 
     // let dictService = new DictionaryService();
-    // console.log(dictService.isWordValid('test'));
+    // console.log(dictService.isWordInDict('test'));
     // console.log('test1');
     // let test1 = dictService.wordGen('test');
     // let test2 = dictService.wordGen('allo');
