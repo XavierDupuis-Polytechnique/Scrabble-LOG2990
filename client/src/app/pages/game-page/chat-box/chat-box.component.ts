@@ -5,19 +5,22 @@ import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable } from 'rxjs';
 
 const NOT_ONLY_SPACE_RGX = '.*[^ ].*';
+const MAX_MESSAGE_LENGTH = 512;
+
 @Component({
     selector: 'app-chat-box',
     templateUrl: './chat-box.component.html',
     styleUrls: ['./chat-box.component.scss'],
 })
-
-// Mettre un form pour desctiver le
-// boutton s'il n y a rien d'entree
 export class ChatBoxComponent {
     // Avoir une autre fonction linker/binder aver le placement etc...
     @ViewChild('chat') chat: ElementRef;
 
-    messageForm: FormControl = new FormControl('', [Validators.required, Validators.pattern(NOT_ONLY_SPACE_RGX)]);
+    messageForm: FormControl = new FormControl('', [
+        Validators.required,
+        Validators.maxLength(MAX_MESSAGE_LENGTH),
+        Validators.pattern(NOT_ONLY_SPACE_RGX),
+    ]);
 
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
 
