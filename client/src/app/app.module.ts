@@ -46,7 +46,16 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         LeaderboardComponent,
         HeaderBarComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule,  ReactiveFormsModule, GameLogicModule],
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        GameLogicModule,
+    ],
     providers: [],
     bootstrap: [AppComponent],
 })
