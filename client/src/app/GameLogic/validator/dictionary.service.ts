@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
-import { ValidWord } from '../player/valid-word';
+import { ValidWord } from '@app/GameLogic/player/valid-word';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DictionaryService {
     dynamicWordList: Set<string> = new Set();
-    //loadedDictionaries: Dictionary[] = [];
+    // loadedDictionaries: Dictionary[] = [];
 
     constructor() {
-        console.log(data);
-        let dict = <Dictionary>data;
+        // console.log(data);
+        const dict = data as Dictionary;
         this.addWords(dict);
-        //this.loadedDictionaries.push(dict);
+        // this.loadedDictionaries.push(dict);
     }
 
     addWords(dictionary: Dictionary) {
@@ -28,8 +28,8 @@ export class DictionaryService {
     }
 
     wordGen(partWord: string): ValidWord[] {
-        let dict = <Dictionary>data;
-        let wordList: ValidWord[] = [];
+        const dict = data as Dictionary;
+        const wordList: ValidWord[] = [];
         dict.words.forEach((word) => {
             if (word.includes(partWord)) {
                 wordList.push(new ValidWord(word));
@@ -38,7 +38,7 @@ export class DictionaryService {
         return wordList;
     }
 
-    //TODO to be removed
+    // TODO to be removed
 
     // let dictService = new DictionaryService();
     // console.log(dictService.isWordValid('test'));
