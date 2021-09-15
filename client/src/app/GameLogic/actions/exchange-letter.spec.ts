@@ -23,7 +23,9 @@ describe('ExchangeLetter', () => {
         const initialLetterRack: Letter[] = gameManager.game.players[0].letterRack;
         const lettersToExchange: Letter[] = initialLetterRack.slice(0, 3);
         const exchangeAction = new ExchangeLetter(gameManager.game.players[0], lettersToExchange);
+
         exchangeAction.execute(gameManager.game);
+
         const finalLetterRack: Letter[] = gameManager.game.players[0].letterRack;
         initialLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
         finalLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));

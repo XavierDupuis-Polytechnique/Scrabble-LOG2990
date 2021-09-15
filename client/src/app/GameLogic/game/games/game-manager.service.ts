@@ -20,11 +20,10 @@ export class GameManagerService {
     createGame(gameSettings: GameSettings): void {
         this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, new BoardService());
         // create players
-        this.game.letterBag = new LetterBag();
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
-        this.allocatePlayers(this.game, players);
+        this.allocatePlayers(players);
     }
 
     startGame(): void {
@@ -44,7 +43,7 @@ export class GameManagerService {
         return [player, bot];
     }
 
-    private allocatePlayers(game: Game, players: Player[]) {
-        game.players = players;
+    private allocatePlayers(players: Player[]) {
+        this.game.players = players;
     }
 }
