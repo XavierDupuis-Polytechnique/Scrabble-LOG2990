@@ -8,11 +8,11 @@ export abstract class Action {
         this.id = Action.ACTION_ID++;
     }
 
-    perform(game: Game): void {
+    execute(game: Game): void {
         console.log('ACTION #', this.id, ' ', this, ' executed');
         game.doAction(this);
-        this.execute(game);
+        this.perform(game);
     }
 
-    protected abstract execute(game: Game): void;
+    protected abstract perform(game: Game): void;
 }
