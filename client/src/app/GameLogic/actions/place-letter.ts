@@ -10,16 +10,31 @@ export interface PlacementSetting {
 }
 
 export class PlaceLetter extends Action {
-    letterToPlace: Letter[];
+    lettersToPlace: Letter[];
     placement: PlacementSetting;
-    constructor(player: Player, letterToPlace: Letter[], placement: PlacementSetting) {
+
+    constructor(player: Player, lettersToPlace: Letter[], placement: PlacementSetting) {
         super(player);
-        this.letterToPlace = letterToPlace;
+        this.lettersToPlace = lettersToPlace;
         this.placement = placement;
     }
 
-    // TODO implement placeLetter action
     protected perform(game: Game) {
-        return;
+        let x = this.placement.x;
+        let y = this.placement.y;
+        const direction = this.placement.direction;
+        const startTile = game.board.grid[x][y];
+        let currentTile = startTile;
+        let currentLetterIndex = 0;
+        while (currentLetterIndex < this.lettersToPlace.length) {
+            if (currentTile.letterObject == null || currentTile.letterObject.char === ' ') {
+                currentTile.letterObject = this.lettersToPlace[currentLetterIndex++];
+            }
+            currentTile = this.isDirectionVertical(direction) ? game.board.grid[x++][y] : game.board.grid[x][y++];
+        }
+    }
+
+    private isDirectionVertical(direction: string): boolean {
+        return direction.charAt(0).toLowerCase() === 'v';
     }
 }
