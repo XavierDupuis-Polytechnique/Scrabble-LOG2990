@@ -7,7 +7,7 @@ import { Tile } from '@app/GameLogic/game/tile';
     styleUrls: ['./tile.component.scss'],
 })
 export class TileComponent implements OnInit {
-    @Input() tile: Tile;
+    @Input() tile: Tile = new Tile();
 
     class: string = '';
 
