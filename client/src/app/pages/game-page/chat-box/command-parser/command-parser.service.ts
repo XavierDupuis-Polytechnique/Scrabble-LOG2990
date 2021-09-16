@@ -1,18 +1,14 @@
 import { Injectable } from '@angular/core';
-// import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-import { Letter } from 'src/app/GameLogic/game/letter.interface';
+import { Message } from '@app/classes/message';
+import { CommandType } from '@app/GameLogic/commands/command.interface';
 // import { Player } from '@app/GameLogic/player/player';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
-enum Command {
-    Debug = '!debug',
-    Help = '!aide',
-    Place = '!placer',
-    Exchange = '!échanger',
-    Pass = '!passer',
-}
+// import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { Letter } from 'src/app/GameLogic/game/letter.interface';
+
 // Placeholder
 // player: Player;
-
+// TODO: change place to game logic
 @Injectable({
     providedIn: 'root',
 })
@@ -34,38 +30,37 @@ export class CommandParserService {
         return;
     }
 
-    verifyCommand(input: string, Message: HTMLParagraphElement): [HTMLParagraphElement, boolean] {
+    verifyCommand(input: string, message: Message): void {
         // Couper l'entry par espace pour verifier s'il s'agit d'une commande
         const toVerify = input.split(' ');
         console.log(toVerify);
         const commandCondition = toVerify[0];
-        if (commandCondition[0] == '!') {
-            Message.style.color = 'red';
-            Message.classList.add('systemMessage');
-            Message.innerHTML = 'Commande: ';
-
-            switch (commandCondition) {
-                case Command.Place: {
-                    return [Message, true];
-                }
-                case Command.Exchange: {
-                    this.stringToLetter(toVerify[1]);
-                    // const comExchange: ExchangeLetter = new ExchangeLetter(player, this.stringToLetter(toVerify[1]));
-                    return [Message, true];
-                }
-                case Command.Pass: {
-                    return [Message, true];
-                }
-                case Command.Debug: {
-                    return [Message, true];
-                }
-                case Command.Help: {
-                    return [Message, true];
-                }
-                default: {
-                    Message.innerHTML += 'invalide';
-                    return [Message, true];
-                }
+        const isCommand = commandCondition[0];
+        if (!isCommand) {
+            return;
+        }
+        // TODO: send to commandTranslator after creating command (command is in gamelogic use ctlr+f)
+        switch (commandCondition) {
+            case CommandType.Place: {
+                // return [Message, true];
+            }
+            case CommandType.Exchange: {
+                this.stringToLetter(toVerify[1]);
+                // const comExchange: ExchangeLetter = new ExchangeLetter(player, this.stringToLetter(toVerify[1]));
+                // return [Message, true];
+            }
+            case CommandType.Pass: {
+                // return [Message, true];
+            }
+            case CommandType.Debug: {
+                // return [Message, true];
+            }
+            case CommandType.Help: {
+                // return [Message, true];
+            }
+            default: {
+                Message.innerHTML += 'invalide';
+                return [Message, true];
             }
         }
         return [Message, false];
