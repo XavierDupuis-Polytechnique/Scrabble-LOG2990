@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Board } from '@app/GameLogic/game/board';
+import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
 @Component({
@@ -29,5 +29,9 @@ export class BoardComponent {
 
     getFont(): string {
         return `font-size: ${this.fontSize}px;`;
+    }
+
+    convertASCIIToChar(code: number): string {
+        return String.fromCharCode(ASCII_CODE + code);
     }
 }
