@@ -8,6 +8,7 @@ import { HardBot } from './hard-bot';
 @Injectable({
     providedIn: 'root',
 })
+// TODO: Change name to botCreator
 export class BotService {
     createBot(playerName: string, botDifficulty: string, boardService: BoardService, dictionaryService: DictionaryService): Bot {
         if (botDifficulty === 'hard') {
