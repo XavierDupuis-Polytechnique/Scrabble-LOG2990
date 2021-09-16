@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Action } from '@app/GameLogic/actions/action';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '../game/letter.interface';
-import { Action } from './action';
-import { ExchangeLetter } from './exchange-letter';
-import { PassTurn } from './pass-turn';
-import { PlaceLetter } from './place-letter';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 
 @Injectable({
     providedIn: 'root',

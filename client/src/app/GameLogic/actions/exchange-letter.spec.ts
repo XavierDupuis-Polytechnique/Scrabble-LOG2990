@@ -1,9 +1,9 @@
-import { User } from '@app/GameLogic/player/user';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { ExchangeLetter } from './exchange-letter';
 
 describe('ExchangeLetter', () => {
     let gameManager: GameManagerService;

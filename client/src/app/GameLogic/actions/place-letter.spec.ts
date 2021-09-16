@@ -1,9 +1,9 @@
+import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { PlaceLetter, PlacementSetting } from './place-letter';
 
 describe('PlaceLetter', () => {
     let gameManager: GameManagerService;

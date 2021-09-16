@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { Game } from '@app/GameLogic/game/games/game';
+import { Letter } from '@app/GameLogic/game/letter.interface';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { Player } from '@app/GameLogic/player/player';
+import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
-import { Game } from '../game/games/game';
-import { Letter } from '../game/letter.interface';
-import { TimerService } from '../game/timer/timer.service';
-import { EasyBot } from '../player/easy-bot';
-import { Player } from '../player/player';
-import { User } from '../player/user';
-import { PointCalculatorService } from '../point-calculator/point-calculator.service';
-import { ActionValidatorService } from './action-validator.service';
-import { ExchangeLetter } from './exchange-letter';
-import { PassTurn } from './pass-turn';
-import { PlaceLetter } from './place-letter';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
