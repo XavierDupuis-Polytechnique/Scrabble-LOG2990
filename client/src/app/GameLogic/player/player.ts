@@ -1,21 +1,27 @@
-import { GameLetter } from '../game/game-letter';
+import { Action } from '@app/GameLogic/actions/action';
+import { Letter } from '@app/GameLogic/game/letter.interface';
+import { Subject } from 'rxjs';
 
-export class Player {
+export abstract class Player {
     static defaultName = 'QWERTY';
+    action$: Subject<Action> = new Subject();
 
-    name: string;
+    points: number = 0;
+    name: string = Player.defaultName;
     isActive: boolean;
-    letterRack: GameLetter[];
+    letterRack: Letter[];
 
     constructor(name?: string) {
-        typeof name === 'undefined' ? (this.name = Player.defaultName) : (this.name = name);
+        if (name) {
+            this.name = name;
+        }
     }
 
-    hello(): void {
-        console.log('hello from Player ' + this.name);
-    }
+    abstract play(): void;
+    abstract exchange(): void;
+    abstract pass(): void;
 
-    displayGameLetters(): void {
-        console.log(this.letterRack);
+    get letterRackIsEmpty(): boolean {
+        return this.letterRack.length === 0;
     }
 }

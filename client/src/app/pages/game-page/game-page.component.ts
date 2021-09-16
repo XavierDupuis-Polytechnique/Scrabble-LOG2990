@@ -8,10 +8,7 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent implements OnInit {
-    constructor(
-        private gameManager: GameManagerService,
-        private router: Router
-    ) {}
+    constructor(private gameManager: GameManagerService, private router: Router) {}
 
     ngOnInit() {
         try {

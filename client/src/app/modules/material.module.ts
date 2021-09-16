@@ -9,6 +9,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+// import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
 // import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -41,6 +43,8 @@ const modules = [
     // MatDatepickerModule,
     MatDialogModule,
     MatExpansionModule,
+    // MatFormFieldModule,
+    MatGridListModule,
     MatFormFieldModule,
     // MatGridListModule,
     MatIconModule,
