@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
@@ -30,8 +29,8 @@ export class CommandTranslatorService {
                 return this.createPassTurn(user);
 
             case CommandType.Place:
-                return this.createPlaceLetter(user);
-
+                // return this.createPlaceLetter(user); //TODO: uncomment
+                return this.createPassTurn(user);
             default:
                 throw Error('this command dont generate an action');
         }
@@ -47,7 +46,7 @@ export class CommandTranslatorService {
         return new ExchangeLetter(user, lettersToExchange);
     }
 
-    private createPlaceLetter(user: User): PlaceLetter {
-        return new PlaceLetter(user);
-    }
+    // private createPlaceLetter(user: User): PlaceLetter {
+    //     return new PlaceLetter(user);
+    // }
 }
