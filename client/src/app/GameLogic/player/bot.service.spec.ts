@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { BotCreatorService } from './bot-creator.service';
 
-describe('BotService', () => {
+describe('BotCreatorService', () => {
     let service: BotCreatorService;
 
     beforeEach(() => {

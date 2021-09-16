@@ -29,9 +29,10 @@ export abstract class Bot extends Player {
         const validWordList: ValidWord[] = [];
         const startingX = 0;
         const startingY = 0;
+        const startingDirection = false;
         // let isTimesUp = false;
 
-        this.boardCrawler(startingX, startingY, grid, validWordList);
+        this.boardCrawler(startingX, startingY, grid, validWordList, startingDirection);
 
         // grid[1][1].letterObject;
 
@@ -39,13 +40,35 @@ export abstract class Bot extends Player {
     }
 
     // TODO
-    private boardCrawler(startingX: number, startingY: number, grid: Tile[][], validWordList: ValidWord[]) {
-        const x = startingX;
-        const y = startingY;
-
-        // stuff
+    private boardCrawler(startingX: number, startingY: number, grid: Tile[][], validWordList: ValidWord[], isVerticalFlag: boolean) {
+        let x = startingX;
+        let y = startingY;
+        const endOfBoard = 14;
+        const nextBox = 1;
+        const startOfBoard = 0;
+        let isVertical = isVerticalFlag;
 
         this.hookUtil(x, y, grid, validWordList);
+
+        // HookUtil
+        let letterInBox = grid[x][y].letterObject.char;
+        if (letterInBox !== ' ') {
+            while (letterInBox !== ' ') {}
+        }
+
+        if (x < endOfBoard) {
+            x += nextBox;
+            this.boardCrawler(x, y, grid, validWordList, isVertical);
+        } else if (y < endOfBoard && x === endOfBoard) {
+            x = startOfBoard;
+            y += nextBox;
+            this.boardCrawler(x, y, grid, validWordList, isVertical);
+        } else if (y === endOfBoard && x === endOfBoard && !isVertical) {
+            x = startOfBoard;
+            y = startOfBoard;
+            isVertical = true;
+        }
+        return;
 
         // this.boardCrawler(newX, newY, grid, validWordList);
     }
@@ -59,6 +82,8 @@ export abstract class Bot extends Player {
     wordValidator(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
 
     // TODO Remove commented console.log/code and make private
+    // TODO Edge case board is empty
+    // TODO Edge case forming words with multiple sets of placed letters
     // Check if it's possible to form the word with the currently available letters
     regexCheck(dictWord: string, placedWord: string): boolean {
         // let testBot = new EasyBot('Jimmy');
