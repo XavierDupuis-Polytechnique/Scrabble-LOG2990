@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dial
 import { Router } from '@angular/router';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 
 @Component({
     selector: 'app-classic-game',
@@ -10,7 +11,7 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     styleUrls: ['./classic-game.component.scss'],
 })
 export class ClassicGameComponent {
-    gameSettings: NewSoloGameFormComponent;
+    gameSettings: GameSettings;
     dialogRef: MatDialogRef<NewSoloGameFormComponent>;
 
     constructor(private router: Router, private gameManager: GameManagerService, private dialog: MatDialog) {}
