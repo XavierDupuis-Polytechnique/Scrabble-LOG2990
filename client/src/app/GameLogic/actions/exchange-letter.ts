@@ -28,6 +28,5 @@ export class ExchangeLetter extends Action {
         for (const letter of this.lettersToExchange) {
             game.letterBag.addLetter({ ...letter });
         }
-        // TODO: Display letterRack
     }
 }

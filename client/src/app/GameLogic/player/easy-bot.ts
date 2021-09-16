@@ -4,13 +4,13 @@ import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Bot } from './bot';
 
 export class EasyBot extends Bot {
-    static actionProabibility = { Play: 0.8, Exchange: 0.1, Pass: 0.1 };
+    static actionProabibility = { play: 0.8, exchange: 0.1, pass: 0.1 };
 
     randomActionPicker() {
         const randomValue = Math.random();
-        if (randomValue <= EasyBot.actionProabibility.Play) {
+        if (randomValue <= EasyBot.actionProabibility.play) {
             this.play();
-        } else if (randomValue <= EasyBot.actionProabibility.Play + EasyBot.actionProabibility.Exchange) {
+        } else if (randomValue <= EasyBot.actionProabibility.play + EasyBot.actionProabibility.exchange) {
             this.exchange();
         } else {
             this.pass();

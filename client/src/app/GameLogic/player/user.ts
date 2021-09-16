@@ -1,15 +1,9 @@
 import { Player } from './player';
 
 export class User extends Player {
-    constructor(name: string) {
-        super(name);
-    }
+    exchange(): void {}
 
-    hello(): void {
-        console.log('hello from User ' + this.name);
-    }
+    pass(): void {}
 
-    play() {}
-    exchange() {}
-    pass() {}
+    play(): void {}
 }

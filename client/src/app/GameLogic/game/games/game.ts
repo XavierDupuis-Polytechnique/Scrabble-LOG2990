@@ -59,13 +59,14 @@ export class Game {
     }
 
     onEndOfGame() {
-        console.log('Game ended');
+        // console.log('Game ended');
+
         this.pointCalculator.endOfGamePointdeduction(this);
         this.displayLettersLeft();
         for (const player of this.getWinner()) {
             console.log('Congratulations!', player.name, 'is the winner.');
         }
-        console.log(this.getWinner());
+        // console.log(this.getWinner());
     }
 
     doAction(action: Action) {
@@ -85,8 +86,6 @@ export class Game {
     private drawGameLetters() {
         for (const player of this.players) {
             player.letterRack = this.letterBag.drawEmptyRackLetters();
-            player.displayGameLetters();
-            this.letterBag.displayNumberGameLettersLeft();
         }
     }
 
@@ -96,7 +95,7 @@ export class Game {
         console.log('--- Turn No. : ', this.turnNumber, ' ---');
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
-        console.log('its', activePlayer, 'turns');
+        // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
@@ -107,7 +106,7 @@ export class Game {
         this.timer.stop();
 
         action.execute(this);
-        console.log('end of turn');
+        // console.log('end of turn');
         if (this.isEndOfGame()) {
             this.onEndOfGame();
             return;
@@ -117,11 +116,11 @@ export class Game {
     }
 
     private displayLettersLeft() {
-        console.log('Fin de partie - lettres restantes');
+        // console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
             if (!player.letterRackIsEmpty) {
                 // TODO Envoyer dans la boite de communication
-                console.log(player.name, ':', player.letterRack);
+                // console.log(player.name, ':', player.letterRack);
             }
         }
     }

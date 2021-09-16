@@ -1,17 +1,21 @@
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { BoardService } from '@app/services/board.service';
 
 describe('PassTurn', () => {
-    let gameManager: GameManagerService;
-
+    let game: Game;
+    const player1: Player = new User('Tim');
+    const player2: Player = new User('George');
     beforeEach(() => {
-        gameManager = new GameManagerService(new TimerService(), new PointCalculatorService());
-        gameManager.createGame({ playerName: 'Tim', timePerTurn: 6000, botDifficulty: 'beginner' });
-        gameManager.startGame();
+        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService());
+        game.players.push(player1);
+        game.players.push(player2);
+
+        game.start();
     });
 
     it('should create an instance', () => {
@@ -19,10 +23,10 @@ describe('PassTurn', () => {
     });
 
     it('should pass turn', () => {
-        const beforePlayer: Player = gameManager.game.getActivePlayer();
-        const passAction = new PassTurn(new User('Tim'));
-        passAction.execute(gameManager.game);
-        const afterPlayer: Player = gameManager.game.getActivePlayer();
+        const beforePlayer: Player = game.getActivePlayer();
+        const passAction = new PassTurn(game.getActivePlayer());
+        passAction.execute(game);
+        const afterPlayer: Player = game.getActivePlayer();
         expect(beforePlayer.name !== afterPlayer.name).toBeTrue();
     });
 });
