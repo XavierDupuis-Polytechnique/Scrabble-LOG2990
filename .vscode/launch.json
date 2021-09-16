@@ -18,7 +18,7 @@
             "name": "Launch Client With Debug",
             "request": "launch",
             "type": "pwa-chrome",
-            "url": "http://localhost:4200",
+            "url": "http://localhost:9876",
             "webRoot": "${workspaceFolder}/client"
         }
     ]

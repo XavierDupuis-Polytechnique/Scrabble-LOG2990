@@ -20,8 +20,8 @@ export abstract class Bot extends Player {
         return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
     }
 
-    generateWordList(/*board, availableLetter*/): ValidWord[] {
-        //TO DO : a LOT of stuff goes here
+    generateWordList(/* board, availableLetter*/): ValidWord[] {
+        // TO DO : a LOT of stuff goes here
         this.letterRack;
         return [];
     }

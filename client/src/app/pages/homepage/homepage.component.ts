@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent implements OnInit {
-    // game001: Game;
     constructor(/* private gms: GameManagerService*/) {}
     ngOnInit(): void {
         // const settings = {

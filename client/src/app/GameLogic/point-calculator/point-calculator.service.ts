@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Game } from '../game/games/game';
-import { Player } from '../player/player';
+import { Game } from '@app/GameLogic/game/games/game';
+import { Player } from '@app/GameLogic/player/player';
 
 @Injectable({
     providedIn: 'root',

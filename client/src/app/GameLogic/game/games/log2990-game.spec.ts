@@ -1,6 +1,6 @@
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
-import { TimerService } from '../timer/timer.service';
 import { Log2990Game } from './log2990-game';
 
 describe('Log2990Game', () => {
