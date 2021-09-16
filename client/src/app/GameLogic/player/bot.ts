@@ -39,46 +39,123 @@ export abstract class Bot extends Player {
         return validWordList;
     }
 
-    // TODO
+    // TODO Verify if edge case where only one letter is placed works
     private boardCrawler(startingX: number, startingY: number, grid: Tile[][], validWordList: ValidWord[], isVerticalFlag: boolean) {
         let x = startingX;
         let y = startingY;
         const endOfBoard = 14;
-        const nextBox = 1;
         const startOfBoard = 0;
         let isVertical = isVerticalFlag;
-
-        this.hookUtil(x, y, grid, validWordList);
+        let lettersOnLine = '';
 
         // HookUtil
+        this.dictionaryService.wordGen('test');
+        // TODO To be deleted
+
         let letterInBox = grid[x][y].letterObject.char;
+        while (letterInBox === ' ') {
+            if (isVertical) {
+                if (y === endOfBoard) {
+                    break;
+                } else {
+                    y++;
+                    letterInBox = grid[x][y].letterObject.char;
+                }
+            } else {
+                if (x == endOfBoard) {
+                    break;
+                } else {
+                    x++;
+                    letterInBox = grid[x][y].letterObject.char;
+                }
+            }
+        }
         if (letterInBox !== ' ') {
-            while (letterInBox !== ' ') {}
+            let lastLetterOfLine: number;
+            if (isVertical) {
+                let tmpY = endOfBoard;
+                let tmpYLetterInBox = grid[x][tmpY].letterObject.char;
+                while (tmpYLetterInBox === ' ') {
+                    tmpY--;
+                    tmpYLetterInBox = grid[x][tmpY].letterObject.char;
+                }
+                lastLetterOfLine = tmpY;
+                while (y <= lastLetterOfLine) {
+                    lettersOnLine = lettersOnLine.concat(this.emptyCheck(letterInBox));
+                    y++;
+                    letterInBox = grid[x][y].letterObject.char;
+                }
+            } else {
+                let tmpX = endOfBoard;
+                let tmpXLetterInBox = grid[tmpX][y].letterObject.char;
+                while (tmpXLetterInBox === ' ') {
+                    tmpX--;
+                    tmpXLetterInBox = grid[tmpX][y].letterObject.char;
+                }
+                lastLetterOfLine = tmpX;
+                while (x <= lastLetterOfLine) {
+                    lettersOnLine = lettersOnLine.concat(this.emptyCheck(letterInBox));
+                    x++;
+                    letterInBox = grid[x][y].letterObject.char;
+                }
+            }
+
+            // TODO Check dict for list of words here
+            // TODO Check if the words found can be placed with the available letters here
+            // TODO Check if the words that can be made are valid / crosscheck / scoring of the move here
         }
 
-        if (x < endOfBoard) {
-            x += nextBox;
+        if (isVertical && x < endOfBoard) {
+            x++;
+            y = startOfBoard;
             this.boardCrawler(x, y, grid, validWordList, isVertical);
-        } else if (y < endOfBoard && x === endOfBoard) {
+        } else if (isVertical && x === endOfBoard) return;
+        if (!isVertical && y < endOfBoard) {
             x = startOfBoard;
-            y += nextBox;
+            y++;
             this.boardCrawler(x, y, grid, validWordList, isVertical);
-        } else if (y === endOfBoard && x === endOfBoard && !isVertical) {
+        } else if (!isVertical && x === endOfBoard) {
             x = startOfBoard;
             y = startOfBoard;
             isVertical = true;
+            this.boardCrawler(x, y, grid, validWordList, isVertical);
         }
-        return;
+
+        // if (x < endOfBoard) {
+        //     x++;
+        //     this.boardCrawler(x, y, grid, validWordList, isVertical);
+        // } else if (y < endOfBoard && x === endOfBoard) {
+        //     x = startOfBoard;
+        //     y++;
+        //     this.boardCrawler(x, y, grid, validWordList, isVertical);
+        // } else if (y === endOfBoard && x === endOfBoard && !isVertical) {
+        //     x = startOfBoard;
+        //     y = startOfBoard;
+        //     isVertical = true;
+        // }
+        // return;
 
         // this.boardCrawler(newX, newY, grid, validWordList);
     }
 
-    // TODO Might not be necessary
-    private hookUtil(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {
-        this.dictionaryService.wordGen('test');
+    private emptyCheck(letterInBox: string): string {
+        if (letterInBox !== ' ') {
+            return letterInBox;
+        } else {
+            return '-';
+        }
     }
 
-    // TODO And make private
+    // TODO Might not be necessary
+    // private lineParser(direction: number, grid: Tile[][]): string {
+    //     let lettersOnLine = '';
+
+    //     this.dictionaryService.wordGen('test');
+
+    //     return lettersOnLine;
+    // }
+
+    // TODO Make private
     wordValidator(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
 
     // TODO Remove commented console.log/code and make private
