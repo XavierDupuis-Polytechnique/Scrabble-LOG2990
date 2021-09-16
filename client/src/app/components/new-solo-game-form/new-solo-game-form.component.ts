@@ -37,9 +37,11 @@ export class NewSoloGameFormComponent {
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
 
-    
+    // constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSoloGameFormComponent>) {}
+
     playGame(): void {
         this.playClick.emit();
+        console.log('Emit'); //TODO
     }
 
     cancel(): void {
@@ -50,7 +52,9 @@ export class NewSoloGameFormComponent {
         });
         this.cancelClick.next();
     }
-
+    // close() {
+    //     this.dialogRef.close(this.soloGameSettingsForm);
+    // }
     get formValid() {
         return this.soloGameSettingsForm.valid;
     }
