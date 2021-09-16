@@ -12,20 +12,18 @@ import { PlaceLetter } from './place-letter';
 export class ActionValidatorService {
     // constructor() {}
 
-    validateTurn(action: Action, game: Game): boolean {
-        return game.getActivePlayer() === action.player;
-    }
-    validateAction(action: Action, game: Game) {
+    validateAction(action: Action, game: Game): boolean {
+        let valid = false;
         if (this.validateTurn(action, game)) {
             switch (true) {
                 case action instanceof PlaceLetter:
-                    this.validatePlaceLetter(action as PlaceLetter, game);
+                    valid = this.validatePlaceLetter(action as PlaceLetter, game);
                     break;
                 case action instanceof ExchangeLetter:
-                    this.validateExchangeLetter(action as ExchangeLetter, game);
+                    valid = this.validateExchangeLetter(action as ExchangeLetter, game);
                     break;
                 case action instanceof PassTurn:
-                    this.validatePassTurn(action as PassTurn, game);
+                    valid = this.validatePassTurn(action as PassTurn, game);
                     break;
                 case action instanceof Action:
                 default:
@@ -33,13 +31,20 @@ export class ActionValidatorService {
             }
         } else {
             console.log('Error : Action performed by ', action.player.name, ' was not during its turn');
+            return false;
         }
+        return valid;
     }
-    validatePlaceLetter(action: PlaceLetter, game: Game) {
+
+    private validateTurn(action: Action, game: Game): boolean {
+        return game.getActivePlayer() === action.player;
+    }
+    private validatePlaceLetter(action: PlaceLetter, game: Game): boolean {
         const castAction = action as PlaceLetter;
         castAction.id;
+        return false;
     }
-    validateExchangeLetter(action: ExchangeLetter, game: Game) {
+    private validateExchangeLetter(action: ExchangeLetter, game: Game): boolean {
         const castAction = action as ExchangeLetter;
 
         const exchangeLetters = new Set<Letter>(castAction.lettersToExchange);
@@ -49,27 +54,28 @@ export class ActionValidatorService {
             if (!rackLetters.has(letter)) {
                 // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
                 console.log('Invalid exchange : not all letters in letterRack');
-                return;
+                return false;
             }
         }
 
         if (castAction.lettersToExchange.length > game.letterBag.gameLetters.length) {
             // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
             console.log('Invalid exchange : not enough letters in LetterBag');
-            return;
+            return false;
         }
 
-        console.log('Valid exchange');
+        // console.log('Valid exchange');
         this.sendValidAction(action);
+        return true;
     }
-    validatePassTurn(action: PassTurn, game: Game) {
-        // const castAction = action as PassTurn;
+    private validatePassTurn(action: PassTurn, game: Game) {
         const player = action.player;
-        // player.nextAction = action;
+        // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
         console.log('PassTurn for ', player.name, ' was validated');
         this.sendValidAction(action);
+        return true;
     }
-    sendValidAction(action: Action) {
+    private sendValidAction(action: Action) {
         // TODO: change with player service;
         action.player.action$.next(action);
     }

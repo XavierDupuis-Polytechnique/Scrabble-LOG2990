@@ -1,24 +1,108 @@
 import { TestBed } from '@angular/core/testing';
-import { GameManagerService } from '../game/games/game-manager.service';
-import { GameSettings } from '../game/games/game-settings.interface';
+import { BoardService } from '@app/services/board.service';
+import { Game } from '../game/games/game';
+import { Letter } from '../game/letter.interface';
 import { TimerService } from '../game/timer/timer.service';
+import { EasyBot } from '../player/easy-bot';
+import { Player } from '../player/player';
+import { User } from '../player/user';
 import { PointCalculatorService } from '../point-calculator/point-calculator.service';
 import { ActionValidatorService } from './action-validator.service';
+import { ExchangeLetter } from './exchange-letter';
+import { PassTurn } from './pass-turn';
+import { PlaceLetter } from './place-letter';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
+    let game: Game;
+    let p1User: User;
+    let p2Bot: EasyBot;
+    let currentPlayer: Player;
+    let lettersToExchange: Letter[];
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ActionValidatorService);
-        const gms = new GameManagerService(new TimerService(), new PointCalculatorService());
-        const sgs: GameSettings = { timePerTurn: 30000, playerName: 'testPlayer', botDifficulty: 'easy' };
-        gms.createGame(sgs);
+        game = new Game(30000, new TimerService(), new PointCalculatorService(), new BoardService());
+        p1User = new User('testUser');
+        p2Bot = new EasyBot('testUser');
+        game.players.push(p1User);
+        game.players.push(p2Bot);
+        game.start();
+        currentPlayer = game.getActivePlayer();
     });
 
-    it('should be created', () => {
-        expect(service).toBeTruthy();
+    it('should be referenced', () => {
+        expect(new ActionValidatorService()).toEqual(service);
     });
+
+    /// TURN TESTS ///
+    it('should validate a valid PassTurn', () => {
+        const action = new PassTurn(currentPlayer);
+        expect(service.validateAction(action, game)).toBeTruthy();
+    });
+
+    it('should invalidate an invalid PassTurn because the player tried to perform an action outside of its turn', () => {
+        const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
+        const action = new PassTurn(otherPlayer);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+
+    it('should invalidate an invalid ExchangeLetter because the player tried to perform an action outside of its turn', () => {
+        const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
+        const action = new ExchangeLetter(otherPlayer, []);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+
+    it('should invalidate an invalid PlaceLetter because the player tried to perform an action outside of its turn', () => {
+        const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
+        const action = new PlaceLetter(otherPlayer, [], { x: 0, y: 0, direction: '' });
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+    /// ////////////////// ///
+
+    /// EXCHANGE LETTER TESTS ///
+    it('should validate a valid ExchangeLetter because 7 letters from the player rack can be exchanged', () => {
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
+        expect(service.validateAction(action, game)).toBeTruthy();
+    });
+
+    it('should validate a valid ExchangeLetter because less than 7 letters from the player rack can be exchanged', () => {
+        lettersToExchange = [currentPlayer.letterRack[4], currentPlayer.letterRack[6]];
+        const action = new ExchangeLetter(currentPlayer, lettersToExchange);
+        expect(service.validateAction(action, game)).toBeTruthy();
+    });
+
+    it('should validate a valid ExchangeLetter because the game letterBag has enough letters', () => {
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 10);
+        lettersToExchange = [...currentPlayer.letterRack].splice(0, 1);
+        const action = new ExchangeLetter(currentPlayer, lettersToExchange);
+        expect(service.validateAction(action, game)).toBeTruthy();
+    });
+
+    it('should validate a valid ExchangeLetter because a player 7 letters can be exchanged', () => {
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
+        expect(service.validateAction(action, game)).toBeTruthy();
+    });
+
+    it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have letters', () => {
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length);
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+
+    it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have enough letters', () => {
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 2); // 102 - 100 = 2 letters remaining
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 2)); // 7 - 2 = 5 letters to exchange
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+
+    it('should invalidate an invalid ExchangeLetter because a player cannot exchange letters not in its letterRack', () => {
+        lettersToExchange = [{ char: 'NOT_A_LETTER', value: 666 }];
+        const action = new ExchangeLetter(currentPlayer, lettersToExchange);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+    /// ////////////////// ///
 });
 
 /*
