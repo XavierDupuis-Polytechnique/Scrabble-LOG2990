@@ -4,7 +4,6 @@ import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 import { Game } from './game';
 import { GameSettings } from './game-settings.interface';
@@ -14,13 +13,12 @@ import { GameSettings } from './game-settings.interface';
 })
 export class GameManagerService {
     game: Game;
-    BotCreatorService: BotCreatorService;
+
     constructor(
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
         private botCreatorService: BotCreatorService,
-        private dictionaryService: DictionaryService,
     ) {}
 
     createGame(gameSettings: GameSettings): void {
@@ -44,7 +42,7 @@ export class GameManagerService {
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
         const player = new User(playerName);
-        const bot = this.botCreatorService.createBot(playerName, botDifficulty, this.boardService, this.dictionaryService);
+        const bot = this.botCreatorService.createBot(playerName, botDifficulty);
         return [player, bot];
     }
 
