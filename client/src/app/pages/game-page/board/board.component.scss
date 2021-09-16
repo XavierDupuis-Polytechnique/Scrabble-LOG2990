@@ -1,8 +1,32 @@
-mat-grid-tile{
-    border: 1px solid;
+mat-grid-tile {
+    // background-color: rgb(224, 236, 245);
+    background-color: rgb(240, 231, 216);
 }
 
+mat-grid-list {
+    display: flex;
+    justify-content: center;
+    // border: 2px solid black;
+}
 app-tile {
     height: 100%;
     width: 100%;
+}
+.boardContainer {
+    display: inherit;
+    padding: 2%;
+    // border: 10px solid rgb(56, 47, 36);
+    border: 10px solid rgb(16, 0, 7);
+    // background-color: rgb(95, 69, 44);
+    background-color: rgb(129, 82, 63);
+}
+.zoomPolice {
+    // font-size: 80%;
+    // margin-left: 75%;
+    // margin-top: 1%;
+    // width: 25%;
+    // height: 5%;
+    border-radius: 3%;
+    background-color: rgb(235, 235, 235);
+    // TODO : ajuster zoom
 }
