@@ -6,6 +6,7 @@ import { HardBot } from './hard-bot';
 @Injectable({
     providedIn: 'root',
 })
+// TODO: Change name to botCreator
 export class BotService {
     constructor() {}
 
