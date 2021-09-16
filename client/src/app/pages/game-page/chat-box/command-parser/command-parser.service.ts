@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Message } from '@app/classes/message';
-import { CommandType } from '@app/GameLogic/commands/command.interface';
+import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 // import { Player } from '@app/GameLogic/player/player';
-import { LetterBag } from '@app/GameLogic/game/letter-bag';
-// import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-import { Letter } from 'src/app/GameLogic/game/letter.interface';
+import { Message } from '@app/GameLogic/messages/message.interface';
+
+// Placeholder
+// player: Player;
 
 // Placeholder
 // player: Player;
@@ -15,54 +15,22 @@ import { Letter } from 'src/app/GameLogic/game/letter.interface';
 
 // {char: "A", value:"1"}
 export class CommandParserService {
-    constructor() {}
-
-    stringToLetter(letters: string) {
-        const lettersToExchange: Letter[] = [];
-
-        if (letters == null) return;
-        if (letters.length > 0) {
-            for (let charIndex = 0; charIndex < letters.length; charIndex++) {
-                lettersToExchange[charIndex] = { char: letters[charIndex], value: LetterBag.gameLettersValue[letters.charCodeAt(charIndex) - 97] };
-            }
-            return lettersToExchange;
-        }
-        return;
+    createCommand(message: string[], commandType: CommandType): Command {
+        const command = { type: commandType, args: message } as Command;
+        return command;
     }
 
-    verifyCommand(input: string, message: Message): void {
+    verifyCommand(message: Message) {
         // Couper l'entry par espace pour verifier s'il s'agit d'une commande
-        const toVerify = input.split(' ');
-        console.log(toVerify);
+        const toVerify = message.content.split(' ');
         const commandCondition = toVerify[0];
-        const isCommand = commandCondition[0];
-        if (!isCommand) {
-            return;
+        if (commandCondition[0] === '!') {
+            if (Object.values(CommandType).includes(commandCondition as CommandType)) {
+                this.createCommand(toVerify.slice(1), commandCondition as CommandType);
+                return true;
+            }
+            message.content += ' est une commande invalide';
         }
-        // TODO: send to commandTranslator after creating command (command is in gamelogic use ctlr+f)
-        switch (commandCondition) {
-            case CommandType.Place: {
-                // return [Message, true];
-            }
-            case CommandType.Exchange: {
-                this.stringToLetter(toVerify[1]);
-                // const comExchange: ExchangeLetter = new ExchangeLetter(player, this.stringToLetter(toVerify[1]));
-                // return [Message, true];
-            }
-            case CommandType.Pass: {
-                // return [Message, true];
-            }
-            case CommandType.Debug: {
-                // return [Message, true];
-            }
-            case CommandType.Help: {
-                // return [Message, true];
-            }
-            default: {
-                Message.innerHTML += 'invalide';
-                return [Message, true];
-            }
-        }
-        return [Message, false];
+        return false;
     }
 }
