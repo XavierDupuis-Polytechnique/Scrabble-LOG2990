@@ -37,6 +37,7 @@ export class NewSoloGameFormComponent {
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
 
+    
     playGame(): void {
         this.playClick.emit();
     }
