@@ -30,7 +30,7 @@ export class PlaceLetter extends Action {
             if (currentTile.letterObject == null || currentTile.letterObject.char === ' ') {
                 currentTile.letterObject = this.lettersToPlace[currentLetterIndex++];
             }
-            currentTile = this.isDirectionVertical(direction) ? game.board.grid[x++][y] : game.board.grid[x][y++];
+            currentTile = this.isDirectionVertical(direction) ? game.board.grid[x][y++] : game.board.grid[x++][y];
         }
     }
 
