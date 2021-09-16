@@ -7,8 +7,6 @@ import { HardBot } from './hard-bot';
     providedIn: 'root',
 })
 export class BotService {
-    constructor() {}
-
     createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
             return new HardBot(playerName);
