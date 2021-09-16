@@ -21,14 +21,6 @@ export abstract class Player {
     abstract exchange(): void;
     abstract pass(): void;
 
-    hello(): void {
-        console.log('hello from Player ' + this.name);
-    }
-
-    displayGameLetters(): void {
-        // console.log(this.letterRack);
-    }
-
     get letterRackIsEmpty(): boolean {
         return this.letterRack.length === 0;
     }
