@@ -97,6 +97,25 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action, game)).not.toBeTruthy();
     });
 
+    it('should invalidate an invalid ExchangeLetter because a player cannot exchange more of the same letter', () => {
+        currentPlayer.letterRack = [
+            { char: 'A', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'C', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+        ];
+        lettersToExchange = [
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'C', value: 1 },
+            { char: 'D', value: 1 },
+        ];
+        const action = new ExchangeLetter(currentPlayer, lettersToExchange);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+
     it('should invalidate an invalid ExchangeLetter because a player cannot exchange letters not in its letterRack', () => {
         lettersToExchange = [{ char: 'NOT_A_LETTER', value: 666 }];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);

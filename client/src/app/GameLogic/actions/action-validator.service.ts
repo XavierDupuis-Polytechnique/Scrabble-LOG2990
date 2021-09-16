@@ -4,7 +4,6 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 
 @Injectable({
     providedIn: 'root',
@@ -47,14 +46,32 @@ export class ActionValidatorService {
     private validateExchangeLetter(action: ExchangeLetter, game: Game): boolean {
         const castAction = action as ExchangeLetter;
 
-        const exchangeLetters = new Set<Letter>(castAction.lettersToExchange);
-        const rackLetters = new Set<Letter>(castAction.player.letterRack);
+        const exchangeLetters: string[] = [];
+        castAction.lettersToExchange.forEach((value) => {
+            exchangeLetters.push(value.char);
+        });
 
-        for (const letter of exchangeLetters) {
-            if (!rackLetters.has(letter)) {
-                // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-                console.log('Invalid exchange : not all letters in letterRack');
-                return false;
+        const rackLetters: string[] = [];
+        castAction.player.letterRack.forEach((value) => {
+            rackLetters.push(value.char);
+        });
+
+        let rIndex = 0;
+        let eIndex = 0;
+        while (exchangeLetters.length > 0) {
+            if (exchangeLetters[eIndex] === rackLetters[rIndex]) {
+                exchangeLetters.splice(eIndex, 1);
+                rackLetters.splice(rIndex, 1);
+                rIndex = 0;
+                eIndex = 0;
+            } else {
+                if (rIndex < rackLetters.length) {
+                    rIndex++;
+                } else {
+                    // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+                    console.log('Invalid exchange : not all letters in letterRack');
+                    return false;
+                }
             }
         }
 
