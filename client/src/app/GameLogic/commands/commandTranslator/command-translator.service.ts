@@ -20,6 +20,7 @@ export class CommandTranslatorService {
     }
 
     private createAction(command: Command): Action {
+        // TODO: get user from player service
         const user = new User('remove it');
         const args = command.args;
         switch (command.type) {
