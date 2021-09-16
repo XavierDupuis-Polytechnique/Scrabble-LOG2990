@@ -9,7 +9,7 @@ import { HardBot } from './hard-bot';
     providedIn: 'root',
 })
 // TODO: Change name to botCreator
-export class BotService {
+export class BotCreatorService {
     createBot(playerName: string, botDifficulty: string, boardService: BoardService, dictionaryService: DictionaryService): Bot {
         if (botDifficulty === 'hard') {
             return new HardBot(playerName, boardService, dictionaryService);

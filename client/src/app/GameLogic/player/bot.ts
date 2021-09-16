@@ -6,15 +6,11 @@ import { ValidWord } from './valid-word';
 
 export abstract class Bot extends Player {
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
-    boardState: BoardService;
-    dictionary: DictionaryService;
 
     // Bot constructor takes opponent name as argument to prevent same name
-    constructor(name: string, boardService: BoardService, dictionaryService: DictionaryService) {
+    constructor(name: string, private boardService: BoardService, private dictionaryService: DictionaryService) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
-        this.boardState = boardService;
-        this.dictionary = dictionaryService;
     }
 
     getRandomInt(max: number, min: number = 0) {
@@ -29,7 +25,7 @@ export abstract class Bot extends Player {
 
     // TODO add the board and dictionary services to the bot creator
     bruteForceStart(): ValidWord[] {
-        const grid = this.boardState.board.grid;
+        const grid = this.boardService.board.grid;
         const validWordList: ValidWord[] = [];
         const startingX = 0;
         const startingY = 0;
@@ -55,7 +51,9 @@ export abstract class Bot extends Player {
     }
 
     // TODO Might not be necessary
-    private hookUtil(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
+    private hookUtil(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {
+        this.dictionaryService.wordGen('test');
+    }
 
     // TODO And make private
     wordValidator(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
@@ -69,28 +67,29 @@ export abstract class Bot extends Player {
 
         const letterRack = this.letterRack;
         const mapRack = new Map();
-        const NOTFOUND = -1;
-        const FIRSTLETTER = 1;
-        const WORDLENGHT = dictWord.length;
+        const notFound = -1;
+        const firstLetterIndex = 1;
+        const wordLength = dictWord.length;
 
         for (const letter of letterRack) {
+            const letterCount = mapRack.get(letter);
             if (mapRack.has(letter)) {
-                mapRack.set(letter, mapRack.get(letter) + 1);
+                mapRack.set(letter, letterCount + 1);
             } else {
                 mapRack.set(letter, 1);
             }
         }
         let regex = new RegExp(placedWord.toLowerCase());
         let INDEX = dictWord.search(regex);
-        if (INDEX === NOTFOUND) {
+        if (INDEX === notFound) {
             return false;
         }
-        while (INDEX !== FIRSTLETTER) {
+        while (INDEX !== firstLetterIndex) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
             INDEX = dictWord.search(regex);
 
-            if (INDEX === NOTFOUND) {
+            if (INDEX === notFound) {
                 if (mapRack.has('*')) {
                     regex = new RegExp(placedWord.toLowerCase());
                     INDEX = dictWord.search(regex);
@@ -102,11 +101,11 @@ export abstract class Bot extends Player {
                 placedWord = dictWord[INDEX - 1] + placedWord;
             }
         }
-        while (placedWord.length !== WORDLENGHT) {
+        while (placedWord.length !== wordLength) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             regex = new RegExp(placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
             INDEX = dictWord.search(regex);
-            if (INDEX === NOTFOUND) {
+            if (INDEX === notFound) {
                 if (mapRack.has('*')) {
                     regex = new RegExp(placedWord.toLowerCase());
                     INDEX = dictWord.search(regex);
@@ -118,7 +117,7 @@ export abstract class Bot extends Player {
                 placedWord = placedWord + dictWord[placedWord.length];
             }
         }
-        // if(dictWord.search(regex) !== NOTFOUND)
+        // if(dictWord.search(regex) !== notFound)
         if (dictWord === placedWord.toLowerCase()) {
             // console.log('Found_Word: ' + placedWord);
             return true;
