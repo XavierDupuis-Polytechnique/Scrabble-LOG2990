@@ -1,10 +1,10 @@
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
-import { PassTurn } from './pass-turn';
 
 describe('PassTurn', () => {
     let game: Game;

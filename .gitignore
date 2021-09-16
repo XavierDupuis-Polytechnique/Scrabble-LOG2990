@@ -11,3 +11,4 @@ coverage/
 
 #Node Modules
 /node_modules
+.vscode/launch.json

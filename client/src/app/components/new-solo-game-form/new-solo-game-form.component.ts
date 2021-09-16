@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 const MAX_NAME_LENGTH = 50;
 const MIN_NAME_LENGTH = 3;
@@ -16,8 +17,6 @@ const NO_WHITE_SPACE_RGX = /^\S*$/;
     styleUrls: ['./new-solo-game-form.component.scss'],
 })
 export class NewSoloGameFormComponent {
-    @Output() cancelClick = new EventEmitter<void>();
-    @Output() playClick = new EventEmitter<void>();
     soloGameSettingsForm = new FormGroup({
         playerName: new FormControl('', [
             Validators.required,
@@ -37,17 +36,19 @@ export class NewSoloGameFormComponent {
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
 
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSoloGameFormComponent>) {}
+
     playGame(): void {
-        this.playClick.emit();
+        this.dialogRef.close(this.soloGameSettingsForm.value);
     }
 
     cancel(): void {
+        this.dialogRef.close();
         this.soloGameSettingsForm.reset({
             playerName: '',
             adversaryDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
         });
-        this.cancelClick.next();
     }
 
     get formValid() {
