@@ -1,3 +1,31 @@
-<p>board works!</p>
-<canvas id="canvas" #gridCanvas [attr.width]="width" [attr.height]="height"></canvas>
-
+<div class="boardContainer">
+    <mat-grid-list cols="16" gutterSize="1.5px" rowHeight="1:1">
+        <mat-grid-tile></mat-grid-tile>
+        <mat-grid-tile>A</mat-grid-tile>
+        <mat-grid-tile>B</mat-grid-tile>
+        <mat-grid-tile>C</mat-grid-tile>
+        <mat-grid-tile>D</mat-grid-tile>
+        <mat-grid-tile>E</mat-grid-tile>
+        <mat-grid-tile>F</mat-grid-tile>
+        <mat-grid-tile>G</mat-grid-tile>
+        <mat-grid-tile>H</mat-grid-tile>
+        <mat-grid-tile>I</mat-grid-tile>
+        <mat-grid-tile>J</mat-grid-tile>
+        <mat-grid-tile>K</mat-grid-tile>
+        <mat-grid-tile>L</mat-grid-tile>
+        <mat-grid-tile>M</mat-grid-tile>
+        <mat-grid-tile>N</mat-grid-tile>
+        <mat-grid-tile>O</mat-grid-tile>
+        <div *ngFor="let row of board.grid; let i = index">
+            <mat-grid-tile>{{ i + 1 }}</mat-grid-tile>
+            <mat-grid-tile *ngFor="let item of row" class="grid" [style]="getFont()">
+                <app-tile [tile]="item"></app-tile>
+            </mat-grid-tile>
+        </div>
+    </mat-grid-list>
+</div>
+<div class="zoomPolice">
+    <span>Ajuster la taille</span><br />
+    <button mat-button (click)="increaseFont()">+</button>
+    <button mat-button (click)="decreaseFont()">-</button>
+</div>

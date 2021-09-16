@@ -1,7 +1,7 @@
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 0.8fr 1.2fr;
-    grid-template-rows: 1fr 1fr 0.7fr 1.3fr;
+    grid-template-rows: 1fr 1fr 1.3fr 0.7fr;
     gap: 0px 0px;
     grid-template-areas:
       "Board Board Board Info"
@@ -13,24 +13,29 @@
       overflow: hidden;
   }
 
-app-info-box{
+app-info-box {
     grid-area: Info;
-    border-style: solid;
+    // border: 1px solid grey; //A Enlever
+    padding: 1%;
+    // border-style: solid;
 }
 
-app-chat-box{
+app-chat-box {
     grid-area: Chat;
     border-style: solid;
     width: 100%;
     overflow-wrap: anywhere;
     word-break: normal;
 }
-app-board{
+app-board {
     grid-area: Board;
-    border-style: solid;
+    padding: 3%; //TODO:Tochange
+    border: 2px solid black;
+    // border-style: solid;
 }
 
-app-horse{
+app-horse {
     grid-area: Horse;
-    border-style: solid;
+    border: 1px solid grey;
+    // border-style: solid;
 }

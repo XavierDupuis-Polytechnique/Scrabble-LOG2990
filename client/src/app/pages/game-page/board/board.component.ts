@@ -1,29 +1,33 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { GridService } from '@app/services/grid.service';
-
-export const BOARD_WIDTH = 500;
-export const BOARD_HEIGTH = 500;
+import { Component } from '@angular/core';
+import { Board } from '@app/GameLogic/game/board';
+import { BoardService } from '@app/services/board.service';
 
 @Component({
     selector: 'app-board',
     templateUrl: './board.component.html',
     styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements AfterViewInit {
-    @ViewChild('gridCanvas', { static: false }) private gridCanvas!: ElementRef<HTMLCanvasElement>;
+export class BoardComponent {
+    board: Board;
+    fontSize: number = 24;
 
-    constructor(private readonly gridService: GridService) {}
-
-    ngAfterViewInit(): void {
-        this.gridService.gridContext = this.gridCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.gridService.drawBoard(this.width, this.height);
+    constructor(private boardService: BoardService) {
+        this.board = this.boardService.board;
     }
 
-    get width(): number {
-        return BOARD_WIDTH;
+    increaseFont(): void {
+        if (this.fontSize <= 24) {
+            this.fontSize += 1;
+        }
     }
 
-    get height(): number {
-        return BOARD_HEIGTH;
+    decreaseFont(): void {
+        if (this.fontSize >= 10) {
+            this.fontSize -= 1;
+        }
+    }
+
+    getFont(): string {
+        return `font-size: ${this.fontSize}px;`;
     }
 }
