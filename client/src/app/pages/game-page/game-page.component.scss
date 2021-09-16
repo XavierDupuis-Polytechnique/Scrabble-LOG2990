@@ -1,16 +1,14 @@
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 0.8fr 1.2fr;
-    grid-template-rows: 1fr 1fr 1.3fr 0.7fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
     gap: 0px 0px;
     grid-template-areas:
-        'Board Board Board Info'
-        'Board Board Board Info'
-        'Board Board Board Chat'
-        'Horse Horse Horse Chat';
+        'Player Board Board Board Board Info'
+        'Player Board Board Board Board Info'
+        'Player Board Board Board Board Chat'
+        'Player Horse Horse Horse horse Chat';
     height: fit-content;
-    max-width: 100%; //TODO:SPECIFER
-    max-height: 100%;
 }
 
 app-info-box {
@@ -30,6 +28,7 @@ app-board {
     grid-area: Board;
     padding: 3%; //TODO:Tochange
     border: 2px solid black;
+
     // border-style: solid;
 }
 
@@ -37,4 +36,9 @@ app-horse {
     grid-area: Horse;
     border: 1px solid grey;
     // border-style: solid;
+}
+app-player-info {
+    grid-area: Chat;
+    padding: 1%;
+    border: 1px solid grey; //A Enlever
 }

@@ -20,6 +20,7 @@ import { TileComponent } from './pages/game-page/board/tile/tile.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
 import { HorseComponent } from './pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
+import { PlayerInfoComponent } from './pages/game-page/player-info/player-info/player-info.component';
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
@@ -38,6 +39,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         MaterialPageComponent,
         PlayAreaComponent,
         SidebarComponent,
+        PlayerInfoComponent,
         InfoBoxComponent,
         ChatBoxComponent,
         BoardComponent,

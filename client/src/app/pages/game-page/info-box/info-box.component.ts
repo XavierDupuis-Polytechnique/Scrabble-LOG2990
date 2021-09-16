@@ -10,11 +10,13 @@ import { map } from 'rxjs/operators';
 })
 export class InfoBoxComponent implements OnInit {
     timeLeft$: Observable<number>;
+
     // TODO:Feed avec PlayerService
 
     myName = 'Player1';
     myScore = 55;
     activePlayer = 'Bot';
+
     constructor(readonly timer: TimerService) {}
     ngOnInit() {
         this.timeLeft$ = this.timer.timeLeft$.pipe(map((value: number) => value / 1000));

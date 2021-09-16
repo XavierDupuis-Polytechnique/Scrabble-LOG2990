@@ -1,19 +1,23 @@
 mat-grid-tile {
     // background-color: rgb(224, 236, 245);
     background-color: rgb(240, 231, 216);
-}
-
-mat-grid-list {
-    display: flex;
-    justify-content: center;
-    // border: 2px solid black;
+    // max-width: 1%; //TODO:fonctionne
+    max-height: 1%;
 }
 app-tile {
     height: 100%;
     width: 100%;
 }
+mat-grid-list {
+    display: flex;
+    justify-content: center;
+
+    // border: 2px solid black;
+}
+
 .boardContainer {
     display: inherit;
+
     padding: 2%;
     // border: 10px solid rgb(56, 47, 36);
     border: 10px solid rgb(16, 0, 7);
