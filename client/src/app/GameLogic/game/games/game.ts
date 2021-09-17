@@ -2,6 +2,8 @@ import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Board } from '@app/GameLogic/game/board';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { PlayerService } from '@app/GameLogic/game/game-info/player.service';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
@@ -21,6 +23,7 @@ export class Game {
     consecutivePass: number = 0;
     avs: ActionValidatorService = new ActionValidatorService();
     turnNumber: number = 0;
+    info: GameInfoService;
 
     constructor(
         public timePerTurn: number,
@@ -29,6 +32,7 @@ export class Game {
         private boardService: BoardService,
     ) {
         this.boardService.board = this.board;
+        this.info = new GameInfoService(new PlayerService(this.players), this.timer, this);
     }
 
     start(): void {
@@ -39,9 +43,6 @@ export class Game {
 
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
-    }
-    getActivePlayer(): Player {
-        return this.players[this.activePlayerIndex];
     }
 
     isEndOfGame() {

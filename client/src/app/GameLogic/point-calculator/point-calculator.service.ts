@@ -9,7 +9,7 @@ export class PointCalculatorService {
     // constructor() {}
 
     endOfGamePointdeduction(game: Game) {
-        const activePlayer = game.getActivePlayer();
+        const activePlayer = game.info.getActivePlayer();
         if (game.consecutivePass >= Game.maxConsecutivePass) {
             for (const player of game.players) {
                 player.points -= this.calculatePointsOfRack(player);

@@ -12,13 +12,12 @@ import { GameSettings } from './game-settings.interface';
     providedIn: 'root',
 })
 export class GameManagerService {
-    game: Game;
-    botService: BotService;
+    private botService: BotService;
+    private game: Game;
     constructor(private timer: TimerService, private pointCalculator: PointCalculatorService) {}
 
     createGame(gameSettings: GameSettings): void {
         this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, new BoardService());
-        // create players
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
