@@ -3,7 +3,6 @@ import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Board } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { PlayerService } from '@app/GameLogic/game/game-info/player.service';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
@@ -30,9 +29,9 @@ export class Game {
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
+        info: GameInfoService,
     ) {
         this.boardService.board = this.board;
-        this.info = new GameInfoService(new PlayerService(this.players), this.timer, this);
     }
 
     start(): void {
@@ -48,7 +47,7 @@ export class Game {
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
-                if (player.letterRackIsEmpty) {
+                if (player.isLetterRackEmpty) {
                     return true;
                 }
             }
@@ -119,7 +118,7 @@ export class Game {
     private displayLettersLeft() {
         // console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            if (!player.letterRackIsEmpty) {
+            if (!player.isLetterRackEmpty) {
                 // TODO Envoyer dans la boite de communication
                 // console.log(player.name, ':', player.letterRack);
             }

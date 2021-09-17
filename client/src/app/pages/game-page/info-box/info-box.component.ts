@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+const MILLISECONDS_IN_A_SECOND = 1000;
 
 @Component({
     selector: 'app-info-box',
@@ -9,14 +11,15 @@ import { map } from 'rxjs/operators';
     styleUrls: ['./info-box.component.scss'],
 })
 export class InfoBoxComponent implements OnInit {
+    static millisecondsInASecond = MILLISECONDS_IN_A_SECOND;
     timeLeft$: Observable<number>;
-    // TODO:Feed avec PlayerService
+    info: GameInfoService;
 
-    myName = 'Player1';
-    myScore = 55;
-    activePlayer = 'Bot';
-    constructor(readonly timer: TimerService) {}
+    constructor(info: GameInfoService) {
+        this.info = info;
+    }
+
     ngOnInit() {
-        this.timeLeft$ = this.timer.timeLeft$.pipe(map((value: number) => value / 1000));
+        this.timeLeft$ = this.info.getTurnRemainingTime().pipe(map((value: number) => value / InfoBoxComponent.millisecondsInASecond));
     }
 }

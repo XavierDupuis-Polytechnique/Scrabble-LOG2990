@@ -1,4 +1,5 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Subject } from 'rxjs';
 
@@ -22,7 +23,11 @@ export abstract class Player {
     abstract exchange(): void;
     abstract pass(): void;
 
-    get letterRackIsEmpty(): boolean {
+    get isLetterRackEmpty(): boolean {
         return this.letterRack.length === 0;
+    }
+
+    get isLetterRackFull(): boolean {
+        return this.letterRack.length === LetterBag.playerLetterCount;
     }
 }

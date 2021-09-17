@@ -5,20 +5,25 @@ h1 {
     color: rgb(233, 231, 231);
     border-radius: 5%;
 }
+.playerInfo {
+    margin: 2%;
+    padding: 2%;
+    border: solid black 2px;
+    justify-self: center;
+}
 .grid-container {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto;
     grid-gap: 10%;
-}
-#playerInfo {
     grid-column-start: 1;
     grid-column-end: 2;
-    font-size: 125%;
 }
-#name {
+.name {
+    justify-self: center;
+    font-size: 125%;
     font-weight: 900;
 }
-#score {
-    margin-left: 30%;
+.score {
+    justify-self: end;
     font-size: 85%;
 }
