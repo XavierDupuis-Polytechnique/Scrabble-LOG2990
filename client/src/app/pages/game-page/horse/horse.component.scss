@@ -1,0 +1,28 @@
+mat-grid-tile {
+    border: 2px solid rgb(0, 0, 0);
+    font-weight: 700;
+    border-radius: 10%;
+    background-color: rgb(240, 231, 216);
+}
+
+mat-grid-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 90%;
+    // width: 90%;
+}
+sub {
+    padding-top: 15%;
+    padding-left: 5%;
+}
+.rackContainer {
+    background-color: rgb(129, 82, 63);
+    border: 3px solid black;
+    border-radius: 2%;
+    margin: 3%;
+    padding: 2%;
+    min-height: 50%;
+    // max-height: 50%;
+    // max-width: 80%;
+}

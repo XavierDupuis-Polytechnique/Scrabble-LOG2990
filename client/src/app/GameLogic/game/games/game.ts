@@ -1,9 +1,11 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { mapTo } from 'rxjs/operators';
 
@@ -13,11 +15,19 @@ export class Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
+    board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
     isEnded: boolean = false;
 
-    constructor(public timePerTurn: number, private timer: TimerService, private pointCalculator: PointCalculatorService) {}
+    constructor(
+        public timePerTurn: number,
+        private timer: TimerService,
+        private pointCalculator: PointCalculatorService,
+        private boardService: BoardService,
+    ) {
+        this.boardService.board = this.board;
+    }
 
     start(): void {
         this.drawGameLetters();
@@ -47,7 +57,7 @@ export class Game {
     }
 
     onEndOfGame() {
-        console.log('Game ended');
+        // console.log('Game ended');
 
         this.pointCalculator.endOfGamePointdeduction(this);
         this.displayLettersLeft();
@@ -73,15 +83,13 @@ export class Game {
     private drawGameLetters() {
         for (const player of this.players) {
             player.letterRack = this.letterBag.drawEmptyRackLetters();
-            player.displayGameLetters();
-            this.letterBag.displayNumberGameLettersLeft();
         }
     }
 
     private startTurn() {
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
-        console.log('its', activePlayer, 'turns');
+        // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.subscribe((action) => this.endOfTurn(action));
@@ -91,7 +99,7 @@ export class Game {
     private endOfTurn(action: Action) {
         this.timer.stop();
         action.execute(this);
-        console.log('end of turn');
+        // console.log('end of turn');
         if (this.isEndOfGame()) {
             this.onEndOfGame();
             return;
@@ -103,10 +111,8 @@ export class Game {
     private displayLettersLeft() {
         console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            if (!player.letterRackIsEmpty) {
-                // TODO Envoyer dans la boite de communication
-                console.log(player.name, ':', player.letterRack);
-            }
+            // TODO Envoyer dans la boite de communication
+            console.log(player.name, ':', player.letterRack);
         }
     }
 

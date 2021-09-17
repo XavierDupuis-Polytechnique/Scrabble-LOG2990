@@ -1,16 +1,11 @@
 /* tslint:disable:no-unused-variable */
 
-import { TestBed, async, inject } from '@angular/core/testing';
 import { BoardService } from './board.service';
 
-describe('Service: Board', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [BoardService]
-    });
-  });
+describe('board service', () => {
+    const boardService = new BoardService();
 
-  it('should ...', inject([BoardService], (service: BoardService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should have property board', () => {
+        expect(boardService.board).toBeDefined();
+    });
 });

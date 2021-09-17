@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Board } from '@app/classes/board';
+import { Board } from '@app/GameLogic/game/board';
 const NUM_TILE_FAKE = 16;
 const NUM_TILE = 15;
 const paddingValue = 0.004;
 const asciiStartPos = 65;
-//const pourcentageOffset = 0.5;
+// const pourcentageOffset = 0.5;
 @Injectable({
     providedIn: 'root',
 })
@@ -106,10 +106,10 @@ export class CanvasDrawerService {
         this.gridContext.fillStyle = 'black';
         // set font size for letter
         this.gridContext.font = `${this.letterFontSize}px Arial`;
-        this.gridContext.fillText(this.board.grid[i][j].letter, xPos, yPos + this.letterFontSize);
+        this.gridContext.fillText(this.board.grid[i][j].letterObject.char, xPos, yPos + this.letterFontSize);
         // set font size for value
         this.gridContext.font = `${this.valueFontSize}px Arial`;
-        const tileValue = this.board.grid[i][j].letter === '' ? '' : this.board.grid[i][j].value;
+        const tileValue = this.board.grid[i][j].letterObject.char === '' ? '' : this.board.grid[i][j].letterObject.value;
         const xOffset = this.gridContext.measureText(tileValue.toString()).width;
         this.gridContext.fillText(tileValue.toString(), xPos + this.tileWidth - xOffset, yPos + this.yOffset);
     }

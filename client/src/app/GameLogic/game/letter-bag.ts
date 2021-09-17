@@ -53,7 +53,7 @@ export class LetterBag {
     }
 
     displayNumberGameLettersLeft() {
-        console.log('There are ' + this.gameLetters.length + ' GameLetters left');
+        // console.log('There are ' + this.gameLetters.length + ' GameLetters left');
     }
 
     drawEmptyRackLetters(): Letter[] {
@@ -72,8 +72,7 @@ export class LetterBag {
         }
         return drawedGameLetters;
     }
-    addLetter(letter: Letter){
-        
+    addLetter(letter: Letter) {
         this.gameLetters.push(letter);
     }
     getRandomInt(max: number) {

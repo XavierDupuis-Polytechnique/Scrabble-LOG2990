@@ -10,18 +10,22 @@ export class TimerService {
     source: Observable<number>;
     timeLeft: Observable<number>;
     readonly timePerStep: number = TIMER_STEP;
-    end$$: Subscription;
+    private end$$: Subscription;
+    private timeLeftSubject: Subject<number> = new Subject();
 
     start(interval: number) {
-        console.log('start timer');
+        // console.log('start timer');
         const end$: Subject<void> = new Subject();
         const numberOfStep = Math.ceil(interval / TIMER_STEP);
         this.source = timer(TIMER_STEP, TIMER_STEP);
         this.timeLeft = this.source.pipe(map((step) => interval - (step + 1) * this.timePerStep));
         this.end$$ = this.source.pipe(takeUntil(end$)).subscribe((step) => {
-            console.log((step + 1) * this.timePerStep);
+            const timeLeft = interval - (step + 1) * this.timePerStep;
+            this.timeLeftSubject.next(timeLeft);
+            // console.log((step + 1) * this.timePerStep);
             if (step >= numberOfStep - 1) {
                 end$.next();
+                end$.complete();
             }
         });
         return end$;
@@ -30,5 +34,9 @@ export class TimerService {
     stop() {
         this.end$$.unsubscribe();
         this.source = new Subject();
+    }
+
+    get timeLeft$(): Observable<number> {
+        return this.timeLeftSubject;
     }
 }

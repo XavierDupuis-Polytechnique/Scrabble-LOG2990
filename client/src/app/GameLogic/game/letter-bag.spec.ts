@@ -8,9 +8,10 @@ describe('LetterBag', () => {
     });
 
     it('should create an instance with the correct number of GameLetters', () => {
-        expect(LetterBag).toBeTruthy();
         let totalNumberOfGameLetters = 0;
-        LetterBag.gameLettersCount.forEach((gameLetterCount) => (totalNumberOfGameLetters += gameLetterCount));
+        LetterBag.gameLettersCount.forEach((gameLetterCount) => {
+            totalNumberOfGameLetters += gameLetterCount;
+        });
         expect(letterBag.gameLetters.length).toBe(totalNumberOfGameLetters);
     });
 
@@ -34,11 +35,25 @@ describe('LetterBag', () => {
 
     it('should return an error when no more GameLetters can be drawn', () => {
         const numberOfGameLettersToBeDrawn = letterBag.gameLetters.length + 1;
-        const GameLettersBagError = new Error(
+        const gameLettersBagError = new Error(
             'Not enough GameLetters in bag (' + letterBag.gameLetters.length + ') to draw ' + numberOfGameLettersToBeDrawn + ' GameLetters.',
         );
-        expect(function () {
-            letterBag.drawGameLetters(numberOfGameLettersToBeDrawn).length;
-        }).toThrow(GameLettersBagError);
+
+        expect(() => {
+            letterBag.drawGameLetters(numberOfGameLettersToBeDrawn);
+        }).toThrow(gameLettersBagError);
+    });
+
+    it('should return if bag is empty', () => {
+        expect(letterBag.isEmpty).toBeFalse();
+        letterBag.drawGameLetters(letterBag.gameLetters.length);
+        expect(letterBag.isEmpty).toBeTrue();
+    });
+
+    it('default draw should pick minimum 1 letter', () => {
+        const previousNumberLetter: number = letterBag.gameLetters.length;
+        letterBag.drawGameLetters();
+        const newNumberLetter: number = letterBag.gameLetters.length;
+        expect(previousNumberLetter - 1).toBe(newNumberLetter);
     });
 });

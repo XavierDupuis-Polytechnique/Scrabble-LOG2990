@@ -1,15 +1,15 @@
+import { Action } from '@app/GameLogic/actions/action';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Subject } from 'rxjs';
-import { Action } from '../actions/action';
-import { Letter } from '../game/letter.interface';
 
 export abstract class Player {
     static defaultName = 'QWERTY';
-    points: number = 0;
+    action$: Subject<Action> = new Subject();
 
+    points: number = 0;
     name: string = Player.defaultName;
     isActive: boolean;
     letterRack: Letter[];
-    action$: Subject<Action> = new Subject();
 
     constructor(name?: string) {
         if (name) {
@@ -17,14 +17,11 @@ export abstract class Player {
         }
     }
 
-    abstract play(): void;
-    abstract exchange(): void;
-    abstract pass(): void;
-
-    hello(): void {
-        console.log('hello from Player ' + this.name);
+    play(action: Action) {
+        this.action$.next(action);
     }
 
+    // TODO: log into message service
     displayGameLetters(): void {
         console.log(this.letterRack);
     }

@@ -1,0 +1,24 @@
+h1 {
+    display: flex;
+    justify-content: center;
+    background-color: navy;
+    color: rgb(233, 231, 231);
+    border-radius: 5%;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 10%;
+}
+#playerInfo {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    font-size: 125%;
+}
+#name {
+    font-weight: 900;
+}
+#score {
+    margin-left: 30%;
+    font-size: 85%;
+}
