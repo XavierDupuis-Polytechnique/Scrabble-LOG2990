@@ -11,13 +11,14 @@ app-tile {
 mat-grid-list {
     display: flex;
     justify-content: center;
+    
 
     // border: 2px solid black;
 }
 
 .boardContainer {
     display: inherit;
-
+    height:fit-content;
     padding: 2%;
     // border: 10px solid rgb(56, 47, 36);
     border: 10px solid rgb(16, 0, 7);
