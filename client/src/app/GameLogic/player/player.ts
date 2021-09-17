@@ -17,14 +17,11 @@ export abstract class Player {
         }
     }
 
-    abstract play(): void;
-    abstract exchange(): void;
-    abstract pass(): void;
-
-    hello(): void {
-        console.log('hello from Player ' + this.name);
+    play(action: Action) {
+        this.action$.next(action);
     }
 
+    // TODO: log into message service
     displayGameLetters(): void {
         console.log(this.letterRack);
     }

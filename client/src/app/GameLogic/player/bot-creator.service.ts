@@ -10,11 +10,12 @@ import { HardBot } from './hard-bot';
 })
 // TODO: Change name to botCreator
 export class BotCreatorService {
-    createBot(playerName: string, botDifficulty: string, boardService: BoardService, dictionaryService: DictionaryService): Bot {
+    constructor(private boardService: BoardService, private dictionaryService: DictionaryService) {}
+    createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
-            return new HardBot(playerName, boardService, dictionaryService);
+            return new HardBot(playerName, this.boardService, this.dictionaryService);
         } else {
-            return new EasyBot(playerName, boardService, dictionaryService);
+            return new EasyBot(playerName, this.boardService, this.dictionaryService);
         }
     }
 }
