@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
@@ -5,11 +6,14 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
 
-export class ActionCompiler {
+@Injectable({
+    providedIn: 'root',
+})
+export class ActionCompilerService {
     // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
         if (!command) {
-            throw Error('unefined command was feeded into CommandTranslatorService');
+            throw Error('undefined command was feeded into CommandTranslatorService');
         }
         return this.createAction(command);
     }
