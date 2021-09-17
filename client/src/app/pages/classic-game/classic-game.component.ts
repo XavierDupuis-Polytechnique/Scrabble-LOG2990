@@ -32,7 +32,7 @@ export class ClassicGameComponent {
         });
     }
 
-    startSoloGame(): any {
+    startSoloGame() {
         this.gameManager.createGame(this.gameSettings);
         this.router.navigate(['/game']);
     }
