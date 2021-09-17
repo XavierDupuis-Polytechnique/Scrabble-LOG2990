@@ -1,4 +1,5 @@
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -24,7 +25,7 @@ describe('PlaceLetter', () => {
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     beforeEach(() => {
-        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService());
+        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService(), new GameInfoService());
         game.players.push(player1);
         game.players.push(player2);
 
@@ -32,11 +33,11 @@ describe('PlaceLetter', () => {
     });
 
     it('should create an instance', () => {
-        expect(new PlaceLetter(game.getActivePlayer(), letterToPlace, placement)).toBeTruthy();
+        expect(new PlaceLetter(game.info.getActivePlayer(), letterToPlace, placement)).toBeTruthy();
     });
 
     it('should place letter at right place', () => {
-        const placeAction = new PlaceLetter(game.getActivePlayer(), letterToPlace, placement);
+        const placeAction = new PlaceLetter(game.info.getActivePlayer(), letterToPlace, placement);
         placeAction.execute(game);
         for (let i = 0; i < letterToPlace.length; i++) {
             expect(game.board.grid[i][0].letterObject.char).toBe(letterToPlace[i].char);

@@ -1,4 +1,5 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -11,7 +12,7 @@ describe('ExchangeLetter', () => {
     let game: Game;
     const player: Player = new User('Tim');
     beforeEach(() => {
-        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService());
+        game = new Game(30000, new TimerService(), new PointCalculatorService(), new BoardService(), new GameInfoService());
         game.players[0] = player;
         game.start();
     });

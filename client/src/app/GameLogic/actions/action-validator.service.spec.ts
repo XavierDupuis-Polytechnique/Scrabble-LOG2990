@@ -3,6 +3,7 @@ import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -19,17 +20,23 @@ describe('ActionValidatorService', () => {
     let p2Bot: EasyBot;
     let currentPlayer: Player;
     let lettersToExchange: Letter[];
+    let gis: GameInfoService;
+    let timer: TimerService;
 
+    // FIX les tests, car ils sont trop dépendants des autres services
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(ActionValidatorService);
-        game = new Game(30000, new TimerService(), new PointCalculatorService(), new BoardService());
+        gis = new GameInfoService();
+        timer = new TimerService();
+        game = new Game(30000, timer, new PointCalculatorService(), new BoardService(), gis);
         p1User = new User('testUser');
         p2Bot = new EasyBot('testUser');
         game.players.push(p1User);
         game.players.push(p2Bot);
         game.start();
-        currentPlayer = game.getActivePlayer();
+        gis.receiveReferences(timer, game);
+        currentPlayer = game.info.getActivePlayer();
     });
 
     it('should be referenced', () => {

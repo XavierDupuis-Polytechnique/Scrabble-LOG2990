@@ -22,14 +22,13 @@ export class Game {
     consecutivePass: number = 0;
     avs: ActionValidatorService = new ActionValidatorService();
     turnNumber: number = 0;
-    info: GameInfoService;
 
     constructor(
         public timePerTurn: number,
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
-        info: GameInfoService,
+        public info: GameInfoService,
     ) {
         this.boardService.board = this.board;
     }
