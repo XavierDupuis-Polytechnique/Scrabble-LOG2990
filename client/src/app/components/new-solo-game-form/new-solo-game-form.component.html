@@ -19,6 +19,6 @@
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>
-    <button mat-button (click)="cancel()">Annuler</button>
-    <button mat-button (click)="playGame()" [disabled]="!formValid">Jouer</button>
+    <button mat-button [mat-dialog-close] (click)="cancel()">Annuler</button>
+    <button mat-button [mat-dialog-close] (click)="playGame()" [disabled]="!formValid">Jouer</button>
 </mat-dialog-actions>
