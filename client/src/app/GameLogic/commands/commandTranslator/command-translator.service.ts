@@ -40,8 +40,11 @@ export class CommandTranslatorService {
         return new PassTurn(user);
     }
 
-    private createExchangeLetter(user: User, letters: string[]): ExchangeLetter {
+    private createExchangeLetter(user: User, letters: string[] | undefined): ExchangeLetter {
         // TODO: user.getLettersFromRack(letters);
+        if (!letters) {
+            throw new Error();
+        }
         const lettersToExchange: Letter[] = [];
         return new ExchangeLetter(user, lettersToExchange);
     }
