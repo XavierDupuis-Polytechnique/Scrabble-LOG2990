@@ -1,6 +1,7 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
@@ -72,6 +73,9 @@ export class Game {
             this.consecutivePass += 1;
         } else {
             this.consecutivePass = 0;
+        }
+        if (action instanceof PlaceLetter) {
+            //calculer points du active player
         }
     }
 
