@@ -11,9 +11,9 @@
     </div>
 </div>
 <div id="gameInfo">
-    <p> {{ info.getActivePlayer().name }} is playing!</p>
+    <p> {{ info.activePlayer.name }} is playing!</p>
     <p id="timer">{{ timeLeft$ | async }} Seconds Left....</p>
-    <p> {{ info.getNumberOfLettersRemaining() }} letters remaining </p>
+    <p> {{ info.numberOfLettersRemaining }} letters remaining </p>
 </div>
 
 <!-- Nom -->

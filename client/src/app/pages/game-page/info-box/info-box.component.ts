@@ -20,6 +20,6 @@ export class InfoBoxComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.timeLeft$ = this.info.getTurnRemainingTime().pipe(map((value: number) => value / InfoBoxComponent.millisecondsInASecond));
+        this.timeLeft$ = this.info.timeLeftForTurn.pipe(map((value: number) => value / InfoBoxComponent.millisecondsInASecond));
     }
 }

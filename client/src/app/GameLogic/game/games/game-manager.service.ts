@@ -13,24 +13,21 @@ import { GameSettings } from './game-settings.interface';
     providedIn: 'root',
 })
 export class GameManagerService {
-    game: Game;
-
+    private game: Game;
     constructor(
+        private botService: BotCreatorService,
         private timer: TimerService,
-        private info: GameInfoService,
         private pointCalculator: PointCalculatorService,
-        private boardService: BoardService,
-        private botCreatorService: BotCreatorService,
+        private info: GameInfoService,
     ) {}
 
     createGame(gameSettings: GameSettings): void {
-        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, this.boardService);
-        // create players
+        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, new BoardService());
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
-        this.info.receiveReferences(this.timer, this.game);
+        this.info.receiveGame(this.game);
     }
 
     startGame(): void {
@@ -44,9 +41,10 @@ export class GameManagerService {
     // Change botDifficulty
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
-        const player = new User(playerName);
-        const bot = this.botCreatorService.createBot(playerName, botDifficulty);
-        return [player, bot];
+        const user = new User(playerName);
+        const bot = this.botService.createBot(playerName, botDifficulty);
+        this.info.receiveUser(user);
+        return [user, bot];
     }
 
     private allocatePlayers(players: Player[]) {
