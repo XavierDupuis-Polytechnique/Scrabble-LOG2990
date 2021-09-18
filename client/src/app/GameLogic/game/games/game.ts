@@ -45,7 +45,7 @@ export class Game {
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
-                if (player.isLetterRackEmpty) {
+                if (player.letterRackIsEmpty) {
                     return true;
                 }
             }
