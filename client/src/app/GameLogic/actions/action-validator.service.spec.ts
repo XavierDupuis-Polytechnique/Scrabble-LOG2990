@@ -36,7 +36,7 @@ describe('ActionValidatorService', () => {
         expect(new ActionValidatorService()).toEqual(service);
     });
 
-    /// TURN TESTS ///
+    /// TURN + PASSTURN TESTS ///
     it('should validate a valid PassTurn', () => {
         const action = new PassTurn(currentPlayer);
         expect(service.validateAction(action, game)).toBeTruthy();
@@ -61,7 +61,7 @@ describe('ActionValidatorService', () => {
     });
     /// ////////////////// ///
 
-    /// EXCHANGE LETTER TESTS ///
+    /// EXCHANGELETTER TESTS ///
     it('should validate a valid ExchangeLetter because 7 letters from the player rack can be exchanged', () => {
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         expect(service.validateAction(action, game)).toBeTruthy();
@@ -97,7 +97,24 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action, game)).not.toBeTruthy();
     });
 
-    it('should invalidate an invalid ExchangeLetter because a player cannot exchange more of the same letter', () => {
+    it('should validate a valid ExchangeLetter because a player can exchange many of the same letter', () => {
+        currentPlayer.letterRack = [
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+        ];
+        lettersToExchange = [
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
+        ];
+        const action = new ExchangeLetter(currentPlayer, lettersToExchange);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+
+    it('should invalidate an invalid ExchangeLetter because a player cannot exchange more of the same letter he/she has', () => {
         currentPlayer.letterRack = [
             { char: 'A', value: 1 },
             { char: 'B', value: 1 },
@@ -118,6 +135,14 @@ describe('ActionValidatorService', () => {
 
     it('should invalidate an invalid ExchangeLetter because a player cannot exchange letters not in its letterRack', () => {
         lettersToExchange = [{ char: 'NOT_A_LETTER', value: 666 }];
+        const action = new ExchangeLetter(currentPlayer, lettersToExchange);
+        expect(service.validateAction(action, game)).not.toBeTruthy();
+    });
+    /// ////////////////// ///
+
+    /// PLACELETTER TESTS ///
+    it('should validate a valid PlaceLetter because the letter can be placed', () => {
+        const lettersToPlace = [{ char: 'A', value: 1 }];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
         expect(service.validateAction(action, game)).not.toBeTruthy();
     });
