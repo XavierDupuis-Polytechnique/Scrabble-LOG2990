@@ -1,3 +1,4 @@
+import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -17,7 +18,7 @@ describe('PassTurn', () => {
     beforeEach(() => {
         timer = new TimerService();
         gis = new GameInfoService();
-        game = new Game(30000, timer, new PointCalculatorService(), new BoardService(), gis);
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, new PointCalculatorService(), new BoardService(), gis);
         game.players.push(player1);
         game.players.push(player2);
         gis.receiveReferences(timer, game);

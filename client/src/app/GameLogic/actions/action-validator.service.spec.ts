@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
@@ -31,7 +32,7 @@ describe('ActionValidatorService', () => {
         service = TestBed.inject(ActionValidatorService);
         gis = new GameInfoService();
         timer = new TimerService();
-        game = new Game(30000, timer, new PointCalculatorService(), new BoardService(), gis);
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, new PointCalculatorService(), new BoardService(), gis);
         p1User = new User('testUser');
         p2Bot = new EasyBot('testUser');
         game.players.push(p1User);
@@ -179,7 +180,7 @@ describe('ActionValidatorService', () => {
         const y = NUM_TILES - 1;
         game.board.grid[x][y].letterObject.char = '_';
         const lettersToPlace = [{ char: 'A', value: 1 }];
-        const placement: PlacementSetting = { direction: 'h', x: x, y: y };
+        const placement: PlacementSetting = { direction: 'h', x, y };
         currentPlayer.letterRack[0] = lettersToPlace[0];
         const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
         expect(service.validateAction(action, game)).not.toBeTruthy();
