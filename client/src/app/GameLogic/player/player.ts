@@ -19,9 +19,14 @@ export abstract class Player {
         }
     }
 
-    abstract play(): void;
-    abstract exchange(): void;
-    abstract pass(): void;
+    play(action: Action) {
+        this.action$.next(action);
+    }
+
+    // TODO: log into message service
+    displayGameLetters(): void {
+        console.log(this.letterRack);
+    }
 
     get isLetterRackEmpty(): boolean {
         return this.letterRack.length === 0;

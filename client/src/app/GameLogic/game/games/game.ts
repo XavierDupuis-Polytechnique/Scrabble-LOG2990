@@ -1,8 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Board } from '@app/GameLogic/game/board';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
@@ -20,7 +18,6 @@ export class Game {
     board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
-    avs: ActionValidatorService = new ActionValidatorService();
     turnNumber: number = 0;
 
     constructor(
@@ -28,7 +25,6 @@ export class Game {
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
-        public info: GameInfoService,
     ) {
         this.boardService.board = this.board;
     }
@@ -57,6 +53,10 @@ export class Game {
         return false;
     }
 
+    getActivePlayer() {
+        return this.players[this.activePlayerIndex];
+    }
+
     onEndOfGame() {
         // console.log('Game ended');
 
@@ -65,7 +65,6 @@ export class Game {
         for (const player of this.getWinner()) {
             console.log('Congratulations!', player.name, 'is the winner.');
         }
-        // console.log(this.getWinner());
     }
 
     doAction(action: Action) {
@@ -115,7 +114,7 @@ export class Game {
     }
 
     private displayLettersLeft() {
-        // console.log('Fin de partie - lettres restantes');
+        console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
             if (!player.isLetterRackEmpty) {
                 // TODO Envoyer dans la boite de communication
@@ -125,7 +124,7 @@ export class Game {
     }
 
     private getWinner(): Player[] {
-        let highestScore = -1;
+        let highestScore = Number.MIN_SAFE_INTEGER;
         let winners: Player[] = [];
         for (const player of this.players) {
             if (player.points === highestScore) {

@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomepageComponent implements OnInit {
     constructor(/* private gms: GameManagerService*/) {}
+
     ngOnInit(): void {
         // const settings = {
         //     playerName: 'Xavier',
