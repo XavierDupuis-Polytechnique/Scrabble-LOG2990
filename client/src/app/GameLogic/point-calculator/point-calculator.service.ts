@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Game } from '../game/games/game';
-import { Player } from '../player/player';
+import { Game } from '@app/GameLogic/game/games/game';
+import { Player } from '@app/GameLogic/player/player';
 
 @Injectable({
     providedIn: 'root',
@@ -9,7 +9,7 @@ export class PointCalculatorService {
     // constructor() {}
 
     endOfGamePointdeduction(game: Game) {
-        const activePlayer = game.getActivePlayer();
+        const activePlayer = game.info.getActivePlayer();
         if (game.consecutivePass >= Game.maxConsecutivePass) {
             for (const player of game.players) {
                 player.points -= this.calculatePointsOfRack(player);

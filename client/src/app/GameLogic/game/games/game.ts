@@ -1,13 +1,15 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Board } from '@app/GameLogic/game/board';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { first, mapTo } from 'rxjs/operators';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -18,13 +20,15 @@ export class Game {
     board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
-    isEnded: boolean = false;
+    avs: ActionValidatorService = new ActionValidatorService();
+    turnNumber: number = 0;
 
     constructor(
         public timePerTurn: number,
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
+        public info: GameInfoService,
     ) {
         this.boardService.board = this.board;
     }
@@ -38,14 +42,11 @@ export class Game {
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
-    getActivePlayer(): Player {
-        return this.players[this.activePlayerIndex];
-    }
 
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
-                if (player.letterRackIsEmpty) {
+                if (player.isLetterRackEmpty) {
                     return true;
                 }
             }
@@ -87,17 +88,21 @@ export class Game {
     }
 
     private startTurn() {
+        this.turnNumber++;
+        console.log(' ');
+        console.log('--- Turn No. : ', this.turnNumber, ' ---');
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
         // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
-        turnEnds$.subscribe((action) => this.endOfTurn(action));
+        turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
     }
 
     // TODO implement action execute
     private endOfTurn(action: Action) {
         this.timer.stop();
+
         action.execute(this);
         // console.log('end of turn');
         if (this.isEndOfGame()) {

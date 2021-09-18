@@ -1,7 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 
 @Component({
     selector: 'app-classic-game',
@@ -9,21 +11,34 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     styleUrls: ['./classic-game.component.scss'],
 })
 export class ClassicGameComponent {
-    @ViewChild('gameSettingsForm') gameFormComponent: NewSoloGameFormComponent;
-    hideSoloGameForm: boolean = true;
-    constructor(private router: Router, private gameManager: GameManagerService) {}
+    gameSettings: GameSettings;
+    dialogRef: MatDialogRef<NewSoloGameFormComponent>;
 
+    constructor(private router: Router, private gameManager: GameManagerService, private dialog: MatDialog) {}
     openSoloGameForm() {
-        this.hideSoloGameForm = false;
-    }
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.autoFocus = true;
+        dialogConfig.disableClose = true;
+        dialogConfig.minWidth = 50;
 
+        this.dialog.open(NewSoloGameFormComponent, dialogConfig);
+        const dialogRef = this.dialog.open(NewSoloGameFormComponent, dialogConfig);
+        dialogRef.afterClosed().subscribe((result) => {
+            try {
+                this.gameSettings = result;
+                this.startSoloGame();
+            } catch (e) {
+                this.closeSoloGameForm();
+            }
+        });
+    }
     closeSoloGameForm() {
-        this.hideSoloGameForm = true;
+        this.dialog.closeAll();
     }
 
-    startSoloGame() {
-        const gameSettings = this.gameFormComponent.settings;
-        this.gameManager.createGame(gameSettings);
+    startSoloGame(): any {
+        this.closeSoloGameForm();
+        this.gameManager.createGame(this.gameSettings);
         this.router.navigate(['/game']);
     }
 }

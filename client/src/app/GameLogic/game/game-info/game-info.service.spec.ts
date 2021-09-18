@@ -1,13 +1,12 @@
 import { TestBed } from '@angular/core/testing';
+import { GameInfoService } from './game-info.service';
 
-import { DictionaryService } from './dictionary.service';
-
-describe('DictionaryService', () => {
-    let service: DictionaryService;
+describe('GameInfoService', () => {
+    let service: GameInfoService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(DictionaryService);
+        service = TestBed.inject(GameInfoService);
     });
 
     it('should be created', () => {

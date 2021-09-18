@@ -1,35 +1,24 @@
-<mat-card >
-  <mat-card-title>
-    Nouvelle Partie Solo
-  </mat-card-title>
-
-  <mat-card-content>
-    <form class="new-solo-game-form" [formGroup]="soloGameSettingsForm">
-      <mat-form-field appearance="fill">
-        <mat-label>Nom de joueur</mat-label>
-        <input matInput [formControlName]="'playerName'">
+<h2 mat-dialog-title>Nouvelle Partie Solo</h2>
+<mat-dialog-content [formGroup]="soloGameSettingsForm">
+    <mat-form-field>
+        <input matInput placeholder="Nom de joueur" formControlName="playerName" />
         <mat-hint>Min 3 charactères Max 50 charactères</mat-hint>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
+    </mat-form-field>
+    <br />
+    <br />
+    <mat-form-field>
         <mat-label>Difficulté de votre adversaire</mat-label>
         <mat-select [formControlName]="'adversaryDifficulty'">
-          <mat-option matNativeControl required value="easy">Débutant</mat-option>
+            <mat-option matNativeControl required value="easy">Débutant</mat-option>
         </mat-select>
-      </mat-form-field>
-
-      <mat-label>Temps par tour {{soloGameSettingsForm.value.timePerTurn | date:'mm:ss'}} min</mat-label>
-      <mat-slider
-        [min]='minTimePerTurn'
-        [max]='maxTimePerTurn'
-        [step]='stepTimePerTurn'
-        [formControlName]="'timePerTurn'"
-        ></mat-slider>
-    </form>
-  </mat-card-content>
-
-  <mat-card-footer>
+    </mat-form-field>
+    <br />
+    <mat-label>Temps par tour </mat-label> <br />
+    <mat-slider [min]="minTimePerTurn" [max]="maxTimePerTurn" [step]="stepTimePerTurn" [formControlName]="'timePerTurn'"></mat-slider><br />
+    {{ soloGameSettingsForm.value.timePerTurn | date: 'mm:ss' }} min
+</mat-dialog-content>
+<br />
+<mat-dialog-actions>
     <button mat-button (click)="cancel()">Annuler</button>
     <button mat-button (click)="playGame()" [disabled]="!formValid">Jouer</button>
-  </mat-card-footer>
-</mat-card>
+</mat-dialog-actions>

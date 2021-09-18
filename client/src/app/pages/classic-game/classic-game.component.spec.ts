@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { ClassicGameComponent } from './classic-game.component';
+
 
 describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
@@ -9,6 +10,7 @@ describe('ClassicGameComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent],
+            imports: [RouterTestingModule],
         }).compileComponents();
     });
 
