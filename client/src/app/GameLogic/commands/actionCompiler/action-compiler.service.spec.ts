@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActionCompilerService } from '@app/GameLogic/commands/commandTranslator/action-compiler.service';
+import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 
 describe('ActionCompilerServiceService', () => {
     let service: ActionCompilerService;
