@@ -9,6 +9,9 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { BoardService } from '@app/services/board.service';
 
 describe('PlaceLetter', () => {
+    let timer: TimerService;
+    let gis: GameInfoService;
+
     const letterToPlace: Letter[] = [
         { char: 'A', value: 1 },
         { char: 'L', value: 1 },
@@ -25,10 +28,12 @@ describe('PlaceLetter', () => {
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     beforeEach(() => {
-        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService(), new GameInfoService());
+        timer = new TimerService();
+        gis = new GameInfoService();
+        game = new Game(1, timer, new PointCalculatorService(), new BoardService(), gis);
         game.players.push(player1);
         game.players.push(player2);
-
+        gis.receiveReferences(timer, game);
         game.start();
     });
 

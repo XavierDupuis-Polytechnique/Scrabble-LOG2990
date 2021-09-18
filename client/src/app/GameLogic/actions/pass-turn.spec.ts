@@ -11,11 +11,16 @@ describe('PassTurn', () => {
     let game: Game;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
+    let gis: GameInfoService;
+    let timer: TimerService;
+
     beforeEach(() => {
-        game = new Game(30000, new TimerService(), new PointCalculatorService(), new BoardService(), new GameInfoService());
+        timer = new TimerService();
+        gis = new GameInfoService();
+        game = new Game(30000, timer, new PointCalculatorService(), new BoardService(), gis);
         game.players.push(player1);
         game.players.push(player2);
-
+        gis.receiveReferences(timer, game);
         game.start();
     });
 
@@ -25,8 +30,9 @@ describe('PassTurn', () => {
 
     it('should pass turn', () => {
         const beforePlayer: Player = game.info.getActivePlayer();
-        const passAction = new PassTurn(game.info.getActivePlayer());
+        const passAction = new PassTurn(beforePlayer);
         passAction.execute(game);
+        passAction.player.action$.next(passAction);
         const afterPlayer: Player = game.info.getActivePlayer();
         expect(beforePlayer.name !== afterPlayer.name).toBeTrue();
     });

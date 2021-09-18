@@ -20,7 +20,7 @@ export class GameInfoService {
     }
 
     getActivePlayer(): Player {
-        return this.game.players[this.game.activePlayerIndex];
+        return this.players[this.game.activePlayerIndex];
     }
 
     getPlayer(index: number): Player {
