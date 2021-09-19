@@ -51,7 +51,7 @@ export abstract class Bot extends Player {
         this.hookUtil(x, y, grid, validWordList);
 
         // HookUtil
-        let letterInBox = grid[x][y].letterObject.char;
+        const letterInBox = grid[x][y].letterObject.char;
         if (letterInBox !== ' ') {
             while (letterInBox !== ' ') {}
         }
