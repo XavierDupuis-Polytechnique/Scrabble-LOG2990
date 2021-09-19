@@ -106,7 +106,7 @@ describe('PointCalculatorService', () => {
         ];
         expect(servicePoints.calculatePointsOfWord(word)).toBe(totalPointsOfWord);
     });
-    //During game
+    // During game
     it('should calculate the correct points of a word when placing all the players letters if >=7', () => {
         const totalPointsOfWord = 110;
         const bateaux = [
@@ -136,11 +136,11 @@ describe('PointCalculatorService', () => {
     it('should calculate the correct points of a word when placing a word with a letter whose multiplicator has been used', () => {
         const totalPointsOfWord = 16;
         // Letters
-        let letterA = new Tile(2, 1);
+        const letterA = new Tile(2, 1);
         letterA.letterObject = { char: 'A', value: 1 };
-        let letterB = new Tile(2, 1);
+        const letterB = new Tile(2, 1);
         letterB.letterObject = { char: 'B', value: 3 };
-        let letterT = new Tile(1, 1);
+        const letterT = new Tile(1, 1);
         letterT.letterObject = { char: 'T', value: 1 };
 
         player2.letterRack = [{ char: 'A', value: 1 }];
@@ -183,7 +183,7 @@ describe('PointCalculatorService', () => {
     it('should calculate the correct points when more than one word was made', () => {
         // The word "AT" is on the board, the player adds "BAKE"
         const totalPointsOfPlayer2 = 21;
-        let letterA = new Tile(2, 1);
+        const letterA = new Tile(2, 1);
         letterA.letterObject = { char: 'A', value: 1 };
 
         player1.points = 0;
@@ -200,7 +200,6 @@ describe('PointCalculatorService', () => {
         listOfWord.push(wordAt);
         const oldAction = new PlaceLetter(player1, at, { x: 6, y: 6, direction: 'v' });
         servicePoints.placeLetterPointsCalculation(player1, oldAction, listOfWord);
-        console.log(wordAt[0].letterMultiplicator.valueOf);
         listOfWord.pop();
 
         const bake = [
