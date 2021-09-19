@@ -1,4 +1,5 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Subject } from 'rxjs';
 
@@ -18,11 +19,20 @@ export abstract class Player {
         }
     }
 
-    abstract play(): void;
-    abstract exchange(): void;
-    abstract pass(): void;
+    play(action: Action) {
+        this.action$.next(action);
+    }
 
-    get letterRackIsEmpty(): boolean {
+    // TODO: log into message service
+    displayGameLetters(): void {
+        console.log(this.letterRack);
+    }
+
+    get isLetterRackEmpty(): boolean {
         return this.letterRack.length === 0;
+    }
+
+    get isLetterRackFull(): boolean {
+        return this.letterRack.length === LetterBag.playerLetterCount;
     }
 }

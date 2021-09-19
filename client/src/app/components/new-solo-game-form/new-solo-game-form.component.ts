@@ -6,7 +6,7 @@ import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface'
 const MAX_NAME_LENGTH = 50;
 const MIN_NAME_LENGTH = 3;
 
-const DEFAULT_TIME_PER_TURN = 60000;
+export const DEFAULT_TIME_PER_TURN = 60000;
 const MIN_TIME_PER_TURN = 30000;
 const MAX_TIME_PER_TURN = 300000;
 const STEP_TIME_PER_TURN = 30000;
