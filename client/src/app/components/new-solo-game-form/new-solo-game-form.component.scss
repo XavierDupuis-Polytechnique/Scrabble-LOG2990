@@ -1,5 +1,8 @@
-.new-solo-game-form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+mat-dialog-content {
+    // display: flex;
+    // flex-direction: column;
+    // align-items: flex-start;
+    display: block;
+    justify-content: center;
+    align-items: center;
 }
