@@ -6,7 +6,6 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
-import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -15,6 +14,7 @@ import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 import { NUM_TILES } from '../game/board';
 import { LetterBag } from '../game/letter-bag';
+import { TimerService } from '../game/timer/timer.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
