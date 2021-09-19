@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
@@ -5,6 +6,9 @@ import { Player } from '@app/GameLogic/player/player';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;
+@Injectable({
+    providedIn: 'root',
+})
 export class PointCalculatorService {
     placeLetterPointsCalculation(player: Player, action: PlaceLetter, wordList: Tile[][]) {
         let totalPointsOfTurn = 0;
