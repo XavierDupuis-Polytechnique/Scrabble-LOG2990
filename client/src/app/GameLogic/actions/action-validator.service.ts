@@ -46,6 +46,9 @@ export class ActionValidatorService {
             return false;
         }
 
+        const centerTilePosition: number = Math.floor(NUM_TILES / 2);
+        let hasCenterTile = game.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
+
         let x = action.placement.x;
         let y = action.placement.y;
         let currentTile = game.board.grid[x][y];
@@ -61,12 +64,16 @@ export class ActionValidatorService {
                 numberOfLetterToPlace--;
             }
 
+            if (!hasCenterTile) {
+                if (x === centerTilePosition && y === centerTilePosition) {
+                    hasCenterTile = true;
+                }
+            }
+
             currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? game.board.grid[x][y++] : game.board.grid[x++][y];
         }
 
-        // APPEL AU WORD VALIDATOR POUR VÉRIFIER SI LA COMBINAISON DE LETTRES FORME UN/DES MOTS
-
-        return true;
+        return hasCenterTile;
     }
     private validateExchangeLetter(action: ExchangeLetter, game: Game): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToExchange)) {
