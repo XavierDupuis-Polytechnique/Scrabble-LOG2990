@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { InfoBoxComponent } from './info-box.component';
 
 describe('InfoBoxComponent', () => {

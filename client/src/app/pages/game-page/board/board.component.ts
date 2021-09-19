@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
+const MAX_FONT_SIZE = 24;
+const MIN_FONT_SIZE = 10;
+
 @Component({
     selector: 'app-board',
     templateUrl: './board.component.html',
@@ -9,20 +12,22 @@ import { BoardService } from '@app/services/board.service';
 })
 export class BoardComponent {
     board: Board;
-    fontSize: number = 24;
+    minFontSize = MIN_FONT_SIZE;
+    maxFontSize = MAX_FONT_SIZE;
+    fontSize: number = this.maxFontSize;
 
     constructor(private boardService: BoardService) {
         this.board = this.boardService.board;
     }
 
     increaseFont(): void {
-        if (this.fontSize <= 24) {
+        if (this.fontSize <= this.maxFontSize) {
             this.fontSize += 1;
         }
     }
 
     decreaseFont(): void {
-        if (this.fontSize >= 10) {
+        if (this.fontSize >= this.minFontSize) {
             this.fontSize -= 1;
         }
     }
