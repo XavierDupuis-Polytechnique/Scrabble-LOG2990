@@ -23,11 +23,8 @@ export class CommandParserService {
         return command;
     }
 
-    verifyCommand(message: Message | undefined) {
+    verifyCommand(message: Message) {
         // Couper l'entry par espace pour verifier s'il s'agit d'une commande
-        if (!message) {
-            return new Error();
-        }
         if (message !== null) {
             const toVerify = message.content.split(' ');
             const commandCondition = toVerify[0];
