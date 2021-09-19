@@ -33,7 +33,7 @@ export class CommandParserService {
             const commandCondition = toVerify[0];
             if (commandCondition[0] === '!') {
                 if (Object.values(CommandType).includes(commandCondition as CommandType)) {
-                    this.createCommand(toVerify.slice(1), commandCondition as CommandType);
+                    this.createCommand(toVerify.slice(1, 3), commandCondition as CommandType);
                     return true;
                 }
                 message.content += ' est une commande invalide';
