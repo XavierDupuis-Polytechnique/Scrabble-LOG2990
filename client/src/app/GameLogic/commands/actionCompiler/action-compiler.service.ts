@@ -13,13 +13,6 @@ import { User } from '@app/GameLogic/player/user';
 export class ActionCompilerService {
     // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
-        if (!command) {
-            throw Error('undefined command was feeded into CommandTranslatorService');
-        }
-        return this.createAction(command);
-    }
-
-    private createAction(command: Command): Action {
         // TODO: get user from player service
         const user = new User('remove it');
         const args = command.args;
