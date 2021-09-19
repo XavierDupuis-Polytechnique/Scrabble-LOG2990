@@ -2,10 +2,10 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { Player } from '@app/GameLogic/player/player';
 
 export abstract class Action {
-    static ACTION_ID = 0;
-    id = 0;
+    static id = 0;
+    id;
     constructor(readonly player: Player) {
-        this.id = Action.ACTION_ID++;
+        this.id = Action.id++;
     }
 
     execute(game: Game): void {

@@ -45,4 +45,13 @@ describe('PlaceLetter', () => {
             expect(game.board.grid[i][0].letterObject.char).toBe(letterToPlace[i].char);
         }
     });
+
+    it('should have proper revert behavior', () => {
+        const placeAction = new PlaceLetter(game.getActivePlayer(), letterToPlace, placement);
+        placeAction.execute(game);
+        placeAction.revert();
+        for (let i = 0; i < letterToPlace.length; i++) {
+            expect(game.board.grid[i][0].letterObject.char).toBe(' ');
+        }
+    });
 });
