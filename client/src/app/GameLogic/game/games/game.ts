@@ -74,7 +74,7 @@ export class Game {
             this.consecutivePass = 0;
         }
         if (action instanceof PlaceLetter) {
-            //calculer points du active player
+            // calculer points du active player
         }
     }
 

@@ -1,20 +1,18 @@
-import { Injectable } from '@angular/core';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
 import { Player } from '@app/GameLogic/player/player';
-import { PlaceLetter } from '../actions/place-letter';
-@Injectable({
-    providedIn: 'root',
-})
+
+const MAX_LETTER_IN_RACK = 7;
+const BONUS = 50;
 export class PointCalculatorService {
-    // constructor() {}
     placeLetterPointsCalculation(player: Player, action: PlaceLetter, wordList: Tile[][]) {
         let totalPointsOfTurn = 0;
         wordList.forEach((word) => {
             totalPointsOfTurn += this.calculatePointsOfWord(word);
         });
-        if (player.isLetterRackEmpty && action.lettersToPlace.length >= 7) {
-            totalPointsOfTurn += 50;
+        if (player.isLetterRackEmpty && action.lettersToPlace.length >= MAX_LETTER_IN_RACK) {
+            totalPointsOfTurn += BONUS;
         }
         player.points += totalPointsOfTurn;
         return totalPointsOfTurn;
@@ -41,7 +39,6 @@ export class PointCalculatorService {
         let totalWordMultiplicator = 1;
         const lettersInWord = new Set(word);
         lettersInWord.forEach((letter) => {
-            letter.letterMultiplicator > 1;
             sumOfWord += letter.letterObject.value * letter.letterMultiplicator;
             if (letter.wordMultiplicator) {
                 totalWordMultiplicator *= letter.wordMultiplicator;
