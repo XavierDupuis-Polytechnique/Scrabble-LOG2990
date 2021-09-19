@@ -11,7 +11,7 @@ export abstract class Player {
     points: number = 0;
     name: string = Player.defaultName;
     isActive: boolean;
-    letterRack: Letter[];
+    letterRack: Letter[] = [];
 
     constructor(name?: string) {
         if (name) {
