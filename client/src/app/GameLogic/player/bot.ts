@@ -1,4 +1,3 @@
-import { Tile } from '@app/GameLogic/game/tile';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 import { Player } from './player';

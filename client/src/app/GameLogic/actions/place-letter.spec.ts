@@ -1,3 +1,4 @@
+import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
@@ -8,6 +9,8 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { BoardService } from '@app/services/board.service';
 
 describe('PlaceLetter', () => {
+    let timer: TimerService;
+
     const letterToPlace: Letter[] = [
         { char: 'A', value: 1 },
         { char: 'L', value: 1 },
@@ -24,10 +27,10 @@ describe('PlaceLetter', () => {
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     beforeEach(() => {
-        game = new Game(1, new TimerService(), new PointCalculatorService(), new BoardService());
+        timer = new TimerService();
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, new PointCalculatorService(), new BoardService());
         game.players.push(player1);
         game.players.push(player2);
-
         game.start();
     });
 

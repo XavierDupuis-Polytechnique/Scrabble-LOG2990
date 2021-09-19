@@ -1,5 +1,4 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
@@ -19,7 +18,6 @@ export class Game {
     board: Board = new Board();
     activePlayerIndex: number;
     consecutivePass: number = 0;
-    avs: ActionValidatorService = new ActionValidatorService();
     turnNumber: number = 0;
 
     constructor(
@@ -40,14 +38,11 @@ export class Game {
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
-    getActivePlayer(): Player {
-        return this.players[this.activePlayerIndex];
-    }
 
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
-                if (player.letterRackIsEmpty) {
+                if (player.isLetterRackEmpty) {
                     return true;
                 }
             }
@@ -58,9 +53,12 @@ export class Game {
         return false;
     }
 
+    getActivePlayer() {
+        return this.players[this.activePlayerIndex];
+    }
+
     onEndOfGame() {
         // console.log('Game ended');
-
         this.pointCalculator.endOfGamePointdeduction(this);
         this.displayLettersLeft();
         for (const player of this.getWinner()) {
@@ -117,8 +115,10 @@ export class Game {
     private displayLettersLeft() {
         console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            // TODO Envoyer dans la boite de communication
-            console.log(player.name, ':', player.letterRack);
+            if (!player.isLetterRackEmpty) {
+                // TODO Envoyer dans la boite de communication
+                // console.log(player.name, ':', player.letterRack);
+            }
         }
     }
 
