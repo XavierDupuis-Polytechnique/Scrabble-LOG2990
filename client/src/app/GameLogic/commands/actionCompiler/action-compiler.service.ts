@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
@@ -25,12 +26,12 @@ export class ActionCompilerService {
         switch (command.type) {
             case CommandType.Exchange:
                 return this.createExchangeLetter(user, args);
+
             case CommandType.Pass:
                 return this.createPassTurn(user);
 
             case CommandType.Place:
-                // return this.createPlaceLetter(user); //TODO: uncomment
-                return this.createPassTurn(user);
+                return this.createPlaceLetter(user, args); // TODO: uncomment
             default:
                 throw Error('this command dont generate an action');
         }
@@ -43,9 +44,17 @@ export class ActionCompilerService {
     private createExchangeLetter(user: User, letters: string[] | undefined): ExchangeLetter {
         // TODO: user.getLettersFromRack(letters);
         if (!letters) {
-            throw new Error();
+            throw new Error('No argument was given for exchange letter creation');
         }
         const lettersToExchange: Letter[] = [];
         return new ExchangeLetter(user, lettersToExchange);
+    }
+
+    private createPlaceLetter(user: User, args: string[] | undefined) {
+        // TODO: implement createPlaceLetter
+        if (!args) {
+            throw new Error('No argument was given for place letter creation');
+        }
+        return new PlaceLetter(user, [], { x: 0, y: 0, direction: 'up' });
     }
 }
