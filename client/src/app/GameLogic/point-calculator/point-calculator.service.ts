@@ -44,8 +44,10 @@ export class PointCalculatorService {
         const lettersInWord = new Set(word);
         lettersInWord.forEach((letter) => {
             sumOfWord += letter.letterObject.value * letter.letterMultiplicator;
+            this.desactivateLetterMultiplicator(letter);
             if (letter.wordMultiplicator) {
                 totalWordMultiplicator *= letter.wordMultiplicator;
+                this.desactivateWordMultiplicator(letter);
             }
         });
         sumOfWord *= totalWordMultiplicator;
@@ -58,5 +60,11 @@ export class PointCalculatorService {
             sumOfRack += letter.value;
         }
         return sumOfRack;
+    }
+    protected desactivateLetterMultiplicator(tile: Tile) {
+        tile.letterMultiplicator = 1;
+    }
+    protected desactivateWordMultiplicator(tile: Tile) {
+        tile.wordMultiplicator = 1;
     }
 }
