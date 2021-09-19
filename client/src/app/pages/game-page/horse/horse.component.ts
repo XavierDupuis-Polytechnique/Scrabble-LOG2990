@@ -13,6 +13,6 @@ export class HorseComponent implements AfterViewInit {
     constructor(private info: GameInfoService) {}
 
     ngAfterViewInit(): void {
-        this.playerRack = this.info.getActivePlayer().letterRack;
+        this.playerRack = this.info.user.letterRack;
     }
 }

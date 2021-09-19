@@ -2,21 +2,26 @@ import { Injectable } from '@angular/core';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
+import { User } from '@app/GameLogic/player/user';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GameInfoService {
-    numberOfPlayers: number;
     players: Player[];
+    user: User;
     private game: Game;
-    private timer: TimerService;
 
-    receiveReferences(timer: TimerService, game: Game) {
-        this.timer = timer;
-        this.game = game;
+    constructor(private timer: TimerService) {}
+
+    receiveGame(game: Game): void {
         this.players = game.players;
-        this.numberOfPlayers = this.players.length;
+        this.game = game;
+    }
+
+    receiveUser(user: User): void {
+        this.user = user;
     }
 
     getActivePlayer(): Player {
@@ -31,11 +36,19 @@ export class GameInfoService {
         return this.players[index].points;
     }
 
-    getTurnRemainingTime() {
+    get numberOfPlayers(): number {
+        return this.players.length;
+    }
+
+    get activePlayer(): Player {
+        return this.players[this.game.activePlayerIndex];
+    }
+
+    get timeLeftForTurn(): Observable<number> {
         return this.timer.timeLeft$;
     }
 
-    getNumberOfLettersRemaining() {
-        return this.game.letterBag.gameLetters.length;
+    get numberOfLettersRemaining(): number {
+        return this.game.letterBag.lettersLeft;
     }
 }

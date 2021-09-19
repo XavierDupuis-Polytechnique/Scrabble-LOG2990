@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -11,6 +11,7 @@ import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 import { NUM_TILES } from '../game/board';
 import { LetterBag } from '../game/letter-bag';
@@ -22,23 +23,27 @@ describe('ActionValidatorService', () => {
     let p2Bot: EasyBot;
     let currentPlayer: Player;
     let lettersToExchange: Letter[];
-    let gis: GameInfoService;
     let timer: TimerService;
+    let pointCalculator: PointCalculatorService;
+    let board: BoardService;
+    let dictonary: DictionaryService;
 
     // FIX les tests, car ils sont trop dépendants des autres services
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [PointCalculatorService, BoardService, DictionaryService, TimerService],
+        });
         service = TestBed.inject(ActionValidatorService);
-        gis = new GameInfoService();
         timer = new TimerService();
-        game = new Game(30000, timer, new PointCalculatorService(), new BoardService(), gis);
+        pointCalculator = new PointCalculatorService();
+        board = new BoardService();
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
         p1User = new User('testUser');
-        p2Bot = new EasyBot('testUser');
+        p2Bot = new EasyBot('testUser', board, dictonary);
         game.players.push(p1User);
         game.players.push(p2Bot);
         game.start();
-        gis.receiveReferences(timer, game);
-        currentPlayer = game.info.getActivePlayer();
+        currentPlayer = game.getActivePlayer();
     });
 
     it('should be referenced', () => {
@@ -179,7 +184,7 @@ describe('ActionValidatorService', () => {
         const y = NUM_TILES - 1;
         game.board.grid[x][y].letterObject.char = '_';
         const lettersToPlace = [{ char: 'A', value: 1 }];
-        const placement: PlacementSetting = { direction: 'h', x: x, y: y };
+        const placement: PlacementSetting = { direction: 'h', x, y };
         currentPlayer.letterRack[0] = lettersToPlace[0];
         const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
         expect(service.validateAction(action, game)).not.toBeTruthy();
