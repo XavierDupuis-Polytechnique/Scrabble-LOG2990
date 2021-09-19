@@ -4,6 +4,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
 
@@ -11,10 +12,12 @@ import { User } from '@app/GameLogic/player/user';
     providedIn: 'root',
 })
 export class ActionCompilerService {
+    constructor(private gameInfo: GameInfoService) {}
+
     // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
         // TODO: get user from player service
-        const user = new User('remove it');
+        const user = this.gameInfo.user;
         const args = command.args;
         switch (command.type) {
             case CommandType.Exchange:

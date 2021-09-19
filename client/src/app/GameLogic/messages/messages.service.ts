@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CommandParserService } from '@app/pages/game-page/chat-box/command-parser/command-parser.service';
+import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 // import { verify } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
 import { Message } from './message.interface';
@@ -7,6 +7,8 @@ import { Message } from './message.interface';
     providedIn: 'root',
 })
 export class MessagesService {
+    static readonly sysName = 'System';
+    static readonly sysErrorName = 'SystemError';
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
@@ -21,9 +23,17 @@ export class MessagesService {
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
             content,
-            from: 'System',
+            from: MessagesService.sysName,
         };
         this.addMessageToLog(systemMessage);
+    }
+
+    receiveError(error: Error) {
+        const errorMessage = {
+            content: error.message,
+            from: MessagesService.sysErrorName,
+        };
+        this.addMessageToLog(errorMessage);
     }
 
     private addMessageToLog(message: Message) {
