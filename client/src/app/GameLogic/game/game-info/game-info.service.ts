@@ -24,24 +24,36 @@ export class GameInfoService {
         this.user = user;
     }
 
-    getActivePlayer(): Player {
-        return this.players[this.game.activePlayerIndex];
-    }
-
     getPlayer(index: number): Player {
-        return this.players[index];
+        if (this.players) {
+            return this.players[index];
+        } else {
+            throw new Error('No Players in GameInfo');
+        }
     }
 
     getPlayerScore(index: number): number {
-        return this.players[index].points;
+        if (this.players) {
+            return this.players[index].points;
+        } else {
+            throw new Error('No Players in GameInfo');
+        }
     }
 
     get numberOfPlayers(): number {
-        return this.players.length;
+        if (this.players) {
+            return this.players.length;
+        } else {
+            throw new Error('No Players in GameInfo');
+        }
     }
 
     get activePlayer(): Player {
-        return this.players[this.game.activePlayerIndex];
+        if (this.players) {
+            return this.players[this.game.activePlayerIndex];
+        } else {
+            throw new Error('No Players in GameInfo');
+        }
     }
 
     get timeLeftForTurn(): Observable<number> {
@@ -49,6 +61,10 @@ export class GameInfoService {
     }
 
     get numberOfLettersRemaining(): number {
-        return this.game.letterBag.lettersLeft;
+        if (this.game) {
+            return this.game.letterBag.lettersLeft;
+        } else {
+            throw new Error('No Game in GameInfo');
+        }
     }
 }
