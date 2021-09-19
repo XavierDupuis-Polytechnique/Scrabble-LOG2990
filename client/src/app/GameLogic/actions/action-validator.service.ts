@@ -4,7 +4,8 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { NUM_TILES } from '../game/board';
+import { Letter } from '../game/letter.interface';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +32,6 @@ export class ActionValidatorService {
             }
         } else {
             console.log('Error : Action performed by ', action.player.name, ' was not during its turn');
-            return false;
         }
         return valid;
     }
@@ -40,25 +40,49 @@ export class ActionValidatorService {
         return game.getActivePlayer() === action.player;
     }
     private validatePlaceLetter(action: PlaceLetter, game: Game): boolean {
-        const castAction = action as PlaceLetter;
-        castAction.id;
-        return false;
-    }
-    private validateExchangeLetter(action: ExchangeLetter, game: Game): boolean {
-        const castAction = action as ExchangeLetter;
-
-        const exchangeLetters = new Set<Letter>(castAction.lettersToExchange);
-        const rackLetters = new Set<Letter>(castAction.player.letterRack);
-
-        for (const letter of exchangeLetters) {
-            if (!rackLetters.has(letter)) {
-                // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-                console.log('Invalid exchange : not all letters in letterRack');
-                return false;
-            }
+        if (!this.hasLettersInRack(action.player.letterRack, action.lettersToPlace)) {
+            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Invalid exchange : not all letters in letterRack');
+            return false;
         }
 
-        if (castAction.lettersToExchange.length > game.letterBag.gameLetters.length) {
+        const centerTilePosition: number = Math.floor(NUM_TILES / 2);
+        let hasCenterTile = game.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
+
+        let x = action.placement.x;
+        let y = action.placement.y;
+        let currentTile = game.board.grid[x][y];
+        let numberOfLetterToPlace = action.lettersToPlace.length;
+        while (numberOfLetterToPlace > 0) {
+            if (x >= NUM_TILES || y >= NUM_TILES) {
+                // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+                console.log('Invalid exchange : letters will overflow the grid');
+                return false;
+            }
+
+            if (currentTile.letterObject.char === ' ') {
+                numberOfLetterToPlace--;
+            }
+
+            if (!hasCenterTile) {
+                if (x === centerTilePosition && y === centerTilePosition) {
+                    hasCenterTile = true;
+                }
+            }
+
+            currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? game.board.grid[x][y++] : game.board.grid[x++][y];
+        }
+
+        return hasCenterTile;
+    }
+    private validateExchangeLetter(action: ExchangeLetter, game: Game): boolean {
+        if (!this.hasLettersInRack(action.player.letterRack, action.lettersToExchange)) {
+            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Invalid exchange : not all letters in letterRack');
+            return false;
+        }
+
+        if (action.lettersToExchange.length > game.letterBag.gameLetters.length) {
             // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
             console.log('Invalid exchange : not enough letters in LetterBag');
             return false;
@@ -66,6 +90,36 @@ export class ActionValidatorService {
 
         // console.log('Valid exchange');
         this.sendValidAction(action);
+        return true;
+    }
+    private hasLettersInRack(rackLetters: Letter[], actionLetters: Letter[]): boolean {
+        const actionChars: string[] = [];
+        actionLetters.forEach((value) => {
+            actionChars.push(value.char);
+        });
+
+        const rackChars: string[] = [];
+        rackLetters.forEach((value) => {
+            rackChars.push(value.char);
+        });
+
+        let rIndex = 0;
+        let aIndex = 0;
+
+        while (actionChars.length > 0) {
+            if (actionChars[aIndex] === rackChars[rIndex]) {
+                actionChars.splice(aIndex, 1);
+                rackChars.splice(rIndex, 1);
+                rIndex = 0;
+                aIndex = 0;
+            } else {
+                if (rIndex < rackChars.length) {
+                    rIndex++;
+                } else {
+                    return false;
+                }
+            }
+        }
         return true;
     }
     private validatePassTurn(action: PassTurn, game: Game) {

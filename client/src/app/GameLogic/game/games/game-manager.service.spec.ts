@@ -12,7 +12,9 @@ describe('GameManagerService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('start game shoudl throw error if game is not created first', () => {
-        expect(service.startGame).toThrow(new Error('No game created yet'));
+    it('should throw error if game is not created first', () => {
+        expect(() => {
+            service.startGame();
+        }).toThrow(Error('No game created yet'));
     });
 });
