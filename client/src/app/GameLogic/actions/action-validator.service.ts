@@ -37,7 +37,7 @@ export class ActionValidatorService {
     }
 
     private validateTurn(action: Action, game: Game): boolean {
-        return game.info.getActivePlayer() === action.player;
+        return game.getActivePlayer() === action.player;
     }
     private validatePlaceLetter(action: PlaceLetter, game: Game): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToPlace)) {
