@@ -1,14 +1,14 @@
+import { Action } from '@app/GameLogic/actions/action';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
-import { Action } from './action';
 
 export class ExchangeLetter extends Action {
     // On assume que l'action a ete validee (la reserve contient au moins 7 lettres)
     constructor(player: Player, readonly lettersToExchange: Letter[]) {
         super(player);
     }
-    protected insideExecute(game: Game) {
+    protected perform(game: Game) {
         game.letterBag.drawGameLetters(this.lettersToExchange.length);
         const newLetters: Letter[] = game.letterBag.drawGameLetters(this.lettersToExchange.length);
 

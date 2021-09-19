@@ -72,11 +72,17 @@ export class LetterBag {
         }
         return drawedGameLetters;
     }
+
     addLetter(letter: Letter) {
         this.gameLetters.push(letter);
     }
+
     getRandomInt(max: number) {
         return Math.floor(Math.random() * max);
+    }
+
+    get lettersLeft(): number {
+        return this.gameLetters.length;
     }
 
     get isEmpty(): boolean {

@@ -14,7 +14,7 @@ export class GamePageComponent implements OnInit {
         try {
             this.gameManager.startGame();
         } catch (e) {
-            alert("Pas de partie crée pour l'instant");
+            // alert("Pas de partie crée pour l'instant");
             this.router.navigate(['/']);
         }
     }

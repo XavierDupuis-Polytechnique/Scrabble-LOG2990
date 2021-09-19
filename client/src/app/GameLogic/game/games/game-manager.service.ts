@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
-import { BotService } from '@app/GameLogic/player/bot.service';
+import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -12,17 +13,21 @@ import { GameSettings } from './game-settings.interface';
     providedIn: 'root',
 })
 export class GameManagerService {
-    game: Game;
-    botService: BotService;
-    constructor(private timer: TimerService, private pointCalculator: PointCalculatorService) {}
+    private game: Game;
+    constructor(
+        private botService: BotCreatorService,
+        private timer: TimerService,
+        private pointCalculator: PointCalculatorService,
+        private info: GameInfoService,
+    ) {}
 
     createGame(gameSettings: GameSettings): void {
         this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, new BoardService());
-        // create players
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
+        this.info.receiveGame(this.game);
     }
 
     startGame(): void {
@@ -36,13 +41,14 @@ export class GameManagerService {
     // Change botDifficulty
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
-        const player = new User(playerName);
-        this.botService = new BotService();
+        const user = new User(playerName);
         const bot = this.botService.createBot(playerName, botDifficulty);
-        return [player, bot];
+        this.info.receiveUser(user);
+        return [user, bot];
     }
 
     private allocatePlayers(players: Player[]) {
         this.game.players = players;
+        // this.info = new GameInfoService(this.timer, this.game);
     }
 }
