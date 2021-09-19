@@ -62,5 +62,22 @@ describe('ActionCompilerService', () => {
         expect(service.translate(command)).toBeInstanceOf(PlaceLetter);
     });
 
+    it('#createExchangeLetter should throw error when invalid command exchange', () => {
+        const invalidCommand: Command = {
+            type: CommandType.Exchange,
+        };
+        expect(() => {
+            service.translate(invalidCommand);
+        }).toThrowError();
+    });
+
+    it('#createExchangeLetter should throw error when invalid command place', () => {
+        const invalidCommand: Command = {
+            type: CommandType.Place,
+        };
+        expect(() => {
+            service.translate(invalidCommand);
+        }).toThrowError();
+    });
     // TODO: action compiler exhaustive test
 });
