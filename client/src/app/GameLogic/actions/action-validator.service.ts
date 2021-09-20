@@ -17,7 +17,7 @@ export class ActionValidatorService {
     constructor(private board: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
 
     sendErrorMessage(content: string) {
-        this.messageService.receiveErrorSystemMessage(content);
+        this.messageService.receiveErrorMessage(content);
     }
 
     // TODO: maybe change

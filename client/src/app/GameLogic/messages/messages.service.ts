@@ -15,8 +15,15 @@ export class MessagesService {
     constructor(private commandParser: CommandParserService) {}
 
     receiveMessage(message: Message) {
-        this.commandParser.verifyCommand(message);
-        this.addMessageToLog(message);
+        try {
+            this.commandParser.parse(message);
+            this.addMessageToLog(message);
+        } catch (e) {
+            if (e instanceof Error) {
+                this.addMessageToLog(message);
+                this.receiveError(e as Error);
+            }
+        }
         // TODO put command parser here
     }
 
@@ -28,7 +35,7 @@ export class MessagesService {
         this.addMessageToLog(systemMessage);
     }
 
-    receiveErrorSystemMessage(content: string) {
+    receiveErrorMessage(content: string) {
         const errorMessage = {
             content,
             from: MessagesService.sysErrorName,

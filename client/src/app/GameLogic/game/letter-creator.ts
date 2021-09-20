@@ -2,22 +2,30 @@ import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Letter } from 'src/app/GameLogic/game/letter.interface';
 
 // TODO change
-const INDEXRECTIFIER = 97;
+const INDEX_RECTIFIER = 97;
 export class LetterCreator {
-    indexRectifier = INDEXRECTIFIER;
-    createLetters(letters: string[]) {
+    indexRectifier = INDEX_RECTIFIER;
+    createLetters(chars: string[]) {
         const lettersToExchange: Letter[] = [];
 
-        if (letters === null) return;
-        if (letters.length > 0) {
-            for (let charIndex = 0; charIndex < letters.length; charIndex++) {
-                lettersToExchange[charIndex] = {
-                    char: letters[charIndex],
-                    value: LetterBag.gameLettersValue[letters.charCodeAt(charIndex) - this.indexRectifier],
-                };
-            }
-            return lettersToExchange;
+        if (chars === null) {
+            throw Error('null chars were given');
         }
-        return;
+
+        if (chars.length === 0) {
+            throw Error('No chars were given');
+        }
+
+        for (const char of chars) {
+            if (char.length !== 1) {
+                throw Error('Invalid char entered');
+            }
+            const letter = {
+                char: char.toUpperCase(),
+                value: LetterBag.gameLettersValue[char.charCodeAt(0) - this.indexRectifier],
+            };
+            lettersToExchange.push(letter);
+        }
+        return lettersToExchange;
     }
 }
