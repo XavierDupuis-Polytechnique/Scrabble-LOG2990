@@ -3,9 +3,9 @@ import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { NUM_TILES } from '@app/GameLogic/game/board';
 import { Game } from '@app/GameLogic/game/games/game';
-import { NUM_TILES } from '../game/board';
-import { Letter } from '../game/letter.interface';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 
 @Injectable({
     providedIn: 'root',
@@ -31,7 +31,8 @@ export class ActionValidatorService {
                     throw new Error("Action couldn't be parsed");
             }
         } else {
-            console.log('Error : Action performed by ', action.player.name, ' was not during its turn');
+            // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Error : Action demandé par ', action.player.name, " pendant le tour d'un autre joueur");
         }
         return valid;
     }
@@ -41,8 +42,8 @@ export class ActionValidatorService {
     }
     private validatePlaceLetter(action: PlaceLetter, game: Game): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToPlace)) {
-            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            console.log('Invalid exchange : not all letters in letterRack');
+            // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Erreur : Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
 
@@ -55,8 +56,8 @@ export class ActionValidatorService {
         let numberOfLetterToPlace = action.lettersToPlace.length;
         while (numberOfLetterToPlace > 0) {
             if (x >= NUM_TILES || y >= NUM_TILES) {
-                // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-                console.log('Invalid exchange : letters will overflow the grid');
+                // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+                console.log('Erreur : Commande impossible à réaliser : Implique le déboardement de la grille en ', '(x : ', x, ', y : ', y, ')');
                 return false;
             }
 
@@ -72,23 +73,28 @@ export class ActionValidatorService {
 
             currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? game.board.grid[x][y++] : game.board.grid[x++][y];
         }
-
+        // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+        // console.log(action.player.name, ' PLACE des lettres');
+        if (hasCenterTile) {
+            this.sendValidAction(action);
+            return true;
+        }
+        // return false;
         return hasCenterTile;
     }
     private validateExchangeLetter(action: ExchangeLetter, game: Game): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToExchange)) {
-            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            console.log('Invalid exchange : not all letters in letterRack');
+            // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Erreur : Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
 
         if (action.lettersToExchange.length > game.letterBag.gameLetters.length) {
-            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            console.log('Invalid exchange : not enough letters in LetterBag');
+            // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+            console.log('Erreur : Commande impossible à réaliser : La réserve ne contient pas assez de lettres');
             return false;
         }
-
-        // console.log('Valid exchange');
+        console.log(action.player.name, ' ÉCHANGE des lettres');
         this.sendValidAction(action);
         return true;
     }
@@ -123,9 +129,8 @@ export class ActionValidatorService {
         return true;
     }
     private validatePassTurn(action: PassTurn, game: Game) {
-        const player = action.player;
-        // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-        console.log('PassTurn for ', player.name, ' was validated');
+        // TODO : MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+        console.log(action.player.name, ' PASSE son tour');
         this.sendValidAction(action);
         return true;
     }
