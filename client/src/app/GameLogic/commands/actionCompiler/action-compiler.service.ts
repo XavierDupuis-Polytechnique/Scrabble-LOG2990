@@ -68,9 +68,9 @@ export class ActionCompilerService {
         if (placementArg.length !== 3) {
             throw Error('arg invalid for creating placementSetting');
         }
-        const x = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
-        const yString = placementArg.charAt(1);
-        const y = Number.parseInt(yString, 10);
+        const y = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
+        const xString = placementArg.charAt(1);
+        const x = Number.parseInt(xString, 10) - 1;
         const direction = placementArg.charAt(2).toUpperCase();
         return { x, y, direction };
     }
