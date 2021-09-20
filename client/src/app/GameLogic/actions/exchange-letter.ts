@@ -9,21 +9,23 @@ export class ExchangeLetter extends Action {
         super(player);
     }
     protected perform(game: Game) {
-        game.letterBag.drawGameLetters(this.lettersToExchange.length);
-        const newLetters: Letter[] = game.letterBag.drawGameLetters(this.lettersToExchange.length);
+        const lettersFromBag: Letter[] = game.letterBag.drawGameLetters(this.lettersToExchange.length);
+        const rackLettersToExchange = this.player.getLettersFromRack(this.lettersToExchange);
+        const exchangeLetterSet = new Set(rackLettersToExchange);
+        const nLettersInRack = this.player.letterRack.length;
+        let letterToAddIndex = 0;
+        for (let letterIndex = 0; letterIndex < nLettersInRack; letterIndex++) {
+            const letter = this.player.letterRack[letterIndex];
+            if (exchangeLetterSet.has(letter)) {
+                const newLetter = lettersFromBag[letterToAddIndex];
+                this.player.letterRack[letterIndex] = newLetter;
+                letterToAddIndex++;
+            }
 
-        const exchangeLetterSet = new Set(this.lettersToExchange);
-        const newLetterRack: Letter[] = [];
-
-        for (const letter of this.player.letterRack) {
-            if (!exchangeLetterSet.has(letter)) {
-                newLetterRack.push({ ...letter });
+            if (letterToAddIndex >= lettersFromBag.length) {
+                break;
             }
         }
-        for (const letter of newLetters) {
-            newLetterRack.push({ ...letter });
-        }
-        this.player.letterRack = newLetterRack;
 
         for (const letter of this.lettersToExchange) {
             game.letterBag.addLetter({ ...letter });
