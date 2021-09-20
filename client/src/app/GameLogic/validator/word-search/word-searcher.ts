@@ -1,42 +1,70 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { Tile } from '@app/GameLogic/game/tile';
+import { DictionaryService } from '../dictionary.service';
 
 export class WordSearcher {
-    listOfWord: Tile[][];
+    listOfValidWord: string[]=[];
     neighbours: [number, number][];
     grid: Tile[][];
-    constructor(board: Board) {
+    placementIsValid:boolean=true;
+
+    constructor(board: Board,private dictionaryService:DictionaryService) {
         this.grid = board.grid;
     }
 
+    //Si tous les mots formes sont valides return true;
+    validatePlacement(action:PlaceLetter):boolean{
+        this.searchAdjacentWords(action);
+        return this.placementIsValid;
+    }
+    
     searchAdjacentWords(action: PlaceLetter) {
         const startX = action.placement.x;
         const startY = action.placement.y;
         const direction = action.placement.direction;
         if (direction === 'H') {
             const word = this.getWordHorizontal(startX, startY);
-            this.listOfWord.push(word);
+            this.addWord(word);
         }
 
         if (direction === 'V') {
             const word = this.getWordVertical(startX, startY);
-            this.listOfWord.push(word);
+            this.addWord(word);
         }
 
         if (direction === 'H') {
             for (const neighbour of this.neighbours) {
                 const word = this.getWordVertical(neighbour[0], neighbour[1]);
-                this.listOfWord.push(word);
+                this.addWord(word);
             }
         }
 
         if (direction === 'V') {
             for (const neighbour of this.neighbours) {
                 const word = this.getWordHorizontal(neighbour[0], neighbour[1]);
-                this.listOfWord.push(word);
+                this.addWord(word);
             }
         }
+    }
+    
+    addWord(word:Tile[]){
+        const wordString = this.tileToString(word).toLowerCase();
+        if(this.dictionaryService.isWordInDict(wordString)){
+            this.listOfValidWord.push(wordString);
+        
+        }else{
+            this.placementIsValid = false;
+            throw Error('The word ' + wordString + ' is not in the current dictionary. Placement is invalid');
+        }
+     }
+
+     tileToString(word: Tile[]): string {
+        let wordTemp: string = '';
+        word.forEach((tile) => {
+            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
+        });
+        return wordTemp;
     }
 
     getWordVertical(x: number, y: number) {
@@ -84,7 +112,4 @@ export class WordSearcher {
         }
         return word;
     }
-
-    // until no word or a word is not gramatically valid
-    // word should be >=2 and gramatically valid
 }
