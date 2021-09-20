@@ -2,9 +2,9 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
-const DEFAULT_FONT_SIZE = 24;
+const DEFAULT_FONT_SIZE = 17;
 const MAX_FONT_SIZE = 24;
-const MIN_FONT_SIZE = 24;
+const MIN_FONT_SIZE = 10;
 @Component({
     selector: 'app-board',
     templateUrl: './board.component.html',

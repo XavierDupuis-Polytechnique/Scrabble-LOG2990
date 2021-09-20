@@ -13,17 +13,28 @@ mat-grid-list {
     justify-content: center;
     // border: 2px solid black;
 }
-
+.Column {
+    height: 100%;
+    display: grid;
+    grid-template-columns: 90% 10%;
+    grid-template-areas: 'Grid Zoom';
+}
 .boardContainer {
     display: inherit;
-    height: fit-content;
-    padding: 2%;
+    height: max-content;
+    //padding: 1%;
+    margin-left: 15%;
+    margin-right: 15%;
+    max-width: 66vmin;
     // border: 10px solid rgb(56, 47, 36);
     border: 10px solid rgb(16, 0, 7);
     // background-color: rgb(95, 69, 44);
     background-color: rgb(129, 82, 63);
+    grid-area: Grid;
 }
 .zoomPolice {
+    grid-area: Zoom;
+    justify-content: center;
     // font-size: 80%;
     // margin-left: 75%;
     // margin-top: 1%;

@@ -1,13 +1,12 @@
 .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 3fr 2fr 1fr;
     gap: 0px 0px;
     grid-template-areas:
         'Player Board Board Board Board Info'
-        'Player Board Board Board Board Info'
         'Player Board Board Board Board Chat'
-        'Player Horse Horse Horse horse Chat';
+        'Player Horse Horse Horse Horse Chat';
     height: 100vmin;
 }
 
@@ -26,19 +25,19 @@ app-chat-box {
 }
 app-board {
     grid-area: Board;
-    padding: 3%; //TODO:Tochange
+    padding: 1%; //TODO:Tochange
     border: 2px solid black;
-
+    min-width: 50vw;
     // border-style: solid;
 }
 
 app-horse {
     grid-area: Horse;
     border: 1px solid grey;
-    // border-style: solid;
+    margin: 1%;
 }
 app-player-info {
-    grid-area: Chat;
+    grid-area: Player;
     padding: 1%;
     border: 1px solid grey; //A Enlever
 }
