@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
+import { Player } from '@app/GameLogic/player/player';
+import { User } from '@app/GameLogic/player/user';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
 import { Dictionary } from '../dictionary';
 import { DictionaryService } from '../dictionary.service';
 
 class mockDictionaryService extends DictionaryService {
-    mockDictionary: Dictionary = { title: 'dictionnaire', description: 'mots', words: ['bateau', 'crayon', 'table', 'butte', 'allo', 'au'] };
+    mockDictionary: Dictionary = { title: 'dictionnaire', description: 'mots', words: ['bateau', 'crayon', 'table', 'butte', 'allo', 'ou'] };
     constructor() {
         super();
     }
@@ -32,6 +36,7 @@ class mockBoard {
         this.grid[0][1].letterObject = { char: 'L', value: 1 };
         this.grid[0][2].letterObject = { char: 'L', value: 1 };
         this.grid[0][3].letterObject = { char: 'O', value: 1 };
+        this.grid[1][3].letterObject = { char: 'U', value: 1 };
     }
 }
 
@@ -92,18 +97,17 @@ describe('WordSearcher', () => {
     });
 
     it('should find all neighbours if they are all valid words', () => {
-        //const player: Player = new User('Max');
-        // const letters: Letter[] = [{ char: 'U', value: 1 }];
-        // const place: PlacementSetting = { x: 3, y: 1, direction: 'V' };
+        const player: Player = new User('Max');
+        const letters: Letter[] = [{ char: 'U', value: 1 }];
+        const place: PlacementSetting = { x: 3, y: 1, direction: 'V' };
 
-        // const action = new PlaceLetter(player, letters, place);
-        // const tile: Tile[] = [{ letterObject: { char: 'U', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 }];
-        // board.addWordToBoard(tile, place);
-        console.log(wordSearcher.grid[0][3].letterObject);
-        wordSearcher.grid[1][3].letterObject = { char: 'U', value: 1 };
-        let word = wordSearcher.getWordHorizontal(0, 0);
-        // wordSearcher.searchAdjacentWords(action);
-        console.log('Word Validator:', word);
+        const action = new PlaceLetter(player, letters, place);
+
+        // wordSearcher.grid[1][3].letterObject = { char: 'U', value: 1 };
+        // let word = wordSearcher.getWordHorizontal(0, 0);
+
+        wordSearcher.searchAdjacentWords(action);
+        console.log('Word Validator:', wordSearcher.listOfValidWord);
         expect(wordSearcher.listOfValidWord).toContain('ou');
     });
 
