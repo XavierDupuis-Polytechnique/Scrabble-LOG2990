@@ -1,10 +1,11 @@
+import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
-import { TimerService } from '../timer/timer.service';
 import { Log2990Game } from './log2990-game';
 
 describe('Log2990Game', () => {
     it('should create an instance', () => {
-        expect(new Log2990Game(6000, new TimerService(), new PointCalculatorService(), new BoardService())).toBeTruthy();
+        expect(new Log2990Game(DEFAULT_TIME_PER_TURN, new TimerService(), new PointCalculatorService(), new BoardService())).toBeTruthy();
     });
 });

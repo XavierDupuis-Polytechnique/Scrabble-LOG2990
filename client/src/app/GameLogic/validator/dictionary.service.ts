@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
 
 @Injectable({
     providedIn: 'root',
@@ -23,7 +23,7 @@ export class DictionaryService {
         });
     }
 
-    isWordValid(word: string): boolean {
+    isWordInDict(word: string): boolean {
         return this.dynamicWordList.has(word);
     }
 
@@ -41,7 +41,7 @@ export class DictionaryService {
     // TODO to be removed
 
     // let dictService = new DictionaryService();
-    // console.log(dictService.isWordValid('test'));
+    // console.log(dictService.isWordInDict('test'));
     // console.log('test1');
     // let test1 = dictService.wordGen('test');
     // let test2 = dictService.wordGen('allo');

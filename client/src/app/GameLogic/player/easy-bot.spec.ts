@@ -6,14 +6,15 @@ describe('EasyBot', () => {
     let spyExchange: jasmine.Spy;
     let spyPass: jasmine.Spy;
     beforeEach(() => {
-        easyBot = new EasyBot('Tim');
+        // easyBot = new EasyBot('Tim');
         spyPlay = spyOn(easyBot, 'play');
         spyExchange = spyOn(easyBot, 'exchange');
         spyPass = spyOn(easyBot, 'pass');
     });
 
     it('should create an instance', () => {
-        expect(new EasyBot('Tim')).toBeTruthy();
+        // new EasyBot('Tim')
+        expect(undefined).toBeTruthy();
     });
 
     it('should call actions based on setting', () => {

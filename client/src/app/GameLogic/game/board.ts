@@ -1,6 +1,6 @@
 import { Tile } from './tile';
-const NUM_TILES = 15;
-const ASCII_CODE = 65;
+export const NUM_TILES = 15;
+export const ASCII_CODE = 65;
 interface BoardSettingPosition {
     x: number;
     y: string;
