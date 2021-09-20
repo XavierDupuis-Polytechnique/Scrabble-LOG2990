@@ -21,10 +21,11 @@ export class GameManagerService {
         private pointCalculator: PointCalculatorService,
         private info: GameInfoService,
         private messageService: MessagesService,
+        private boardService: BoardService,
     ) {}
 
     createGame(gameSettings: GameSettings): void {
-        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, new BoardService());
+        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, this.boardService);
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
