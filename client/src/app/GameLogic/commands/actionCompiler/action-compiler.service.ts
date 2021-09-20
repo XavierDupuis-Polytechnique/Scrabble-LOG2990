@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
@@ -40,12 +40,13 @@ export class ActionCompilerService {
         return new PassTurn(user);
     }
 
-    private createExchangeLetter(user: User, letters: string[] | undefined): ExchangeLetter {
+    private createExchangeLetter(user: User, args: string[] | undefined): ExchangeLetter {
         // TODO: user.getLettersFromRack(letters);
-        if (!letters) {
+        if (!args) {
             throw new Error('No argument was given for exchange letter creation');
         }
-
+        console.log(args);
+        const letters = args[0].split('');
         const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters);
         console.log(lettersToExchange);
         return new ExchangeLetter(user, lettersToExchange);
@@ -56,6 +57,20 @@ export class ActionCompilerService {
         if (!args) {
             throw new Error('No argument was given for place letter creation');
         }
-        return new PlaceLetter(user, [], { x: 0, y: 0, direction: 'up' });
+        console.log(args);
+        const placementSettings = this.createPlacementSettings(args[0]);
+        // const lettersToPlace = ;
+        return new PlaceLetter(user, [], placementSettings);
+    }
+
+    private createPlacementSettings(placementArg: string): PlacementSetting {
+        if (placementArg.length !== 3) {
+            throw Error('arg invalid for creating placementSetting');
+        }
+        const x = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
+        const yString = placementArg.charAt(1);
+        const y = Number.parseInt(yString, 10);
+        const direction = placementArg.charAt(2).toUpperCase();
+        return { x, y, direction };
     }
 }

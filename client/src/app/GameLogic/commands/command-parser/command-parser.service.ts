@@ -29,9 +29,8 @@ export class CommandParserService {
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
             if (Object.values(CommandType).includes(commandCondition as CommandType)) {
-                const args = toVerify.slice(1, 3);
+                const args = toVerify.slice(1, toVerify.length);
                 const command = this.createCommand(args, commandCondition as CommandType);
-                console.log(command);
                 this.sendCommand(command);
                 return true;
             }

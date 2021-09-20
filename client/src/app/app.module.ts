@@ -70,7 +70,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
                 };
             },
             deps: [CommandExecuterService],
-            multi: true
+            multi: true,
         },
     ],
     bootstrap: [AppComponent],
