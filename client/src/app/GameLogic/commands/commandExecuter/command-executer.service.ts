@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
+import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 
@@ -17,10 +18,17 @@ export class CommandExecuterService {
     }
 
     constructor(
+        private commandParser: CommandParserService,
         private actionCompilerService: ActionCompilerService,
-        private messageService: MessagesService,
         private actionValidator: ActionValidatorService,
-    ) {}
+        private messageService: MessagesService,
+    ) {
+        console.log('command executer is created');
+        this.commandParser.parsedCommand$.subscribe((command) => {
+            console.log('received command', command);
+            this.execute(command);
+        });
+    }
 
     execute(command: Command) {
         const type = command.type;
@@ -60,6 +68,5 @@ export class CommandExecuterService {
         } catch (e) {
             this.messageService.receiveError(e as Error);
         }
-        return;
     }
 }

@@ -5,6 +5,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
 
@@ -12,6 +13,8 @@ import { User } from '@app/GameLogic/player/user';
     providedIn: 'root',
 })
 export class ActionCompilerService {
+    private letterFactory: LetterCreator = new LetterCreator();
+
     constructor(private gameInfo: GameInfoService) {}
 
     // TODO: use player service to feed new action and get user
@@ -42,7 +45,9 @@ export class ActionCompilerService {
         if (!letters) {
             throw new Error('No argument was given for exchange letter creation');
         }
-        const lettersToExchange: Letter[] = [];
+
+        const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters);
+        console.log(lettersToExchange);
         return new ExchangeLetter(user, lettersToExchange);
     }
 
