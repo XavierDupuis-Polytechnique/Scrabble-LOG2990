@@ -3,7 +3,7 @@ import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { NUM_TILES } from '@app/GameLogic/game/board';
+// import { NUM_TILES } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -55,38 +55,44 @@ export class ActionValidatorService {
     }
 
     private validatePlaceLetter(action: PlaceLetter): boolean {
-        if (!this.hasLettersInRack(action.player.letterRack, action.lettersToPlace)) {
-            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            this.sendErrorMessage('Invalid exchange : not all letters in letterRack');
+        // TODO: uncomment
+        this.sendValidAction(action);
+        if (this.board.board.grid) {
+            return true;
         }
+        return true;
+        // if (!this.hasLettersInRack(action.player.letterRack, action.lettersToPlace)) {
+        //     // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+        //     this.sendErrorMessage('Invalid exchange : not all letters in letterRack');
+        // }
 
-        const centerTilePosition: number = Math.floor(NUM_TILES / 2);
-        const board = this.board.board;
-        let hasCenterTile = board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
+        // const centerTilePosition: number = Math.floor(NUM_TILES / 2);
+        // const board = this.board.board;
+        // let hasCenterTile = board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
 
-        let x = action.placement.x;
-        let y = action.placement.y;
-        let currentTile = board.grid[x][y];
-        let numberOfLetterToPlace = action.lettersToPlace.length;
-        while (numberOfLetterToPlace > 0) {
-            if (x >= NUM_TILES || y >= NUM_TILES) {
-                // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-                throw Error('Invalid exchange : letters will overflow the grid');
-            }
+        // let x = action.placement.x;
+        // let y = action.placement.y;
+        // let currentTile = board.grid[x][y];
+        // let numberOfLetterToPlace = action.lettersToPlace.length;
+        // while (numberOfLetterToPlace > 0) {
+        //     if (x >= NUM_TILES || y >= NUM_TILES) {
+        //         // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
+        //         throw Error('Invalid exchange : letters will overflow the grid');
+        //     }
 
-            if (currentTile.letterObject.char === ' ') {
-                numberOfLetterToPlace--;
-            }
+        //     if (currentTile.letterObject.char === ' ') {
+        //         numberOfLetterToPlace--;
+        //     }
 
-            if (!hasCenterTile) {
-                if (x === centerTilePosition && y === centerTilePosition) {
-                    hasCenterTile = true;
-                }
-            }
+        //     if (!hasCenterTile) {
+        //         if (x === centerTilePosition && y === centerTilePosition) {
+        //             hasCenterTile = true;
+        //         }
+        //     }
 
-            currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? board.grid[x][y++] : board.grid[x++][y];
-        }
-        return hasCenterTile;
+        //     currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? board.grid[x][y++] : board.grid[x++][y];
+        // }
+        // return hasCenterTile;
     }
 
     private validateExchangeLetter(action: ExchangeLetter): boolean {

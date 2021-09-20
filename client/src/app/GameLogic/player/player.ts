@@ -57,6 +57,34 @@ export abstract class Player {
         return lettersFromRack;
     }
 
+    removeLetterFromRack(letters: Letter[]) {
+        console.log('letters to remove', letters);
+        const charIndexes: Map<string, number[]> = new Map();
+        for (let rackIndex = 0; rackIndex < this.letterRack.length; rackIndex++) {
+            const char = this.letterRack[rackIndex].char;
+            const indexes = charIndexes.get(char);
+            if (indexes) {
+                indexes.push(rackIndex);
+            } else {
+                charIndexes.set(char, [rackIndex]);
+            }
+        }
+        console.log(charIndexes);
+        for (const letter of letters) {
+            const char = letter.char;
+            const indexes = charIndexes.get(char);
+            if (!indexes) {
+                throw Error('The letter you trying to remove is not in letter rack');
+            }
+            const indexToRemove = indexes.shift();
+            if (indexToRemove === undefined) {
+                throw Error('The letter you trying to remove is not in letter rack');
+            }
+            this.letterRack.splice(indexToRemove, 1);
+        }
+        console.log('letterRack', this.letterRack);
+    }
+
     get isLetterRackEmpty(): boolean {
         return this.letterRack.length === 0;
     }
