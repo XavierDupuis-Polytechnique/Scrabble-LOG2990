@@ -34,6 +34,9 @@ export class WordSearcher {
 
     addWord(word: Tile[]) {
         const wordString = this.tileToString(word).toLowerCase();
+        if (wordString === '') {
+            throw Error('No word was found');
+        }
         if (this.dictionaryService.isWordInDict(wordString)) {
             this.listOfValidWord.push(wordString);
         } else {
@@ -90,9 +93,9 @@ export class WordSearcher {
         let currentTile = this.grid[y][x];
         while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x, y)) {
             currentTile = this.grid[y][x];
-            y += 1;
+            y -= 1;
         }
-        y -= 1;
+        y += 1;
         const firstLetter = this.grid[y][x];
         currentTile = firstLetter;
         while (currentTile.letterObject.char !== ' ') {
