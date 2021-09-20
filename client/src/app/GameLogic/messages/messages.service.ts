@@ -28,6 +28,14 @@ export class MessagesService {
         this.addMessageToLog(systemMessage);
     }
 
+    receiveErrorSystemMessage(content: string) {
+        const errorMessage = {
+            content,
+            from: MessagesService.sysErrorName,
+        };
+        this.addMessageToLog(errorMessage);
+    }
+
     receiveError(error: Error) {
         const errorMessage = {
             content: error.message,

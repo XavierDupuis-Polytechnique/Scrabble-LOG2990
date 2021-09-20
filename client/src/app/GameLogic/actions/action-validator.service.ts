@@ -6,6 +6,7 @@ import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { NUM_TILES } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BoardService } from '@app/services/board.service';
 
 // TODO: put throw error
@@ -13,30 +14,32 @@ import { BoardService } from '@app/services/board.service';
     providedIn: 'root',
 })
 export class ActionValidatorService {
-    constructor(private board: BoardService, private gameInfo: GameInfoService) {}
+    constructor(private board: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
+
+    sendErrorMessage(content: string) {
+        this.messageService.receiveErrorSystemMessage(content);
+    }
 
     // TODO: maybe change
     validateAction(action: Action): boolean {
-        let valid = false;
         if (this.validateTurn(action)) {
-            switch (true) {
-                case action instanceof PlaceLetter:
-                    valid = this.validatePlaceLetter(action as PlaceLetter);
-                    break;
-                case action instanceof ExchangeLetter:
-                    valid = this.validateExchangeLetter(action as ExchangeLetter);
-                    break;
-                case action instanceof PassTurn:
-                    valid = this.validatePassTurn(action as PassTurn);
-                    break;
-                case action instanceof Action:
-                default:
-                    throw Error("Action couldn't be parsed");
+            if (action instanceof PlaceLetter) {
+                return this.validatePlaceLetter(action as PlaceLetter);
             }
-        } else {
-            throw Error('Error : Action performed by ' + action.player.name + ' was not during its turn');
+
+            if (action instanceof ExchangeLetter) {
+                return this.validateExchangeLetter(action as ExchangeLetter);
+            }
+
+            if (action instanceof PassTurn) {
+                return this.validatePassTurn(action as PassTurn);
+            }
+
+            throw Error("Action couldn't be validated");
         }
-        return valid;
+        const content = 'Error : Action performed by ' + action.player.name + ' was not during its turn';
+        this.sendErrorMessage(content);
+        return false;
     }
 
     sendAction(action: Action) {
@@ -54,7 +57,7 @@ export class ActionValidatorService {
     private validatePlaceLetter(action: PlaceLetter): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToPlace)) {
             // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            throw Error('Invalid exchange : not all letters in letterRack');
+            this.sendErrorMessage('Invalid exchange : not all letters in letterRack');
         }
 
         const centerTilePosition: number = Math.floor(NUM_TILES / 2);
@@ -89,12 +92,14 @@ export class ActionValidatorService {
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToExchange)) {
             // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            throw Error('Invalid exchange : not all letters in letterRack');
+            this.sendErrorMessage('Invalid exchange : not all letters in letterRack');
+            return false;
         }
 
         if (action.lettersToExchange.length > this.gameInfo.numberOfLettersRemaining) {
             // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            throw Error('Invalid exchange : not enough letters in LetterBag');
+            this.sendErrorMessage('Invalid exchange : not enough letters in LetterBag');
+            return false;
         }
 
         // console.log('Valid exchange');
@@ -142,7 +147,7 @@ export class ActionValidatorService {
     }
 
     private sendValidAction(action: Action) {
-        // TODO: change with player service;
-        action.player.action$.next(action);
+        const player = action.player;
+        player.play(action);
     }
 }
