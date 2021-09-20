@@ -101,8 +101,7 @@ export class ActionValidatorService {
             this.sendErrorMessage('Invalid exchange : not enough letters in LetterBag');
             return false;
         }
-
-        // console.log('Valid exchange');
+        console.log(action.player.name, ' ÉCHANGE des lettres');
         this.sendValidAction(action);
         return true;
     }
