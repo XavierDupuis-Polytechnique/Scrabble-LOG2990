@@ -103,6 +103,7 @@ export class Board {
             this.grid[i] = [];
             for (let j = 0; j < NUM_TILES; j++) {
                 this.grid[i][j] = new Tile();
+                this.grid[i][j].letterObject = { char: ' ', value: 1 };
             }
         }
 
