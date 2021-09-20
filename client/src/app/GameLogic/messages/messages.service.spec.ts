@@ -4,13 +4,13 @@ import { inject, TestBed } from '@angular/core/testing';
 import { MessagesService } from './messages.service';
 
 describe('Service: Messages', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [MessagesService]
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [MessagesService],
+        });
     });
-  });
 
-  it('should ...', inject([MessagesService], (service: MessagesService) => {
-    expect(service).toBeTruthy();
-  }));
+    it('should ...', inject([MessagesService], (service: MessagesService) => {
+        expect(service).toBeTruthy();
+    }));
 });

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
+import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 // import { verify } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
 import { Message } from './message.interface';
-import { CommandParserService } from '@app/pages/game-page/chat-box/command-parser/command-parser.service';
 @Injectable({
     providedIn: 'root',
 })
 export class MessagesService {
+    static readonly sysName = 'System';
+    static readonly sysErrorName = 'SystemError';
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
@@ -14,8 +16,37 @@ export class MessagesService {
 
     receiveMessage(message: Message) {
         this.commandParser.verifyCommand(message);
-        this.messagesLog.push(message);
-        this.messages$.next(this.messagesLog);
+        this.addMessageToLog(message);
         // TODO put command parser here
+    }
+
+    receiveSystemMessage(content: string) {
+        const systemMessage: Message = {
+            content,
+            from: MessagesService.sysName,
+        };
+        this.addMessageToLog(systemMessage);
+    }
+
+    receiveErrorSystemMessage(content: string) {
+        const errorMessage = {
+            content,
+            from: MessagesService.sysErrorName,
+        };
+        this.addMessageToLog(errorMessage);
+    }
+
+    receiveError(error: Error) {
+        const errorMessage = {
+            content: error.message,
+            from: MessagesService.sysErrorName,
+        };
+        this.addMessageToLog(errorMessage);
+    }
+
+    private addMessageToLog(message: Message) {
+        const messageCopy = { ...message };
+        this.messagesLog.push(messageCopy);
+        this.messages$.next(this.messagesLog);
     }
 }
