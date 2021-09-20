@@ -1,6 +1,7 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { Tile } from '@app/GameLogic/game/tile';
+import { DictionaryService } from '../dictionary.service';
 
 export class WordSearcher {
     listOfValidWord: string[] = [];
@@ -8,7 +9,7 @@ export class WordSearcher {
     grid: Tile[][];
     placementIsValid: boolean = true;
 
-    constructor(board: Board /*private dictionaryService: DictionaryService*/) {
+    constructor(board: Board, private dictionaryService: DictionaryService) {
         this.grid = board.grid;
     }
 
@@ -47,7 +48,8 @@ export class WordSearcher {
         }
 
         if (direction === 'V') {
-            for (const neighbour of this.neighbours) {
+            let neighbourSet = new Set(this.neighbours);
+            for (const neighbour of neighbourSet) {
                 const word = this.getWordHorizontal(neighbour[0], neighbour[1]);
                 this.addWord(word);
             }
@@ -56,13 +58,13 @@ export class WordSearcher {
 
     addWord(word: Tile[]) {
         const wordString = this.tileToString(word).toLowerCase();
-        // if (this.dictionaryService.isWordInDict(wordString)) {
-        //     this.listOfValidWord.push(wordString);
+        if (this.dictionaryService.isWordInDict(wordString)) {
+            this.listOfValidWord.push(wordString);
+        }
         // } else {
         //     this.placementIsValid = false;
         //     throw Error('The word ' + wordString + ' is not in the current dictionary. Placement is invalid');
         // }
-        this.listOfValidWord.push(wordString);
     }
 
     tileToString(word: Tile[]): string {
@@ -84,6 +86,9 @@ export class WordSearcher {
         const firstLetter = this.grid[y][x];
         currentTile = firstLetter;
         while (currentTile.letterObject.char !== ' ') {
+            if (typeof (currentTile.letterObject === undefined)) {
+                throw Error('LetterObject undefined');
+            }
             word.push(currentTile);
             if (this.grid[y][x - 1].letterObject.char !== ' ') {
                 this.neighbours.push([x - 1, y]);
@@ -93,21 +98,25 @@ export class WordSearcher {
             y += 1;
             currentTile = this.grid[y][x];
         }
-
+        console.log('WordV: ', word);
         return word;
     }
 
     getWordHorizontal(x: number, y: number) {
         let word: Tile[] = [];
         let currentTile = this.grid[y][x];
-        while (currentTile.letterObject.char !== ' ') {
+        while (currentTile.letterObject.char !== ' ' && x >= 0 && y >= 0) {
             currentTile = this.grid[y][x];
-            x += 1;
+            x -= 1;
         }
-        x -= 1;
+        x += 1;
         const firstLetter = this.grid[y][x];
         currentTile = firstLetter;
+        console.log('current:', currentTile);
         while (currentTile.letterObject.char !== ' ') {
+            if (typeof (currentTile.letterObject === undefined)) {
+                throw Error('LetterObject undefined');
+            }
             word.push(currentTile);
             if (this.grid[y - 1][x].letterObject.char !== ' ') {
                 this.neighbours.push([x, y - 1]);
@@ -117,6 +126,7 @@ export class WordSearcher {
             x += 1;
             currentTile = this.grid[y][x];
         }
+        console.log('WordH: ', word);
         return word;
     }
 }
