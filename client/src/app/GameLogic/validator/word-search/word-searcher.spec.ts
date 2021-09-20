@@ -1,11 +1,11 @@
-import { TestBed } from '@angular/core/testing';
+import { Board } from '@app/GameLogic/game/board';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
 
 describe('WordSearcher', () => {
     let wordSearcher: WordSearcher;
-
+    const board: Board = new Board();
     beforeEach(() => {
-        wordSearcher = TestBed.inject(WordSearcher);
+        wordSearcher = new WordSearcher(board);
     });
 
     it('should be created', () => {

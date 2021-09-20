@@ -6,15 +6,28 @@ import { DictionaryService } from '../dictionary.service';
     providedIn: 'root',
 })
 export class WordValidatorService {
-    wordTemp: String;
-    constructor(dictionnary: DictionaryService) {}
+    constructor(private dictionary: DictionaryService) {}
 
-    isAWord() {}
-
-    tileToString(word: Tile[]): String {
-        word.forEach((letter) => {
-            this.wordTemp.concat(letter.letterObject.char.toString());
-        });
-        return this.wordTemp;
+    isAWord(word: Tile[]): boolean {
+        return this.dictionary.isWordInDict(this.tileToString(word).toLowerCase());
     }
+
+    tileToString(word: Tile[]): string {
+        let wordTemp: string = '';
+        word.forEach((tile) => {
+            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
+        });
+        return wordTemp;
+    }
+    // isAWord(word: Word): boolean {
+    //     return this.dictionary.isWordInDict(this.tileToString(word));
+    // }
+
+    // tileToString(word: Word): string {
+    //     let wordTemp: string = '';
+    //     word.letters.forEach((letter) => {
+    //         wordTemp.concat(letter.letterObject.char);
+    //     });
+    //     return wordTemp;
+    // }
 }
