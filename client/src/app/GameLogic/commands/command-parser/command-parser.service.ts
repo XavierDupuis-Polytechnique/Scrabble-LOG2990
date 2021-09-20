@@ -34,15 +34,22 @@ export class CommandParserService {
         if (commandCondition[0] === '!') {
             const commandType = commandCondition as CommandType;
             if (Object.values(CommandType).includes(commandType)) {
-                const args = toVerify.slice(1, toVerify.length);
-                const command = this.createCommand(args, commandCondition as CommandType);
+                let args = toVerify.slice(1, toVerify.length);
                 const errorSyntax = 'erreur de syntax';
                 if (commandType === CommandType.Place) {
                     if (args[0].length === PLACE_LETTER_ARG_SIZE) {
                         const row = args[0].charCodeAt(0);
-                        const col = Number(args[0][1] + args[0][2]);
-                        const direction = args[0].charCodeAt(3);
-
+                        let col;
+                        const direction = args[0].charCodeAt(args[0].length - 1);
+                        // Verifie s'il s'agit d'un axxv ou axv
+                        if (args[0][2].charCodeAt(0) < CHARACTER_H) {
+                            col = Number(args[0][1] + args[0][2]);
+                        } else {
+                            col = Number(args[0][1]);
+                        }
+                        const word = args[args.length - 1];
+                        args = [];
+                        args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
                         if (row > 'o'.charCodeAt(0) && row < 'a'.charCodeAt(0)) {
                             // si depasse 'o' et inferieur a 'a'
                             throw Error(errorSyntax + ': ligne hors champ');
@@ -58,6 +65,8 @@ export class CommandParserService {
                         throw Error(errorSyntax + ': les paramètres sont invalide');
                     }
                 }
+                const command = this.createCommand(args, commandCondition as CommandType);
+                console.log(command);
                 this.sendCommand(command);
                 return true;
             }
