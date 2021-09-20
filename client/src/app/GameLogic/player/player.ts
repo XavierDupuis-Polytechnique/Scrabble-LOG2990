@@ -58,7 +58,6 @@ export abstract class Player {
     }
 
     removeLetterFromRack(letters: Letter[]) {
-        console.log('letters to remove', letters);
         const charIndexes: Map<string, number[]> = new Map();
         for (let rackIndex = 0; rackIndex < this.letterRack.length; rackIndex++) {
             const char = this.letterRack[rackIndex].char;
@@ -69,7 +68,7 @@ export abstract class Player {
                 charIndexes.set(char, [rackIndex]);
             }
         }
-        console.log(charIndexes);
+        const indexesToRemove: number[] = [];
         for (const letter of letters) {
             const char = letter.char;
             const indexes = charIndexes.get(char);
@@ -80,9 +79,12 @@ export abstract class Player {
             if (indexToRemove === undefined) {
                 throw Error('The letter you trying to remove is not in letter rack');
             }
-            this.letterRack.splice(indexToRemove, 1);
+            indexesToRemove.push(indexToRemove);
         }
-        console.log('letterRack', this.letterRack);
+        indexesToRemove.sort();
+        while (indexesToRemove.length) {
+            this.letterRack.splice(indexesToRemove.pop() as number, 1);
+        }
     }
 
     get isLetterRackEmpty(): boolean {
