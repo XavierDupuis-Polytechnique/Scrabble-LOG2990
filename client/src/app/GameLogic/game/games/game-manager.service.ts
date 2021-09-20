@@ -38,6 +38,10 @@ export class GameManagerService {
         this.game.start();
     }
 
+    stopGame(): void {
+        this.timer.stop();
+        this.game = {} as Game;
+    }
     // Change botDifficulty
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
