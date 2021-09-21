@@ -12,7 +12,7 @@ class mockDictionaryService extends DictionaryService {
     mockDictionary: Dictionary = {
         title: 'dictionnaire',
         description: 'mots',
-        words: ['bateau', 'crayon', 'table', 'butte', 'allo', 'ou', 'mi', 'il', 'ma'],
+        words: ['bateau', 'crayon', 'table', 'butte', 'allo', 'ou', 'mi', 'il', 'ma', 'elle'],
     };
     constructor() {
         super();
@@ -43,6 +43,12 @@ class mockBoard {
         this.grid[1][2].letterObject = { char: 'L', value: 1 };
         this.grid[1][3].letterObject = { char: 'O', value: 1 };
         this.grid[2][3].letterObject = { char: 'U', value: 1 };
+
+        this.grid[4][1].letterObject = { char: 'E', value: 1 };
+        this.grid[4][2].letterObject = { char: 'L', value: 1 };
+        this.grid[4][3].letterObject = { char: 'L', value: 1 };
+        this.grid[4][4].letterObject = { char: 'E', value: 1 };
+        console.log(this.grid);
     }
 }
 
@@ -115,32 +121,32 @@ describe('WordSearcher', () => {
         console.log('Word Validator:', wordSearcher.listOfValidWord);
         expect(wordSearcher.listOfValidWord).toContain('ma');
     });
-    //TODO:
-    // it('should return all neighbours if they are all valid words', () => {
-    //     const wordsToReturn: string[] = ['ma', 'il', 'mi'];
-    //     const player: Player = new User('Max');
-    //     const letters: Letter[] = [
-    //         { char: 'M', value: 1 },
-    //         { char: 'I', value: 1 },
-    //     ];
-    //     const place: PlacementSetting = { x: 0, y: 0, direction: 'H' };
-    //     const action = new PlaceLetter(player, letters, place);
+    TODO: it('should return all neighbours if they are all valid words', () => {
+        const wordsToReturn: string[] = ['mi', 'ma', 'il'];
+        const player: Player = new User('Max');
+        const letters: Letter[] = [
+            { char: 'M', value: 1 },
+            { char: 'I', value: 1 },
+        ];
+        const place: PlacementSetting = { x: 0, y: 0, direction: 'H' };
+        const action = new PlaceLetter(player, letters, place);
 
-    //     wordSearcher.searchAdjacentWords(action);
-    //     for (const word of wordsToReturn) {
-    //         expect(wordSearcher.listOfValidWord.forEach()).toBe(word);
-    //     }
-    // });
+        wordSearcher.searchAdjacentWords(action);
 
-    // it('should add word to list if word is valid on board', () => {
-    //     //Mot allo a la poisition (0,0) on ajoute u(4,0);
-    //     const player: Player = new User('Max');
-    //     const letters: Letter[] = [{ char: 'U', value: 1 }];
-    //     const place: PlacementSetting = { x: 3, y: 1, direction: 'H' };
+        expect(wordSearcher.listOfValidWord[0]).toEqual(wordsToReturn[0]);
+        expect(wordSearcher.listOfValidWord[1]).toEqual(wordsToReturn[1]);
+        expect(wordSearcher.listOfValidWord[2]).toEqual(wordsToReturn[2]);
+    });
 
-    //     const action = new PlaceLetter(player, letters, place);
+    it('should add word to list if word is valid on board', () => {
+        //Mot allo a la poisition (0,0) on ajoute u(4,0);
+        const player: Player = new User('Max');
+        const letters: Letter[] = [{ char: 'L', value: 1 }];
+        const placement: PlacementSetting = { x: 3, y: 4, direction: 'H' };
 
-    //     wordSearcher.validatePlacement(action);
-    //     expect(wordSearcher.listOfValidWord).toContain('ou'); //Et regarder pour allo
-    // });
+        const action = new PlaceLetter(player, letters, placement);
+
+        wordSearcher.validatePlacement(action);
+        expect(wordSearcher.listOfValidWord).toContain('elle');
+    });
 });

@@ -63,6 +63,7 @@ export class WordSearcher {
         const startY = action.placement.y;
         const direction = action.placement.direction;
         if (direction === 'H') {
+            //TODO:change to enum
             const word = this.getWordHorizontal(startX, startY);
             this.addWord(word);
         }
@@ -92,8 +93,8 @@ export class WordSearcher {
         let word: Tile[] = [];
         let currentTile = this.grid[y][x];
         while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x, y)) {
-            currentTile = this.grid[y][x];
             y -= 1;
+            currentTile = this.grid[y][x];
         }
         y += 1;
         const firstLetter = this.grid[y][x];
@@ -120,9 +121,12 @@ export class WordSearcher {
     getWordHorizontal(x: number, y: number) {
         let word: Tile[] = [];
         let currentTile = this.grid[y][x];
-        while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x, y)) {
-            currentTile = this.grid[y][x];
+        while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x - 1, y)) {
+            //condition est pas bonne
             x -= 1;
+            currentTile = this.grid[y][x];
+            console.log('currentTile', currentTile);
+            console.log('X: ', x);
         }
         x += 1;
         const firstLetter = this.grid[y][x];
