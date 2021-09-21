@@ -1,5 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -75,6 +76,9 @@ export class Game {
         } else {
             this.consecutivePass = 0;
         }
+        if (action instanceof PlaceLetter) {
+            // calculer points du active player
+        }
     }
 
     private pickFirstPlayer() {
@@ -118,10 +122,8 @@ export class Game {
     private displayLettersLeft() {
         console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            if (!player.isLetterRackEmpty) {
-                // TODO Envoyer dans la boite de communication
-                // console.log(player.name, ':', player.letterRack);
-            }
+            // TODO Envoyer dans la boite de communication
+            console.log(player.name, ':', player.letterRack);
         }
     }
 

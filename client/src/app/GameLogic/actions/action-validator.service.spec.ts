@@ -12,12 +12,13 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
+import { TimerService } from '../game/timer/timer.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -70,6 +71,8 @@ describe('ActionValidatorService', () => {
         info = new GameInfoService(timer);
         info.receiveGame(game);
         game.start();
+        info = TestBed.inject(GameInfoService);
+        info.receiveGame(game);
         currentPlayer = game.getActivePlayer();
     });
 
