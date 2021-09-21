@@ -37,7 +37,7 @@ export class ActionValidatorService {
 
             throw Error("Action couldn't be validated");
         }
-        const content = 'Error : Action performed by ' + action.player.name + ' was not during its turn';
+        const content = 'Erreur : Action demandé par ' + action.player.name + " pendant le tour d'un autre joueur";
         this.sendErrorMessage(content);
         return false;
     }
@@ -97,18 +97,16 @@ export class ActionValidatorService {
 
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (!this.hasLettersInRack(action.player.letterRack, action.lettersToExchange)) {
-            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            this.sendErrorMessage('Invalid exchange : not all letters in letterRack');
+            this.sendErrorMessage('Erreur : Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
 
         if (action.lettersToExchange.length > this.gameInfo.numberOfLettersRemaining) {
-            // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-            this.sendErrorMessage('Invalid exchange : not enough letters in LetterBag');
+            this.sendErrorMessage('Erreur : Commande impossible à réaliser : La réserve ne contient pas assez de lettres');
             return false;
         }
-        console.log(action.player.name, ' ÉCHANGE des lettres');
-        this.sendValidAction(action);
+        this.messageService.receiveSystemMessage(action.player.name + ' ÉCHANGE des lettres');
+        // this.sendValidAction(action);
         return true;
     }
 
@@ -144,10 +142,8 @@ export class ActionValidatorService {
     }
 
     private validatePassTurn(action: PassTurn) {
-        const player = action.player;
-        // MESSAGE À LA BOITE DE COMMUNICATION DOIT REMPLACER LE CSL SUIVANT
-        console.log('PassTurn for ', player.name, ' was validated');
-        this.sendValidAction(action);
+        this.messageService.receiveSystemMessage(action.player.name + ' PASSE son tour');
+        // this.sendValidAction(action);
         return true;
     }
 
