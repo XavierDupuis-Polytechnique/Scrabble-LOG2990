@@ -5,11 +5,11 @@
         <mat-hint>Min 3 charactères Max 50 charactères</mat-hint>
     </mat-form-field>
     <br />
+    <br />
     <mat-form-field>
         <mat-label>Difficulté de votre adversaire</mat-label>
         <mat-select [formControlName]="'adversaryDifficulty'">
             <mat-option matNativeControl required value="easy">Débutant</mat-option>
-            <mat-option matNativeControl required value="expert">Expert</mat-option>
         </mat-select>
     </mat-form-field>
     <br />
@@ -19,6 +19,6 @@
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>
-    <button mat-button (click)="cancel()">Annuler</button>
-    <button mat-button (click)="playGame()" [disabled]="!formValid">Jouer</button>
+    <button mat-button [mat-dialog-close] (click)="cancel()">Annuler</button>
+    <button mat-button [mat-dialog-close] (click)="playGame()" [disabled]="!formValid">Jouer</button>
 </mat-dialog-actions>

@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
+import { BotCreatorService } from './bot-creator.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { HardBot } from '@app/GameLogic/player/hard-bot';
 
-import { BotService } from './bot.service';
-
-describe('BotService', () => {
-    let service: BotService;
+describe('BotCreatorService', () => {
+    let service: BotCreatorService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(BotService);
+        service = TestBed.inject(BotCreatorService);
     });
 
     it('should be created', () => {
