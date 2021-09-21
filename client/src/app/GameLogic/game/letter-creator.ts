@@ -67,4 +67,14 @@ export class LetterCreator {
             value: LetterCreator.gameLettersValue[char.toUpperCase().charCodeAt(0) - this.indexRectifier],
         };
     }
+
+    createBlankLetter(char: string): Letter {
+        if (char.length !== 1) {
+            throw Error('Invalid char entered');
+        }
+        return {
+            char: char.toUpperCase(),
+            value: 0,
+        };
+    }
 }
