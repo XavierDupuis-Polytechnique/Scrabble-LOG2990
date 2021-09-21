@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
@@ -11,6 +11,7 @@ const MIN_FONT_SIZE = 10;
     styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent {
+    @ViewChild('ScrabbleBoard') scrabbleBoard: ElementRef;
     board: Board;
     minFontSize = MIN_FONT_SIZE;
     maxFontSize = MAX_FONT_SIZE;
@@ -23,12 +24,14 @@ export class BoardComponent {
     increaseFont(): void {
         if (this.fontSize <= this.maxFontSize) {
             this.fontSize += 1;
+            (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
         }
     }
 
     decreaseFont(): void {
         if (this.fontSize >= this.minFontSize) {
             this.fontSize -= 1;
+            (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
         }
     }
 
