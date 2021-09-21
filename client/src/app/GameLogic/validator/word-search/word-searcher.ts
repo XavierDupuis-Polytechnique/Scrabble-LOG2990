@@ -1,6 +1,7 @@
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
@@ -14,10 +15,12 @@ export class WordSearcher {
     neighbours: [number, number][] = [];
     grid: Tile[][];
     placementIsValid: boolean = true;
+    letterCreator: LetterCreator;
 
     constructor(board: Board, private dictionaryService: DictionaryService) {
         this.grid = board.grid;
     }
+
 
     validatePlacement(action: PlaceLetter): boolean {
         this.searchAdjacentWords(action);
@@ -33,26 +36,25 @@ export class WordSearcher {
     }
 
     searchAdjacentWords(action: PlaceLetter) {
-        const startX = action.placement.x;
-        const startY = action.placement.y;
+        // const startX = action.placement.x;
+        // const startY = action.placement.y;
         const direction = action.placement.direction;
-        let word: Tile[];
-        if (direction === Direction.Horizontal) {
-            word = this.getWordHorizontal(startX, startY);
-            this.addWord(word);
+        let word: Tile[]
+        if (this.dictionaryService.isWordInDict(action.word)) {
 
-            const neighbourSet = new Set(this.neighbours);
-            for (const neighbour of neighbourSet) {
-                word = this.getWordVertical(neighbour[0], neighbour[1]);
-                this.addWord(word);
-            }
-        } else {
-            word = this.getWordVertical(startX, startY);
-            this.addWord(word);
-            const neighbourSet = new Set(this.neighbours);
-            for (const neighbour of neighbourSet) {
-                word = this.getWordHorizontal(neighbour[0], neighbour[1]);
-                this.addWord(word);
+
+            if (direction === Direction.Horizontal) {
+                const neighbourSet = new Set(this.neighbours);
+                for (const neighbour of neighbourSet) {
+                    word = this.getWordVertical(neighbour[0], neighbour[1]);
+                    this.addWord(word);
+                }
+            } else {
+                const neighbourSet = new Set(this.neighbours);
+                for (const neighbour of neighbourSet) {
+                    word = this.getWordHorizontal(neighbour[0], neighbour[1]);
+                    this.addWord(word);
+                }
             }
         }
     }

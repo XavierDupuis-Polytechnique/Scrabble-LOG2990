@@ -1,6 +1,7 @@
 /* eslint max-classes-per-file: ["error", 2] */
 import { TestBed } from '@angular/core/testing';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { Board } from '@app/GameLogic/game/board';
 import { Tile } from '@app/GameLogic/game/tile';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -23,9 +24,10 @@ class MockDictionaryService extends DictionaryService {
     }
 }
 
-class MockBoard {
+class MockBoard extends Board {
     grid: Tile[][];
     constructor() {
+        super();
         this.grid = [];
         for (let i = 0; i < BOARD_WIDTH; i++) {
             this.grid[i] = [];
