@@ -65,7 +65,7 @@ export class CommandExecuterService {
     private sendAction(action: Action) {
         // TODO : REMOVE TRY CATCH - Olivier
         try {
-            this.actionValidator.validateAction(action);
+            this.actionValidator.sendAction(action);
         } catch (e) {
             this.messageService.receiveError(e as Error);
         }
