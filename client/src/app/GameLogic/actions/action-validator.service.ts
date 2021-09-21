@@ -20,7 +20,6 @@ export class ActionValidatorService {
         this.messageService.receiveErrorMessage(content);
     }
 
-    // TODO: maybe change
     validateAction(action: Action): boolean {
         if (this.validateTurn(action)) {
             if (action instanceof PlaceLetter) {
