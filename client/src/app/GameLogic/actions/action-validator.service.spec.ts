@@ -9,13 +9,13 @@ import { NUM_TILES } from '@app/GameLogic/game/board';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Letter } from '@app/GameLogic/game/letter.interface';
-import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
+import { TimerService } from '../game/timer/timer.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
