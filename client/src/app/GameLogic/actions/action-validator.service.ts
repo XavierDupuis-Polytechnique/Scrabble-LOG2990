@@ -106,7 +106,7 @@ export class ActionValidatorService {
             return false;
         }
         this.messageService.receiveSystemMessage(action.player.name + ' ÉCHANGE des lettres');
-        // this.sendValidAction(action);
+        this.sendValidAction(action);
         return true;
     }
 
@@ -143,7 +143,7 @@ export class ActionValidatorService {
 
     private validatePassTurn(action: PassTurn) {
         this.messageService.receiveSystemMessage(action.player.name + ' PASSE son tour');
-        // this.sendValidAction(action);
+        this.sendValidAction(action);
         return true;
     }
 

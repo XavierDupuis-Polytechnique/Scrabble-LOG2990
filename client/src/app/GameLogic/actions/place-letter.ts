@@ -67,40 +67,12 @@ export class PlaceLetter extends Action {
                 this.affectedCoords.push({ x, y });
             }
         }
-        console.log(grid);
-        // TODO: remove letters from rack
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
+        const drawnLetters = game.letterBag.drawGameLetters(this.lettersToRemoveInRack.length);
+        for (const letter of drawnLetters) {
+            this.player.letterRack.push(letter);
+        }
     }
-
-    // private isDirectionVertical(direction: string): boolean {
-    //     return direction.charAt(0).toLowerCase() === 'v';
-    // }
-    // private findLettersToPlace(word: string, game: Game, placement: PlacementSetting): [Letter[], Letter[]] {
-    //     const grid = game.board.grid;
-    //     const lettersToPlace: Letter[] = [];
-    //     const lettersToRemoveInRack: Letter[] = [];
-    //     const startX = placement.x;
-    //     const startY = placement.y;
-    //     for (let wordIndex = 0; wordIndex < word.length; wordIndex++) {
-    //         let char: string;
-    //         if (placement.direction === Direction.Horizontal) {
-    //             const x = startX + wordIndex;
-    //             char = grid[startY][x].letterObject.char;
-    //         } else {
-    //             const y = startY + wordIndex;
-    //             char = grid[y][startX].letterObject.char;
-    //         }
-
-    //         if (char === ' ') {
-    //             const charToCreate = word[wordIndex];
-    //             const letterToRemove = this.letterToRemove(charToCreate);
-    //             lettersToRemoveInRack.push(letterToRemove);
-    //             const newLetter = this.letterFactory.createLetter(charToCreate);
-    //             lettersToPlace.push(newLetter);
-    //         }
-    //     }
-    //     return [lettersToPlace, lettersToRemoveInRack];
-    // }
 
     private letterToRemove(char: string) {
         if (isCharUpperCase(char)) {
