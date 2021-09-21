@@ -25,6 +25,9 @@ export class GameManagerService {
     ) {}
 
     createGame(gameSettings: GameSettings): void {
+        if (this.game) {
+            this.stopGame();
+        }
         this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, this.boardService);
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
