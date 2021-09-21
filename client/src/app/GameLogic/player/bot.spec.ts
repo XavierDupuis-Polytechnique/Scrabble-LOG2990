@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 /* eslint-disable max-classes-per-file*/
+import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -39,10 +41,13 @@ describe('Bot', () => {
     let bot: TestBot;
     const boardService = new BoardService();
     const dictionaryService = new DictionaryService();
+    const pointCalculator = new PointCalculatorService();
     const mockBoard = new MockBoard();
+    const timer = new TimerService();
+    const game = new Game(10, timer, pointCalculator, boardService);
 
     beforeEach(() => {
-        bot = new TestBot('Jimmy', boardService, new DictionaryService(), new PointCalculatorService());
+        bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, game);
     });
     it('should create an instance', () => {
         expect(bot).toBeTruthy();

@@ -1,4 +1,5 @@
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -12,6 +13,7 @@ export abstract class Bot extends Player {
     isBoardEmpty: boolean;
     validWordList: ValidWord[];
     wordValidator: WordSearcher;
+    game: Game;
 
     // Bot constructor takes opponent name as argument to prevent same name
     constructor(
@@ -19,12 +21,14 @@ export abstract class Bot extends Player {
         private boardService: BoardService,
         private dictionaryService: DictionaryService,
         private pointCalculatorService: PointCalculatorService,
+        game: Game,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
         this.isBoardEmpty = true;
         this.validWordList = [];
         this.wordValidator = new WordSearcher(boardService.board, this.dictionaryService);
+        this.game = game;
     }
 
     getRandomInt(max: number, min: number = 0) {
@@ -70,7 +74,7 @@ export abstract class Bot extends Player {
                 }
                 const fakeAction = new PlaceLetter(this, word.word, placement);
                 if (this.wordValidator.validatePlacement(fakeAction)) {
-                    word.value = this.pointCalculatorService.placeLetterPointsCalculation(this, fakeAction, word.adjacentWords);
+                    word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
                     this.validWordList.push(word);
                 }
             }
@@ -258,7 +262,7 @@ export abstract class Bot extends Player {
                 const fakeAction = new PlaceLetter(this, word.word, placement);
 
                 if (this.wordValidator.validatePlacement(fakeAction)) {
-                    word.value = this.pointCalculatorService.placeLetterPointsCalculation(this, fakeAction, word.adjacentWords);
+                    word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
                     this.validWordList.push(word);
                 }
             }

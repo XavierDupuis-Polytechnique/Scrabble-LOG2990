@@ -50,7 +50,7 @@ export class GameManagerService {
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         // TODO CREATE PLAYER
         const user = new User(playerName);
-        const bot = this.botService.createBot(playerName, botDifficulty);
+        const bot = this.botService.createBot(playerName, botDifficulty, this.game);
         this.info.receiveUser(user);
         return [user, bot];
     }
