@@ -24,7 +24,7 @@ export class PointCalculatorService {
         wordList.forEach((word) => {
             let wordPlaced: Tile[] = [];
             wordPlaced = this.wordPlaced(action, game)!;
-            totalPointsOfTurn += this.calculatePointsOfWord(word);
+            totalPointsOfTurn += this.calculatePointsOfWord(wordPlaced);
         });
         if (player.isLetterRackEmpty && action.lettersToRemoveInRack.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
