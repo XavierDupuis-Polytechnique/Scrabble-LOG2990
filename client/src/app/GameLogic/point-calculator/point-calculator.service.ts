@@ -15,7 +15,7 @@ export class PointCalculatorService {
         wordList.forEach((word) => {
             totalPointsOfTurn += this.calculatePointsOfWord(word);
         });
-        if (player.isLetterRackEmpty && action.lettersToPlace.length >= MAX_LETTER_IN_RACK) {
+        if (player.isLetterRackEmpty && action.lettersToRemoveInRack.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
         }
         player.points += totalPointsOfTurn;
