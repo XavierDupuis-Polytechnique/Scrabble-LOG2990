@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
 import { Player } from '@app/GameLogic/player/player';
 
@@ -10,12 +12,21 @@ const BONUS = 50;
     providedIn: 'root',
 })
 export class PointCalculatorService {
-    placeLetterPointsCalculation(player: Player, action: PlaceLetter, wordList: Tile[][]) {
+    letterCreator: LetterCreator;
+
+    constructor() {
+        this.letterCreator = new LetterCreator();
+    }
+
+    placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][], player: Player, game: Game) {
         let totalPointsOfTurn = 0;
-        wordList.forEach((word) => {
-            totalPointsOfTurn += this.calculatePointsOfWord(word);
+        let wordPlaced: Tile[] = [];
+        wordList.forEach(() => {
+
+            wordPlaced = this.wordPlaced(action, game);
+            totalPointsOfTurn += this.calculatePointsOfWord(wordPlaced);
         });
-        if (player.isLetterRackEmpty && action.lettersToRemoveInRack.length >= MAX_LETTER_IN_RACK) {
+        if (player.isLetterRackEmpty && wordPlaced.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
         }
         player.points += totalPointsOfTurn;
@@ -53,6 +64,7 @@ export class PointCalculatorService {
         sumOfWord *= totalWordMultiplicator;
         return sumOfWord;
     }
+
     calculatePointsOfRack(player: Player) {
         let sumOfRack = 0;
         const letterRack = new Set(player.letterRack);
@@ -61,9 +73,29 @@ export class PointCalculatorService {
         }
         return sumOfRack;
     }
+
+    wordPlaced(action: PlaceLetter, game: Game) {
+        const wordInTile: Tile[] = [];
+        const startX = action.placement.x;
+        const startY = action.placement.y;
+        for (let wordIndex = 0; wordIndex < action.word.length; wordIndex++) {
+            let x = 0;
+            let y = 0;
+            if (action.placement.direction === Direction.Horizontal) {
+                x = startX + wordIndex;
+                wordInTile.push(game.board.grid[y][x]);
+            } else {
+                y = startY + wordIndex;
+                wordInTile.push(game.board.grid[y][x]);
+            }
+        }
+        return wordInTile;
+    }
+
     protected desactivateLetterMultiplicator(tile: Tile) {
         tile.letterMultiplicator = 1;
     }
+
     protected desactivateWordMultiplicator(tile: Tile) {
         tile.wordMultiplicator = 1;
     }

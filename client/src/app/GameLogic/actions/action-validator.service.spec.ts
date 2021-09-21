@@ -18,7 +18,6 @@ import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
-import { TimerService } from '../game/timer/timer.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -67,7 +66,7 @@ describe('ActionValidatorService', () => {
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
         p1User = new User('testUser');
-        p2Bot = new EasyBot('testUser', board, dictonary);
+        p2Bot = new EasyBot('testUser', board, dictonary, pointCalculator, game);
         game.players.push(p1User);
         game.players.push(p2Bot);
         info.receiveGame(game);
