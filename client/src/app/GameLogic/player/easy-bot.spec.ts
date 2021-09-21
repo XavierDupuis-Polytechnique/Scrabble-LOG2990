@@ -24,10 +24,10 @@ describe('EasyBot', () => {
             easyBot.randomActionPicker();
         }
         let value = Math.round((spyPass.calls.count() / numberOfTime) * mul) / mul;
-        expect(value).toBeCloseTo(EasyBot.actionProabibility.pass);
+        expect(value).toBeCloseTo(EasyBot.actionProbabibility.pass);
         value = Math.round((spyExchange.calls.count() / numberOfTime) * mul) / mul;
-        expect(value).toBeCloseTo(EasyBot.actionProabibility.exchange);
+        expect(value).toBeCloseTo(EasyBot.actionProbabibility.exchange);
         value = Math.round((spyPlay.calls.count() / numberOfTime) * mul) / mul;
-        expect(value).toBeCloseTo(EasyBot.actionProabibility.play);
+        expect(value).toBeCloseTo(EasyBot.actionProbabibility.play);
     });
 });
