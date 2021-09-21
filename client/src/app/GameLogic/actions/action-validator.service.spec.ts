@@ -305,12 +305,12 @@ describe('ActionValidatorService', () => {
         game.board.grid[11][0].letterObject.char = finalBoardRowChars[0];
         game.board.grid[12][0].letterObject.char = finalBoardRowChars[1];
         game.board.grid[13][0].letterObject.char = finalBoardRowChars[2];
-        for (let i = 0; i < finalBoardRowChars.length; i++) {
+        for (let i = 3; i < finalBoardRowChars.length; i++) {
             currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardRowChars[i];
             lettersToPlace += finalBoardRowChars.charAt(i);
         }
 
-        const placement: PlacementSetting = { direction: 'h', x: beginPos, y: beginPos };
+        const placement: PlacementSetting = { direction: 'h', x: beginPos, y: 0 };
         const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
 
         expect(service.validateAction(action)).not.toBeTruthy();
