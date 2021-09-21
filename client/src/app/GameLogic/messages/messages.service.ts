@@ -51,6 +51,11 @@ export class MessagesService {
         this.addMessageToLog(errorMessage);
     }
 
+    clearLog(): void {
+        this.messagesLog = [];
+        this.messages$.next(this.messagesLog);
+    }
+
     private addMessageToLog(message: Message) {
         const messageCopy = { ...message };
         this.messagesLog.push(messageCopy);

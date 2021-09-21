@@ -30,7 +30,7 @@ export class ActionCompilerService {
                 return this.createPassTurn(user);
 
             case CommandType.Place:
-                return this.createPlaceLetter(user, args); // TODO: uncomment
+                return this.createPlaceLetter(user, args);
             default:
                 throw Error('this command dont generate an action');
         }
@@ -59,17 +59,18 @@ export class ActionCompilerService {
         }
         console.log(args);
         const placementSettings = this.createPlacementSettings(args[0]);
+        const word = args[1];
         // const lettersToPlace = ;
-        return new PlaceLetter(user, [], placementSettings);
+        return new PlaceLetter(user, word, placementSettings);
     }
 
     private createPlacementSettings(placementArg: string): PlacementSetting {
         if (placementArg.length !== 3) {
             throw Error('arg invalid for creating placementSetting');
         }
-        const x = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
-        const yString = placementArg.charAt(1);
-        const y = Number.parseInt(yString, 10);
+        const y = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
+        const xString = placementArg.charAt(1);
+        const x = Number.parseInt(xString, 10) - 1;
         const direction = placementArg.charAt(2).toUpperCase();
         return { x, y, direction };
     }
