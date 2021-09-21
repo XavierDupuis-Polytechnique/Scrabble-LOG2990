@@ -232,7 +232,6 @@ describe('PointCalculatorService', () => {
         game.board.grid[5][1].letterObject = { char: 'E', value: 1 };
         game.board.grid[5][2].letterObject = { char: 'T', value: 1 };
         game.consecutivePass = 0;
-
         word = [
             { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
             { letterObject: { char: 'E', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },

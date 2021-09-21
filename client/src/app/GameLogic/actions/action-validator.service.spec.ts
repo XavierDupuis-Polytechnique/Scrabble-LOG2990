@@ -12,13 +12,12 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
-import { TimerService } from '../game/timer/timer.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -85,7 +84,7 @@ describe('ActionValidatorService', () => {
         const action = new FakeAction(currentPlayer);
         expect(() => {
             service.validateAction(action);
-        }).toThrowError("Action couldn't be parsed");
+        }).toThrowError("Action couldn't be validated");
     });
     /// ////////////////// ///
 
@@ -210,7 +209,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should invalidate an ivalid PlaceLetter because a player cannot place letter(s) he/she doesnt have', () => {
+    it('should invalidate an invalid PlaceLetter because a player cannot place letter(s) he/she doesnt have', () => {
         currentPlayer.letterRack = [
             { char: 'A', value: 1 },
             { char: 'B', value: 1 },
@@ -299,7 +298,7 @@ describe('ActionValidatorService', () => {
         // }
     });
 
-    it('should invalidate placing a word if said word overflow the board', () => {
+    it('should invalidate an invalid PlaceLetter if word overflow the board', () => {
         const finalBoardRowChars = 'ABCDE';
         const beginPos = 11;
         let lettersToPlace = '';
