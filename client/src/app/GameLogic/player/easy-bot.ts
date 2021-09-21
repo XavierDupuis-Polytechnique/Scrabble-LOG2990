@@ -1,5 +1,6 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Bot } from './bot';
@@ -12,7 +13,7 @@ export class EasyBot extends Bot {
             prob: 0.4,
             value: 6,
         },
-        seventToTwelve: {
+        sevenToTwelve: {
             prob: 0.3,
             value: 12,
         },
@@ -35,7 +36,7 @@ export class EasyBot extends Bot {
     randomWordPicker(): ValidWord {
         const randomValue = Math.random();
         // TODO assign validWordList with the calculated wordList from the algorithm
-        const validWordList: ValidWord[] = [];
+        const validWordList: ValidWord[] = this.validWordList;
         const wordP6: ValidWord[] = [];
         const wordP7to12: ValidWord[] = [];
         const wordP13To18: ValidWord[] = [];
@@ -43,16 +44,16 @@ export class EasyBot extends Bot {
         validWordList.forEach((word) => {
             if (word.value <= EasyBot.botPointSetting.sixOrLess.value) {
                 wordP6.push(word);
-            } else if (word.value > EasyBot.botPointSetting.sixOrLess.value && word.value <= EasyBot.botPointSetting.seventToTwelve.value) {
+            } else if (word.value > EasyBot.botPointSetting.sixOrLess.value && word.value <= EasyBot.botPointSetting.sevenToTwelve.value) {
                 wordP7to12.push(word);
-            } else if (word.value > EasyBot.botPointSetting.seventToTwelve.value && word.value <= EasyBot.botPointSetting.other.value) {
+            } else if (word.value > EasyBot.botPointSetting.sevenToTwelve.value && word.value <= EasyBot.botPointSetting.other.value) {
                 wordP13To18.push(word);
             }
         });
 
         if (randomValue <= EasyBot.botPointSetting.sixOrLess.prob) {
             return this.wordPicker(wordP6);
-        } else if (randomValue <= EasyBot.botPointSetting.seventToTwelve.prob + EasyBot.botPointSetting.other.prob) {
+        } else if (randomValue <= EasyBot.botPointSetting.sevenToTwelve.prob + EasyBot.botPointSetting.other.prob) {
             return this.wordPicker(wordP7to12);
         } else {
             return this.wordPicker(wordP13To18);
@@ -60,6 +61,15 @@ export class EasyBot extends Bot {
     }
 
     play() {
+        this.bruteForceStart();
+        const pickedWord: ValidWord = this.randomWordPicker();
+        const placeSetting: PlacementSetting = {
+            x: pickedWord.startingTileX,
+            y: pickedWord.startingTileY,
+            direction: pickedWord.isVertical ? 'V' : 'H',
+        };
+        const action = new PlaceLetter(this, pickedWord.word, placeSetting);
+        this.action$.next(action);
         return;
     }
 
