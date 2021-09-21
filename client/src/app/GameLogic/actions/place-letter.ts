@@ -62,6 +62,7 @@ export class PlaceLetter extends Action {
                 const charToCreate = this.word[wordIndex];
                 const letterToRemove = this.letterToRemove(charToCreate);
                 this.lettersToRemoveInRack.push(letterToRemove);
+                // TODO: put * letter value 0
                 const newLetter = this.letterFactory.createLetter(charToCreate);
                 game.board.grid[y][x].letterObject = newLetter;
                 this.affectedCoords.push({ x, y });
