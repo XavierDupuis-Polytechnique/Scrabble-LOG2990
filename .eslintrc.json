@@ -2,14 +2,7 @@
     "root": false,
     "extends": "eslint:recommended",
     "ignorePatterns": ["projects/**/*"],
-    "plugins": [
-        "deprecation",
-        "prettier",
-        "import",
-        "eslint-plugin-jsdoc",
-        "eslint-plugin-prefer-arrow",
-        "eslint-plugin-unicorn"
-    ],
+    "plugins": ["deprecation", "prettier", "import", "eslint-plugin-jsdoc", "eslint-plugin-prefer-arrow", "eslint-plugin-unicorn"],
     "overrides": [
         {
             "files": ["*.ts"],
@@ -168,7 +161,7 @@
                         "functions": "always-multiline"
                     }
                 ],
-                "complexity": ["error", 15],
+                "complexity": ["error", 25],
                 "constructor-super": "error",
                 "deprecation/deprecation": "error",
                 "dot-notation": "error",

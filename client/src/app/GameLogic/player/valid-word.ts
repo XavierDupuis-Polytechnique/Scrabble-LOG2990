@@ -1,3 +1,5 @@
+import { Tile } from '@app/GameLogic/game/tile';
+
 export const VERTICAL = true;
 export const HORIZONTAL = false;
 
@@ -22,7 +24,7 @@ export class ValidWord {
         public isVertical: boolean = false,
         public startingTileX: number = 0,
         public startingTileY: number = 0,
-        public adjacentWords: string[] = [],
+        public adjacentWords: Tile[][] = [],
         public value: number = 0,
     ) {
         // this.word = word;
