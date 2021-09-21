@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterContentInit, Component } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 
@@ -7,12 +7,12 @@ import { Letter } from '@app/GameLogic/game/letter.interface';
     templateUrl: './horse.component.html',
     styleUrls: ['./horse.component.scss'],
 })
-export class HorseComponent implements AfterViewInit {
+export class HorseComponent implements AfterContentInit {
     playerRack: Letter[];
 
     constructor(private info: GameInfoService) {}
 
-    ngAfterViewInit(): void {
+    ngAfterContentInit(): void {
         this.playerRack = this.info.user.letterRack;
     }
 }
