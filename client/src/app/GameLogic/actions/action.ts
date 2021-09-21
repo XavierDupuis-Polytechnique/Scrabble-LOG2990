@@ -2,12 +2,17 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { Player } from '@app/GameLogic/player/player';
 
 export abstract class Action {
-    constructor(readonly player: Player) {}
-
-    execute(game: Game): void {
-        game.doAction(this);
-        this.insideExecute(game);
+    static id = 0;
+    id;
+    constructor(readonly player: Player) {
+        this.id = Action.id++;
     }
 
-    protected abstract insideExecute(game: Game): void;
+    execute(game: Game): void {
+        console.log('ACTION #', this.id, ' ', this, ' executed');
+        game.doAction(this);
+        this.perform(game);
+    }
+
+    protected abstract perform(game: Game): void;
 }

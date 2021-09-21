@@ -1,3 +1,4 @@
+import { TestBed } from '@angular/core/testing';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { DictionaryService } from './dictionary.service';
 
@@ -5,12 +6,16 @@ describe('DictionaryService', () => {
     let service: DictionaryService = new DictionaryService();
 
     beforeEach(() => {
-        //TestBed.configureTestingModule({});
-        // service = TestBed.inject(DictionaryService);
+        TestBed.configureTestingModule({});
+        service = TestBed.inject(DictionaryService);
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
+    });
+
+    it('should return true if word is in dictionary', () => {
+        expect(service.isWordInDict('Bateau')).toBeTrue();
     });
 
     it('should return all words containing the searched letters zyklon', () => {

@@ -451,6 +451,11 @@ export abstract class Bot extends Player {
         }
         return lettersLeft;
     }
+    generateWordList(/* board, availableLetter*/): ValidWord[] {
+        // TO DO : a LOT of stuff goes here
+        this.letterRack;
+        return [];
+    }
 
     hello(): void {
         console.log('hello from bot ' + this.name);

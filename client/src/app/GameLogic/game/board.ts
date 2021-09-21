@@ -1,6 +1,6 @@
 import { Tile } from './tile';
-const NUM_TILES = 15;
-const ASCII_CODE = 65;
+export const NUM_TILES = 15;
+export const ASCII_CODE = 65;
 interface BoardSettingPosition {
     x: number;
     y: string;
@@ -103,6 +103,7 @@ export class Board {
             this.grid[i] = [];
             for (let j = 0; j < NUM_TILES; j++) {
                 this.grid[i][j] = new Tile();
+                this.grid[i][j].letterObject = { char: ' ', value: 1 };
             }
         }
 
