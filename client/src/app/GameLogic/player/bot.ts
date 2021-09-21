@@ -94,6 +94,7 @@ export abstract class Bot extends Player {
         let index = emptyBox;
 
         if (emptyBox === notFound) {
+            lettersOnLine.word = lettersOnLine.word.toLowerCase();
             allPossibilities.push(lettersOnLine);
         } else {
             let maxGroupSize = 1;
@@ -163,7 +164,7 @@ export abstract class Bot extends Player {
                 tmpSubWord = new ValidWord('');
 
                 subWord = lettersOnLine.word.substring(leftIndex, endOfLine);
-                tmpSubWord.word = subWord;
+                tmpSubWord.word = subWord.toLowerCase();
                 if (leftIndex === startOfLine) {
                     tmpSubWord.leftCount = lettersOnLine.leftCount;
                 } else {
@@ -251,21 +252,27 @@ export abstract class Bot extends Player {
             const allPlacedLettersCombination = this.lineSplitter(lettersOnLine);
             const possiblyValidWords: ValidWord[] = this.wordCheck(allPlacedLettersCombination);
 
+            // start
             for (const word of possiblyValidWords) {
-                let placement: PlacementSetting;
-                if (word.isVertical) {
-                    placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
-                } else {
-                    placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
-                }
-
-                const fakeAction = new PlaceLetter(this, word.word, placement);
-
-                if (this.wordValidator.validatePlacement(fakeAction)) {
-                    word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
-                    this.validWordList.push(word);
-                }
+                this.validWordList.push(word);
             }
+            // end
+
+            // for (const word of possiblyValidWords) {
+            //     let placement: PlacementSetting;
+            //     if (word.isVertical) {
+            //         placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
+            //     } else {
+            //         placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+            //     }
+
+            //     const fakeAction = new PlaceLetter(this, word.word, placement);
+
+            //     if (this.wordValidator.validatePlacement(fakeAction)) {
+            //         word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
+            //         this.validWordList.push(word);
+            //     }
+            // }
         }
 
         if (isVertical && x < endOfBoard) {

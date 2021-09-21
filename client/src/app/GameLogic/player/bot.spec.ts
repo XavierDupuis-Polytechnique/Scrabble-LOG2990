@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 /* eslint-disable max-classes-per-file*/
+import { Board } from '@app/GameLogic/game/board';
 import { Game } from '@app/GameLogic/game/games/game';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
-import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -11,43 +12,32 @@ import { BoardService } from '@app/services/board.service';
 import { Bot } from './bot';
 
 class TestBot extends Bot {}
-class MockBoard {
-    grid: Tile[][];
-    constructor() {
-        this.grid = [];
-        for (let i = 0; i < 5; i++) {
-            this.grid[i] = [];
-            for (let j = 0; j < 5; j++) {
-                this.grid[i][j] = new Tile();
-                this.grid[i][j].letterObject = { char: ' ', value: 1 };
+class MockBoard extends Board {
+    letterCreator = new LetterCreator();
+    placeWord(x: number, y: number, isVertical: boolean, word: string) {
+        for (const letter of word) {
+            this.grid[x][y].letterObject = this.letterCreator.createLetter(letter);
+            if (isVertical) {
+                y++;
+            } else {
+                x++;
             }
         }
-
-        this.grid[6][7].letterObject = { char: 'B', value: 1 };
-        this.grid[7][7].letterObject = { char: 'A', value: 1 };
-        this.grid[8][7].letterObject = { char: 'T', value: 1 };
-        this.grid[9][7].letterObject = { char: 'E', value: 1 };
-        this.grid[10][7].letterObject = { char: 'A', value: 1 };
-        this.grid[11][7].letterObject = { char: 'U', value: 1 };
-        this.grid[12][7].letterObject = { char: 'X', value: 1 };
-
-        this.grid[9][8].letterObject = { char: 'L', value: 1 };
-        this.grid[9][9].letterObject = { char: 'L', value: 1 };
-        this.grid[9][10].letterObject = { char: 'E', value: 1 };
     }
 }
 
 describe('Bot', () => {
     let bot: TestBot;
+    let board: MockBoard;
     const boardService = new BoardService();
     const dictionaryService = new DictionaryService();
     const pointCalculator = new PointCalculatorService();
-    const mockBoard = new MockBoard();
     const timer = new TimerService();
     const game = new Game(10, timer, pointCalculator, boardService);
 
     beforeEach(() => {
         bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, game);
+        board = new MockBoard();
     });
     it('should create an instance', () => {
         expect(bot).toBeTruthy();
@@ -277,13 +267,37 @@ describe('Bot', () => {
             { char: 'l', value: 1 },
         ];
         bot.letterRack = letters;
-        boardService.board.grid = mockBoard.grid;
+        board.placeWord(6, 8, false, 'bateaux');
+        board.placeWord(9, 8, true, 'elle');
+        boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [];
-        // expected.push();
 
-        bot.bruteForceStart();
-        result = bot.validWordList;
+        result = bot.bruteForceStart();
+        expect(result).toEqual(expected);
+    });
+
+    it('should return a list of all validWord the bot can play)', () => {
+        const letters: Letter[] = [
+            { char: 'a', value: 1 },
+            { char: 'e', value: 1 },
+            { char: 'i', value: 1 },
+            { char: 'o', value: 1 },
+            { char: 'u', value: 1 },
+            { char: 't', value: 1 },
+            { char: 'b', value: 1 },
+        ];
+        // bateaux elle bondonneraient nativement rempoissonnasses ovationnassions oxycarbone bureaucratiserons mesalliances retarderons
+        bot.letterRack = letters;
+        board.placeWord(6, 8, false, 'bateaux');
+        board.placeWord(9, 8, true, 'elle');
+        // TODO Finish the board
+        // board.placeWord(6, 8, true, 'bondonneraient');
+        boardService.board.grid = board.grid;
+        let result: ValidWord[] = [];
+        const expected: ValidWord[] = [];
+
+        result = bot.bruteForceStart();
         expect(result).toEqual(expected);
     });
 });
