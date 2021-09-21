@@ -6,6 +6,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { NUM_TILES } from '@app/GameLogic/game/board';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { Letter } from '@app/GameLogic/game/letter.interface';
@@ -27,6 +28,7 @@ describe('ActionValidatorService', () => {
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let dictonary: DictionaryService;
+    let info: GameInfoService;
     const centerPosition = Math.floor(NUM_TILES / 2);
 
     class FakeAction extends Action {
@@ -57,6 +59,8 @@ describe('ActionValidatorService', () => {
         game.players.push(p1User);
         game.players.push(p2Bot);
         game.start();
+        info = TestBed.inject(GameInfoService);
+        info.receiveGame(game);
         currentPlayer = game.getActivePlayer();
     });
 
