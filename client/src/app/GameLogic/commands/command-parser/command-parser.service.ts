@@ -52,7 +52,7 @@ export class CommandParserService {
                         args = [];
                         args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
 
-                        if (row > 'o'.charCodeAt(0) && row < 'a'.charCodeAt(0)) {
+                        if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
                             // si depasse 'o' et inferieur a 'a'
                             throw Error(errorSyntax + ': ligne hors champ');
                         }
