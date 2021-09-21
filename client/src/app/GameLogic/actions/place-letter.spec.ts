@@ -1,7 +1,6 @@
 import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -11,12 +10,7 @@ import { BoardService } from '@app/services/board.service';
 describe('PlaceLetter', () => {
     let timer: TimerService;
 
-    const letterToPlace: Letter[] = [
-        { char: 'A', value: 1 },
-        { char: 'L', value: 1 },
-        { char: 'L', value: 1 },
-        { char: 'O', value: 1 },
-    ];
+    const letterToPlace = 'ALLO';
 
     const placement: PlacementSetting = {
         x: 0,
@@ -42,7 +36,7 @@ describe('PlaceLetter', () => {
         const placeAction = new PlaceLetter(game.getActivePlayer(), letterToPlace, placement);
         placeAction.execute(game);
         for (let i = 0; i < letterToPlace.length; i++) {
-            expect(game.board.grid[i][0].letterObject.char).toBe(letterToPlace[i].char);
+            expect(game.board.grid[i][0].letterObject.char).toBe(letterToPlace.charAt(i));
         }
     });
 

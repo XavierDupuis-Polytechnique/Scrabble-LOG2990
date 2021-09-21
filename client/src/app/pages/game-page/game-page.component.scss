@@ -4,14 +4,14 @@
     grid-template-rows: 1fr 1fr 1.3fr 0.7fr;
     gap: 0px 0px;
     grid-template-areas:
-        'Board Board Board Info'
-        'Board Board Board Info'
-        'Board Board Board Chat'
-        'Horse Horse Horse Chat';
-    height: fit-content;
-    max-width: 100%; //TODO:SPECIFER
-    max-height: 100%;
-}
+      "Board Board Board Info"
+      "Board Board Board Info"
+      "Board Board Board Chat"
+      "Horse Horse Horse Chat";
+      height: 100vh;//100% view height
+      width: 100vw;// 100% view width
+      overflow: hidden;
+  }
 
 app-info-box {
     grid-area: Info;
@@ -22,9 +22,10 @@ app-info-box {
 
 app-chat-box {
     grid-area: Chat;
-    padding: 1%;
-    border: 1px solid grey; //A Enlever
-    // border-style: solid;
+    border-style: solid;
+    width: 100%;
+    overflow-wrap: anywhere;
+    word-break: normal;
 }
 app-board {
     grid-area: Board;

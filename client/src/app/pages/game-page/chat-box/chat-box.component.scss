@@ -1,7 +1,34 @@
-h1 {
-    display: flex;
-    justify-content: center;
-    background-color: navy;
-    color: rgb(233, 231, 231);
-    border-radius: 5%;
+.chat {
+    width     : 100%;
+    resize    : none;
+    size: 25%;
+    box-sizing: border-box;
+}
+
+.sharedChat {
+    height          : 15vh;
+    overflow-y      : scroll;
+    overflow-x      : hidden;
+    scrollbar-width : thin;
+    background-color: rgb(218, 218, 218);
+    margin-right    : 5%;
+}
+
+#message {
+    max-width: 100%;
+}
+
+.systemMessage {
+    color: red !important;
+    font: red !important ;
+    font-family: cursive;
+}
+
+.playerMessage {
+    color: black;
+}
+
+.OpponentMesage {
+    color: blue;
+
 }
