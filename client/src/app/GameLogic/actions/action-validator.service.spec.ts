@@ -84,7 +84,7 @@ describe('ActionValidatorService', () => {
         const action = new FakeAction(currentPlayer);
         expect(() => {
             service.validateAction(action);
-        }).toThrowError("Action couldn't be parsed");
+        }).toThrowError("Action couldn't be validated");
     });
     /// ////////////////// ///
 
@@ -209,7 +209,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should invalidate an ivalid PlaceLetter because a player cannot place letter(s) he/she doesnt have', () => {
+    it('should invalidate an invalid PlaceLetter because a player cannot place letter(s) he/she doesnt have', () => {
         currentPlayer.letterRack = [
             { char: 'A', value: 1 },
             { char: 'B', value: 1 },
@@ -298,7 +298,7 @@ describe('ActionValidatorService', () => {
         // }
     });
 
-    it('should invalidate placing a word if said word overflow the board', () => {
+    it('should invalidate an invalid PlaceLetter if word overflow the board', () => {
         const finalBoardRowChars = 'ABCDE';
         const beginPos = 11;
         let lettersToPlace = '';
