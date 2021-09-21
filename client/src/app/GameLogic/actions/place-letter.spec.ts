@@ -1,7 +1,7 @@
 import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -11,12 +11,7 @@ import { BoardService } from '@app/services/board.service';
 describe('PlaceLetter', () => {
     let timer: TimerService;
 
-    const letterToPlace: Letter[] = [
-        { char: 'A', value: 1 },
-        { char: 'L', value: 1 },
-        { char: 'L', value: 1 },
-        { char: 'O', value: 1 },
-    ];
+    const lettersToPlace = 'bateau';
 
     const placement: PlacementSetting = {
         x: 0,
@@ -32,25 +27,30 @@ describe('PlaceLetter', () => {
         game.players.push(player1);
         game.players.push(player2);
         game.start();
+        const letterCreator = new LetterCreator();
+        const letterObjects = letterCreator.createLetters(lettersToPlace.split(''));
+        for (let i = 0; i < letterObjects.length; i++) {
+            game.getActivePlayer().letterRack[i] = letterObjects[i];
+        }
     });
 
     it('should create an instance', () => {
-        expect(new PlaceLetter(game.getActivePlayer(), letterToPlace, placement)).toBeTruthy();
+        expect(new PlaceLetter(game.getActivePlayer(), lettersToPlace, placement)).toBeTruthy();
     });
 
     it('should place letter at right place', () => {
-        const placeAction = new PlaceLetter(game.getActivePlayer(), letterToPlace, placement);
+        const placeAction = new PlaceLetter(game.getActivePlayer(), lettersToPlace, placement);
         placeAction.execute(game);
-        for (let i = 0; i < letterToPlace.length; i++) {
-            expect(game.board.grid[i][0].letterObject.char).toBe(letterToPlace[i].char);
+        for (let i = 0; i < lettersToPlace.length; i++) {
+            expect(game.board.grid[0][i].letterObject.char).toBe(lettersToPlace.charAt(i).toUpperCase());
         }
     });
 
     it('should have proper revert behavior', () => {
-        const placeAction = new PlaceLetter(game.getActivePlayer(), letterToPlace, placement);
+        const placeAction = new PlaceLetter(game.getActivePlayer(), lettersToPlace, placement);
         placeAction.execute(game);
         placeAction.revert();
-        for (let i = 0; i < letterToPlace.length; i++) {
+        for (let i = 0; i < lettersToPlace.length; i++) {
             expect(game.board.grid[i][0].letterObject.char).toBe(' ');
         }
     });
