@@ -1,3 +1,4 @@
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
@@ -53,7 +54,7 @@ export abstract class Bot extends Player {
         const endOfBoard = 14;
         const startOfBoard = 0;
         let isVertical = isVerticalFlag;
-        let lettersOnLine = '';
+        let lettersOnLine: ValidWord = new ValidWord('');
 
         let letterInBox = grid[x][y].letterObject.char;
         while (letterInBox === ' ') {
@@ -76,17 +77,24 @@ export abstract class Bot extends Player {
         if (letterInBox !== ' ') {
             this.isBoardEmpty = false;
             let lastLetterOfLine: number;
+            let rightCount: number = 0;
+            lettersOnLine.leftCount = x;
+            lettersOnLine.isVertical = isVertical;
+            lettersOnLine.startingTileX = x;
+            lettersOnLine.startingTileY = y;
             if (isVertical) {
                 let tmpY = endOfBoard;
                 let tmpYLetterInBox = grid[x][tmpY].letterObject.char;
                 while (tmpYLetterInBox === ' ') {
                     tmpY--;
+                    rightCount++;
                     tmpYLetterInBox = grid[x][tmpY].letterObject.char;
                 }
                 lastLetterOfLine = tmpY;
+                lettersOnLine.rightCount = rightCount;
                 tmpY = y;
                 while (tmpY <= lastLetterOfLine) {
-                    lettersOnLine = lettersOnLine.concat(this.emptyCheck(letterInBox));
+                    lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                     tmpY++;
                     letterInBox = grid[x][tmpY].letterObject.char;
                 }
@@ -95,12 +103,14 @@ export abstract class Bot extends Player {
                 let tmpXLetterInBox = grid[tmpX][y].letterObject.char;
                 while (tmpXLetterInBox === ' ') {
                     tmpX--;
+                    rightCount++;
                     tmpXLetterInBox = grid[tmpX][y].letterObject.char;
                 }
                 lastLetterOfLine = tmpX;
+                lettersOnLine.rightCount = rightCount;
                 tmpX = x;
                 while (tmpX <= lastLetterOfLine) {
-                    lettersOnLine = lettersOnLine.concat(this.emptyCheck(letterInBox));
+                    lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                     tmpX++;
                     letterInBox = grid[tmpX][y].letterObject.char;
                 }
@@ -108,7 +118,6 @@ export abstract class Bot extends Player {
 
             let allPlacedLettersCombination = this.lineSplitter(lettersOnLine);
 
-            // TODO Check dict here for list of words
             let possiblyValidWords: ValidWord[] = this.wordCheck(allPlacedLettersCombination);
 
             if (possiblyValidWords) {
@@ -176,103 +185,169 @@ export abstract class Bot extends Player {
         }
     }
 
-    lineSplitter(lettersOnLine: string): string[] {
-        let allPossibilities: string[] = [];
+    lineSplitter(lettersOnLine: ValidWord): ValidWord[] {
+        let allPossibilities: ValidWord[] = [];
         const notFound = -1;
-        let emptyBox = lettersOnLine.indexOf('-');
-        const startOfLine = 0;
+        let startOfLine = 0;
         let leftIndex = startOfLine;
         let rightIndex = startOfLine;
-        const endOfLine = lettersOnLine.length;
+        const endOfLine = lettersOnLine.word.length;
         let subWord: string;
+        // const indexCompensation = 1;
+        // const BLANK = 0;
+        // let tmpIndex = startOfLine;
+        // let letterCountLeft = 0;
+
+        // while (lettersOnLine.word[tmpIndex] === '-') {
+        //     tmpIndex++;
+        //     letterCountLeft++;
+        // }
+
+        let emptyBox = lettersOnLine.word.indexOf('-');
         let index = emptyBox;
-        const indexCompensation = 1;
 
         if (emptyBox === notFound) {
+            // let tmpSubWord = new ValidWord(lettersOnLine.word);
+            // tmpSubWord.leftCount = lettersOnLine.leftCount;
+            // tmpSubWord.rightCount = lettersOnLine.rightCount;
+            // tmpSubWord.isVertical = lettersOnLine.isVertical;
+            // tmpSubWord.startingTileX = lettersOnLine.startingTileX;
+            // tmpSubWord.startingTileY = lettersOnLine.startingTileY;
+
             allPossibilities.push(lettersOnLine);
         } else {
             let maxGroupSize = 1;
             while (emptyBox !== notFound) {
                 maxGroupSize++;
-                while (lettersOnLine.charAt(index) === '-') {
+                while (lettersOnLine.word.charAt(index) === '-') {
                     index++;
                 }
                 leftIndex = index;
-                emptyBox = lettersOnLine.substring(leftIndex, endOfLine).indexOf('-');
-                index += emptyBox + indexCompensation;
+                emptyBox = lettersOnLine.word.indexOf('-', leftIndex);
+                index = emptyBox;
             }
 
-            let groupsOf = 1;
-            while (groupsOf <= maxGroupSize) {
+            let tmpSubWord: ValidWord = new ValidWord('');
+            let leftCounter: number = 0;
+            let rightCounter: number = 0;
+            for (let groupsOf = 1; groupsOf <= maxGroupSize; groupsOf++) {
+                tmpSubWord = new ValidWord('');
                 leftIndex = startOfLine;
-                emptyBox = lettersOnLine.indexOf('-');
+                emptyBox = lettersOnLine.word.indexOf('-');
                 index = emptyBox;
 
-                let passCount = 1;
-                while (passCount < groupsOf) {
-                    while (lettersOnLine.charAt(index) === '-') {
+                for (let passCount = 1; passCount < groupsOf; passCount++) {
+                    while (lettersOnLine.word.charAt(index) === '-') {
                         index++;
                     }
                     rightIndex = index;
-                    emptyBox = lettersOnLine.substring(rightIndex, endOfLine).indexOf('-');
-                    index += emptyBox;
-                    passCount++;
+                    emptyBox = lettersOnLine.word.indexOf('-', rightIndex);
+                    index = emptyBox;
                 }
 
                 rightIndex = index;
-                while (emptyBox !== notFound) {
-                    subWord = lettersOnLine.substring(leftIndex, rightIndex);
-                    allPossibilities.push(subWord);
-                    while (lettersOnLine.charAt(++rightIndex) === '-') {}
-                    while (lettersOnLine.charAt(++leftIndex) !== '-') {}
-                    while (lettersOnLine.charAt(++leftIndex) === '-') {}
 
-                    emptyBox = lettersOnLine.substring(rightIndex, endOfLine).indexOf('-');
-                    rightIndex += emptyBox;
+                while (emptyBox !== notFound) {
+                    tmpSubWord = new ValidWord('');
+
+                    subWord = lettersOnLine.word.substring(leftIndex, rightIndex);
+
+                    // if (isVertical) {
+                    tmpSubWord.word = subWord;
+                    if (leftIndex === startOfLine) {
+                        tmpSubWord.leftCount = lettersOnLine.leftCount;
+                    } else {
+                        tmpSubWord.leftCount = leftCounter;
+                    }
+                    tmpSubWord.isVertical = lettersOnLine.isVertical;
+                    tmpSubWord.startingTileX = lettersOnLine.startingTileX;
+                    tmpSubWord.startingTileY = lettersOnLine.startingTileY;
+                    //allPossibilities.push(new ValidWord(subWord, BLANK, BLANK, x, y, isVertical));
+                    // } else {
+                    //     allPossibilities.push(new ValidWord(subWord, BLANK, BLANK, x, y, isVertical));
+                    // }
+                    rightCounter = 0;
+                    rightIndex++;
+                    while (lettersOnLine.word.charAt(rightIndex) === '-') {
+                        rightCounter++;
+                        rightIndex++;
+                    }
+                    // if (rightCounter === 0) {
+                    // tmpSubWord.rightCount = lettersOnLine.rightCount;
+                    // } else {
+                    tmpSubWord.rightCount = rightCounter;
+                    // }
+                    allPossibilities.push(tmpSubWord);
+
+                    while (lettersOnLine.word.charAt(leftIndex) !== '-') {
+                        leftIndex++;
+                    }
+                    leftCounter = 0;
+                    leftIndex++;
+                    while (lettersOnLine.word.charAt(leftIndex) === '-') {
+                        leftCounter++;
+                        leftIndex++;
+                    }
+
+                    emptyBox = lettersOnLine.word.indexOf('-', rightIndex);
+                    rightIndex = emptyBox;
                 }
-                subWord = lettersOnLine.substring(leftIndex, endOfLine);
-                allPossibilities.push(subWord);
-                groupsOf++;
+                tmpSubWord = new ValidWord('');
+
+                subWord = lettersOnLine.word.substring(leftIndex, endOfLine);
+                tmpSubWord.word = subWord;
+                if (leftIndex === startOfLine) {
+                    tmpSubWord.leftCount = lettersOnLine.leftCount;
+                } else {
+                    tmpSubWord.leftCount = leftCounter;
+                }
+                tmpSubWord.rightCount = lettersOnLine.rightCount;
+                tmpSubWord.isVertical = lettersOnLine.isVertical;
+                tmpSubWord.startingTileX = lettersOnLine.startingTileX;
+                tmpSubWord.startingTileY = lettersOnLine.startingTileY;
+                allPossibilities.push(tmpSubWord);
             }
         }
         return allPossibilities;
     }
 
     // TODO
-    private wordCheck(allPlacedLettersCombination: string[]): ValidWord[] {
+    private wordCheck(allPlacedLettersCombination: ValidWord[]): ValidWord[] {
         let possiblyValidWords: ValidWord[] = [];
         let tmpWordList: ValidWord[] = [];
 
-        for (let placedLetters in allPlacedLettersCombination) {
+        for (let placedLetters of allPlacedLettersCombination) {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
             for (let word of tmpWordList) {
                 // TODO Check here if the words found can be placed with the available letters
-                if (this.regexCheck(word, placedLetters)) {
+                if (this.regexCheck(word, placedLetters.word)) {
                     possiblyValidWords.push(word);
                 }
-                word.word.slice;
+                // word.word.slice;
             }
         }
         return possiblyValidWords;
     }
 
-    // TODO Make private
-    wordValidator(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
+    // TODO Make private / delete
+    // wordValidator(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
 
     // TODO Remove commented console.log/code and make private
-    // TODO Rework to support empty boxes between placed letters ('-')
     // Check if it's possible to form the word with the currently available letters
     regexCheck(dictWord: ValidWord, placedLetters: string): boolean {
-        // let testBot = new EasyBot('Jimmy');
-        // console.log(testBot.regexCheck('keyboard', 'oa'));
-        // let letterRack = 'ydebrk';
-
         const letterRack = this.letterRack;
         const mapRack = new Map();
         const notFound = -1;
         const firstLetterIndex = 1;
         const wordLength = dictWord.word.length;
-        let placedWord = placedLetters;
+        let placedWord: string = '';
+        for (let letter of placedLetters) {
+            if (letter === '-') {
+                placedWord += '.';
+            } else {
+                placedWord += letter;
+            }
+        }
 
         for (const letter of letterRack) {
             const letterCount = mapRack.get(letter);
@@ -304,6 +379,30 @@ export abstract class Bot extends Player {
                 placedWord = dictWord.word[INDEX - 1] + placedWord;
             }
         }
+
+        let indexOfDot: number = placedWord.indexOf('.');
+        while (indexOfDot !== notFound) {
+            const lettersLeft = this.tmpLetterLeft(mapRack);
+            regex = new RegExp(placedWord.substring(0, indexOfDot).toLowerCase() + '(?=[' + lettersLeft + '])');
+            INDEX = dictWord.word.search(regex);
+            if (INDEX === notFound) {
+                if (mapRack.has('*')) {
+                    regex = new RegExp(placedWord.toLowerCase());
+                    INDEX = dictWord.word.search(regex);
+                    this.deleteTmpLetter('*', mapRack);
+                    placedWord =
+                        placedWord.substring(0, indexOfDot) + dictWord.word[placedWord.length].toUpperCase() + placedWord.substring(indexOfDot + 1);
+                } else break;
+            } else {
+                this.deleteTmpLetter(dictWord.word[placedWord.length], mapRack);
+                placedWord =
+                    placedWord.substring(0, indexOfDot) +
+                    dictWord.word[placedWord.substring(0, indexOfDot).length] +
+                    placedWord.substring(indexOfDot + 1);
+            }
+            indexOfDot = placedWord.indexOf('.');
+        }
+
         while (placedWord.length !== wordLength) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             regex = new RegExp(placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
@@ -320,12 +419,9 @@ export abstract class Bot extends Player {
                 placedWord = placedWord + dictWord.word[placedWord.length];
             }
         }
-        // if(dictWord.word.search(regex) !== notFound)
         if (dictWord.word === placedWord.toLowerCase()) {
-            // console.log('Found_Word: ' + placedWord);
             return true;
         } else {
-            // console.log('Not_Found');
             return false;
         }
     }
@@ -341,15 +437,15 @@ export abstract class Bot extends Player {
         }
     }
 
-    private tmpLetterLeft(mapRack: Map<string, number>): string {
+    private tmpLetterLeft(mapRack: Map<Letter, number>): string {
         let lettersLeft = '';
         if (!mapRack) return lettersLeft;
         for (const key of mapRack.keys()) {
-            if (key !== '*') {
+            if (key.char !== '*') {
                 const letterCount = mapRack.get(key);
                 if (!letterCount) return lettersLeft;
                 for (let i = 0; i < letterCount; i++) {
-                    lettersLeft += key;
+                    lettersLeft += key.char;
                 }
             }
         }
