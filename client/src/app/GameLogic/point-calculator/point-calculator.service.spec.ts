@@ -109,15 +109,6 @@ describe('PointCalculatorService', () => {
     // During game
     it('should calculate the correct points of a word when placing all the players letters if >=7', () => {
         const totalPointsOfWord = 110;
-        const bateaux = [
-            { char: 'B', value: 3 },
-            { char: 'A', value: 1 },
-            { char: 'T', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'A', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'X', value: 8 },
-        ];
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
             { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -128,7 +119,7 @@ describe('PointCalculatorService', () => {
             { letterObject: { char: 'X', value: 8 }, letterMultiplicator: 1, wordMultiplicator: 1 },
         ];
         listOfWord.push(word);
-        const action = new PlaceLetter(player2, bateaux, { x: 6, y: 6, direction: 'h' });
+        const action = new PlaceLetter(player2, 'bateaux', { x: 6, y: 6, direction: 'h' });
         player2.letterRack = emptyRack;
         expect(servicePoints.placeLetterPointsCalculation(player2, action, listOfWord)).toBe(totalPointsOfWord);
     });
@@ -145,21 +136,6 @@ describe('PointCalculatorService', () => {
 
         player2.letterRack = [{ char: 'A', value: 1 }];
 
-        const bat = [
-            { char: 'B', value: 3 },
-            { char: 'A', value: 1 },
-            { char: 'T', value: 1 },
-        ];
-
-        const bateau = [
-            { char: 'B', value: 3 },
-            { char: 'A', value: 1 },
-            { char: 'T', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'A', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'X', value: 8 },
-        ];
         const wordBat = [letterB, letterA, letterT];
         const wordBateaux = [
             letterB,
@@ -171,12 +147,12 @@ describe('PointCalculatorService', () => {
             { letterObject: { char: 'X', value: 8 }, letterMultiplicator: 1, wordMultiplicator: 1 },
         ];
         listOfWord.push(wordBat);
-        const action1 = new PlaceLetter(player2, bat, { x: 6, y: 6, direction: 'h' });
+        const action1 = new PlaceLetter(player2, 'bat', { x: 6, y: 6, direction: 'h' });
         servicePoints.placeLetterPointsCalculation(player2, action1, listOfWord);
 
         listOfWord.pop();
         listOfWord.push(wordBateaux);
-        const action = new PlaceLetter(player2, bateau, { x: 6, y: 9, direction: 'h' });
+        const action = new PlaceLetter(player2, 'bateau', { x: 6, y: 9, direction: 'h' });
         expect(servicePoints.placeLetterPointsCalculation(player2, action, listOfWord)).toBe(totalPointsOfWord);
     });
 
@@ -191,23 +167,11 @@ describe('PointCalculatorService', () => {
         player1.letterRack = [{ char: 'E', value: 1 }];
         player2.letterRack = [{ char: 'A', value: 1 }];
 
-        const at = [
-            { char: 'A', value: 1 },
-            { char: 'T', value: 1 },
-        ];
-
         const wordAt = [letterA, { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 }];
         listOfWord.push(wordAt);
-        const oldAction = new PlaceLetter(player1, at, { x: 6, y: 6, direction: 'v' });
+        const oldAction = new PlaceLetter(player1, 'at', { x: 6, y: 6, direction: 'v' });
         servicePoints.placeLetterPointsCalculation(player1, oldAction, listOfWord);
         listOfWord.pop();
-
-        const bake = [
-            { char: 'B', value: 3 },
-            { char: 'A', value: 1 },
-            { char: 'K', value: 5 },
-            { char: 'E', value: 1 },
-        ];
 
         const wordBat = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -222,7 +186,7 @@ describe('PointCalculatorService', () => {
         ];
         listOfWord.push(wordBat);
         listOfWord.push(wordBake);
-        const action = new PlaceLetter(player2, bake, { x: 6, y: 5, direction: 'h' });
+        const action = new PlaceLetter(player2, 'bake', { x: 6, y: 5, direction: 'h' });
         expect(servicePoints.placeLetterPointsCalculation(player2, action, listOfWord)).toBe(totalPointsOfPlayer2);
     });
 
@@ -232,11 +196,6 @@ describe('PointCalculatorService', () => {
         const timeTurn = 30;
         const game = new MockGame(timeTurn, timer, servicePoints, boardService);
         game.consecutivePass = 0;
-        const threeLetterRack = [
-            { char: 'C', value: 3 },
-            { char: 'E', value: 1 },
-            { char: 'T', value: 1 },
-        ];
         word = [
             { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
             { letterObject: { char: 'E', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
@@ -244,7 +203,7 @@ describe('PointCalculatorService', () => {
         ];
         listOfWord.pop();
         listOfWord.push(word);
-        const action = new PlaceLetter(player2, threeLetterRack, { x: 6, y: 6, direction: 'h' });
+        const action = new PlaceLetter(player2, 'threeLetterRack', { x: 6, y: 6, direction: 'h' });
         const initialPointPlayer1 = 150;
         const initialPointPlayer2 = 50;
 

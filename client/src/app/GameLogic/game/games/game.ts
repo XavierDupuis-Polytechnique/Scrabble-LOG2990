@@ -31,6 +31,9 @@ export class Game {
     }
 
     start(): void {
+        if (this.players.length === 0) {
+            throw Error('Game started with no players');
+        }
         this.drawGameLetters();
         this.pickFirstPlayer();
         this.startTurn();

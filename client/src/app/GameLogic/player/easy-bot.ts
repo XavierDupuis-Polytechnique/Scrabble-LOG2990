@@ -1,23 +1,63 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Bot } from './bot';
 
 export class EasyBot extends Bot {
-    static actionProabibility = { play: 0.8, exchange: 0.1, pass: 0.1 };
-
+    static actionProbabibility = { play: 0.8, exchange: 0.1, pass: 0.1 };
+    static placementProbability = { sixOrLess: 0.4, sevenToTwelve: 0.3, other: 0.3 };
+    static botPointSetting = {
+        sixOrLess: {
+            prob: 0.4,
+            value: 6,
+        },
+        seventToTwelve: {
+            prob: 0.3,
+            value: 12,
+        },
+        other: {
+            prob: 0.3,
+            value: 18,
+        },
+    };
     randomActionPicker() {
         const randomValue = Math.random();
-        if (randomValue <= EasyBot.actionProabibility.play) {
+        if (randomValue <= EasyBot.actionProbabibility.play) {
             this.play();
-        } else if (randomValue <= EasyBot.actionProabibility.play + EasyBot.actionProabibility.exchange) {
+        } else if (randomValue <= EasyBot.actionProbabibility.play + EasyBot.actionProbabibility.exchange) {
             this.exchange();
         } else {
             this.pass();
         }
     }
 
-    // randomWordPicker()
+    randomWordPicker(): ValidWord {
+        const randomValue = Math.random();
+        // TODO assign validWordList with the calculated wordList from the algorithm
+        const validWordList: ValidWord[] = [];
+        const wordP6: ValidWord[] = [];
+        const wordP7to12: ValidWord[] = [];
+        const wordP13To18: ValidWord[] = [];
+        // Create subs arrays for valid word base on point
+        validWordList.forEach((word) => {
+            if (word.value <= EasyBot.botPointSetting.sixOrLess.value) {
+                wordP6.push(word);
+            } else if (word.value > EasyBot.botPointSetting.sixOrLess.value && word.value <= EasyBot.botPointSetting.seventToTwelve.value) {
+                wordP7to12.push(word);
+            } else if (word.value > EasyBot.botPointSetting.seventToTwelve.value && word.value <= EasyBot.botPointSetting.other.value) {
+                wordP13To18.push(word);
+            }
+        });
+
+        if (randomValue <= EasyBot.botPointSetting.sixOrLess.prob) {
+            return this.wordPicker(wordP6);
+        } else if (randomValue <= EasyBot.botPointSetting.seventToTwelve.prob + EasyBot.botPointSetting.other.prob) {
+            return this.wordPicker(wordP7to12);
+        } else {
+            return this.wordPicker(wordP13To18);
+        }
+    }
 
     play() {
         return;
@@ -43,5 +83,14 @@ export class EasyBot extends Bot {
 
     pass() {
         this.action$.next(new PassTurn(this));
+    }
+
+    private randomInInterval(min: number, max: number): number {
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    private wordPicker(list: ValidWord[]): ValidWord {
+        const randomPicker = this.randomInInterval(0, list.length);
+        return list[randomPicker];
     }
 }
