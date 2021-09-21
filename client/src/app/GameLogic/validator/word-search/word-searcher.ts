@@ -5,11 +5,11 @@ import { DictionaryService } from '../dictionary.service';
 
 const BOARD_MIN_POSITION_X = 0;
 const BOARD_MIN_POSITION_Y = 0;
-const BOARD_MAX_POSITION_X = 15;
-const BOARD_MAX_POSITION_Y = 15;
+const BOARD_MAX_POSITION_X = 15; //15
+const BOARD_MAX_POSITION_Y = 15; //15
 
 export class WordSearcher {
-    listOfValidWord: string[] = [];
+    listOfValidWord: string[] = []; //Tile
     neighbours: [number, number][] = [];
     grid: Tile[][];
     placementIsValid: boolean = true;
@@ -53,10 +53,19 @@ export class WordSearcher {
         return wordTemp;
     }
     isInsideBoard(x: number, y: number): boolean {
-        if (x >= BOARD_MIN_POSITION_X && y >= BOARD_MIN_POSITION_Y && x < BOARD_MAX_POSITION_X && y < BOARD_MAX_POSITION_Y) {
+        if (x >= BOARD_MIN_POSITION_X && y >= BOARD_MIN_POSITION_Y && x <= BOARD_MAX_POSITION_X && y <= BOARD_MAX_POSITION_Y) {
             return true;
         }
         return false;
+    }
+    tileIsOccupied(x: number, y: number): boolean {
+        if (!this.isInsideBoard(x, y)) {
+            return false;
+        }
+        if (this.grid[y][x].letterObject.char === ' ') {
+            return false;
+        }
+        return true;
     }
     searchAdjacentWords(action: PlaceLetter) {
         const startX = action.placement.x;
@@ -92,14 +101,20 @@ export class WordSearcher {
     getWordVertical(x: number, y: number) {
         let word: Tile[] = [];
         let currentTile = this.grid[y][x];
-        while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x, y)) {
+        while (this.tileIsOccupied(x, y)) {
+            // while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x, y)) {
             y -= 1;
-            currentTile = this.grid[y][x];
+            if (this.isInsideBoard(x, y)) {
+                currentTile = this.grid[y][x];
+            }
+
+            console.log('currentTileVer', currentTile);
+            console.log('y: ', y);
         }
         y += 1;
         const firstLetter = this.grid[y][x];
         currentTile = firstLetter;
-        while (currentTile.letterObject.char !== ' ') {
+        while (this.tileIsOccupied(x, y)) {
             word.push(currentTile);
 
             if (this.isInsideBoard(x - 1, y)) {
@@ -112,7 +127,9 @@ export class WordSearcher {
                 }
             }
             y += 1;
-            currentTile = this.grid[y][x];
+            if (this.isInsideBoard(x, y)) {
+                currentTile = this.grid[y][x];
+            }
         }
         console.log('WordV: ', word);
         return word;
@@ -121,17 +138,20 @@ export class WordSearcher {
     getWordHorizontal(x: number, y: number) {
         let word: Tile[] = [];
         let currentTile = this.grid[y][x];
-        while (currentTile.letterObject.char !== ' ' && this.isInsideBoard(x - 1, y)) {
+        while (this.tileIsOccupied(x, y)) {
+            // while ((currentTile.letterObject.char !== ' ' || currentTile.letterObject.char !== undefined) && this.isInsideBoard(x, y)) {
             //condition est pas bonne
             x -= 1;
-            currentTile = this.grid[y][x];
+            if (this.isInsideBoard(x, y)) {
+                currentTile = this.grid[y][x];
+            }
             console.log('currentTile', currentTile);
             console.log('X: ', x);
         }
         x += 1;
         const firstLetter = this.grid[y][x];
         currentTile = firstLetter;
-        while (currentTile.letterObject.char !== ' ') {
+        while (this.tileIsOccupied(x, y)) {
             word.push(currentTile);
 
             if (this.isInsideBoard(x, y - 1)) {
@@ -144,7 +164,9 @@ export class WordSearcher {
                 }
             }
             x += 1;
-            currentTile = this.grid[y][x];
+            if (this.isInsideBoard(x, y)) {
+                currentTile = this.grid[y][x];
+            }
         }
         console.log('WordH: ', word);
         return word;

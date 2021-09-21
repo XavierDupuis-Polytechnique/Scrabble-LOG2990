@@ -28,9 +28,9 @@ class mockBoard {
     grid: Tile[][];
     constructor() {
         this.grid = [];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 16; i++) {
             this.grid[i] = [];
-            for (let j = 0; j < 5; j++) {
+            for (let j = 0; j < 16; j++) {
                 this.grid[i][j] = new Tile();
                 this.grid[i][j].letterObject = { char: ' ', value: 1 };
             }
@@ -48,7 +48,6 @@ class mockBoard {
         this.grid[4][2].letterObject = { char: 'L', value: 1 };
         this.grid[4][3].letterObject = { char: 'L', value: 1 };
         this.grid[4][4].letterObject = { char: 'E', value: 1 };
-        console.log(this.grid);
     }
 }
 
@@ -121,7 +120,8 @@ describe('WordSearcher', () => {
         console.log('Word Validator:', wordSearcher.listOfValidWord);
         expect(wordSearcher.listOfValidWord).toContain('ma');
     });
-    TODO: it('should return all neighbours if they are all valid words', () => {
+
+    it('should return all neighbours if they are all valid words', () => {
         const wordsToReturn: string[] = ['mi', 'ma', 'il'];
         const player: Player = new User('Max');
         const letters: Letter[] = [
@@ -139,7 +139,7 @@ describe('WordSearcher', () => {
     });
 
     it('should add word to list if word is valid on board', () => {
-        //Mot allo a la poisition (0,0) on ajoute u(4,0);
+        //Mot EL-E a la poisition (1,4) on ajoute L(3,4);
         const player: Player = new User('Max');
         const letters: Letter[] = [{ char: 'L', value: 1 }];
         const placement: PlacementSetting = { x: 3, y: 4, direction: 'H' };
