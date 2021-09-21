@@ -55,7 +55,7 @@ export class CommandParserService {
 
     placeLetterArgVerifier(args: string[]): string[] {
         const errorSyntax = 'erreur de syntax';
-        if (args[0].length >= MIN_PLACE_LETTER_ARG_SIZE || args[0].length <= MAX_PLACE_LETTER_ARG_SIZE) {
+        if (args[0].length <= MAX_PLACE_LETTER_ARG_SIZE && args[0].length >= MIN_PLACE_LETTER_ARG_SIZE) {
             const row = args[0].charCodeAt(0);
             let col;
             const direction = args[0].charCodeAt(args[0].length - 1);
