@@ -40,7 +40,7 @@ export class DictionaryService {
     }
     //
     tileToString(word: Tile[]): string {
-        let wordTemp: string = '';
+        const wordTemp = '';
         word.forEach((letter) => {
             wordTemp.concat(letter.letterObject.char);
         });

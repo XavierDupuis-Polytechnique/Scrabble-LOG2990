@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
-import { Player } from '@app/GameLogic/player/player';
+import { Player } from '../player/player';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;
@@ -18,22 +19,21 @@ export class PointCalculatorService {
         this.letterCreator = new LetterCreator();
     }
 
-    placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][], player: Player, game: Game) {
+    // ON feed la liste des mots ecrits
+    placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][], game: Game): number {
         let totalPointsOfTurn = 0;
-        let wordPlaced: Tile[] = [];
-        wordList.forEach(() => {
-
-            wordPlaced = this.wordPlaced(action, game);
-            totalPointsOfTurn += this.calculatePointsOfWord(wordPlaced);
+        // const wordPlaced = this.wordPlaced(action, game);
+        wordList.forEach((word) => {
+            totalPointsOfTurn += this.calculatePointsOfWord(word, action, game);
         });
-        if (player.isLetterRackEmpty && wordPlaced.length >= MAX_LETTER_IN_RACK) {
+        if (action.player.isLetterRackEmpty && action.lettersToRemoveInRack.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
         }
-        player.points += totalPointsOfTurn;
+        action.player.points += totalPointsOfTurn;
         return totalPointsOfTurn;
     }
 
-    endOfGamePointdeduction(game: Game) {
+    endOfGamePointdeduction(game: Game): void {
         const activePlayer = game.getActivePlayer();
         if (game.consecutivePass >= Game.maxConsecutivePass) {
             for (const player of game.players) {
@@ -49,23 +49,23 @@ export class PointCalculatorService {
         }
     }
 
-    calculatePointsOfWord(word: Tile[]) {
+    calculatePointsOfWord(word: Tile[], action: PlaceLetter, game: Game): number {
         let sumOfWord = 0;
         let totalWordMultiplicator = 1;
         const lettersInWord = new Set(word);
         lettersInWord.forEach((letter) => {
             sumOfWord += letter.letterObject.value * letter.letterMultiplicator;
-            this.desactivateLetterMultiplicator(letter);
-            if (letter.wordMultiplicator) {
-                totalWordMultiplicator *= letter.wordMultiplicator;
-                this.desactivateWordMultiplicator(letter);
-            }
+            this.desactivateLetterMultiplicator(this.findCoordinates(letter, action), game);
+
+            totalWordMultiplicator *= letter.wordMultiplicator;
+            this.desactivateWordMultiplicator(this.findCoordinates(letter, action), game);
+
         });
         sumOfWord *= totalWordMultiplicator;
         return sumOfWord;
     }
 
-    calculatePointsOfRack(player: Player) {
+    calculatePointsOfRack(player: Player): number {
         let sumOfRack = 0;
         const letterRack = new Set(player.letterRack);
         for (const letter of letterRack) {
@@ -74,7 +74,14 @@ export class PointCalculatorService {
         return sumOfRack;
     }
 
-    wordPlaced(action: PlaceLetter, game: Game) {
+    tileToString(word: Tile[]): string {
+        let wordTemp = '';
+        word.forEach((tile) => {
+            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
+        });
+        return wordTemp;
+    }
+    wordPlaced(action: PlaceLetter, game: Game): Tile[] {
         const wordInTile: Tile[] = [];
         const startX = action.placement.x;
         const startY = action.placement.y;
@@ -84,19 +91,39 @@ export class PointCalculatorService {
             if (action.placement.direction === Direction.Horizontal) {
                 x = startX + wordIndex;
                 wordInTile.push(game.board.grid[y][x]);
-            } else {
+            } else if (action.placement.direction === Direction.Horizontal) {
                 y = startY + wordIndex;
                 wordInTile.push(game.board.grid[y][x]);
             }
+
         }
         return wordInTile;
     }
 
-    protected desactivateLetterMultiplicator(tile: Tile) {
-        tile.letterMultiplicator = 1;
+    findCoordinates(lettre: Tile, action: PlaceLetter) {
+        let coordinates: Vec2 = { x: 0, y: 0 };
+        for (let wordIndex = 0; wordIndex < action.word.length; wordIndex++) {
+            if (action.word[wordIndex] === lettre.letterObject.char) {
+                if (action.placement.direction === Direction.Horizontal) {
+                    coordinates.x = action.placement.x + wordIndex;
+                    coordinates.y = action.placement.y
+                } else {
+                    coordinates.x = action.placement.x;
+                    coordinates.y = action.placement.y + wordIndex;
+                }
+            }
+
+        }
+        return coordinates;
+
     }
 
-    protected desactivateWordMultiplicator(tile: Tile) {
-        tile.wordMultiplicator = 1;
+    protected desactivateLetterMultiplicator(coordinates: Vec2, game: Game) {
+        game.board.desactivateWordMultiplicator(coordinates.x, coordinates.y);
+
+    }
+
+    protected desactivateWordMultiplicator(coordinates: Vec2, game: Game) {
+        game.board.desactivateWordMultiplicator(coordinates.x, coordinates.y);
     }
 }
