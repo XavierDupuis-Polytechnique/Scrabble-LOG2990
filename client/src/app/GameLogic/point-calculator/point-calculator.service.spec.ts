@@ -10,7 +10,6 @@ import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
 
-
 const MAX_CONSECUTIVE_PASS = 6;
 
 class MockGame extends Game {
@@ -51,7 +50,6 @@ describe('PointCalculatorService', () => {
     let word: Tile[];
     const listOfWord: Tile[][] = [];
 
-
     beforeEach(() => {
         TestBed.configureTestingModule({});
         servicePoints = TestBed.inject(PointCalculatorService);
@@ -60,9 +58,6 @@ describe('PointCalculatorService', () => {
         while (listOfWord.length > 0) {
             listOfWord.pop();
         }
-
-
-
     });
 
     it('should be created', () => {
@@ -117,7 +112,6 @@ describe('PointCalculatorService', () => {
         const totalPointsOfWord = 66;
         const bateaux = 'bateaux';
         listOfWord.push(word);
-
 
         const timePerTurn = 30;
         const game = new MockGame(timePerTurn, timer, servicePoints, boardService);
@@ -184,7 +178,6 @@ describe('PointCalculatorService', () => {
         game.board.grid[3][0].letterObject = { char: 'A', value: 1 };
         game.board.grid[4][0].letterObject = { char: 'T', value: 1 };
 
-
         const totalPointsOfPlayer2 = 21;
         const letterA = new Tile(2, 1);
         letterA.letterObject = { char: 'A', value: 1 };
@@ -193,7 +186,6 @@ describe('PointCalculatorService', () => {
         player2.points = 0;
         player1.letterRack = [{ char: 'E', value: 1 }];
         player2.letterRack = [{ char: 'A', value: 1 }];
-
 
         const wordAt = [letterA, { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 }];
         listOfWord.push(wordAt);

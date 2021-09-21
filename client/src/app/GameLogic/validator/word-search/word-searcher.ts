@@ -2,7 +2,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { Tile } from '@app/GameLogic/game/tile';
-import { DictionaryService } from '../dictionary.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 const BOARD_MIN_POSITION_X = 0;
 const BOARD_MIN_POSITION_Y = 0;
@@ -36,39 +36,35 @@ export class WordSearcher {
         const startX = action.placement.x;
         const startY = action.placement.y;
         const direction = action.placement.direction;
+        let word: Tile[];
         if (direction === Direction.Horizontal) {
-
-            const word = this.getWordHorizontal(startX, startY);
+            word = this.getWordHorizontal(startX, startY);
             this.addWord(word);
 
-            let neighbourSet = new Set(this.neighbours);
+            const neighbourSet = new Set(this.neighbours);
             for (const neighbour of neighbourSet) {
-                const word = this.getWordVertical(neighbour[0], neighbour[1]);
+                word = this.getWordVertical(neighbour[0], neighbour[1]);
                 this.addWord(word);
             }
         } else {
-            const word = this.getWordVertical(startX, startY);
+            word = this.getWordVertical(startX, startY);
             this.addWord(word);
-            let neighbourSet = new Set(this.neighbours);
+            const neighbourSet = new Set(this.neighbours);
             for (const neighbour of neighbourSet) {
-                const word = this.getWordHorizontal(neighbour[0], neighbour[1]);
+                word = this.getWordHorizontal(neighbour[0], neighbour[1]);
                 this.addWord(word);
             }
         }
-
     }
 
     getWordVertical(x: number, y: number) {
-        let word: Tile[] = [];
+        const word: Tile[] = [];
         let currentTile = this.grid[y][x];
         while (this.tileIsOccupied(x, y)) {
             y -= 1;
             if (this.isInsideBoard(x, y)) {
                 currentTile = this.grid[y][x];
             }
-
-            console.log('currentTileVer', currentTile);
-            console.log('y: ', y);
         }
 
         y += 1;
@@ -91,20 +87,17 @@ export class WordSearcher {
                 currentTile = this.grid[y][x];
             }
         }
-        console.log('WordV: ', word);
         return word;
     }
 
     getWordHorizontal(x: number, y: number) {
-        let word: Tile[] = [];
+        const word: Tile[] = [];
         let currentTile = this.grid[y][x];
         while (this.tileIsOccupied(x, y)) {
             x -= 1;
             if (this.isInsideBoard(x, y)) {
                 currentTile = this.grid[y][x];
             }
-            console.log('currentTile', currentTile);
-            console.log('X: ', x);
         }
         x += 1;
         const firstLetter = this.grid[y][x];
@@ -126,7 +119,6 @@ export class WordSearcher {
                 currentTile = this.grid[y][x];
             }
         }
-        console.log('WordH: ', word);
         return word;
     }
 
@@ -144,7 +136,7 @@ export class WordSearcher {
     }
 
     tileToString(word: Tile[]): string {
-        let wordTemp: string = '';
+        let wordTemp = '';
         word.forEach((tile) => {
             wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
         });
@@ -167,5 +159,4 @@ export class WordSearcher {
         }
         return true;
     }
-
 }

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
 import { Player } from '@app/GameLogic/player/player';
-import { Direction } from '../actions/direction.enum';
-import { LetterCreator } from '../game/letter-creator';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;
@@ -19,20 +19,19 @@ export class PointCalculatorService {
     }
 
     placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][], player: Player, game: Game) {
-
         let totalPointsOfTurn = 0;
-        wordList.forEach((word) => {
-            let wordPlaced: Tile[] = [];
-            wordPlaced = this.wordPlaced(action, game)!;
+        let wordPlaced: Tile[] = [];
+        wordList.forEach(() => {
+
+            wordPlaced = this.wordPlaced(action, game);
             totalPointsOfTurn += this.calculatePointsOfWord(wordPlaced);
         });
-        if (player.isLetterRackEmpty && action.lettersToRemoveInRack.length >= MAX_LETTER_IN_RACK) {
+        if (player.isLetterRackEmpty && wordPlaced.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
         }
         player.points += totalPointsOfTurn;
         return totalPointsOfTurn;
     }
-
 
     endOfGamePointdeduction(game: Game) {
         const activePlayer = game.getActivePlayer();
@@ -76,23 +75,21 @@ export class PointCalculatorService {
     }
 
     wordPlaced(action: PlaceLetter, game: Game) {
-        let wordInTile: Tile[] = [];
-        let startX = action.placement.x;
-        let startY = action.placement.y;
+        const wordInTile: Tile[] = [];
+        const startX = action.placement.x;
+        const startY = action.placement.y;
         for (let wordIndex = 0; wordIndex < action.word.length; wordIndex++) {
             let x = 0;
             let y = 0;
             if (action.placement.direction === Direction.Horizontal) {
                 x = startX + wordIndex;
                 wordInTile.push(game.board.grid[y][x]);
-
             } else {
                 y = startY + wordIndex;
                 wordInTile.push(game.board.grid[y][x]);
             }
         }
         return wordInTile;
-
     }
 
     protected desactivateLetterMultiplicator(tile: Tile) {
