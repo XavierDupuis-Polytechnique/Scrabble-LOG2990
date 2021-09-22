@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
@@ -53,9 +54,6 @@ export class ActionValidatorService {
             return false;
         }
 
-        // TODO : PAS ÉCRASER DE LETTRES
-        // TODO : VÉRIFIER NEIHBORS
-
         const centerTilePosition: number = Math.floor(NUM_TILES / 2);
         const board = this.board.board;
         let hasCenterTile = board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
@@ -65,17 +63,34 @@ export class ActionValidatorService {
         let x = action.placement.x;
         let y = action.placement.y;
         let currentTile = board.grid[x][y];
-        let numberOfLetterToPlace = action.word.length;
-        while (numberOfLetterToPlace > 0) {
-            if (x >= NUM_TILES || y >= NUM_TILES) {
+        let currentChar;
+        let lettersNeeded = '';
+        let coord = 0;
+
+        for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
+            if (coord >= NUM_TILES || y >= NUM_TILES) {
                 this.sendErrorMessage(
-                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + x + ' ' + String.fromCharCode(y + ASCII_CODE),
+                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + x + String.fromCharCode(y + ASCII_CODE),
                 );
                 return false;
             }
 
+            currentTile = board.grid[x][y];
+            currentChar = action.word.charAt(letterIndex);
+
             if (currentTile.letterObject.char === ' ') {
-                numberOfLetterToPlace--;
+                lettersNeeded = lettersNeeded.concat(currentChar);
+            } else {
+                if (currentChar !== currentTile.letterObject.char) {
+                    this.sendErrorMessage(
+                        'Commande impossible à réaliser : La lettre "' +
+                        currentChar +
+                        '" ne peut être placé en' +
+                        x +
+                        String.fromCharCode(y + ASCII_CODE),
+                    );
+                    return false;
+                }
             }
 
             if (!hasCenterTile) {
@@ -92,14 +107,20 @@ export class ActionValidatorService {
                 }
             }
 
-            currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? board.grid[x][y++] : board.grid[x++][y];
+            coord = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
         }
 
-        if (!hasCenterTile || !hasNeighbour) {
+        if (!hasCenterTile) {
+            this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
             return false;
         }
 
-        if (!this.hasLettersInRack(action.player.letterRack, action.word)) {
+        if (!hasNeighbour) {
+            this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
+            return false;
+        }
+
+        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
