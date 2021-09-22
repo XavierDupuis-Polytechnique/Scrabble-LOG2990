@@ -13,15 +13,18 @@ mat-grid-list {
     justify-content: center;
     // border: 2px solid black;
 }
+*{
+    height: min-content;
+}
 .Column {
-    height: 100%;
+    // height: 70%;
     display: grid;
     grid-template-columns: 90% 10%;
     grid-template-areas: 'Grid Zoom';
 }
 .boardContainer {
     display: inherit;
-    height: max-content;
+    // height: max-content;
     //padding: 1%;
     margin-left: 15%;
     margin-right: 15%;
@@ -29,7 +32,7 @@ mat-grid-list {
     // border: 10px solid rgb(56, 47, 36);
     border: 10px solid rgb(16, 0, 7);
     // background-color: rgb(95, 69, 44);
-    background-color: rgb(129, 82, 63);
+    background-color: var(--white);
     grid-area: Grid;
 }
 .zoomPolice {

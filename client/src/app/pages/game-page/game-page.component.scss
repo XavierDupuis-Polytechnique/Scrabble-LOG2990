@@ -7,7 +7,7 @@
         'Player Board Board Board Board Info'
         'Player Board Board Board Board Chat'
         'Player Horse Horse Horse Horse Chat';
-    height: 100vmin;
+    height: 85vmin;
 }
 
 app-info-box {
@@ -23,19 +23,22 @@ app-chat-box {
     word-break: normal;
 }
 app-board {
+    height: min-content;
     grid-area: Board;
     padding: 1%;
-    border: 2px solid black;
+    border: 2px solid var(--darkgray);
     min-width: 50vw;
 }
 
 app-horse {
     grid-area: Horse;
-    border: 1px solid grey;
+    border: 1px solid var(--darkgray);
     margin: 1%;
+    max-width: 50%;
+    align-self: center;
 }
 app-player-info {
     grid-area: Player;
     padding: 1%;
-    border: 1px solid grey;
+    border: 1px solid var(--darkgray);
 }

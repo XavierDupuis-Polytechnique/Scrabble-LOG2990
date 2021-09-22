@@ -2,7 +2,7 @@
 
 <!-- <p>Number of Players : {{ info.players.length }} </p> -->
 <div *ngFor="let player of info.players; index as i">
-    <div class="playerInfo" id="{{ i }}" [ngStyle]="{'background-color':player.name === info.activePlayer.name ? 'green' : 'gray' }">
+    <div class="playerInfo" id="{{ i }}" [ngStyle]="{'background-color':player.name === info.activePlayer.name ? 'var(--lightblue)' : 'var(--lightgray)' }">
         <div class="grid-container">
             <span class="name">{{ player.name }} </span>
             <span class="score"> {{ player.points }} points </span>
