@@ -1,29 +1,35 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
-import { TestBed } from '@angular/core/testing';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
-import { DictionaryService } from './dictionary.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+
 
 describe('DictionaryService', () => {
-    let service: DictionaryService = new DictionaryService();
+    let dictionaryService: DictionaryService; // = new DictionaryService();
+    // service = new DictionaryService();
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
-        service = TestBed.inject(DictionaryService);
+        // TestBed.configureTestingModule({
+        //     providers: [DictionaryService]
+        // });
+        // dictionaryService = TestBed.inject(DictionaryService)
+        // TestBed.configureTestingModule({});
+        // service = TestBed.inject(DictionaryService);
+        dictionaryService = new DictionaryService();
     });
 
     it('should be created', () => {
-        expect(service).toBeTruthy();
+        expect(dictionaryService).toBeTruthy();
     });
 
     it('should return true if word is in dictionary', () => {
-        expect(service.isWordInDict('Bateau')).toBeTrue();
+        expect(dictionaryService.isWordInDict('Bateau')).toBeTrue();
     });
 
     it('should return all words containing the searched letters zyklon', () => {
         const searchedLetters = new ValidWord('zyklon', 0, 0, 5, 5);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [new ValidWord('zyklons')];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
 
         expect(result).toEqual(expected);
     });
@@ -32,7 +38,7 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('a', 0, 0, 3, 3);
         let result: ValidWord[] = [];
         const expected = 8925;
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
 
         expect(result.length).toEqual(expected);
     });
@@ -41,7 +47,7 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('a', 0, 0, 5, 5);
         let result: ValidWord[] = [];
         const expected = 44523;
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
 
         expect(result.length).toEqual(expected);
     });
@@ -50,7 +56,7 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('zyk-on', 0, 0, 0, 1);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [new ValidWord('zyklon'), new ValidWord('zyklons')];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
 
         expect(result).toEqual(expected);
     });
@@ -59,7 +65,7 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('z-k-on', 0, 0, 0, 1);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [new ValidWord('zyklon'), new ValidWord('zyklons')];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
 
         expect(result).toEqual(expected);
     });
@@ -78,7 +84,7 @@ describe('DictionaryService', () => {
             new ValidWord('intitulerions'),
             new ValidWord('irresolutions'),
         ];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
     });
 
@@ -96,7 +102,7 @@ describe('DictionaryService', () => {
             new ValidWord('vallon'),
             new ValidWord('wallon'),
         ];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
     });
 
@@ -111,7 +117,7 @@ describe('DictionaryService', () => {
             new ValidWord('rabattait', 0, 0, 0, 0, false, 0, 0),
             new ValidWord('rebattait', 0, 0, 0, 0, false, 0, 0),
         ];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
     });
 
@@ -129,7 +135,7 @@ describe('DictionaryService', () => {
             new ValidWord('vallon', 0, 0, 0, 0, false, 7, 8),
             new ValidWord('wallon', 0, 0, 0, 0, false, 7, 8),
         ];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
     });
 
@@ -142,7 +148,7 @@ describe('DictionaryService', () => {
             new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 2),
             new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 2),
         ];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
     });
 
@@ -154,7 +160,7 @@ describe('DictionaryService', () => {
             new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 3),
             new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 3),
         ];
-        result = service.wordGen(searchedLetters);
+        result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
     });
 });

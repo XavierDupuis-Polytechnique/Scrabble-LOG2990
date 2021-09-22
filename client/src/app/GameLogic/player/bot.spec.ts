@@ -12,7 +12,7 @@ import { BoardService } from '@app/services/board.service';
 import { Bot } from './bot';
 
 class TestBot extends Bot {}
-class MockBoard extends Board {
+class TestBoard extends Board {
     letterCreator = new LetterCreator();
     placeWord(x: number, y: number, isVertical: boolean, word: string) {
         for (const letter of word) {
@@ -28,7 +28,7 @@ class MockBoard extends Board {
 
 describe('Bot', () => {
     let bot: TestBot;
-    let board: MockBoard;
+    let board: TestBoard;
     const boardService = new BoardService();
     const dictionaryService = new DictionaryService();
     const pointCalculator = new PointCalculatorService();
@@ -37,7 +37,7 @@ describe('Bot', () => {
 
     beforeEach(() => {
         bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, game);
-        board = new MockBoard();
+        board = new TestBoard();
     });
     it('should create an instance', () => {
         expect(bot).toBeTruthy();
@@ -256,7 +256,29 @@ describe('Bot', () => {
         expect(result).toEqual(expected);
     });
 
-    it('should return a list of all validWord the bot can play)', () => {
+    it('should return a list of all validWord the bot can play (simple board))', () => {
+        const letters: Letter[] = [
+            { char: 'E', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'I', value: 1 },
+            { char: 'N', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'L', value: 1 },
+        ];
+        bot.letterRack = letters;
+        board.placeWord(6, 8, false, 'bateaux');
+        board.placeWord(9, 8, true, 'elle');
+        boardService.board.grid = board.grid;
+        let result: ValidWord[] = [];
+        //const expected: number = 536;
+        const expected: ValidWord[] = [];
+
+        result = bot.bruteForceStart();
+        expect(result).toEqual(expected);
+    });
+
+    it('should return a list of all validWord the bot can play (complex board))', () => {
         const letters: Letter[] = [
             { char: 'e', value: 1 },
             { char: 'k', value: 1 },
@@ -265,36 +287,34 @@ describe('Bot', () => {
             { char: 'n', value: 1 },
             { char: 'j', value: 1 },
             { char: 'l', value: 1 },
+            // { char: 'a', value: 1 },
+            // { char: 'e', value: 1 },
+            // { char: 'i', value: 1 },
+            // { char: 'o', value: 1 },
+            // { char: 'u', value: 1 },
+            // { char: 't', value: 1 },
+            // { char: 'b', value: 1 },
         ];
+        // bateaux elle bondonneraient nativement retarderons abacas nageait oxo tabac occlusion romantismes
         bot.letterRack = letters;
-        board.placeWord(6, 8, false, 'bateaux');
-        board.placeWord(9, 8, true, 'elle');
-        boardService.board.grid = board.grid;
-        let result: ValidWord[] = [];
-        const expected: ValidWord[] = [];
 
-        result = bot.bruteForceStart();
-        expect(result).toEqual(expected);
-    });
+        board.placeWord(0, 3, true, 'bateaux');
+        board.placeWord(11, 3, true, 'elle');
+        board.placeWord(0, 3, false, 'bondonneraient');
+        board.placeWord(5, 3, true, 'nativement');
+        board.placeWord(4, 10, false, 'retarderons');
+        board.placeWord(9, 3, true, 'abacas');
+        board.placeWord(2, 3, true, 'nageait');
+        board.placeWord(4, 1, true, 'oxo');
+        board.placeWord(13, 3, true, 'tabac');
+        board.placeWord(4, 1, false, 'occlusion');
+        board.placeWord(0, 12, false, 'romantismes');
 
-    it('should return a list of all validWord the bot can play)', () => {
-        const letters: Letter[] = [
-            { char: 'a', value: 1 },
-            { char: 'e', value: 1 },
-            { char: 'i', value: 1 },
-            { char: 'o', value: 1 },
-            { char: 'u', value: 1 },
-            { char: 't', value: 1 },
-            { char: 'b', value: 1 },
-        ];
-        // bateaux elle bondonneraient nativement rempoissonnasses ovationnassions oxycarbone bureaucratiserons mesalliances retarderons
-        bot.letterRack = letters;
-        board.placeWord(6, 8, false, 'bateaux');
-        board.placeWord(9, 8, true, 'elle');
-        // TODO Finish the board
+
         // board.placeWord(6, 8, true, 'bondonneraient');
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
+        // const expected: number = 1;
         const expected: ValidWord[] = [];
 
         result = bot.bruteForceStart();

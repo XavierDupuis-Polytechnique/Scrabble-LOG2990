@@ -95,7 +95,7 @@ export class DictionaryService {
             oldSubWordLength = firstWord.length;
 
             const lastIndex = tmpWordList.length - 1;
-            for (let tmpIndex = 1; tmpIndex <= lastIndex; index++) {
+            for (let tmpIndex = 1; tmpIndex <= lastIndex; tmpIndex++) {
                 const tmpWord = tmpWordList[tmpIndex];
                 for (const tmpDictWord of tmpDict) {
                     oldFoundIndex = tmpDictWord.indexFound + oldSubWordLength;
@@ -106,6 +106,7 @@ export class DictionaryService {
                             if (tmpIndex === lastIndex) {
                                 if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
                                     tmpDictWord.indexFound = foundIndex;
+
                                     tmpDict2.push(tmpDictWord);
                                 }
                             } else {
@@ -127,24 +128,26 @@ export class DictionaryService {
             }
         } else {
             let index = 0;
-            for (const word of dict.words) {
-                if (word.includes(partWord.word) && word.length - letterCountOfPartWord <= maxLetterNumber) {
-                    index = word.indexOf(partWord.word);
-                    if (
-                        index <= partWord.leftCount &&
-                        word.length - (index + partWord.word.length) <= partWord.rightCount &&
-                        word !== partWord.word
-                    ) {
-                        const newWord: ValidWord = new ValidWord(word);
-                        newWord.isVertical = partWord.isVertical;
-                        if (partWord.isVertical) {
-                            newWord.startingTileX = partWord.startingTileX;
-                            newWord.startingTileY = partWord.startingTileY - index;
-                        } else {
-                            newWord.startingTileX = partWord.startingTileX - index;
-                            newWord.startingTileY = partWord.startingTileY;
+            if (partWord.leftCount !== 0 || partWord.rightCount !== 0) {
+                for (const word of dict.words) {
+                    if (word.includes(partWord.word) && word.length - letterCountOfPartWord <= maxLetterNumber) {
+                        index = word.indexOf(partWord.word);
+                        if (
+                            index <= partWord.leftCount &&
+                            word.length - (index + partWord.word.length) <= partWord.rightCount &&
+                            word !== partWord.word
+                        ) {
+                            const newWord: ValidWord = new ValidWord(word);
+                            newWord.isVertical = partWord.isVertical;
+                            if (partWord.isVertical) {
+                                newWord.startingTileX = partWord.startingTileX;
+                                newWord.startingTileY = partWord.startingTileY - index;
+                            } else {
+                                newWord.startingTileX = partWord.startingTileX - index;
+                                newWord.startingTileY = partWord.startingTileY;
+                            }
+                            wordList.push(newWord);
                         }
-                        wordList.push(newWord);
                     }
                 }
             }
@@ -273,7 +276,7 @@ export class DictionaryService {
                 const letterCount = mapRack.get(key);
                 if (!letterCount) return lettersLeft;
                 for (let i = 0; i < letterCount; i++) {
-                    lettersLeft += key.char;
+                    lettersLeft += key.char.toLowerCase();
                 }
             }
         }

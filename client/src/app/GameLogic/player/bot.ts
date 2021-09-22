@@ -130,7 +130,7 @@ export abstract class Bot extends Player {
                 while (emptyBox !== notFound) {
                     tmpSubWord = new ValidWord('');
                     subWord = lettersOnLine.word.substring(leftIndex, rightIndex);
-                    tmpSubWord.word = subWord;
+                    tmpSubWord.word = subWord.toLowerCase();
                     if (leftIndex === startOfLine) {
                         tmpSubWord.leftCount = lettersOnLine.leftCount;
                     } else {
@@ -226,10 +226,11 @@ export abstract class Bot extends Player {
                 lastLetterOfLine = tmpY;
                 lettersOnLine.rightCount = rightCount;
                 tmpY = y;
+                lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 while (tmpY <= lastLetterOfLine) {
-                    lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                     tmpY++;
                     letterInBox = grid[x][tmpY].letterObject.char;
+                    lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 }
             } else {
                 let tmpX = endOfBoard;
@@ -242,10 +243,11 @@ export abstract class Bot extends Player {
                 lastLetterOfLine = tmpX;
                 lettersOnLine.rightCount = rightCount;
                 tmpX = x;
-                while (tmpX <= lastLetterOfLine) {
-                    lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
+                lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
+                while (tmpX < lastLetterOfLine) {
                     tmpX++;
                     letterInBox = grid[tmpX][y].letterObject.char;
+                    lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 }
             }
 
