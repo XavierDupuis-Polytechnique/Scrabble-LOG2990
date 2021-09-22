@@ -9,8 +9,8 @@ describe('LetterBag', () => {
 
     it('should create an instance with the correct number of GameLetters', () => {
         let totalNumberOfGameLetters = 0;
-        LetterBag.gameLettersCount.forEach((gameLetterCount) => {
-            totalNumberOfGameLetters += gameLetterCount;
+        letterBag.gameLetters.forEach(() => {
+            totalNumberOfGameLetters += 1;
         });
         expect(letterBag.gameLetters.length).toBe(totalNumberOfGameLetters);
     });
