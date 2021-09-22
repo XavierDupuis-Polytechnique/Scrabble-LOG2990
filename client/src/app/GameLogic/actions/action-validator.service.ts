@@ -81,11 +81,15 @@ export class ActionValidatorService {
             if (!hasCenterTile) {
                 if (x === centerTilePosition && y === centerTilePosition) {
                     hasCenterTile = true;
+                    hasNeighbour = true;
+                    // Si on vient de "hasCenterTile = true;", on sait que la vérification des voisins n'est pas nécessaire
+                    // -- CAS #1 : Premier mot placé == il n'y aura aucun voisin == vérification de voisions futile
+                    // -- CAS #2 : Nième mot placé == on passe par la tuile centrale qui est déjà occupé == voisin en tuile centrale
                 }
-            }
-
-            if (!hasNeighbour) {
-                hasNeighbour = this.hasNeighbour(x, y);
+            } else {
+                if (!hasNeighbour) {
+                    hasNeighbour = this.hasNeighbour(x, y);
+                }
             }
 
             currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? board.grid[x][y++] : board.grid[x++][y];
