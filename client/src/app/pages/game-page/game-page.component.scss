@@ -12,12 +12,13 @@
 
 app-info-box {
     grid-area: Info;
+    border: 1px solid var(--darkgray);
     padding: 1%;
 }
 
 app-chat-box {
     grid-area: Chat;
-    border-style: solid;
+    border: 1px solid var(--darkgray);
     width: 100%;
     overflow-wrap: anywhere;
     word-break: normal;
@@ -28,14 +29,18 @@ app-board {
     padding: 1%;
     border: 2px solid var(--darkgray);
     min-width: 50vw;
+    //width: 90%;
 }
 
 app-horse {
     grid-area: Horse;
-    border: 1px solid var(--darkgray);
-    margin: 1%;
-    max-width: 50%;
+    //border: 1px solid var(--darkgray);
+    //margin: 1%;
+    //max-width: 25vw;
     align-self: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 app-player-info {
     grid-area: Player;
