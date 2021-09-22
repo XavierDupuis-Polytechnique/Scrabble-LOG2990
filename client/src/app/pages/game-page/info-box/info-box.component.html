@@ -1,19 +1,19 @@
 <h1>Informations</h1>
 
 <!-- <p>Number of Players : {{ info.players.length }} </p> -->
-<div *ngFor="let player of info.players; index as i">
-    <div class="playerInfo" id="{{ i }}" [ngStyle]="{'background-color':player.name === info.activePlayer.name ? 'green' : 'gray' }">
+<div *ngFor="let player of info.players, index as i">
+    <div class="playerInfo" id={{i}}>
         <div class="grid-container">
             <span class="name">{{ player.name }} </span>
             <span class="score"> {{ player.points }} points </span>
         </div>
-        <span *ngIf="!player.isLetterRackFull"> {{ player.letterRack.length }} letters in Rack </span>
+        <span *ngIf=player.isLetterRackFull>  {{ player.letterRack.length }} letters in Rack </span>
     </div>
 </div>
 <div id="gameInfo">
-    <p>{{ info.activePlayer.name }} is playing!</p>
+    <p> {{ info.activePlayer.name }} is playing!</p>
     <p id="timer">{{ timeLeft$ | async }} Seconds Left....</p>
-    <p>{{ info.numberOfLettersRemaining }} letters remaining</p>
+    <p> {{ info.numberOfLettersRemaining }} letters remaining </p>
 </div>
 
 <!-- Nom -->

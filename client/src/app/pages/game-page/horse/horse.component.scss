@@ -9,8 +9,7 @@ mat-grid-list {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    height: 100%;
-    margin: 1%;
+    height: 90%;
     // width: 90%;
 }
 sub {
@@ -21,10 +20,9 @@ sub {
     background-color: rgb(129, 82, 63);
     border: 3px solid black;
     border-radius: 2%;
-    // margin: 3%;
-    // padding: 2%;
+    margin: 3%;
+    padding: 2%;
     min-height: 50%;
-    // max-height: 75%;
     // max-height: 50%;
     // max-width: 80%;
 }

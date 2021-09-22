@@ -15,19 +15,13 @@ import { BoardService } from '@app/services/board.service';
 })
 export class ActionValidatorService {
     constructor(private board: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
-    sendAction(action: Action) {
-        const actionValid = this.validateAction(action);
-        if (actionValid) {
-            const player = action.player;
-            player.play(action);
-        }
-    }
 
     sendErrorMessage(content: string) {
         this.messageService.receiveErrorMessage(content);
     }
 
-    private validateAction(action: Action): boolean {
+    // TODO: maybe change
+    validateAction(action: Action): boolean {
         if (this.validateTurn(action)) {
             if (action instanceof PlaceLetter) {
                 return this.validatePlaceLetter(action as PlaceLetter);
@@ -48,12 +42,21 @@ export class ActionValidatorService {
         return false;
     }
 
+    sendAction(action: Action) {
+        const actionValid = this.validateAction(action);
+        if (actionValid) {
+            const player = action.player;
+            player.play(action);
+        }
+    }
+
     private validateTurn(action: Action): boolean {
         return this.gameInfo.activePlayer === action.player;
     }
 
     private validatePlaceLetter(action: PlaceLetter): boolean {
         // TODO: uncomment
+        this.sendValidAction(action);
         if (this.board.board.grid) {
             return true;
         }
@@ -103,6 +106,7 @@ export class ActionValidatorService {
             return false;
         }
         this.messageService.receiveSystemMessage(action.player.name + ' ÉCHANGE des lettres');
+        this.sendValidAction(action);
         return true;
     }
 
@@ -139,6 +143,12 @@ export class ActionValidatorService {
 
     private validatePassTurn(action: PassTurn) {
         this.messageService.receiveSystemMessage(action.player.name + ' PASSE son tour');
+        this.sendValidAction(action);
         return true;
+    }
+
+    private sendValidAction(action: Action) {
+        const player = action.player;
+        player.play(action);
     }
 }

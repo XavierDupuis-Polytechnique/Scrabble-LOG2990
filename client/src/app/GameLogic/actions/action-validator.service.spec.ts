@@ -59,18 +59,19 @@ describe('ActionValidatorService', () => {
             ],
         });
         service = TestBed.inject(ActionValidatorService);
-        timer = TestBed.inject(TimerService);
-        pointCalculator = TestBed.inject(PointCalculatorService);
-        board = TestBed.inject(BoardService);
-        info = TestBed.inject(GameInfoService);
-
+        timer = new TimerService();
+        pointCalculator = new PointCalculatorService();
+        board = new BoardService();
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
         p1User = new User('testUser');
         p2Bot = new EasyBot('testUser', board, dictonary);
         game.players.push(p1User);
         game.players.push(p2Bot);
+        info = new GameInfoService(timer);
         info.receiveGame(game);
         game.start();
+        info = TestBed.inject(GameInfoService);
+        info.receiveGame(game);
         currentPlayer = game.getActivePlayer();
     });
 

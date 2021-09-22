@@ -53,27 +53,25 @@ export class ActionCompilerService {
     }
 
     private createPlaceLetter(user: User, args: string[] | undefined) {
+        // TODO: implement createPlaceLetter
         if (!args) {
-            throw Error('No argument was given for place letter creation');
+            throw new Error('No argument was given for place letter creation');
         }
-        const PLACE_LETTER_ARGS_LENGTH = 4;
-        if (args.length !== PLACE_LETTER_ARGS_LENGTH) {
-            throw Error('Invalid number of arguments');
-        }
-        const placementArguments = args.slice(0, args.length - 1);
-        const placementSettings = this.createPlacementSettings(placementArguments);
-        const word = args[args.length - 1];
+        console.log(args);
+        const placementSettings = this.createPlacementSettings(args[0]);
+        const word = args[1];
+        // const lettersToPlace = ;
         return new PlaceLetter(user, word, placementSettings);
     }
 
-    private createPlacementSettings(placementArgs: string[]): PlacementSetting {
-        if (placementArgs.length !== 3) {
+    private createPlacementSettings(placementArg: string): PlacementSetting {
+        if (placementArg.length !== 3) {
             throw Error('arg invalid for creating placementSetting');
         }
-        const xString = placementArgs[1];
+        const y = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
+        const xString = placementArg.charAt(1);
         const x = Number.parseInt(xString, 10) - 1;
-        const y = placementArgs[0].charCodeAt(0) - 'a'.charCodeAt(0);
-        const direction = placementArgs[2].toUpperCase();
+        const direction = placementArg.charAt(2).toUpperCase();
         return { x, y, direction };
     }
 }

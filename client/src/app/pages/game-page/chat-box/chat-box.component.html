@@ -1,12 +1,15 @@
-<div class="chatContainer">
+<div class='chatContainer'>
     <div #chat class="sharedChat">
-        <div
-            *ngFor="let message of messages$ | async"
-            [ngClass]="{ System: message.type === 'System', Player1: message.type === 'Player1', Player2: message.type === 'Player2' }"
-        >
-            {{ message.from }} : {{ message.content }}
+        <div *ngFor="let message of messages$ | async" >
+           {{message.from}} : {{message.content}}
         </div>
     </div>
-    <input matInput type="text" class="chat" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" />
-    <button mat-button [disabled]="!messageValid" (click)="sendMessage()">Send</button>
+    <input 
+        matInput
+        type='text'
+        class='chat'
+        [formControl]="messageForm"
+        autocomplete="off"
+        (keyup.enter)="sendMessage()">
+    <button mat-button [disabled]="!messageValid" (click)='sendMessage()'>Send</button>
 </div>

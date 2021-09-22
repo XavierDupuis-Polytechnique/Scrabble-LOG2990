@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 // import { verify } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
-import { Message, MessageType } from './message.interface';
+import { Message } from './message.interface';
 @Injectable({
     providedIn: 'root',
 })
@@ -31,7 +31,6 @@ export class MessagesService {
         const systemMessage: Message = {
             content,
             from: MessagesService.sysName,
-            type: MessageType.System,
         };
         this.addMessageToLog(systemMessage);
     }
@@ -40,7 +39,6 @@ export class MessagesService {
         const errorMessage = {
             content,
             from: MessagesService.sysErrorName,
-            type: MessageType.System,
         };
         this.addMessageToLog(errorMessage);
     }
@@ -49,7 +47,6 @@ export class MessagesService {
         const errorMessage = {
             content: error.message,
             from: MessagesService.sysErrorName,
-            type: MessageType.System,
         };
         this.addMessageToLog(errorMessage);
     }

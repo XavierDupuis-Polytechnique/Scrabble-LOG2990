@@ -1,17 +1,17 @@
 .chat {
-    width: 100%;
-    resize: none;
+    width     : 100%;
+    resize    : none;
     size: 25%;
     box-sizing: border-box;
 }
 
 .sharedChat {
-    height: 15vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    scrollbar-width: thin;
+    height          : 15vh;
+    overflow-y      : scroll;
+    overflow-x      : hidden;
+    scrollbar-width : thin;
     background-color: rgb(218, 218, 218);
-    margin-right: 5%;
+    margin-right    : 5%;
 }
 
 #message {
@@ -24,14 +24,11 @@
     font-family: cursive;
 }
 
-.System {
-    color: red;
-}
-
-.Player1 {
+.playerMessage {
     color: black;
 }
 
-.Player2 {
-    color: red;
+.OpponentMesage {
+    color: blue;
+
 }
