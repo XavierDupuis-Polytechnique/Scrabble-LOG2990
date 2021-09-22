@@ -1,52 +1,18 @@
+import { LetterCreator } from './letter-creator';
 import { Letter } from './letter.interface';
 
-const GAME_LETTERS = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-    '*',
-];
 const PLAYER_LETTER_COUNT = 7;
 
 export class LetterBag {
-    static readonly gameLetters = GAME_LETTERS;
-
-    // Lint est pas parfait : https://github.com/typescript-eslint/typescript-eslint/issues/945
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    static readonly gameLettersCount = [9, 2, 2, 3, 15, 2, 2, 2, 8, 1, 1, 5, 3, 6, 6, 2, 1, 6, 6, 6, 6, 2, 1, 1, 1, 1, 2];
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    static readonly gameLettersValue = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0];
     static readonly playerLetterCount = PLAYER_LETTER_COUNT;
 
     gameLetters: Letter[] = [];
-
+    private letterCreator: LetterCreator = new LetterCreator();
     constructor() {
-        for (let letterIndex = 0; letterIndex < LetterBag.gameLetters.length; letterIndex++) {
-            for (let count = 0; count < LetterBag.gameLettersCount[letterIndex]; count++) {
-                this.gameLetters.push({ char: LetterBag.gameLetters[letterIndex], value: LetterBag.gameLettersValue[letterIndex] });
+        for (let letterIndex = 0; letterIndex < LetterCreator.gameLetters.length; letterIndex++) {
+            for (let count = 0; count < LetterCreator.gameLettersCount[letterIndex]; count++) {
+                const letter = LetterCreator.gameLetters[letterIndex];
+                this.gameLetters.push(this.letterCreator.createLetter(letter));
             }
         }
         this.displayNumberGameLettersLeft();

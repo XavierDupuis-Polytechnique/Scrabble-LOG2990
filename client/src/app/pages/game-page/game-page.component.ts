@@ -18,8 +18,4 @@ export class GamePageComponent implements OnInit {
             this.router.navigate(['/']);
         }
     }
-
-    abandonner(): void {
-        this.gameManager.stopGame();
-    }
 }
