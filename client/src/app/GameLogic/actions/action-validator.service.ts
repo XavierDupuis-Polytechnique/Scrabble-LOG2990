@@ -63,10 +63,10 @@ export class ActionValidatorService {
         let x = action.placement.x;
         let y = action.placement.y;
         let lettersNeeded = '';
-        let coord = 0;
+        let nextPos = 0;
 
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
-            if (coord >= NUM_TILES || y >= NUM_TILES) {
+            if (nextPos >= NUM_TILES || y >= NUM_TILES) {
                 this.sendErrorMessage(
                     'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + x,
                 );
@@ -105,7 +105,7 @@ export class ActionValidatorService {
                 }
             }
 
-            coord = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
+            nextPos = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
         }
 
         if (!hasCenterTile) {

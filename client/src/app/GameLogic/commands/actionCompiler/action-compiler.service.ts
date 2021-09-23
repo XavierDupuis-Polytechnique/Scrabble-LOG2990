@@ -45,10 +45,8 @@ export class ActionCompilerService {
         if (!args) {
             throw new Error('No argument was given for exchange letter creation');
         }
-        console.log(args);
         const letters = args[0].split('');
         const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters);
-        console.log(lettersToExchange);
         return new ExchangeLetter(user, lettersToExchange);
     }
 
@@ -67,9 +65,6 @@ export class ActionCompilerService {
     }
 
     private createPlacementSettings(placementArgs: string[]): PlacementSetting {
-        if (placementArgs.length !== 3) {
-            throw Error('arg invalid for creating placementSetting');
-        }
         const xString = placementArgs[1];
         const x = Number.parseInt(xString, 10) - 1;
         const y = placementArgs[0].charCodeAt(0) - 'a'.charCodeAt(0);
