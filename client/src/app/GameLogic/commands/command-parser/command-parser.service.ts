@@ -12,6 +12,7 @@ const MAX_PLACE_LETTER_ARG_SIZE = 4;
     providedIn: 'root',
 })
 export class CommandParserService {
+    private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
 
     get parsedCommand$() {
@@ -24,7 +25,6 @@ export class CommandParserService {
     }
 
     sendCommand(command: Command) {
-        console.log('send command');
         this.command$.next(command);
     }
 
@@ -40,10 +40,9 @@ export class CommandParserService {
                     if (toVerify.length < 3) {
                         throw Error('mot ou emplacement manquant');
                     }
-                    args = this.placeLetterArgVerifier(args);
+                    args = this.placeLetterFormater(args);
                 }
                 const command = this.createCommand(args, commandCondition as CommandType);
-                console.log(command);
                 this.sendCommand(command);
                 return true;
             }
@@ -53,35 +52,47 @@ export class CommandParserService {
         return false;
     }
 
-    placeLetterArgVerifier(args: string[]): string[] {
-        const errorSyntax = 'erreur de syntax';
+    placeLetterFormater(args: string[]): string[] {
+        const whiteSpace = new RegExp('\\s+');
         if (args[0].length <= MAX_PLACE_LETTER_ARG_SIZE && args[0].length >= MIN_PLACE_LETTER_ARG_SIZE) {
             const row = args[0].charCodeAt(0);
-            let col;
+            const col = this.colArgVerifier(args);
             const direction = args[0].charCodeAt(args[0].length - 1);
             const word = args[1];
-            // Verifie s'il s'agit d'un axxv ou axv
-            if (args[0][2].charCodeAt(0) < CHARACTER_H) {
-                col = Number(args[0][1] + args[0][2]);
-            } else {
-                col = Number(args[0][1]);
+
+            if (word.length < 2 || whiteSpace.test(word)) {
+                throw Error(this.errorSyntax + ': mot invalide');
             }
+
             args = [];
             args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
-
-            if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
-                // si depasse 'o' et inferieur a 'a'
-                throw Error(errorSyntax + ': ligne hors champ');
-            }
-            if (col > MAX_COL) {
-                throw Error(errorSyntax + ': colonne hors champ');
-            }
-            if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
-                throw Error(errorSyntax + ': direction invalide');
-            }
+            this.placeLetterArgVerifier(row, col, direction);
         } else {
-            throw Error(errorSyntax + ': les paramètres sont invalide');
+            throw Error(this.errorSyntax + ': les paramètres sont invalide');
         }
         return args;
+    }
+
+    placeLetterArgVerifier(row: number, col: number, direction: number) {
+        if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
+            // si depasse 'o' et inferieur a 'a'
+            throw Error(this.errorSyntax + ': ligne hors champ');
+        }
+        if (col > MAX_COL) {
+            throw Error(this.errorSyntax + ': colonne hors champ');
+        }
+        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
+            throw Error(this.errorSyntax + ': direction invalide');
+        }
+    }
+    // Verifie s'il s'agit d'un axxv ou axv
+    colArgVerifier(arg1: string[]): number {
+        let col;
+        if (arg1[0][2].charCodeAt(0) < CHARACTER_H) {
+            col = Number(arg1[0][1] + arg1[0][2]);
+        } else {
+            col = Number(arg1[0][1]);
+        }
+        return col;
     }
 }
