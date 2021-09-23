@@ -66,7 +66,17 @@ describe('ActionCompilerService', () => {
         expect(service.translate(command)).toBeInstanceOf(PlaceLetter);
     });
 
-    it('#createExchangeLetter should throw error when invalid command exchange', () => {
+    it('should throw error when invalid number of args for PlaceLetter object', () => {
+        const invalidCommand: Command = {
+            type: CommandType.Place,
+            args: ['a', '1', 'h'],
+        };
+        expect(() => {
+            service.translate(invalidCommand);
+        }).toThrowError();
+    });
+
+    it('should throw error when invalid command exchange', () => {
         const invalidCommand: Command = {
             type: CommandType.Exchange,
         };
@@ -75,7 +85,7 @@ describe('ActionCompilerService', () => {
         }).toThrowError();
     });
 
-    it('#createExchangeLetter should throw error when invalid command place', () => {
+    it('should throw error when invalid command place', () => {
         const invalidCommand: Command = {
             type: CommandType.Place,
         };
