@@ -149,7 +149,8 @@ describe('WordSearcher', () => {
 
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
-        const validWord = wordSearcher.searchAdjacentWords(action);
+        wordSearcher.validateWords(action);
+        const validWord = wordSearcher.getListOfValidWord();
         expect(wordSearcher.tileToString(validWord[0])).toEqual('OU');
 
     });
@@ -159,7 +160,8 @@ describe('WordSearcher', () => {
         mockBoard.grid[2][5].letterObject = { char: 'L', value: 1 };
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
-        const validWord = wordSearcher.searchAdjacentWords(action);
+        wordSearcher.validateWords(action);
+        const validWord = wordSearcher.getListOfValidWord();
         expect(wordSearcher.tileToString(validWord[0]).toLowerCase()).toContain('ou');
         expect(wordSearcher.tileToString(validWord[1]).toLowerCase()).toContain('nil');
 

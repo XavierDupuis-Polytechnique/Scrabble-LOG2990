@@ -18,11 +18,12 @@ class MockGame extends Game {
     otherPlayer: Player = new User('otherPlayer');
     players: Player[];
     consecutivePass: number = MAX_CONSECUTIVE_PASS;
-    board: Board = new Board();
+    board: Board;
 
     constructor(time: number, timerService: TimerService, pointCalculatorService: PointCalculatorService, boardService: BoardService) {
         super(time, timerService, pointCalculatorService, boardService);
         this.players = [this.activePlayer, this.otherPlayer];
+        this.board = boardService.board;
     }
     getActivePlayer() {
         return this.activePlayer;
@@ -84,7 +85,10 @@ describe('PointCalculatorService', () => {
     // Word
     it('should calculate the correct points of a word with letter multiplicator', () => {
         const totalPointsOfWord = 11;
+
         const action = new PlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
+        const timePerTurn = 30;
+        const game = new MockGame(timePerTurn, timer, servicePoints, boardService);
 
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -94,12 +98,15 @@ describe('PointCalculatorService', () => {
             { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
             { letterObject: { char: 'U', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
         ];
+        action.execute(game);
         expect(servicePoints.calculatePointsOfWord(action, word)).toBe(totalPointsOfWord);
     });
 
     it('should calculate the correct points of a word with word multiplicator', () => {
         const totalPointsOfWord = 66;
         const action = new PlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
+        const timePerTurn = 30;
+        const game = new MockGame(timePerTurn, timer, servicePoints, boardService);
 
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -109,6 +116,7 @@ describe('PointCalculatorService', () => {
             { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
             { letterObject: { char: 'U', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 3 },
         ];
+        action.execute(game);
         expect(servicePoints.calculatePointsOfWord(action, word)).toBe(totalPointsOfWord);
     });
 
@@ -116,6 +124,7 @@ describe('PointCalculatorService', () => {
     it('should calculate the correct points of a word when placing all the players letters if >=7', () => {
         const totalPointsOfWord = 101;
         const bateaux = 'bateaux';
+
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 1, wordMultiplicator: 3 },
             { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
@@ -129,38 +138,49 @@ describe('PointCalculatorService', () => {
 
         const timePerTurn = 30;
         const game = new MockGame(timePerTurn, timer, servicePoints, boardService);
-        game.board.grid[0][0].letterObject = { char: 'B', value: 3 };
-        game.board.grid[0][1].letterObject = { char: 'A', value: 1 };
-        game.board.grid[0][2].letterObject = { char: 'T', value: 1 };
-        game.board.grid[0][3].letterObject = { char: 'E', value: 1 };
-        game.board.grid[0][4].letterObject = { char: 'A', value: 1 };
-        game.board.grid[0][5].letterObject = { char: 'U', value: 1 };
-        game.board.grid[0][6].letterObject = { char: 'X', value: 8 };
-        player2.letterRack = emptyRack;
+        // game.board.grid[0][0].letterObject = { char: 'B', value: 3 };
+        // game.board.grid[0][1].letterObject = { char: 'A', value: 1 };
+        // game.board.grid[0][2].letterObject = { char: 'T', value: 1 };
+        // game.board.grid[0][3].letterObject = { char: 'E', value: 1 };
+        // game.board.grid[0][4].letterObject = { char: 'A', value: 1 };
+        // game.board.grid[0][5].letterObject = { char: 'U', value: 1 };
+        // game.board.grid[0][6].letterObject = { char: 'X', value: 8 };
+        player2.letterRack = [{ char: 'B', value: 3 },
+        { char: 'A', value: 1 },
+        { char: 'T', value: 1 },
+        { char: 'E', value: 1 },
+        { char: 'A', value: 1 },
+        { char: 'U', value: 1 },
+        { char: 'X', value: 8 },];
         const action = new PlaceLetter(player2, bateaux, { x: 0, y: 0, direction: Direction.Horizontal });
-        expect(servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService)).toBe(totalPointsOfWord);
+        // action.affectedCoords = [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 3, y: 0 }, { x: 4, y: 0 }, { x: 5, y: 0 }, { x: 6, y: 0 }];
+
+        action.execute(game);
+        servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService)
+
+        expect(player2.points).toBe(totalPointsOfWord);
     });
 
     it('should calculate the correct points of a word when placing a word with a letter whose multiplicator has been used', () => {
-        const totalPointsOfWord = 16; //TODO:A calculer
-
+        const totalPointsOfWord = 17;
+        player1.points = 0;
+        player2.points = 0;
         const timePerTurn = 30;
         const game = new MockGame(timePerTurn, timer, servicePoints, boardService);
         let grid = game.board.grid;
 
-        grid[0][0].letterObject = { char: 'B', value: 3 };
-        grid[0][1].letterObject = { char: 'A', value: 1 };
-        grid[0][2].letterObject = { char: 'T', value: 1 };
-
+        console.log('GRID', game.board.grid);
         // Letters
         const wordBat = [{ letterObject: grid[0][0].letterObject, letterMultiplicator: grid[0][0].letterMultiplicator, wordMultiplicator: grid[0][0].wordMultiplicator },
         { letterObject: grid[0][1].letterObject, letterMultiplicator: grid[0][1].letterMultiplicator, wordMultiplicator: grid[0][1].wordMultiplicator },
         { letterObject: grid[0][2].letterObject, letterMultiplicator: grid[0][2].letterMultiplicator, wordMultiplicator: grid[0][2].wordMultiplicator }];
 
         listOfWord.push(wordBat);
-        const action1 = new PlaceLetter(player2, 'bat', { x: 0, y: 0, direction: Direction.Horizontal });
+        const action1 = new PlaceLetter(player1, 'bat', { x: 0, y: 0, direction: Direction.Horizontal });
+        action1.execute(game);
         servicePoints.placeLetterPointsCalculation(action1, listOfWord, boardService);
-        console.log("POINTS PLAYER2: ", player2.points); // should be 15
+        console.log("POINTS PLAYER1: ", player1.points); // should be 15
+
         const wordBateaux = [
             { letterObject: grid[0][0].letterObject, letterMultiplicator: grid[0][0].letterMultiplicator, wordMultiplicator: grid[0][0].wordMultiplicator },
             { letterObject: grid[0][1].letterObject, letterMultiplicator: grid[0][1].letterMultiplicator, wordMultiplicator: grid[0][1].wordMultiplicator },
@@ -170,17 +190,17 @@ describe('PointCalculatorService', () => {
             { letterObject: grid[0][5].letterObject, letterMultiplicator: grid[0][5].letterMultiplicator, wordMultiplicator: grid[0][5].wordMultiplicator },
             { letterObject: grid[0][6].letterObject, letterMultiplicator: grid[0][6].letterMultiplicator, wordMultiplicator: grid[0][6].wordMultiplicator },
         ];
-        listOfWord.pop();
+        while (listOfWord.length > 0) {
+            listOfWord.pop();
+        }
         listOfWord.push(wordBateaux);
-        grid[0][3].letterObject = { char: 'E', value: 1 };
-        grid[0][4].letterObject = { char: 'A', value: 1 };
-        grid[0][5].letterObject = { char: 'U', value: 1 };
-        grid[0][6].letterObject = { char: 'X', value: 8 };
+
 
         const action = new PlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
+        action.execute(game);
         servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService);
-        console.log("POINTS PLAYER2: ", player2.points); // should be 17 +50?
-        expect(player2.points).toBe(totalPointsOfWord);
+        const points = player2.points;
+        expect(points).toBe(totalPointsOfWord);
     });
 
     it('should calculate the correct points when more than one word was made', () => {
@@ -189,27 +209,22 @@ describe('PointCalculatorService', () => {
         const game = new MockGame(timePerTurn, timer, servicePoints, boardService);
         let grid = game.board.grid;
 
-        grid[3][0].letterObject = { char: 'A', value: 1 };
-        grid[4][0].letterObject = { char: 'T', value: 1 };
-
-        const totalPointsOfPlayer2 = 21;
+        // const totalPointsOfPlayer2 = 3;
 
         player1.points = 0;
         player2.points = 0;
-        player1.letterRack = [{ char: 'E', value: 1 }];
-        player2.letterRack = [{ char: 'A', value: 1 }];
 
-        const wordAt = [{ letterObject: grid[3][0].letterObject, letterMultiplicator: grid[3][0].letterMultiplicator, wordMultiplicator: grid[3][0].wordMultiplicator },
-        { letterObject: grid[4][0].letterObject, letterMultiplicator: grid[4][0].letterMultiplicator, wordMultiplicator: grid[4][0].wordMultiplicator }];
+        const wordAt = [
+            { letterObject: grid[3][0].letterObject, letterMultiplicator: grid[3][0].letterMultiplicator, wordMultiplicator: grid[3][0].wordMultiplicator },
+            { letterObject: grid[4][0].letterObject, letterMultiplicator: grid[4][0].letterMultiplicator, wordMultiplicator: grid[4][0].wordMultiplicator }
+        ];
         listOfWord.push(wordAt);
         const oldAction = new PlaceLetter(player1, 'at', { x: 0, y: 3, direction: Direction.Vertical });
+        oldAction.execute(game);
         servicePoints.placeLetterPointsCalculation(oldAction, listOfWord, boardService);
 
         listOfWord.pop();
-        grid[2][0].letterObject = { char: 'B', value: 3 };
-        grid[2][1].letterObject = { char: 'A', value: 1 };
-        grid[2][2].letterObject = { char: 'K', value: 5 };
-        grid[2][3].letterObject = { char: 'E', value: 1 };
+
         const wordBat = [
             { letterObject: grid[2][0].letterObject, letterMultiplicator: grid[2][0].letterMultiplicator, wordMultiplicator: grid[2][0].wordMultiplicator },
             { letterObject: grid[3][0].letterObject, letterMultiplicator: grid[3][0].letterMultiplicator, wordMultiplicator: grid[3][0].wordMultiplicator },
@@ -224,46 +239,46 @@ describe('PointCalculatorService', () => {
         listOfWord.push(wordBat);
         listOfWord.push(wordBake);
         const action = new PlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal });
-        expect(servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService)).toBe(totalPointsOfPlayer2);
+        action.execute(game);
+        servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService)
+        expect(player2.points).toBe(25);
     });
 
-    // // End of Game
-    // it('should not calculate bonus when player place all letter if rack was not full (on end of game)', () => {
-    //     const totalPointsOfWord = 8;
+    // End of Game
+    it('should not calculate bonus when player place all letter if rack was not full (on end of game)', () => {
+        const totalPointsOfWord = 8;
 
-    //     const timeTurn = 30;
-    //     const game = new MockGame(timeTurn, timer, servicePoints, boardService);
-    //     game.board.grid[5][0].letterObject = { char: 'C', value: 3 };
-    //     game.board.grid[5][1].letterObject = { char: 'E', value: 1 };
-    //     game.board.grid[5][2].letterObject = { char: 'T', value: 1 };
-    //     game.consecutivePass = 0;
-    //     word = [
-    //         { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
-    //         { letterObject: { char: 'E', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-    //         { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-    //     ];
-    //     listOfWord.pop();
-    //     listOfWord.push(word);
-    //     const action = new PlaceLetter(player2, 'cet', { x: 10, y: 0, direction: Direction.Vertical });
-    //     const initialPointPlayer1 = 150;
-    //     const initialPointPlayer2 = 50;
+        const timeTurn = 30;
+        const game = new MockGame(timeTurn, timer, servicePoints, boardService);
 
-    //     game.activePlayer.points = initialPointPlayer1;
-    //     game.otherPlayer.points = initialPointPlayer2;
-    //     game.activePlayer.letterRack = emptyRack;
-    //     game.otherPlayer.letterRack = rack;
+        game.consecutivePass = 0;
+        word = [
+            { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
+            { letterObject: { char: 'E', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+            { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+        ];
+        listOfWord.pop();
+        listOfWord.push(word);
+        const action = new PlaceLetter(player2, 'cet', { x: 5, y: 0, direction: Direction.Vertical });
+        const initialPointPlayer1 = 150;
+        const initialPointPlayer2 = 50;
 
-    //     expect(servicePoints.placeLetterPointsCalculation(action, listOfWord)).toBe(totalPointsOfWord);
+        game.activePlayer.points = initialPointPlayer1;
+        game.otherPlayer.points = initialPointPlayer2;
+        game.activePlayer.letterRack = emptyRack;
+        game.otherPlayer.letterRack = rack;
 
-    //     expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
+        expect(servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService)).toBe(totalPointsOfWord);
 
-    //     const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + servicePoints.calculatePointsOfRack(game.otherPlayer);
-    //     const otherPlayerEOGamePoints = initialPointPlayer2 - servicePoints.calculatePointsOfRack(game.otherPlayer);
+        expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
 
-    //     servicePoints.endOfGamePointdeduction(game as Game);
-    //     expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
-    //     expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);
-    // });
+        const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + servicePoints.calculatePointsOfRack(game.otherPlayer);
+        const otherPlayerEOGamePoints = initialPointPlayer2 - servicePoints.calculatePointsOfRack(game.otherPlayer);
+
+        servicePoints.endOfGamePointdeduction(game as Game);
+        expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
+        expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);
+    });
 
     // it('should calculate the correct points at the end of game after 6 consecutive pass', () => {
     //     const totalPointsActivePlayer = 133;

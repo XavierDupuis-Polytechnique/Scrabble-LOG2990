@@ -21,7 +21,7 @@ export class PointCalculatorService {
         });
         this.desactivateMultiplicators(action, boardService);
 
-        if (action.player.isLetterRackEmpty && action.word.length >= MAX_LETTER_IN_RACK) {
+        if (action.affectedCoords.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
         }
         action.player.points += totalPointsOfTurn;
