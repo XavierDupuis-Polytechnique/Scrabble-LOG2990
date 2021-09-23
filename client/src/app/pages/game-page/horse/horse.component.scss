@@ -18,9 +18,11 @@ sub {
     padding-left: 5%;
 }
 .rackContainer {
-    background-color: rgb(129, 82, 63);
+    background-color: var(--brown);
     border: 3px solid black;
     border-radius: 2%;
+    // padding: 2%;
+    width: 50%;
     // margin: 3%;
     // padding: 2%;
     min-height: 50%;
