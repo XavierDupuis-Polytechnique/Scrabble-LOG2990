@@ -14,26 +14,33 @@ const BOARD_MAX_POSITION_Y = 15;
 export class WordSearcher {
     listOfValidWord: Tile[][] = [];
     letterCreator: LetterCreator;
-
+    isValid: boolean = false;
     constructor(private boardService: BoardService, private dictionaryService: DictionaryService, letterCreator: LetterCreator) {
         this.letterCreator = letterCreator;
-
     }
+
     get grid() {
         return this.boardService.board.grid;
     }
 
-    searchAdjacentWords(action: PlaceLetter): Tile[][] {
+    getListOfValidWord(): Tile[][] {
+        return this.listOfValidWord;
+    }
+
+    validateWords(action: PlaceLetter): boolean {
+        console.log("ACTION:", action);
+
         if (this.dictionaryService.isWordInDict(action.word)) {
             const lettersToPlace = this.findCoordOfLettersToPLace(action);
             for (const letter of lettersToPlace) {
                 const letterPos = { x: letter.x, y: letter.y };
                 this.goToBeginningOfWord(action, letter);
                 const word = this.goToEndOfWord(action, letter, letterPos);
-                this.addWord(word);
+                this.isValid = this.addWord(word);
             }
+            return this.isValid;
         }
-        return this.listOfValidWord;
+        return false;
     }
 
     goToBeginningOfWord(action: PlaceLetter, pos: Vec2): void {
@@ -73,14 +80,11 @@ export class WordSearcher {
                     word.push(this.grid[pos.y][pos.x]);
                 } else {
                     word.push(this.createTile(action.word[pos.y - action.placement.y], pos));
-
                 }
                 pos.x += 1;
             }
             pos.x -= 1;
-
         }
-
         return word;
     }
 
@@ -90,32 +94,29 @@ export class WordSearcher {
         return tile;
     }
 
-    addWord(word: Tile[]) {
+    addWord(word: Tile[]): boolean {
         const wordString = this.tileToString(word).toLowerCase();
         if (word.length >= 2) {
             if (this.dictionaryService.isWordInDict(wordString)) {
                 this.listOfValidWord.push(word);
+                return true;
             } else {
-                console.log('mot: ', wordString);
-                // throw Error('The word ' + wordString + ' is not in the current dictionary. Placement is invalid');
+                return false;
             }
         }
+        return false;
     }
 
     tileToString(word: Tile[]): string {
         let wordTemp = '';
-
         word.forEach((tile) => {
             wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
         });
-
-
         return wordTemp;
     }
 
     isLetterPosition(currentPosition: Vec2, letterPosition: Vec2) {
         return currentPosition.x === letterPosition.x && currentPosition.y === letterPosition.y;
-
     }
 
     isInsideBoard(x: number, y: number): boolean {

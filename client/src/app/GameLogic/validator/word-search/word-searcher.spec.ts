@@ -26,7 +26,7 @@ class MockDictionaryService extends DictionaryService {
 
     isWordInDict(word: string): boolean {
         const dict = new Set(this.mockDictionary.words);
-        return dict.has(word.toLowerCase());
+        return dict.has(word);
     }
 }
 
@@ -74,13 +74,11 @@ describe('WordSearcher', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [BoardService,
-                { provide: Board, useClass: 'mockBoard' },
-            ], // TODO:
-
+            providers: [MockDictionaryService, BoardService]
         });
         boardService = TestBed.inject(BoardService);
         dictionaryService = TestBed.inject(MockDictionaryService);
+        boardService.board = mockBoard;
         wordSearcher = new WordSearcher(boardService, dictionaryService, letterCreator);
     });
 
