@@ -38,10 +38,7 @@ export class LetterCreator {
     static readonly gameLettersCount = [9, 2, 2, 3, 15, 2, 2, 2, 8, 1, 1, 5, 3, 6, 6, 2, 1, 6, 6, 6, 6, 2, 1, 1, 1, 1, 2];
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     static readonly gameLettersValue = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0];
-<<<<<<< HEAD
     static readonly defaultNumberOfLetters = LetterCreator.gameLettersCount.reduce((sum, current) => sum + current, 0);
-=======
->>>>>>> parent of b6cd97e (Revert "Merge branch 'dev' into Issue-4--Valider-Mot")
     indexRectifier = INDEX_RECTIFIER;
 
     createLetters(chars: string[]) {

@@ -29,7 +29,7 @@ export class ActionValidatorService {
         this.messageService.receiveErrorMessage(content);
     }
 
-    private validateAction(action: Action): boolean {
+    validateAction(action: Action): boolean {
         if (this.validateTurn(action)) {
             if (action instanceof PlaceLetter) {
                 return this.validatePlaceLetter(action as PlaceLetter);
@@ -54,14 +54,8 @@ export class ActionValidatorService {
     }
 
     private validatePlaceLetter(action: PlaceLetter): boolean {
-<<<<<<< HEAD
         if (!this.board.board.grid) {
             return false;
-=======
-        // TODO: uncomment
-        if (this.board.board.grid) {
-            return true;
->>>>>>> parent of b6cd97e (Revert "Merge branch 'dev' into Issue-4--Valider-Mot")
         }
 
         const centerTilePosition: number = Math.floor(NUM_TILES / 2);
@@ -177,11 +171,7 @@ export class ActionValidatorService {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
-<<<<<<< HEAD
         this.sendSystemMessage(action.player.name + ' ÉCHANGE des lettres');
-=======
-        this.messageService.receiveSystemMessage(action.player.name + ' ÉCHANGE des lettres');
->>>>>>> parent of b6cd97e (Revert "Merge branch 'dev' into Issue-4--Valider-Mot")
         return true;
     }
 
@@ -217,17 +207,14 @@ export class ActionValidatorService {
         this.messageService.receiveSystemMessage(action.player.name + ' PASSE son tour');
         return true;
     }
-<<<<<<< HEAD
 
-    private sendValidAction(action: Action) {
-        const player = action.player;
-        player.play(action);
-    }
+    // private sendValidAction(action: Action) {
+    //     const player = action.player;
+    //     player.play(action);
+    // }
 
 
     private sendSystemMessage(content: string) {
         this.messageService.receiveSystemMessage(content);
     }
-=======
->>>>>>> parent of b6cd97e (Revert "Merge branch 'dev' into Issue-4--Valider-Mot")
 }
