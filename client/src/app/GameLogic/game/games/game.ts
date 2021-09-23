@@ -9,6 +9,8 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -26,6 +28,7 @@ export class Game {
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
+        private messagesService: MessagesService,
     ) {
         this.boardService.board = this.board;
     }
@@ -65,9 +68,8 @@ export class Game {
         // console.log('Game ended');
         this.pointCalculator.endOfGamePointdeduction(this);
         this.displayLettersLeft();
-        for (const player of this.getWinner()) {
-            console.log('Congratulations!', player.name, 'is the winner.');
-        }
+        // this.displayWinner();
+        // TODO afficher le/les winner
     }
 
     doAction(action: Action) {
@@ -95,11 +97,7 @@ export class Game {
 
     private startTurn() {
         this.turnNumber++;
-        console.log(' ');
-        console.log('--- Turn No. : ', this.turnNumber, ' ---');
-        // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
-        // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
@@ -110,7 +108,6 @@ export class Game {
         this.timer.stop();
 
         action.execute(this);
-        // console.log('end of turn');
         if (this.isEndOfGame()) {
             this.onEndOfGame();
             return;
@@ -120,10 +117,10 @@ export class Game {
     }
 
     private displayLettersLeft() {
-        console.log('Fin de partie - lettres restantes');
+        this.messagesService.receiveSystemMessage(`Fin de partie - ${this.letterBag.lettersLeft}`);
         for (const player of this.players) {
-            // TODO Envoyer dans la boite de communication
-            console.log(player.name, ':', player.letterRack);
+            const message = `${player.name}: ${player.letterRack.length}`;
+            this.messagesService.receiveSystemMessage(message);
         }
     }
 
