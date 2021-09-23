@@ -1,9 +1,9 @@
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { Board } from '@app/GameLogic/game/board';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
+import { BoardService } from '@app/services/board.service';
 import { DictionaryService } from '../dictionary.service';
 
 const BOARD_MIN_POSITION_X = 0;
@@ -13,12 +13,14 @@ const BOARD_MAX_POSITION_Y = 15;
 
 export class WordSearcher {
     listOfValidWord: Tile[][] = [];
-    grid: Tile[][];
     letterCreator: LetterCreator;
 
-    constructor(board: Board, private dictionaryService: DictionaryService, letterCreator: LetterCreator) {
+    constructor(private boardService: BoardService, private dictionaryService: DictionaryService, letterCreator: LetterCreator) {
         this.letterCreator = letterCreator;
-        this.grid = board.grid;
+
+    }
+    get grid() {
+        return this.boardService.board.grid;
     }
 
     searchAdjacentWords(action: PlaceLetter): Tile[][] {

@@ -12,6 +12,7 @@ import { User } from '@app/GameLogic/player/user';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
+import { BoardService } from '@app/services/board.service';
 
 const BOARD_LENGTH = 6;
 const BOARD_WIDTH = 6;
@@ -65,17 +66,22 @@ class MockBoard extends Board {
 describe('WordSearcher', () => {
     let wordSearcher: WordSearcher;
     let letterCreator: LetterCreator = new LetterCreator();
-    let board: MockBoard;
+    let mockBoard: MockBoard = new MockBoard();
     let dictionaryService: MockDictionaryService;
+    let boardService: BoardService;
+
     let player: Player = new User('Max');
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [MockDictionaryService, MockBoard],
+            providers: [BoardService,
+                { provide: Board, useClass: 'mockBoard' },
+            ], // TODO:
+
         });
-        board = new MockBoard();
+        boardService = TestBed.inject(BoardService);
         dictionaryService = TestBed.inject(MockDictionaryService);
-        wordSearcher = new WordSearcher(board, dictionaryService, letterCreator);
+        wordSearcher = new WordSearcher(boardService, dictionaryService, letterCreator);
     });
 
     it('should be created', () => {
@@ -129,7 +135,7 @@ describe('WordSearcher', () => {
     });
     it('should go to end of word', () => {
         // Nil
-        board.grid[2][5].letterObject = { char: 'L', value: 1 };
+        mockBoard.grid[2][5].letterObject = { char: 'L', value: 1 };
 
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
@@ -146,23 +152,19 @@ describe('WordSearcher', () => {
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
         const validWord = wordSearcher.searchAdjacentWords(action);
-        // const wordOu: Tile[] = [
-        //     { letterObject: { char: 'O', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-        //     { letterObject: { char: 'U', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-        // ];
-        console.log("MOTS", validWord);
         expect(wordSearcher.tileToString(validWord[0])).toEqual('OU');
 
     });
 
-    // it('should find all neighbors', () => {
-    //     // On ajoute le mot oui a la poisition (3,1) on a u(1,3);
+    it('should find all neighbors', () => {
+        // On ajoute le mot oui a la poisition (3,1) on a u(1,3);
+        mockBoard.grid[2][5].letterObject = { char: 'L', value: 1 };
+        const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
+        const action = new PlaceLetter(player, 'oui', placement);
+        const validWord = wordSearcher.searchAdjacentWords(action);
+        expect(wordSearcher.tileToString(validWord[0]).toLowerCase()).toContain('ou');
+        expect(wordSearcher.tileToString(validWord[1]).toLowerCase()).toContain('nil');
 
-    //     const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
-    //     const action = new PlaceLetter(player, 'oui', placement);
-    //     const validWord = wordSearcher.searchAdjacentWords(action);
-
-    //     expect(wordSearcher.tileToString(validWord[0]).toLowerCase()).toContain('ou');
-    // });
+    });
 
 });
