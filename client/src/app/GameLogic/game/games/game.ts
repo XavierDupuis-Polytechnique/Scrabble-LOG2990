@@ -66,6 +66,7 @@ export class Game {
         this.pointCalculator.endOfGamePointdeduction(this);
         this.displayLettersLeft();
         for (const player of this.getWinner()) {
+            // TODO Envoyer dans la boite de communication
             console.log('Congratulations!', player.name, 'is the winner.');
         }
     }
@@ -95,8 +96,8 @@ export class Game {
 
     private startTurn() {
         this.turnNumber++;
-        console.log(' ');
-        console.log('--- Turn No. : ', this.turnNumber, ' ---');
+        //console.log(' ');
+        //console.log('--- Turn No. : ', this.turnNumber, ' ---');
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
         // console.log('its', activePlayer, 'turns');
@@ -120,6 +121,7 @@ export class Game {
     }
 
     private displayLettersLeft() {
+        // TODO Envoyer dans la boite de communication
         console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
             // TODO Envoyer dans la boite de communication

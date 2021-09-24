@@ -186,35 +186,15 @@ export class ActionValidatorService {
         }
 
         for (const char of actionChars) {
-            let occurence = rackCharsOccurences.get(char);
-            if (occurence === undefined) {
-                return false;
-            }
-            if (occurence === 0) {
+            const lowerChar = char.toLowerCase();
+            let occurence = rackCharsOccurences.get(lowerChar);
+            if (occurence === undefined || occurence === 0) {
                 return false;
             }
             occurence--;
-            rackCharsOccurences.set(char, occurence);
+            rackCharsOccurences.set(lowerChar, occurence);
         }
         return true;
-
-        // const rIndex = 0;
-        // const aIndex = 0;
-        // while (actionChars.length > 0) {
-        //     if (actionChars[aIndex] === rackChars[rIndex]) {
-        //         actionChars.splice(aIndex, 1);
-        //         rackChars.splice(rIndex, 1);
-        //         rIndex = 0;
-        //         aIndex = 0;
-        //     } else {
-        //         if (rIndex < rackChars.length) {
-        //             rIndex++;
-        //         } else {
-        //             return false;
-        //         }
-        //     }
-        // }
-        // return true;
     }
 
     private validatePassTurn(action: PassTurn) {
