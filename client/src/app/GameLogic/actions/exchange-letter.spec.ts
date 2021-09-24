@@ -31,7 +31,7 @@ describe('ExchangeLetter', () => {
     });
 
     it('letter rack should be different when exchanging letters', () => {
-        const initialLetterRack: Letter[] = player.letterRack;
+        const initialLetterRack: Letter[] = [...player.letterRack];
         const lettersToExchange: Letter[] = initialLetterRack.slice(0, 3);
         const exchangeAction = new ExchangeLetter(player, lettersToExchange);
 

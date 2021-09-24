@@ -4,7 +4,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { ASCII_CODE, NUM_TILES } from '@app/GameLogic/game/board';
+import { NUM_TILES } from '@app/GameLogic/game/board';
 // import { NUM_TILES } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
@@ -62,21 +62,19 @@ export class ActionValidatorService {
 
         let x = action.placement.x;
         let y = action.placement.y;
-        let currentTile = board.grid[x][y];
-        let currentChar;
         let lettersNeeded = '';
-        let coord = 0;
+        let nextPos = 0;
 
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
-            if (coord >= NUM_TILES || y >= NUM_TILES) {
+            if (nextPos >= NUM_TILES || y >= NUM_TILES) {
                 this.sendErrorMessage(
-                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + x + String.fromCharCode(y + ASCII_CODE),
+                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + x,
                 );
                 return false;
             }
 
-            currentTile = board.grid[x][y];
-            currentChar = action.word.charAt(letterIndex);
+            const currentTile = board.grid[y][x];
+            const currentChar = action.word.charAt(letterIndex);
 
             if (currentTile.letterObject.char === ' ') {
                 lettersNeeded = lettersNeeded.concat(currentChar);
@@ -85,9 +83,9 @@ export class ActionValidatorService {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
                         currentChar +
-                        '" ne peut être placé en' +
-                        x +
-                        String.fromCharCode(y + ASCII_CODE),
+                        '" ne peut être placé en ' +
+                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                        x,
                     );
                     return false;
                 }
@@ -107,7 +105,7 @@ export class ActionValidatorService {
                 }
             }
 
-            coord = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
+            nextPos = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
         }
 
         if (!hasCenterTile) {
@@ -124,28 +122,28 @@ export class ActionValidatorService {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
-
+        this.sendSystemMessage(action.player.name + ' PLACE des lettres');
         return true;
     }
 
     private hasNeighbour(x: number, y: number): boolean {
         if (x + 1 < NUM_TILES) {
-            if (this.board.board.grid[x + 1][y].letterObject.char !== ' ') {
+            if (this.board.board.grid[y][x + 1].letterObject.char !== ' ') {
                 return true;
             }
         }
         if (x - 1 >= 0) {
-            if (this.board.board.grid[x - 1][y].letterObject.char !== ' ') {
+            if (this.board.board.grid[y][x - 1].letterObject.char !== ' ') {
                 return true;
             }
         }
         if (y + 1 < NUM_TILES) {
-            if (this.board.board.grid[x][y + 1].letterObject.char !== ' ') {
+            if (this.board.board.grid[y + 1][x].letterObject.char !== ' ') {
                 return true;
             }
         }
         if (y - 1 >= 0) {
-            if (this.board.board.grid[x][y - 1].letterObject.char !== ' ') {
+            if (this.board.board.grid[y - 1][x].letterObject.char !== ' ') {
                 return true;
             }
         }
@@ -172,31 +170,51 @@ export class ActionValidatorService {
     }
 
     private hasLettersInRack(rackLetters: Letter[], actionLetters: string): boolean {
-        const rackChars: string[] = [];
-        rackLetters.forEach((value) => {
-            rackChars.push(value.char);
-        });
-
+        const rackChars = rackLetters.map((value) => value.char);
         const actionChars: string[] = actionLetters.split('');
 
-        let rIndex = 0;
-        let aIndex = 0;
-
-        while (actionChars.length > 0) {
-            if (actionChars[aIndex] === rackChars[rIndex]) {
-                actionChars.splice(aIndex, 1);
-                rackChars.splice(rIndex, 1);
-                rIndex = 0;
-                aIndex = 0;
+        const rackCharsOccurences = new Map<string, number>();
+        for (const char of rackChars) {
+            const lowerChar = char.toLowerCase();
+            let occurence = rackCharsOccurences.get(lowerChar);
+            if (occurence) {
+                occurence++;
+                rackCharsOccurences.set(lowerChar, occurence);
             } else {
-                if (rIndex < rackChars.length) {
-                    rIndex++;
-                } else {
-                    return false;
-                }
+                rackCharsOccurences.set(lowerChar, 1);
             }
         }
+
+        for (const char of actionChars) {
+            let occurence = rackCharsOccurences.get(char);
+            if (occurence === undefined) {
+                return false;
+            }
+            if (occurence === 0) {
+                return false;
+            }
+            occurence--;
+            rackCharsOccurences.set(char, occurence);
+        }
         return true;
+
+        // const rIndex = 0;
+        // const aIndex = 0;
+        // while (actionChars.length > 0) {
+        //     if (actionChars[aIndex] === rackChars[rIndex]) {
+        //         actionChars.splice(aIndex, 1);
+        //         rackChars.splice(rIndex, 1);
+        //         rIndex = 0;
+        //         aIndex = 0;
+        //     } else {
+        //         if (rIndex < rackChars.length) {
+        //             rIndex++;
+        //         } else {
+        //             return false;
+        //         }
+        //     }
+        // }
+        // return true;
     }
 
     private validatePassTurn(action: PassTurn) {
