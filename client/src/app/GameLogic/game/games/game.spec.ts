@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -22,7 +23,7 @@ describe('Game', () => {
         timerSpy = jasmine.createSpyObj('TimerService', ['start', 'stop']);
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointdeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
-        messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage']);
+        messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
 
         TestBed.configureTestingModule({
             providers: [
@@ -58,7 +59,7 @@ describe('Game', () => {
         expect(user2.letterRack.length).toBe(MAX_LETTERS_IN_RACK);
     });
 
-    it('should end game', () => {
+    it('should end game when letter bag is empty and one player rack is empty', () => {
         game.start();
         game.letterBag.gameLetters = [];
         user1.letterRack = [];
@@ -77,5 +78,19 @@ describe('Game', () => {
         expect(messageSpy.receiveSystemMessage).toHaveBeenCalled();
     });
 
+    it('should end game when pass are called a number of time (6) ', () => {
+        game.start();
+        game.consecutivePass = 6;
+        expect(game.isEndOfGame()).toBe(true);
+    });
+
+    it('action should call onEndOfGame if it is end of game', () => {
+        game.start();
+        game.consecutivePass = 5;
+        const passAction = new PassTurn(game.players[0]);
+        passAction.execute(game);
+        const isEndGame = game.isEndOfGame();
+        expect(isEndGame).toBeTrue();
+    });
     // it('should call #endOfGamePointDeduction from pointCalculator', () => {});
 });

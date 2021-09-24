@@ -67,4 +67,19 @@ export class GameInfoService {
             throw new Error('No Game in GameInfo');
         }
     }
+
+    get isEndOfGame(): boolean {
+        if (this.game.isEndOfGame()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    get winner(): string {
+        let winnerString = '';
+        for (const player of this.game.getWinner()) {
+            winnerString += player.name + ' ';
+        }
+        return winnerString;
+    }
 }

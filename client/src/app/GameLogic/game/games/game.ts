@@ -83,6 +83,21 @@ export class Game {
         }
     }
 
+    getWinner(): Player[] {
+        let highestScore = Number.MIN_SAFE_INTEGER;
+        let winners: Player[] = [];
+        for (const player of this.players) {
+            if (player.points === highestScore) {
+                winners.push(player);
+            }
+            if (player.points > highestScore) {
+                highestScore = player.points;
+                winners = [player];
+            }
+        }
+        return winners;
+    }
+
     private pickFirstPlayer() {
         const max = this.players.length;
         const firstPlayer = Math.floor(Math.random() * max);
@@ -123,19 +138,4 @@ export class Game {
             this.messagesService.receiveSystemMessage(message);
         }
     }
-
-    // private getWinner(): Player[] {
-    //     let highestScore = Number.MIN_SAFE_INTEGER;
-    //     let winners: Player[] = [];
-    //     for (const player of this.players) {
-    //         if (player.points === highestScore) {
-    //             winners.push(player);
-    //         }
-    //         if (player.points > highestScore) {
-    //             highestScore = player.points;
-    //             winners = [player];
-    //         }
-    //     }
-    //     return winners;
-    // }
 }
