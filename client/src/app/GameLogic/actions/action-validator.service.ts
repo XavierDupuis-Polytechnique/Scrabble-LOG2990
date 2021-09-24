@@ -186,15 +186,14 @@ export class ActionValidatorService {
         }
 
         for (const char of actionChars) {
-            let occurence = rackCharsOccurences.get(char);
-            if (occurence === undefined) {
+            const lowerChar = char.toLowerCase();
+            let occurence = rackCharsOccurences.get(lowerChar);
+            if (occurence === undefined || occurence === 0) {
                 return false;
+            } else {
+                occurence--;
+                rackCharsOccurences.set(lowerChar, occurence);
             }
-            if (occurence === 0) {
-                return false;
-            }
-            occurence--;
-            rackCharsOccurences.set(char, occurence);
         }
         return true;
 
