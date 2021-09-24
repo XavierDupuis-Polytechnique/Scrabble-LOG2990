@@ -69,6 +69,14 @@ export class PlaceLetter extends Action {
             }
         }
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
+        // TODO validate word
+        // if validated then
+        // draw
+        // else revert after 3s
+        /* timer(3000).subscribe(() => {
+            this.drawGameLetters();
+            this.endAction();
+        });*/
         const drawnLetters = game.letterBag.drawGameLetters(this.lettersToRemoveInRack.length);
         for (const letter of drawnLetters) {
             this.player.letterRack.push(letter);
