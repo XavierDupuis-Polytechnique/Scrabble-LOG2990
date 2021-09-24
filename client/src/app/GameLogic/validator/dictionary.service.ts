@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { Bot } from '@app/GameLogic/player/bot';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
@@ -156,10 +155,9 @@ export class DictionaryService {
         return wordList;
     }
 
-    // Check if it's possible to form the word with the currently available letters
     regexCheck(dictWord: ValidWord, placedLetters: string, bot: Bot): boolean {
         const letterRack = bot.letterRack;
-        const mapRack = new Map();
+        const mapRack = new Map<string, number>();
         const notFound = -1;
         const firstLetterIndex = 1;
         const wordLength = dictWord.word.length;
@@ -173,11 +171,11 @@ export class DictionaryService {
         }
 
         for (const letter of letterRack) {
-            const letterCount = mapRack.get(letter);
-            if (mapRack.has(letter)) {
-                mapRack.set(letter, letterCount + 1);
+            const letterCount = mapRack.get(letter.char.toLowerCase());
+            if (letterCount !== undefined) {
+                mapRack.set(letter.char.toLowerCase(), letterCount + 1);
             } else {
-                mapRack.set(letter, 1);
+                mapRack.set(letter.char.toLowerCase(), 1);
             }
         }
         let regex = new RegExp(placedWord.toLowerCase());
@@ -185,6 +183,7 @@ export class DictionaryService {
         if (INDEX === notFound) {
             return false;
         }
+        // TODO ? The person to make a single while out of the next three while deserves a raise.
         while (INDEX !== firstLetterIndex) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
@@ -217,7 +216,7 @@ export class DictionaryService {
                         placedWord.substring(0, indexOfDot) + dictWord.word[placedWord.length].toUpperCase() + placedWord.substring(indexOfDot + 1);
                 } else break;
             } else {
-                this.deleteTmpLetter(dictWord.word[placedWord.length], mapRack);
+                this.deleteTmpLetter(dictWord.word[indexOfDot], mapRack);
                 placedWord =
                     placedWord.substring(0, indexOfDot) +
                     dictWord.word[placedWord.substring(0, indexOfDot).length] +
@@ -268,49 +267,14 @@ export class DictionaryService {
         }
     }
 
-    private tmpLetterLeft(mapRack: Map<Letter, number>): string {
+    private tmpLetterLeft(mapRack: Map<string, number>): string {
         let lettersLeft = '';
         if (!mapRack) return lettersLeft;
         for (const key of mapRack.keys()) {
-            if (key.char !== '*') {
-                const letterCount = mapRack.get(key);
-                if (!letterCount) return lettersLeft;
-                for (let i = 0; i < letterCount; i++) {
-                    lettersLeft += key.char.toLowerCase();
-                }
+            if (key !== '*') {
+                lettersLeft += key.toLowerCase();
             }
         }
         return lettersLeft;
     }
-
-    // TODO to be removed
-    // for(const word of wordList) {
-
-    //     if(partWord.isVertical) {
-    //         word.startingTileX = partWord.startingTileX
-    //         word.startingTileY = partWord.startingTileY - ;
-    //     } else {
-    //         word.startingTileX = partWord.startingTileX - foundIndex;
-    //         word.startingTileY = partWord.startingTileY;
-    //     }word
-    // }
-
-    // let dictService = new DictionaryService();
-    // console.log(dictService.isWordInDict('test'));
-    // console.log('test1');
-    // let test1 = dictService.wordGen('test');
-    // let test2 = dictService.wordGen('allo');
-    // console.log(33333333333333333333);
-    // let test3 = dictService.wordGen('il');
-    // console.log(444444444444444444444);
-    // let test4 = dictService.wordGen('a');
-    // console.log(test1);
-    // test1.forEach((element) => {
-    //     console.log(element.word);
-    // });
-    // console.log(test1);
-    // console.log(test2);
-    // console.log(test3);
-    // console.log(test4);
-    // console.log('test1 end');
 }
