@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
@@ -20,24 +19,13 @@ describe('Game', () => {
     let messageSpy = new MessagesService(new CommandParserService()); // TODO change with spy obj
     let user1: User;
     let user2: User;
+
     beforeEach(() => {
         timerSpy = jasmine.createSpyObj('TimerService', ['start', 'stop']);
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointdeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
-
-        TestBed.configureTestingModule({
-            providers: [
-                { provide: TimerService, useValue: timerSpy },
-                { provide: PointCalculatorService, useValue: pointCalculatorSpy },
-                { provide: BoardService, useValue: boardSpy },
-                { provide: MessagesService, useValue: messageSpy },
-            ],
-        });
-        // const timerService = TestBed.inject(TimerService);
-        // const pointCalculatorService = TestBed.inject(PointCalculatorService);
-        // const boardService = TestBed.inject(BoardService);
-        game = new Game(TIME_PER_TURN, new TimerService(), pointCalculatorSpy, boardSpy, messageSpy);
+        game = new Game(TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy);
         user1 = new User('Tim');
         user2 = new User('Paul');
         game.players = [user1, user2];
