@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
+import { Tile } from '../game/tile';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +25,7 @@ export class DictionaryService {
     }
 
     isWordInDict(word: string): boolean {
-        return this.dynamicWordList.has(word);
+        return this.dynamicWordList.has(word.toLowerCase());
     }
 
     wordGen(partWord: string): ValidWord[] {
@@ -36,6 +37,14 @@ export class DictionaryService {
             }
         });
         return wordList;
+    }
+    //
+    tileToString(word: Tile[]): string {
+        const wordTemp = '';
+        word.forEach((letter) => {
+            wordTemp.concat(letter.letterObject.char);
+        });
+        return wordTemp;
     }
 
     // TODO to be removed
