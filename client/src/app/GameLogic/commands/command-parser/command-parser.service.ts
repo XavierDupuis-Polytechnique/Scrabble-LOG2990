@@ -24,7 +24,6 @@ export class CommandParserService {
     }
 
     sendCommand(command: Command) {
-        console.log('send command');
         this.command$.next(command);
     }
 
@@ -43,7 +42,6 @@ export class CommandParserService {
                     args = this.placeLetterArgVerifier(args);
                 }
                 const command = this.createCommand(args, commandCondition as CommandType);
-                console.log(command);
                 this.sendCommand(command);
                 return true;
             }

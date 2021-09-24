@@ -1,7 +1,7 @@
 export interface Message {
     content: string;
     from: string;
-    type: MessageType;
+    type?: MessageType;
 }
 export enum MessageType {
     System = 'System',

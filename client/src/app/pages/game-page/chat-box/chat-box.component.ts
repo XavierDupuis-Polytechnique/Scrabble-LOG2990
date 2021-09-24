@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
+import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable } from 'rxjs';
 
@@ -30,8 +30,7 @@ export class ChatBoxComponent {
         }
 
         const content = this.messageForm.value;
-        const newMessage = { content, from: 'player1', type: MessageType.Player1 };
-        this.messageService.receiveMessage(newMessage);
+        this.messageService.receiveMessage('player1', content);
 
         this.messageForm.reset();
         this.cdRef.detectChanges();
