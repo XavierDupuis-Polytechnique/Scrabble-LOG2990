@@ -75,11 +75,7 @@ export class GameInfoService {
             return false;
         }
     }
-    get winner(): string {
-        let winnerString = '';
-        for (const player of this.game.getWinner()) {
-            winnerString += player.name + ' ';
-        }
-        return winnerString;
+    get winner(): Player[] {
+        return this.game.getWinner();
     }
 }

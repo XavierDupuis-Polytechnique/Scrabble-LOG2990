@@ -22,4 +22,15 @@ export class InfoBoxComponent implements OnInit {
     ngOnInit() {
         this.timeLeft$ = this.info.timeLeftForTurn.pipe(map((value: number) => value / InfoBoxComponent.millisecondsInASecond));
     }
+
+    showWinner(): string {
+        const winner = this.info.winner;
+        let winnerString = '';
+        if (winner.length !== 1) {
+            winnerString = winner[0].name + ' et ' + winner[1].name;
+        } else {
+            winnerString = winner[0].name;
+        }
+        return winnerString;
+    }
 }
