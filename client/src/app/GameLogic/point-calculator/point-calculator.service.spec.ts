@@ -1,6 +1,7 @@
+/* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
@@ -29,6 +30,15 @@ class MockGame extends Game {
         return this.activePlayer;
     }
 }
+
+class MockPlaceLetter extends PlaceLetter {
+    constructor(player: Player, public word: string, public placement: PlacementSetting) {
+        super(player, word, placement);
+    }
+
+    execute(game: Game) {}
+}
+
 describe('PointCalculatorService', () => {
     let servicePoints: PointCalculatorService;
     let timer: TimerService;
@@ -50,6 +60,7 @@ describe('PointCalculatorService', () => {
     let word: Tile[];
     const timePerTurn = 30;
     let game: MockGame;
+    let action: MockPlaceLetter;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -86,7 +97,7 @@ describe('PointCalculatorService', () => {
     it('should calculate the correct points of a word with letter multiplicator', () => {
         const totalPointsOfWord = 11;
 
-        const action = new PlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
+        action = new MockPlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
 
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -111,7 +122,7 @@ describe('PointCalculatorService', () => {
 
     it('should calculate the correct points of a word with word multiplicator', () => {
         const totalPointsOfWord = 66;
-        const action = new PlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
+        action = new MockPlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
 
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -166,7 +177,7 @@ describe('PointCalculatorService', () => {
             { char: 'U', value: 1 },
             { char: 'X', value: 8 },
         ];
-        const action = new PlaceLetter(player2, bateaux, { x: 0, y: 0, direction: Direction.Horizontal });
+        action = new MockPlaceLetter(player2, bateaux, { x: 0, y: 0, direction: Direction.Horizontal });
 
         action.execute(game);
         action.affectedCoords = [
@@ -204,15 +215,15 @@ describe('PointCalculatorService', () => {
         game.board.grid[0][2].letterObject = { char: 'T', value: 1 };
 
         listOfWord.push(wordBat);
-        const action1 = new PlaceLetter(player1, 'bat', { x: 0, y: 0, direction: Direction.Horizontal });
-        action1.execute(game);
-        action1.affectedCoords = [
+        action = new MockPlaceLetter(player1, 'bat', { x: 0, y: 0, direction: Direction.Horizontal });
+        action.execute(game);
+        action.affectedCoords = [
             { x: 0, y: 0 },
             { x: 1, y: 0 },
             { x: 2, y: 0 },
         ];
-        servicePoints.placeLetterPointsCalculation(action1, listOfWord, boardService);
-        expect(player2.points).toBe(totalPointsOfWordPlayer1);
+        servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService);
+        expect(player1.points).toBe(totalPointsOfWordPlayer1);
 
         const wordBateaux = [grid[0][0], grid[0][1], grid[0][2], grid[0][3], grid[0][4], grid[0][5], grid[0][6]];
         listOfWord = [];
@@ -232,16 +243,16 @@ describe('PointCalculatorService', () => {
         game.board.grid[0][5].letterObject = { char: 'U', value: 1 };
         game.board.grid[0][6].letterObject = { char: 'X', value: 8 };
 
-        const action2 = new PlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
-        action2.execute(game);
-        action1.affectedCoords = [
+        action = new MockPlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal });
+        action.execute(game);
+        action.affectedCoords = [
             { x: 3, y: 0 },
             { x: 4, y: 0 },
             { x: 5, y: 0 },
             { x: 6, y: 0 },
         ];
 
-        servicePoints.placeLetterPointsCalculation(action2, listOfWord, boardService);
+        servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService);
         const points = player2.points;
         expect(points).toBe(totalPointsOfWordPlayer2);
     });
@@ -262,9 +273,14 @@ describe('PointCalculatorService', () => {
         ];
         const wordAt = [grid[3][0], grid[4][0]];
         listOfWord.push(wordAt);
-        const oldAction = new PlaceLetter(player1, 'at', { x: 0, y: 3, direction: Direction.Vertical });
-        oldAction.execute(game);
-        servicePoints.placeLetterPointsCalculation(oldAction, listOfWord, boardService); // 3
+        action = new MockPlaceLetter(player1, 'at', { x: 0, y: 3, direction: Direction.Vertical });
+        action.execute(game);
+        action.affectedCoords = [
+            { x: 0, y: 3 },
+            { x: 0, y: 4 },
+        ];
+
+        servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService); // 3
         expect(player1.points).toBe(totalPointsOfPlayer1);
 
         const totalPointsOfPlayer2 = 25;
@@ -284,8 +300,14 @@ describe('PointCalculatorService', () => {
             { char: 'N', value: 1 },
             { char: 'N', value: 1 },
         ];
-        const action = new PlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal });
+        action = new MockPlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal });
         action.execute(game);
+        action.affectedCoords = [
+            { x: 0, y: 2 },
+            { x: 1, y: 2 },
+            { x: 2, y: 2 },
+            { x: 3, y: 2 },
+        ];
         servicePoints.placeLetterPointsCalculation(action, listOfWord, boardService);
         expect(player2.points).toBe(totalPointsOfPlayer2);
     });
@@ -312,7 +334,7 @@ describe('PointCalculatorService', () => {
         ];
 
         listOfWord.push(word);
-        const action = new PlaceLetter(player1, 'cet', { x: 5, y: 0, direction: Direction.Vertical });
+        action = new MockPlaceLetter(player1, 'cet', { x: 5, y: 0, direction: Direction.Vertical });
         action.affectedCoords = [
             { x: 5, y: 0 },
             { x: 5, y: 1 },
