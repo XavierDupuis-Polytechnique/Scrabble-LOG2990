@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -87,10 +88,56 @@ describe('Game', () => {
     it('action should call onEndOfGame if it is end of game', () => {
         game.start();
         game.consecutivePass = 5;
-        const passAction = new PassTurn(game.players[0]);
-        passAction.execute(game);
+        const passAction = new PassTurn(game.getActivePlayer());
+        game.getActivePlayer().play(passAction);
         const isEndGame = game.isEndOfGame();
         expect(isEndGame).toBeTrue();
+    });
+
+    it('next player should return next player', () => {
+        game.start();
+        const currentPlayer = game.getActivePlayer();
+        game.nextPlayer();
+        const nextPlayer = game.getActivePlayer();
+        const isSamePlayer = currentPlayer === nextPlayer;
+        expect(isSamePlayer).toBeFalse();
+    });
+
+    it('isEndOfGame should return false if not end of game', () => {
+        game.start();
+        const isEndOfGame = game.isEndOfGame();
+        expect(isEndOfGame).toBeFalse();
+    });
+
+    it('if action different than pass, should reset pass counter', () => {
+        game.consecutivePass = 3;
+        const action = new ExchangeLetter(game.players[0], game.players[0].letterRack);
+        action.execute(game);
+        expect(game.consecutivePass).toBe(0);
+    });
+
+    it('getWinner should return the right winner', () => {
+        game.players[0].points = 5;
+        const winners = game.getWinner();
+        expect(winners.length).toBe(1);
+        expect(winners[0].name).toBe('Tim');
+    });
+
+    it('getWinner should return both winner when same score', () => {
+        game.players[0].points = 10;
+        game.players[1].points = 10;
+        const winners = game.getWinner();
+        expect(winners.length).toBe(2);
+    });
+
+    it('action from player should end his turn and change to next player', () => {
+        game.start();
+        const currentPlayer = game.getActivePlayer();
+        const action = new PassTurn(currentPlayer);
+        currentPlayer.play(action);
+        const nextPlayer = game.getActivePlayer();
+        const isSamePlayer = currentPlayer.name === nextPlayer.name;
+        expect(isSamePlayer).toBeFalse();
     });
     // it('should call #endOfGamePointDeduction from pointCalculator', () => {});
 });
