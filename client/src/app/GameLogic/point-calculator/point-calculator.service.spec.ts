@@ -5,6 +5,7 @@ import { Board } from '@app/GameLogic/game/board';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -20,8 +21,14 @@ class MockGame extends Game {
     consecutivePass: number = MAX_CONSECUTIVE_PASS;
     board: Board = new Board();
 
-    constructor(time: number, timerService: TimerService, pointCalculatorService: PointCalculatorService, boardService: BoardService) {
-        super(time, timerService, pointCalculatorService, boardService);
+    constructor(
+        time: number,
+        timerService: TimerService,
+        pointCalculatorService: PointCalculatorService,
+        boardService: BoardService,
+        messageService: MessagesService,
+    ) {
+        super(time, timerService, pointCalculatorService, boardService, messageService);
         this.players = [this.activePlayer, this.otherPlayer];
     }
     getActivePlayer() {
@@ -32,6 +39,7 @@ describe('PointCalculatorService', () => {
     let servicePoints: PointCalculatorService;
     let timer: TimerService;
     let boardService: BoardService;
+    let messagesService: MessagesService;
 
     const player1: Player = new User('Tim');
     const player2: Player = new User('Max');
@@ -194,7 +202,7 @@ describe('PointCalculatorService', () => {
     it('should not calculate bonus when player place all letter if rack was not full (on end of game)', () => {
         const totalPointsOfWord = 8;
         const timeTurn = 30;
-        const game = new MockGame(timeTurn, timer, servicePoints, boardService);
+        const game = new MockGame(timeTurn, timer, servicePoints, boardService, messagesService);
         game.consecutivePass = 0;
         word = [
             { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
@@ -234,7 +242,7 @@ describe('PointCalculatorService', () => {
             { char: 'T', value: 1 },
         ];
         const timeTurn = 30;
-        const game = new MockGame(timeTurn, timer, servicePoints, boardService);
+        const game = new MockGame(timeTurn, timer, servicePoints, boardService, messagesService);
         game.activePlayer.points = 150;
         game.otherPlayer.points = 50;
         game.activePlayer.letterRack = rack;

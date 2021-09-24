@@ -28,7 +28,7 @@ export class GameManagerService {
         if (this.game) {
             this.stopGame();
         }
-        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, this.boardService);
+        this.game = new Game(gameSettings.timePerTurn, this.timer, this.pointCalculator, this.boardService, this.messageService);
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);

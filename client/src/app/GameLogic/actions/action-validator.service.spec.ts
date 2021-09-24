@@ -31,6 +31,7 @@ describe('ActionValidatorService', () => {
     let board: BoardService;
     let dictonary: DictionaryService;
     let info: GameInfoService;
+    let messageService: MessagesService;
     const centerPosition = Math.floor(NUM_TILES / 2);
 
     class FakeAction extends Action {
@@ -65,7 +66,7 @@ describe('ActionValidatorService', () => {
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messageService);
         p1User = new User('testUser');
         p2Bot = new EasyBot('testUser', board, dictonary);
         game.players.push(p1User);

@@ -10,7 +10,7 @@ import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
+// import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -119,23 +119,23 @@ export class Game {
     private displayLettersLeft() {
         this.messagesService.receiveSystemMessage(`Fin de partie - ${this.letterBag.lettersLeft}`);
         for (const player of this.players) {
-            const message = `${player.name}: ${player.letterRack.length}`;
+            const message = `${player.name}: ${player.printLetterRack()}`;
             this.messagesService.receiveSystemMessage(message);
         }
     }
 
-    private getWinner(): Player[] {
-        let highestScore = Number.MIN_SAFE_INTEGER;
-        let winners: Player[] = [];
-        for (const player of this.players) {
-            if (player.points === highestScore) {
-                winners.push(player);
-            }
-            if (player.points > highestScore) {
-                highestScore = player.points;
-                winners = [player];
-            }
-        }
-        return winners;
-    }
+    // private getWinner(): Player[] {
+    //     let highestScore = Number.MIN_SAFE_INTEGER;
+    //     let winners: Player[] = [];
+    //     for (const player of this.players) {
+    //         if (player.points === highestScore) {
+    //             winners.push(player);
+    //         }
+    //         if (player.points > highestScore) {
+    //             highestScore = player.points;
+    //             winners = [player];
+    //         }
+    //     }
+    //     return winners;
+    // }
 }
