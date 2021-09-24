@@ -273,10 +273,10 @@ describe('ActionValidatorService', () => {
         const x = NUM_TILES - 1;
         const y = NUM_TILES - 1;
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
-        game.board.grid[x][y].letterObject.char = 'A';
+        game.board.grid[y][x].letterObject.char = 'A';
         const word = 'AB';
         const placement: PlacementSetting = { direction: Direction.Horizontal, x, y };
-        game.board.grid[x][y].letterObject.char = word.charAt(0);
+        game.board.grid[y][x].letterObject.char = word.charAt(0);
         currentPlayer.letterRack[0].char = word.charAt(1);
         const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).not.toBeTruthy();
@@ -309,7 +309,7 @@ describe('ActionValidatorService', () => {
             if (i % 2) {
                 currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = verticalWord.charAt(i);
             } else {
-                game.board.grid[centerPosition][i].letterObject.char = verticalWord.charAt(i);
+                game.board.grid[i][centerPosition].letterObject.char = verticalWord.charAt(i);
             }
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
@@ -329,9 +329,9 @@ describe('ActionValidatorService', () => {
         const beginPos = NUM_TILES - finalBoardRowChars.length + 1;
         let word = '';
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
-        game.board.grid[beginPos + 0][0].letterObject.char = finalBoardRowChars[0];
-        game.board.grid[beginPos + 1][0].letterObject.char = finalBoardRowChars[1];
-        game.board.grid[beginPos + 2][0].letterObject.char = finalBoardRowChars[2];
+        game.board.grid[0][beginPos + 0].letterObject.char = finalBoardRowChars[0];
+        game.board.grid[0][beginPos + 1].letterObject.char = finalBoardRowChars[1];
+        game.board.grid[0][beginPos + 2].letterObject.char = finalBoardRowChars[2];
         for (let i = 3; i < finalBoardRowChars.length; i++) {
             currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardRowChars[i];
             word += finalBoardRowChars.charAt(i);
@@ -342,7 +342,7 @@ describe('ActionValidatorService', () => {
 
         expect(service.validateAction(action)).not.toBeTruthy();
 
-        expect(game.board.grid[beginPos + 3][0].letterObject.char).toBe(' ');
+        expect(game.board.grid[0][beginPos + 3].letterObject.char).toBe(' ');
     });
     /// ////////////////// ///
 });

@@ -7,35 +7,43 @@
         'Player Board Board Board Board Info'
         'Player Board Board Board Board Chat'
         'Player Horse Horse Horse Horse Chat';
-    height: 100vmin;
+    height: 85vmin;
 }
 
 app-info-box {
     grid-area: Info;
+    border: 1px solid var(--darkgray);
     padding: 1%;
 }
 
 app-chat-box {
     grid-area: Chat;
-    border-style: solid;
+    border: 1px solid var(--darkgray);
     width: 100%;
     overflow-wrap: anywhere;
     word-break: normal;
 }
 app-board {
+    height: min-content;
     grid-area: Board;
     padding: 1%;
-    border: 2px solid black;
+    border: 2px solid var(--darkgray);
     min-width: 50vw;
+    //width: 90%;
 }
 
 app-horse {
     grid-area: Horse;
-    border: 1px solid grey;
-    margin: 1%;
+    //border: 1px solid var(--darkgray);
+    //margin: 1%;
+    //max-width: 25vw;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 app-player-info {
     grid-area: Player;
     padding: 1%;
-    border: 1px solid grey;
+    border: 1px solid var(--darkgray);
 }
