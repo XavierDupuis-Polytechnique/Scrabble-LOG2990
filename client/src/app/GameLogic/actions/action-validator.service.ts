@@ -73,19 +73,19 @@ export class ActionValidatorService {
                 return false;
             }
 
-            const currentTile = board.grid[y][x];
-            const currentChar = action.word.charAt(letterIndex);
+            const currentTileChar = board.grid[y][x].letterObject.char.toLowerCase();
+            const wordCurrentChar = action.word.charAt(letterIndex);
 
-            if (currentTile.letterObject.char === ' ') {
-                lettersNeeded = lettersNeeded.concat(currentChar);
+            if (currentTileChar === ' ') {
+                lettersNeeded = lettersNeeded.concat(wordCurrentChar);
             } else {
-                if (currentChar !== currentTile.letterObject.char) {
+                if (wordCurrentChar !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                        currentChar +
-                        '" ne peut être placé en ' +
-                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                        x,
+                            wordCurrentChar +
+                            '" ne peut être placé en ' +
+                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                            x,
                     );
                     return false;
                 }
