@@ -190,30 +190,11 @@ export class ActionValidatorService {
             let occurence = rackCharsOccurences.get(lowerChar);
             if (occurence === undefined || occurence === 0) {
                 return false;
-            } else {
-                occurence--;
-                rackCharsOccurences.set(lowerChar, occurence);
             }
+            occurence--;
+            rackCharsOccurences.set(lowerChar, occurence);
         }
         return true;
-
-        // const rIndex = 0;
-        // const aIndex = 0;
-        // while (actionChars.length > 0) {
-        //     if (actionChars[aIndex] === rackChars[rIndex]) {
-        //         actionChars.splice(aIndex, 1);
-        //         rackChars.splice(rIndex, 1);
-        //         rIndex = 0;
-        //         aIndex = 0;
-        //     } else {
-        //         if (rIndex < rackChars.length) {
-        //             rIndex++;
-        //         } else {
-        //             return false;
-        //         }
-        //     }
-        // }
-        // return true;
     }
 
     private validatePassTurn(action: PassTurn) {
