@@ -1,3 +1,7 @@
+import { AsyncPipe } from '@angular/common';
+import { async } from '@angular/core/testing';
+import { Action } from '@app/GameLogic/actions/action';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
@@ -5,9 +9,12 @@ import { Tile } from '@app/GameLogic/game/tile';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
 import { BoardService } from '@app/services/board.service';
+import { BehaviorSubject, timer } from 'rxjs';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord, VERTICAL } from './valid-word';
 
+const TIME_BEFORE_PICKING_ACTION = 3000;
+const TIME_BEFORE_PASS = 20000;
 export abstract class Bot extends Player {
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
     static MIDDLE_OF_BOARD = 7;
@@ -15,6 +22,25 @@ export abstract class Bot extends Player {
     validWordList: ValidWord[];
     wordValidator: WordSearcher;
     game: Game;
+    private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
+    private chooseAction(action: Action) {
+        this.chosenAction$.next(action);
+        this.chosenAction$.complete();
+    }
+
+    // TODO: find better name
+    private pickAction() {
+        timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
+            const action = this.chosenAction$.value;
+            if (action !== undefined) {
+                this.play(action);
+            }
+        });
+        timer(TIME_BEFORE_PASS).subscribe(() => {
+            this.play(new PassTurn(this));
+        });
+    }
+
 
     // Bot constructor takes opponent name as argument to prevent same name
     constructor(
@@ -343,6 +369,8 @@ export abstract class Bot extends Player {
         }
         return possiblyValidWords;
     }
+
+
 }
 
 // if (x < endOfBoard) {
