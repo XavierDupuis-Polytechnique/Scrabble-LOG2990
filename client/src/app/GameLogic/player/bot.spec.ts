@@ -36,7 +36,8 @@ describe('Bot', () => {
     const game = new Game(10, timer, pointCalculator, boardService);
 
     beforeEach(() => {
-        bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, game);
+        // bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, game);
+        bot = new TestBot('Jimmy', boardService, dictionaryService, game);
         board = new TestBoard();
     });
     it('should create an instance', () => {

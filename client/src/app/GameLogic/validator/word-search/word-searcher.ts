@@ -13,11 +13,9 @@ const BOARD_MAX_POSITION_Y = 15;
 
 export class WordSearcher {
     listOfValidWord: Tile[][] = [];
-    letterCreator: LetterCreator;
+    letterCreator = new LetterCreator();
     isValid: boolean = false;
-    constructor(private boardService: BoardService, private dictionaryService: DictionaryService, letterCreator: LetterCreator) {
-        this.letterCreator = letterCreator;
-    }
+    constructor(private boardService: BoardService, private dictionaryService: DictionaryService) {}
 
     get grid() {
         return this.boardService.board.grid;

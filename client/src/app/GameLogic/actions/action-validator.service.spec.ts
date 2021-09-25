@@ -67,7 +67,8 @@ describe('ActionValidatorService', () => {
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
         p1User = new User('testUser');
-        p2Bot = new EasyBot('testUser', board, dictonary, pointCalculator, game);
+        // p2Bot = new EasyBot('testUser', board, dictonary, pointCalculator, game);
+        p2Bot = new EasyBot('testUser', board, dictonary, game);
         game.players.push(p1User);
         game.players.push(p2Bot);
         info.receiveGame(game);
