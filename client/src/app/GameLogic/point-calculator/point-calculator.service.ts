@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
+import { Player } from '@app/GameLogic/player/player';
 import { BoardService } from '@app/services/board.service';
-import { Direction } from '../actions/direction.enum';
-import { Player } from '../player/player';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;
@@ -62,8 +62,6 @@ export class PointCalculatorService {
         lettersInWord.forEach((letter) => {
             sumOfWord += letter.letterObject.value * letter.letterMultiplicator;
             totalWordMultiplicator *= letter.wordMultiplicator;
-
-
         });
         sumOfWord *= totalWordMultiplicator;
         return sumOfWord;
@@ -105,7 +103,7 @@ export class PointCalculatorService {
     // }
 
     desactivateMultiplicators(action: PlaceLetter, boardService: BoardService): void {
-        let coord: Vec2 = { x: action.placement.x, y: action.placement.y };
+        const coord: Vec2 = { x: action.placement.x, y: action.placement.y };
         for (let i = 0; i < action.word.length; i++) {
             boardService.board.grid[coord.y][coord.x].letterMultiplicator = 1;
             boardService.board.grid[coord.y][coord.x].wordMultiplicator = 1;
@@ -116,7 +114,5 @@ export class PointCalculatorService {
                 coord.y++;
             }
         }
-
     }
-
 }

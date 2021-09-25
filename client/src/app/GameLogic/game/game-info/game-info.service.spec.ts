@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { User } from '@app/GameLogic/player/user';
 import { GameInfoService } from './game-info.service';
 
 describe('GameInfoService', () => {
@@ -59,5 +60,35 @@ describe('GameInfoService', () => {
 
     it('should return the time left for a turn from the Timer', () => {
         expect(service.timeLeftForTurn).toBeTruthy();
+    });
+
+    it('should properly store the user', () => {
+        const user = new User('p1');
+        service.receiveUser(user);
+        expect(service.user).toBeTruthy();
+        expect(service.user.name).toBe(user.name);
+    });
+
+    it('should return the player with provided index', () => {
+        const user0 = new User('p1');
+        const user1 = new User('p2');
+        service.players = [user0, user1];
+        expect(service.getPlayer(0)).toEqual(user0);
+        expect(service.getPlayer(1)).toEqual(user1);
+    });
+
+    it('should return the player points with provided index', () => {
+        const user0 = new User('p1');
+        user0.points = Math.floor(Math.random() * 1000);
+        const user1 = new User('p2');
+        user1.points = Math.floor(Math.random() * 1000);
+        service.players = [user0, user1];
+        expect(service.getPlayerScore(0)).toBe(user0.points);
+        expect(service.getPlayerScore(1)).toBe(user1.points);
+    });
+
+    it('should return the number of players', () => {
+        service.players = [new User('p1'), new User('p2')];
+        expect(service.numberOfPlayers).toBe(service.players.length);
     });
 });
