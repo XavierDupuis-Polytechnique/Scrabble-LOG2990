@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
@@ -10,7 +10,7 @@ const MIN_FONT_SIZE = 10;
     templateUrl: './board.component.html',
     styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements AfterContentInit {
+export class BoardComponent implements AfterViewInit {
     @ViewChild('ScrabbleBoard') scrabbleBoard: ElementRef;
     board: Board;
     minFontSize = MIN_FONT_SIZE;
@@ -21,7 +21,7 @@ export class BoardComponent implements AfterContentInit {
         this.board = this.boardService.board;
     }
 
-    ngAfterContentInit() {
+    ngAfterViewInit() {
         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
     }
 
