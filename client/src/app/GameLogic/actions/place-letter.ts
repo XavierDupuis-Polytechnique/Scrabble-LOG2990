@@ -5,12 +5,15 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
+import { timer } from 'rxjs';
 
 export interface PlacementSetting {
     x: number;
     y: number;
     direction: string;
 }
+const TIME_FOR_REVERT = 3000;
 
 const isCharUpperCase = (char: string) => {
     if (char.length !== 1) {
@@ -25,11 +28,19 @@ export class PlaceLetter extends Action {
     affectedCoords: Vec2[];
     private letterFactory = new LetterCreator();
 
-    constructor(player: Player, public word: string, public placement: PlacementSetting) {
+    constructor(
+        player: Player,
+        public word: string,
+        public placement: PlacementSetting,
+        // private pointCalculator: PointCalculatorService,
+        private wordSearcher: WordSearcher,
+    ) {
         super(player);
     }
 
-    revert() {
+    revert(game: Game) {
+        this.removeLetterFromBoard(game);
+        this.giveBackLettersToPlayer();
         // for (const letter of this.lettersToPlace) {
         //     // Peut causer des problèmes : la Game ne doit pas fournir de nouvelles lettres avant un possible .revert(game)
         //     this.player.letterRack.push(letter);
@@ -42,16 +53,38 @@ export class PlaceLetter extends Action {
     protected perform(game: Game) {
         this.putLettersOnBoard(game);
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
-        // TODO validate word
-        // if validated then
-        // draw
-        // else revert after 3s
-        /* timer(3000).subscribe(() => {
-            this.drawGameLetters();
-            this.endAction();
-        });*/
+        const wordValid: boolean = this.wordSearcher.validateWords(this);
+        console.log(wordValid);
+        if (wordValid) {
+            // this.pointCalculator.placeLetterPointsCalculation(this,);
+            this.drawLettersForPlayer(game);
+            this.end();
+        } else {
+            timer(TIME_FOR_REVERT).subscribe(() => {
+                this.revert(game);
+                this.end();
+            });
+        }
+    }
+
+    private removeLetterFromBoard(game: Game) {
+        const grid = game.board.grid;
+        for (const coord of this.affectedCoords) {
+            const x = coord.x;
+            const y = coord.y;
+            grid[y][x].letterObject.char = ' ';
+        }
+    }
+
+    private drawLettersForPlayer(game: Game) {
         const drawnLetters = game.letterBag.drawGameLetters(this.lettersToRemoveInRack.length);
         for (const letter of drawnLetters) {
+            this.player.letterRack.push(letter);
+        }
+    }
+
+    private giveBackLettersToPlayer() {
+        for (const letter of this.lettersToRemoveInRack) {
             this.player.letterRack.push(letter);
         }
     }
