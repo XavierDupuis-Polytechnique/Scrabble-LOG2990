@@ -147,8 +147,11 @@ export class WordSearcher {
     }
 
     private createTile(char: string, pos: Vec2): Tile {
-        const tile = new Tile(this.grid[pos.y][pos.x].letterMultiplicator, this.grid[pos.y][pos.x].wordMultiplicator);
-        tile.letterObject = this.letterCreator.createLetter(char);
-        return tile;
+        const tile = this.grid[pos.y][pos.x];
+        const letterMultiplicator = tile.letterMultiplicator;
+        const wordMultiplicator = tile.wordMultiplicator;
+        const newTile = new Tile(letterMultiplicator, wordMultiplicator);
+        newTile.letterObject = this.letterCreator.createLetter(char);
+        return newTile;
     }
 }
