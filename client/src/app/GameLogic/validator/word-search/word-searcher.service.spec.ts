@@ -11,7 +11,7 @@ import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 
 const BOARD_LENGTH = 6;
