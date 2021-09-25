@@ -74,7 +74,7 @@ export class ActionValidatorService {
             }
 
             const currentTileChar = board.grid[y][x].letterObject.char.toLowerCase();
-            const wordCurrentChar = action.word.charAt(letterIndex);
+            const wordCurrentChar = action.word.charAt(letterIndex).toLowerCase();
 
             if (currentTileChar === ' ') {
                 lettersNeeded = lettersNeeded.concat(wordCurrentChar);
@@ -82,10 +82,10 @@ export class ActionValidatorService {
                 if (wordCurrentChar !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                            wordCurrentChar +
-                            '" ne peut être placé en ' +
-                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                            x,
+                        wordCurrentChar +
+                        '" ne peut être placé en ' +
+                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                        x,
                     );
                     return false;
                 }
@@ -152,7 +152,7 @@ export class ActionValidatorService {
 
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (action.lettersToExchange.length > this.gameInfo.numberOfLettersRemaining) {
-            this.sendErrorMessage('Commande impossible à réaliser : La réserve ne contient pas assez de lettres');
+            this.sendErrorMessage('Commande impossible à réaliser : La réserve ne contient pas assez de lettres.');
             return false;
         }
 
