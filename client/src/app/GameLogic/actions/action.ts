@@ -2,7 +2,6 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { Player } from '@app/GameLogic/player/player';
 import { Subject } from 'rxjs';
 
-// TODO: add isEnded$ attribute to know when the action ended;
 export abstract class Action {
     static id = 0;
     id;
