@@ -40,6 +40,23 @@ export class PlaceLetter extends Action {
     }
 
     protected perform(game: Game) {
+        this.putLettersOnBoard(game);
+        this.player.removeLetterFromRack(this.lettersToRemoveInRack);
+        // TODO validate word
+        // if validated then
+        // draw
+        // else revert after 3s
+        /* timer(3000).subscribe(() => {
+            this.drawGameLetters();
+            this.endAction();
+        });*/
+        const drawnLetters = game.letterBag.drawGameLetters(this.lettersToRemoveInRack.length);
+        for (const letter of drawnLetters) {
+            this.player.letterRack.push(letter);
+        }
+    }
+
+    private putLettersOnBoard(game: Game) {
         const startX = this.placement.x;
         const startY = this.placement.y;
         const direction = this.placement.direction;
@@ -63,23 +80,10 @@ export class PlaceLetter extends Action {
                 const letterToRemove = this.letterToRemove(charToCreate);
                 this.lettersToRemoveInRack.push(letterToRemove);
                 // TODO: put * letter value 0
-                const newLetter = this.letterFactory.createLetter(charToCreate);
-                game.board.grid[y][x].letterObject = newLetter;
+                const newLetter = this.createNewLetter(charToCreate);
+                grid[y][x].letterObject = newLetter;
                 this.affectedCoords.push({ x, y });
             }
-        }
-        this.player.removeLetterFromRack(this.lettersToRemoveInRack);
-        // TODO validate word
-        // if validated then
-        // draw
-        // else revert after 3s
-        /* timer(3000).subscribe(() => {
-            this.drawGameLetters();
-            this.endAction();
-        });*/
-        const drawnLetters = game.letterBag.drawGameLetters(this.lettersToRemoveInRack.length);
-        for (const letter of drawnLetters) {
-            this.player.letterRack.push(letter);
         }
     }
 
@@ -88,5 +92,13 @@ export class PlaceLetter extends Action {
             return this.letterFactory.createLetter('*');
         }
         return this.letterFactory.createLetter(char);
+    }
+
+    private createNewLetter(char: string) {
+        const charToCreate = char.toLowerCase();
+        if (isCharUpperCase(char)) {
+            return this.letterFactory.createBlankLetter(charToCreate);
+        }
+        return this.letterFactory.createLetter(charToCreate);
     }
 }
