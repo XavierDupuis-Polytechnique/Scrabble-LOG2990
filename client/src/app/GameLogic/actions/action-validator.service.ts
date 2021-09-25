@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { ASCII_CODE, NUM_TILES } from '@app/GameLogic/game/board';
+import { NUM_TILES } from '@app/GameLogic/game/board';
 // import { NUM_TILES } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
@@ -53,9 +54,6 @@ export class ActionValidatorService {
             return false;
         }
 
-        // TODO : PAS ÉCRASER DE LETTRES
-        // TODO : VÉRIFIER NEIHBORS
-
         const centerTilePosition: number = Math.floor(NUM_TILES / 2);
         const board = this.board.board;
         let hasCenterTile = board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
@@ -64,18 +62,33 @@ export class ActionValidatorService {
 
         let x = action.placement.x;
         let y = action.placement.y;
-        let currentTile = board.grid[x][y];
-        let numberOfLetterToPlace = action.word.length;
-        while (numberOfLetterToPlace > 0) {
-            if (x >= NUM_TILES || y >= NUM_TILES) {
+        let lettersNeeded = '';
+        let nextPos = 0;
+
+        for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
+            if (nextPos >= NUM_TILES || y >= NUM_TILES) {
                 this.sendErrorMessage(
-                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + x + ' ' + String.fromCharCode(y + ASCII_CODE),
+                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + x,
                 );
                 return false;
             }
 
+            const currentTile = board.grid[y][x];
+            const currentChar = action.word.charAt(letterIndex);
+
             if (currentTile.letterObject.char === ' ') {
-                numberOfLetterToPlace--;
+                lettersNeeded = lettersNeeded.concat(currentChar);
+            } else {
+                if (currentChar !== currentTile.letterObject.char) {
+                    this.sendErrorMessage(
+                        'Commande impossible à réaliser : La lettre "' +
+                        currentChar +
+                        '" ne peut être placé en ' +
+                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                        x,
+                    );
+                    return false;
+                }
             }
 
             if (!hasCenterTile) {
@@ -92,39 +105,45 @@ export class ActionValidatorService {
                 }
             }
 
-            currentTile = action.placement.direction.charAt(0).toLowerCase() === 'v' ? board.grid[x][y++] : board.grid[x++][y];
+            nextPos = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
         }
 
-        if (!hasCenterTile || !hasNeighbour) {
+        if (!hasCenterTile) {
+            this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
             return false;
         }
 
-        if (!this.hasLettersInRack(action.player.letterRack, action.word)) {
+        if (!hasNeighbour) {
+            this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
+            return false;
+        }
+
+        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
-
+        this.sendSystemMessage(action.player.name + ' PLACE des lettres');
         return true;
     }
 
     private hasNeighbour(x: number, y: number): boolean {
         if (x + 1 < NUM_TILES) {
-            if (this.board.board.grid[x + 1][y].letterObject.char !== ' ') {
+            if (this.board.board.grid[y][x + 1].letterObject.char !== ' ') {
                 return true;
             }
         }
         if (x - 1 >= 0) {
-            if (this.board.board.grid[x - 1][y].letterObject.char !== ' ') {
+            if (this.board.board.grid[y][x - 1].letterObject.char !== ' ') {
                 return true;
             }
         }
         if (y + 1 < NUM_TILES) {
-            if (this.board.board.grid[x][y + 1].letterObject.char !== ' ') {
+            if (this.board.board.grid[y + 1][x].letterObject.char !== ' ') {
                 return true;
             }
         }
         if (y - 1 >= 0) {
-            if (this.board.board.grid[x][y - 1].letterObject.char !== ' ') {
+            if (this.board.board.grid[y - 1][x].letterObject.char !== ' ') {
                 return true;
             }
         }
@@ -151,29 +170,29 @@ export class ActionValidatorService {
     }
 
     private hasLettersInRack(rackLetters: Letter[], actionLetters: string): boolean {
-        const rackChars: string[] = [];
-        rackLetters.forEach((value) => {
-            rackChars.push(value.char);
-        });
-
+        const rackChars = rackLetters.map((value) => value.char);
         const actionChars: string[] = actionLetters.split('');
 
-        let rIndex = 0;
-        let aIndex = 0;
-
-        while (actionChars.length > 0) {
-            if (actionChars[aIndex] === rackChars[rIndex]) {
-                actionChars.splice(aIndex, 1);
-                rackChars.splice(rIndex, 1);
-                rIndex = 0;
-                aIndex = 0;
+        const rackCharsOccurences = new Map<string, number>();
+        for (const char of rackChars) {
+            const lowerChar = char.toLowerCase();
+            let occurence = rackCharsOccurences.get(lowerChar);
+            if (occurence) {
+                occurence++;
+                rackCharsOccurences.set(lowerChar, occurence);
             } else {
-                if (rIndex < rackChars.length) {
-                    rIndex++;
-                } else {
-                    return false;
-                }
+                rackCharsOccurences.set(lowerChar, 1);
             }
+        }
+
+        for (const char of actionChars) {
+            const lowerChar = char.toLowerCase();
+            let occurence = rackCharsOccurences.get(lowerChar);
+            if (occurence === undefined || occurence === 0) {
+                return false;
+            }
+            occurence--;
+            rackCharsOccurences.set(lowerChar, occurence);
         }
         return true;
     }

@@ -132,11 +132,6 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate a valid ExchangeLetter because a player 7 letters can be exchanged', () => {
-        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
-        expect(service.validateAction(action)).toBeTruthy();
-    });
-
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
@@ -194,49 +189,65 @@ describe('ActionValidatorService', () => {
 
     /// PLACELETTER TESTS ///
     it('should validate a valid PlaceLetter because the letter Tile is empty (horizontal)', () => {
-        const lettersToPlace = 'A';
+        const word = 'A';
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: centerPosition, y: centerPosition };
-        currentPlayer.letterRack[0].char = lettersToPlace.charAt(0);
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        currentPlayer.letterRack[0].char = word.charAt(0);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the letter Tile is empty (vertical)', () => {
-        const lettersToPlace = 'A';
+        const word = 'A';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        currentPlayer.letterRack[0].char = lettersToPlace.charAt(0);
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        currentPlayer.letterRack[0].char = word.charAt(0);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because a player cannot place letter(s) he/she doesnt have', () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
         currentPlayer.letterRack = [
             { char: 'A', value: 1 },
             { char: 'B', value: 1 },
             { char: 'C', value: 1 },
             { char: 'A', value: 1 },
-            { char: 'E', value: 1 },
+            { char: 'D', value: 1 },
         ];
-        const lettersToPlace = 'AAA';
+        const word = 'ABACADA';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
+    it('should validate a valid PlaceLetter because the player has all missing letters from the word', () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
+        currentPlayer.letterRack = [
+            { char: 'A', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'C', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'D', value: 1 },
+        ];
+        const word = 'ABACAD';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement);
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
     it('should invalidate an invalid PlaceLetter because the center Tile remains Empty', () => {
-        const lettersToPlace = 'A';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: 0, y: 0 };
-        currentPlayer.letterRack[0].char = lettersToPlace.charAt(0);
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        const word = 'B';
+        currentPlayer.letterRack[0].char = word.charAt(0);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the letter Tile next to it is empty', () => {
-        const lettersToPlace = 'A';
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
+        const word = 'AB';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        currentPlayer.letterRack[0].char = lettersToPlace.charAt(0);
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        currentPlayer.letterRack[0].char = word.charAt(1);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
@@ -244,12 +255,12 @@ describe('ActionValidatorService', () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
         const x = 0;
         const y = 0;
-        const lettersToPlace = 'ABCDEFG';
+        const word = 'ABCDEFG';
         const placement: PlacementSetting = { direction: Direction.Horizontal, x, y };
-        for (let i = 0; i < lettersToPlace.length; i++) {
-            currentPlayer.letterRack[i].char = lettersToPlace.charAt(i);
+        for (let i = 0; i < word.length; i++) {
+            currentPlayer.letterRack[i].char = word.charAt(i);
         }
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -257,79 +268,64 @@ describe('ActionValidatorService', () => {
         const x = NUM_TILES - 1;
         const y = NUM_TILES - 1;
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
-        game.board.grid[x][y].letterObject.char = '_';
-        const lettersToPlace = 'A';
+        game.board.grid[y][x].letterObject.char = 'A';
+        const word = 'AB';
         const placement: PlacementSetting = { direction: Direction.Horizontal, x, y };
-        currentPlayer.letterRack[0].char = lettersToPlace.charAt(0);
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        game.board.grid[y][x].letterObject.char = word.charAt(0);
+        currentPlayer.letterRack[0].char = word.charAt(1);
+        const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
     it('should validate placing a "word" with already present letters on the board (horizontal)', () => {
-        const finalBoardRowChars = 'ABCDEFGHIJK';
-        let lettersToPlace = '';
-        for (let i = 0; i < finalBoardRowChars.length; i++) {
-            if (i % 2) {
-                currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardRowChars.charAt(i);
-                lettersToPlace += finalBoardRowChars.charAt(i);
+        const horizontalWord = 'ABCDEFGHIJK';
+        for (let x = 0; x < horizontalWord.length; x++) {
+            if (x % 2) {
+                currentPlayer.letterRack[x % LetterBag.playerLetterCount].char = horizontalWord.charAt(x);
             } else {
-                game.board.grid[i][centerPosition].letterObject.char = finalBoardRowChars.charAt(i);
+                game.board.grid[centerPosition][x].letterObject.char = horizontalWord.charAt(x);
             }
         }
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 0, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        const action = new PlaceLetter(currentPlayer, horizontalWord, placement);
 
         expect(service.validateAction(action)).toBeTruthy();
-
-        // action.execute(game);
-
-        // for (let j = 0; j < finalBoardRowChars.length; j++) {
-        //     expect(game.board.grid[j][centerPosition].letterObject.char).toBe(finalBoardRowChars[j]);
-        // }
     });
 
     it('should validate placing a "word" with already present letters on the board (vertical)', () => {
-        const finalBoardColumnChars = 'ABCDEFGHIJK';
-        let lettersToPlace = '';
-        for (let i = 0; i < finalBoardColumnChars.length; i++) {
-            if (i % 2) {
-                currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardColumnChars.charAt(i);
-                lettersToPlace += finalBoardColumnChars.charAt(i);
+        const verticalWord = 'ABCDEFGHIJK';
+        for (let y = 0; y < verticalWord.length; y++) {
+            if (y % 2) {
+                currentPlayer.letterRack[y % LetterBag.playerLetterCount].char = verticalWord.charAt(y);
             } else {
-                game.board.grid[centerPosition][i].letterObject.char = finalBoardColumnChars.charAt(i);
+                game.board.grid[y][centerPosition].letterObject.char = verticalWord.charAt(y);
             }
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        const action = new PlaceLetter(currentPlayer, verticalWord, placement);
 
         expect(service.validateAction(action)).toBeTruthy();
-
-        // action.execute(game);
-
-        // for (let j = 0; j < finalBoardRowChars.length; j++) {
-        //     expect(game.board.grid[centerPosition][j].letterObject.char).toBe(finalBoardRowChars[j]);
-        // }
     });
 
     it('should invalidate an invalid PlaceLetter if word overflow the board', () => {
         const finalBoardRowChars = 'ABCDE';
         const beginPos = NUM_TILES - finalBoardRowChars.length + 1;
-        let lettersToPlace = '';
+        let word = '';
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'A';
-        game.board.grid[beginPos + 0][0].letterObject.char = finalBoardRowChars[0];
-        game.board.grid[beginPos + 1][0].letterObject.char = finalBoardRowChars[1];
-        game.board.grid[beginPos + 2][0].letterObject.char = finalBoardRowChars[2];
+        game.board.grid[0][beginPos + 0].letterObject.char = finalBoardRowChars[0];
+        game.board.grid[0][beginPos + 1].letterObject.char = finalBoardRowChars[1];
+        game.board.grid[0][beginPos + 2].letterObject.char = finalBoardRowChars[2];
         for (let i = 3; i < finalBoardRowChars.length; i++) {
-            // currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardRowChars[i];
-            lettersToPlace += finalBoardRowChars.charAt(i);
+            currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardRowChars[i];
+            word += finalBoardRowChars.charAt(i);
         }
 
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: beginPos, y: 0 };
-        const action = new PlaceLetter(currentPlayer, lettersToPlace, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement);
 
         expect(service.validateAction(action)).not.toBeTruthy();
 
-        expect(game.board.grid[beginPos + 3][0].letterObject.char).toBe(' ');
+        expect(game.board.grid[0][beginPos + 3].letterObject.char).toBe(' ');
     });
     /// ////////////////// ///
 });

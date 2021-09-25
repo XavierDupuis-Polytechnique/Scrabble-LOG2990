@@ -1,8 +1,10 @@
+import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { Board } from '@app/GameLogic/game/board';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
-import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { BoardService } from '@app/services/board.service';
+import { DictionaryService } from '../dictionary.service';
 
 const BOARD_MIN_POSITION_X = 0;
 const BOARD_MIN_POSITION_Y = 0;
@@ -11,128 +13,98 @@ const BOARD_MAX_POSITION_Y = 15;
 
 export class WordSearcher {
     listOfValidWord: Tile[][] = [];
-    neighbours: [number, number][] = [];
-    grid: Tile[][];
-    placementIsValid: boolean = true;
-
-    constructor(board: Board, private dictionaryService: DictionaryService) {
-        this.grid = board.grid;
+    letterCreator: LetterCreator;
+    isValid: boolean = false;
+    constructor(private boardService: BoardService, private dictionaryService: DictionaryService, letterCreator: LetterCreator) {
+        this.letterCreator = letterCreator;
     }
 
-    validatePlacement(action: PlaceLetter): boolean {
-        this.searchAdjacentWords(action);
-        return this.placementIsValid;
+    get grid() {
+        return this.boardService.board.grid;
     }
 
-    get listOfWords() {
-        if (this.placementIsValid) {
-            return this.listOfValidWord;
-        } else {
-            throw Error('Can"t get the neighbours because placement is invalid');
+    getListOfValidWord(): Tile[][] {
+        return this.listOfValidWord;
+    }
+
+    validateWords(action: PlaceLetter): boolean {
+        console.log("ACTION:", action);
+
+        if (this.dictionaryService.isWordInDict(action.word)) {
+            const lettersToPlace = this.findCoordOfLettersToPLace(action);
+            for (const letter of lettersToPlace) {
+                const letterPos = { x: letter.x, y: letter.y };
+                this.goToBeginningOfWord(action, letter);
+                const word = this.goToEndOfWord(action, letter, letterPos);
+                this.isValid = this.addWord(word);
+            }
+            return this.isValid;
+        }
+        return false;
+    }
+
+    goToBeginningOfWord(action: PlaceLetter, pos: Vec2): void {
+        const currentPos: Vec2 = { x: pos.x, y: pos.y };
+        if (action.placement.direction === Direction.Horizontal) {
+            while (this.tileIsOccupied(pos.x, pos.y) || this.isLetterPosition(pos, currentPos)) {
+                pos.y -= 1;
+            }
+            pos.y += 1;
+        }
+        else {
+            while (this.tileIsOccupied(pos.x, pos.y) || this.isLetterPosition(pos, currentPos)) {
+                pos.x -= 1;
+            }
+            pos.x += 1;
         }
     }
 
-    searchAdjacentWords(action: PlaceLetter) {
-        const startX = action.placement.x;
-        const startY = action.placement.y;
-        const direction = action.placement.direction;
-        let word: Tile[];
-        if (direction === Direction.Horizontal) {
-            word = this.getWordHorizontal(startX, startY);
-            this.addWord(word);
-
-            const neighbourSet = new Set(this.neighbours);
-            for (const neighbour of neighbourSet) {
-                word = this.getWordVertical(neighbour[0], neighbour[1]);
-                this.addWord(word);
-            }
-        } else {
-            word = this.getWordVertical(startX, startY);
-            this.addWord(word);
-            const neighbourSet = new Set(this.neighbours);
-            for (const neighbour of neighbourSet) {
-                word = this.getWordHorizontal(neighbour[0], neighbour[1]);
-                this.addWord(word);
-            }
-        }
-    }
-
-    getWordVertical(x: number, y: number) {
-        const word: Tile[] = [];
-        let currentTile = this.grid[y][x];
-        while (this.tileIsOccupied(x, y)) {
-            y -= 1;
-            if (this.isInsideBoard(x, y)) {
-                currentTile = this.grid[y][x];
-            }
-        }
-
-        y += 1;
-        const firstLetter = this.grid[y][x];
-        currentTile = firstLetter;
-        while (this.tileIsOccupied(x, y)) {
-            word.push(currentTile);
-
-            if (this.isInsideBoard(x - 1, y)) {
-                if (this.grid[y][x - 1].letterObject.char !== ' ') {
-                    this.neighbours.push([x - 1, y]);
+    goToEndOfWord(action: PlaceLetter, pos: Vec2, letterPos: Vec2): Tile[] {
+        const currentPos = { x: letterPos.x, y: letterPos.y };
+        let word: Tile[] = [];
+        if (action.placement.direction === Direction.Horizontal) {
+            while (this.tileIsOccupied(pos.x, pos.y) || this.isLetterPosition(pos, currentPos)) {
+                if (this.tileIsOccupied(pos.x, pos.y)) {
+                    word.push(this.grid[pos.y][pos.x])
                 }
-            } else if (this.isInsideBoard(x + 1, y)) {
-                if (this.grid[y][x + 1].letterObject.char !== ' ') {
-                    this.neighbours.push([x + 1, y]);
+                else {
+                    word.push(this.createTile(action.word[pos.x - action.placement.x], pos));
                 }
+                pos.y += 1;
             }
-            y += 1;
-            if (this.isInsideBoard(x, y)) {
-                currentTile = this.grid[y][x];
+            pos.y -= 1;
+        }
+        else {
+            while (this.tileIsOccupied(pos.x, pos.y) || this.isLetterPosition(pos, currentPos)) {
+                if (this.tileIsOccupied(pos.x, pos.y)) {
+                    word.push(this.grid[pos.y][pos.x]);
+                } else {
+                    word.push(this.createTile(action.word[pos.y - action.placement.y], pos));
+                }
+                pos.x += 1;
             }
+            pos.x -= 1;
         }
         return word;
     }
 
-    getWordHorizontal(x: number, y: number) {
-        const word: Tile[] = [];
-        let currentTile = this.grid[y][x];
-        while (this.tileIsOccupied(x, y)) {
-            x -= 1;
-            if (this.isInsideBoard(x, y)) {
-                currentTile = this.grid[y][x];
-            }
-        }
-        x += 1;
-        const firstLetter = this.grid[y][x];
-        currentTile = firstLetter;
-        while (this.tileIsOccupied(x, y)) {
-            word.push(currentTile);
-
-            if (this.isInsideBoard(x, y - 1)) {
-                if (this.grid[y - 1][x].letterObject.char !== ' ') {
-                    this.neighbours.push([x, y - 1]);
-                }
-            } else if (this.isInsideBoard(x, y + 1)) {
-                if (this.grid[y + 1][x].letterObject.char !== ' ' && x >= 0 && y >= 0) {
-                    this.neighbours.push([x, y + 1]);
-                }
-            }
-            x += 1;
-            if (this.isInsideBoard(x, y)) {
-                currentTile = this.grid[y][x];
-            }
-        }
-        return word;
+    private createTile(char: string, pos: Vec2): Tile {
+        let tile = new Tile(this.grid[pos.y][pos.x].letterMultiplicator, this.grid[pos.y][pos.x].wordMultiplicator);
+        tile.letterObject = this.letterCreator.createLetter(char);
+        return tile;
     }
 
-    addWord(word: Tile[]) {
+    addWord(word: Tile[]): boolean {
         const wordString = this.tileToString(word).toLowerCase();
-        if (wordString === '') {
-            throw Error('No word was found');
+        if (word.length >= 2) {
+            if (this.dictionaryService.isWordInDict(wordString)) {
+                this.listOfValidWord.push(word);
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (this.dictionaryService.isWordInDict(wordString)) {
-            this.listOfValidWord.push(word);
-        } else {
-            this.placementIsValid = false;
-            throw Error('The word ' + wordString + ' is not in the current dictionary. Placement is invalid');
-        }
+        return false;
     }
 
     tileToString(word: Tile[]): string {
@@ -141,6 +113,10 @@ export class WordSearcher {
             wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
         });
         return wordTemp;
+    }
+
+    isLetterPosition(currentPosition: Vec2, letterPosition: Vec2) {
+        return currentPosition.x === letterPosition.x && currentPosition.y === letterPosition.y;
     }
 
     isInsideBoard(x: number, y: number): boolean {
@@ -158,5 +134,22 @@ export class WordSearcher {
             return false;
         }
         return true;
+    }
+
+    findCoordOfLettersToPLace(action: PlaceLetter): Vec2[] {
+        let listOfCoord: Vec2[] = [];
+        let coord: Vec2 = { x: action.placement.x, y: action.placement.y };
+
+        for (let i = 0; i < action.word.length; i++) {
+            if (!this.tileIsOccupied(coord.x, coord.y)) {
+                listOfCoord.push({ x: coord.x, y: coord.y });
+            }
+            if (action.placement.direction === Direction.Horizontal) {
+                coord.x++;
+            } else {
+                coord.y++;
+            }
+        }
+        return listOfCoord;
     }
 }

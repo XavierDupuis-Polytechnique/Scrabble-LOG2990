@@ -115,4 +115,11 @@ export class Board {
             this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
         });
     }
+    desactivateLetterMultiplicator(x: number, y: number) {
+        this.grid[y][x].letterMultiplicator = 1;
+    }
+
+    desactivateWordMultiplicator(x: number, y: number) {
+        this.grid[y][x].wordMultiplicator = 1;
+    }
 }
