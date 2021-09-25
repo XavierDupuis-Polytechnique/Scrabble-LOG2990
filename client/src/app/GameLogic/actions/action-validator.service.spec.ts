@@ -132,11 +132,6 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate a valid ExchangeLetter because a player 7 letters can be exchanged', () => {
-        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
-        expect(service.validateAction(action)).toBeTruthy();
-    });
-
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
@@ -284,44 +279,32 @@ describe('ActionValidatorService', () => {
 
     it('should validate placing a "word" with already present letters on the board (horizontal)', () => {
         const horizontalWord = 'ABCDEFGHIJK';
-        for (let i = 0; i < horizontalWord.length; i++) {
-            if (i % 2) {
-                currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = horizontalWord.charAt(i);
+        for (let x = 0; x < horizontalWord.length; x++) {
+            if (x % 2) {
+                currentPlayer.letterRack[x % LetterBag.playerLetterCount].char = horizontalWord.charAt(x);
             } else {
-                game.board.grid[i][centerPosition].letterObject.char = horizontalWord.charAt(i);
+                game.board.grid[centerPosition][x].letterObject.char = horizontalWord.charAt(x);
             }
         }
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 0, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, horizontalWord, placement);
 
         expect(service.validateAction(action)).toBeTruthy();
-
-        // action.execute(game);
-
-        // for (let j = 0; j < finalBoardRowChars.length; j++) {
-        //     expect(game.board.grid[j][centerPosition].letterObject.char).toBe(finalBoardRowChars[j]);
-        // }
     });
 
     it('should validate placing a "word" with already present letters on the board (vertical)', () => {
         const verticalWord = 'ABCDEFGHIJK';
-        for (let i = 0; i < verticalWord.length; i++) {
-            if (i % 2) {
-                currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = verticalWord.charAt(i);
+        for (let y = 0; y < verticalWord.length; y++) {
+            if (y % 2) {
+                currentPlayer.letterRack[y % LetterBag.playerLetterCount].char = verticalWord.charAt(y);
             } else {
-                game.board.grid[i][centerPosition].letterObject.char = verticalWord.charAt(i);
+                game.board.grid[y][centerPosition].letterObject.char = verticalWord.charAt(y);
             }
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
         const action = new PlaceLetter(currentPlayer, verticalWord, placement);
 
         expect(service.validateAction(action)).toBeTruthy();
-
-        // action.execute(game);
-
-        // for (let j = 0; j < finalBoardRowChars.length; j++) {
-        //     expect(game.board.grid[centerPosition][j].letterObject.char).toBe(finalBoardRowChars[j]);
-        // }
     });
 
     it('should invalidate an invalid PlaceLetter if word overflow the board', () => {

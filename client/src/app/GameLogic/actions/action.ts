@@ -9,7 +9,7 @@ export abstract class Action {
     }
 
     execute(game: Game): void {
-        console.log('ACTION #', this.id, ' ', this, ' executed');
+        //console.log('ACTION #', this.id, ' ', this, ' executed');
         game.doAction(this);
         this.perform(game);
     }
