@@ -39,9 +39,8 @@ export class WordSearcher {
             if (this.hasNeighbour({ x: action.placement.x, y: action.placement.y })) {
                 const coordsOfLettersToPlace = this.findCoordOfLettersToPLace(action);
                 for (const coord of coordsOfLettersToPlace) {
-                    // const CoordOfLetter = { x: coord.x, y: coord.y };
                     const direction = action.placement.direction;
-                    const beginingPos = this.goToBeginningOfWord(direction as Direction, coord);
+                    const beginingPos = this.goToBeginningOfWord(direction, coord);
                     const word = this.goToEndOfWord(action, beginingPos, coord);
                     if (this.isValid(word)) {
                         listOfValidWord.push(word);
@@ -78,12 +77,12 @@ export class WordSearcher {
         return false;
     }
 
-    goToBeginningOfWord(direction: Direction, letterPos: Vec2): Vec2 {
+    goToBeginningOfWord(direction: string, letterPos: Vec2): Vec2 {
         const currentPos: Vec2 = { ...letterPos };
         let x = currentPos.x;
         let y = currentPos.y;
 
-        if (direction === Direction.Horizontal) {
+        if (direction as Direction === Direction.Horizontal) {
             while (this.tileIsOccupied(x, y) || this.isLetterPosition(currentPos, letterPos)) {
                 y -= 1;
             }
