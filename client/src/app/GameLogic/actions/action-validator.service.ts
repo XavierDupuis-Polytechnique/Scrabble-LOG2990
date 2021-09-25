@@ -11,7 +11,7 @@ import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BoardService } from '@app/services/board.service';
 
-// TODO: put throw error
+const JOKER = '*';
 @Injectable({
     providedIn: 'root',
 })
@@ -68,24 +68,24 @@ export class ActionValidatorService {
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
             if (nextPos >= NUM_TILES || y >= NUM_TILES) {
                 this.sendErrorMessage(
-                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + x,
+                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + (++x),
                 );
                 return false;
             }
 
             const currentTileChar = board.grid[y][x].letterObject.char.toLowerCase();
-            const wordCurrentChar = action.word.charAt(letterIndex).toLowerCase();
+            const wordCurrentChar = action.word.charAt(letterIndex);
 
             if (currentTileChar === ' ') {
                 lettersNeeded = lettersNeeded.concat(wordCurrentChar);
             } else {
-                if (wordCurrentChar !== currentTileChar) {
+                if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
                         wordCurrentChar +
                         '" ne peut être placé en ' +
                         String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                        x,
+                        ++x,
                     );
                     return false;
                 }
@@ -118,10 +118,15 @@ export class ActionValidatorService {
             return false;
         }
 
-        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
-            this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
+        if (!this.hasLettersOrJokersInRack(action.player.letterRack, lettersNeeded)) {
+            let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.'
+            if (this.hasAJoker(action.player.letterRack)) {
+                message = message.concat(' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.')
+            }
+            this.sendErrorMessage(message);
             return false;
         }
+
         this.sendSystemMessage(action.player.name + ' PLACE des lettres');
         return true;
     }
@@ -169,6 +174,41 @@ export class ActionValidatorService {
         return true;
     }
 
+    private hasLettersOrJokersInRack(rackLetters: Letter[], actionLetters: string): boolean {
+        const rackChars = rackLetters.map((value) => value.char);
+        const actionChars: string[] = actionLetters.split('');
+
+        const rackCharsOccurences = new Map<string, number>();
+        for (const char of rackChars) {
+            const lowerChar = char.toLowerCase();
+            let occurence = rackCharsOccurences.get(lowerChar);
+            if (occurence) {
+                occurence++;
+                rackCharsOccurences.set(lowerChar, occurence);
+            } else {
+                rackCharsOccurences.set(lowerChar, 1);
+            }
+        }
+
+        for (let char of actionChars) {
+            let occurence = rackCharsOccurences.get(char);
+            if (occurence === undefined || occurence === 0) {
+                if (char.toUpperCase() === char) {
+                    occurence = rackCharsOccurences.get(JOKER);
+                    char = JOKER
+                    if (occurence === undefined || occurence === 0) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            occurence--;
+            rackCharsOccurences.set(char, occurence);
+        }
+        return true;
+    }
+
     private hasLettersInRack(rackLetters: Letter[], actionLetters: string): boolean {
         const rackChars = rackLetters.map((value) => value.char);
         const actionChars: string[] = actionLetters.split('');
@@ -186,7 +226,7 @@ export class ActionValidatorService {
         }
 
         for (const char of actionChars) {
-            const lowerChar = char.toLowerCase();
+            let lowerChar = char.toLowerCase();
             let occurence = rackCharsOccurences.get(lowerChar);
             if (occurence === undefined || occurence === 0) {
                 return false;
@@ -195,6 +235,15 @@ export class ActionValidatorService {
             rackCharsOccurences.set(lowerChar, occurence);
         }
         return true;
+    }
+
+    private hasAJoker(letterRack: Letter[]): boolean {
+        for (let letter of letterRack) {
+            if (letter.char = JOKER) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private validatePassTurn(action: PassTurn) {

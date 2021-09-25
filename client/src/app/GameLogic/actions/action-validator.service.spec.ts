@@ -181,7 +181,7 @@ describe('ActionValidatorService', () => {
     });
 
     it('should invalidate an invalid ExchangeLetter because a player cannot exchange letters not in its letterRack', () => {
-        const lettersToExchange = [{ char: 'NOT_A_LETTER', value: 666 }];
+        const lettersToExchange = [{ char: '!NOT_A_LETTER', value: 666 }];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
@@ -215,6 +215,59 @@ describe('ActionValidatorService', () => {
         ];
         const word = 'abacada';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement);
+        expect(service.validateAction(action)).not.toBeTruthy();
+    });
+
+    it('should validate a valid PlaceLetter because the player has some of the missing letters and a joker', () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        currentPlayer.letterRack = [
+            { char: 'a', value: 1 },
+            { char: 'b', value: 1 },
+            { char: 'c', value: 1 },
+            { char: 'a', value: 1 },
+            { char: 'd', value: 1 },
+            { char: '*', value: 0 },
+        ];
+        const word = 'abacAda';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement);
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
+    it('should validate a valid PlaceLetter because the player has jokers ', () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        currentPlayer.letterRack = []
+        for (let i = 0; i < LetterBag.playerLetterCount; i++) {
+            currentPlayer.letterRack.push({ char: '*', value: 0 });
+        }
+        const word = 'aBACADA';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement);
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
+    it('should invalidate an invalid PlaceLetter because the player has jokers but uses them incorrectly', () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        currentPlayer.letterRack = []
+        for (let i = 0; i < LetterBag.playerLetterCount; i++) {
+            currentPlayer.letterRack.push({ char: '*', value: 0 });
+        }
+        const word = 'abacada';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement);
+        expect(service.validateAction(action)).not.toBeTruthy();
+    });
+
+    it("should invalidate an invalid PlaceLetter because the player doesn't have enough jokers", () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        currentPlayer.letterRack = []
+        for (let i = 0; i < LetterBag.playerLetterCount - 1; i++) {
+            currentPlayer.letterRack.push({ char: '*', value: 0 });
+        }
+        currentPlayer.letterRack.push({ char: 'z', value: 0 });
+        const word = 'AAAAAAAA';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition + 1, y: centerPosition - 1 };
         const action = new PlaceLetter(currentPlayer, word, placement);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
