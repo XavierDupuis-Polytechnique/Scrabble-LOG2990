@@ -21,7 +21,7 @@ class MockDictionaryService extends DictionaryService {
     mockDictionary: Dictionary = {
         title: 'dictionnaire',
         description: 'mots',
-        words: ['bateau', 'butte', 'allo', 'ou', 'oui', 'nil', 'ni'],
+        words: ['bateau', 'butte', 'allo', 'ou', 'oui', 'nil', 'ni', 'on'],
     };
 
     isWordInDict(word: string): boolean {
@@ -114,6 +114,7 @@ describe('WordSearcher', () => {
     //     expect(wordSearcher.listOfValidWord).toContain(word);
     // });
 
+
     it('should find coord of tile ', () => {
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
@@ -142,6 +143,19 @@ describe('WordSearcher', () => {
 
         wordSearcher.goToEndOfWord(action, position, letterPosition);
         expect(position).toEqual({ x: 5, y: 2 });
+    });
+    it('should find 0 neighbour if first word ', () => {
+        const placement: PlacementSetting = { x: 4, y: 0, direction: Direction.Horizontal };
+        const hasNeighbour = wordSearcher.hasNeighbour({ x: placement.x, y: placement.y });
+        expect(hasNeighbour).toBe(false);
+
+    });
+    it('should validate word if first word ', () => {
+        const placement: PlacementSetting = { x: 4, y: 0, direction: Direction.Horizontal };
+        const action = new PlaceLetter(player, 'on', placement);
+        const wordIsValid = wordSearcher.validateWords(action);
+        expect(wordIsValid).toBe(true);
+
     });
 
     it('should find one neighbor', () => {

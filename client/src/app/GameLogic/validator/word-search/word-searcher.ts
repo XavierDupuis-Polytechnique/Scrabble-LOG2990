@@ -14,7 +14,7 @@ const BOARD_MAX_POSITION_Y = 15;
 export class WordSearcher {
     listOfValidWord: Tile[][] = [];
     letterCreator: LetterCreator;
-    isValid: boolean = false;
+
     constructor(private boardService: BoardService, private dictionaryService: DictionaryService, letterCreator: LetterCreator) {
         this.letterCreator = letterCreator;
     }
@@ -31,14 +31,45 @@ export class WordSearcher {
         console.log("ACTION:", action);
 
         if (this.dictionaryService.isWordInDict(action.word)) {
-            const lettersToPlace = this.findCoordOfLettersToPLace(action);
-            for (const letter of lettersToPlace) {
-                const letterPos = { x: letter.x, y: letter.y };
-                this.goToBeginningOfWord(action, letter);
-                const word = this.goToEndOfWord(action, letter, letterPos);
-                this.isValid = this.addWord(word);
+            if (this.hasNeighbour({ x: action.placement.x, y: action.placement.y })) {
+                const lettersToPlace = this.findCoordOfLettersToPLace(action);
+                for (const letter of lettersToPlace) {
+                    const letterPos = { x: letter.x, y: letter.y };
+                    this.goToBeginningOfWord(action, letter);
+                    const word = this.goToEndOfWord(action, letter, letterPos);
+                    const isValid = this.addWord(word);
+                    if (!isValid) {
+                        return false;
+                    }
+                }
             }
-            return this.isValid;
+            return true;
+        }
+        return false;
+    }
+
+    hasNeighbour(coord: Vec2): boolean {
+        const x = coord.x;
+        const y = coord.y;
+        if (x + 1 < BOARD_MAX_POSITION_X) {
+            if (this.boardService.board.grid[x + 1][y].letterObject.char !== ' ') {
+                return true;
+            }
+        }
+        if (x - 1 >= 0) {
+            if (this.boardService.board.grid[x - 1][y].letterObject.char !== ' ') {
+                return true;
+            }
+        }
+        if (y + 1 < BOARD_MAX_POSITION_Y) {
+            if (this.boardService.board.grid[x][y + 1].letterObject.char !== ' ') {
+                return true;
+            }
+        }
+        if (y - 1 >= 0) {
+            if (this.boardService.board.grid[x][y - 1].letterObject.char !== ' ') {
+                return true;
+            }
         }
         return false;
     }
@@ -137,17 +168,25 @@ export class WordSearcher {
     }
 
     findCoordOfLettersToPLace(action: PlaceLetter): Vec2[] {
-        let listOfCoord: Vec2[] = [];
-        let coord: Vec2 = { x: action.placement.x, y: action.placement.y };
-
-        for (let i = 0; i < action.word.length; i++) {
-            if (!this.tileIsOccupied(coord.x, coord.y)) {
-                listOfCoord.push({ x: coord.x, y: coord.y });
+        const listOfCoord: Vec2[] = [];
+        const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
+        const direction = action.placement.direction;
+        const word = action.word;
+        if (direction === Direction.Horizontal) {
+            const y = startCoord.y;
+            const wordEnd = startCoord.x + word.length;
+            for (let x = startCoord.x; x < wordEnd; x++) {
+                if (!this.tileIsOccupied(x, y)) {
+                    listOfCoord.push({ x, y });
+                }
             }
-            if (action.placement.direction === Direction.Horizontal) {
-                coord.x++;
-            } else {
-                coord.y++;
+        } else {
+            const x = startCoord.x;
+            const wordEnd = startCoord.y + word.length;
+            for (let y = startCoord.y; y < wordEnd; y++) {
+                if (!this.tileIsOccupied(x, y)) {
+                    listOfCoord.push({ x, y });
+                }
             }
         }
         return listOfCoord;
