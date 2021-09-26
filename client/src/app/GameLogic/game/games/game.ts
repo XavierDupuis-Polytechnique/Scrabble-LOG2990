@@ -100,6 +100,7 @@ export class Game {
         //console.log('--- Turn No. : ', this.turnNumber, ' ---');
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
+        activePlayer.setActive();
         // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);

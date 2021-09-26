@@ -1,5 +1,3 @@
-import { AsyncPipe } from '@angular/common';
-import { async } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
@@ -9,7 +7,8 @@ import { Tile } from '@app/GameLogic/game/tile';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
 import { BoardService } from '@app/services/board.service';
-import { BehaviorSubject, timer } from 'rxjs';
+import { BehaviorSubject, Subscription, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord, VERTICAL } from './valid-word';
 
@@ -22,6 +21,7 @@ export abstract class Bot extends Player {
     validWordList: ValidWord[];
     wordValidator: WordSearcher;
     game: Game;
+
     private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
     private chooseAction(action: Action) {
         this.chosenAction$.next(action);
@@ -29,18 +29,29 @@ export abstract class Bot extends Player {
     }
 
     // TODO: find better name
-    private pickAction() {
+    private startTimerAction() {
+        const timerPass = timer(TIME_BEFORE_PASS);
+        timerPass.subscribe(() => {
+            this.play(new PassTurn(this));
+        });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
             if (action !== undefined) {
                 this.play(action);
+            } else {
+                this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+                    if (chosenAction !== undefined) {
+                        this.play(chosenAction);
+                    }
+                });
             }
-        });
-        timer(TIME_BEFORE_PASS).subscribe(() => {
-            this.play(new PassTurn(this));
         });
     }
 
+    setActive() {
+        this.startTimerAction();
+        // TODO: Start computation for picking actions
+    }
 
     // Bot constructor takes opponent name as argument to prevent same name
     constructor(
