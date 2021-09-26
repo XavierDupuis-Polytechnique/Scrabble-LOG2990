@@ -67,6 +67,8 @@ export class WordSearcher {
                     const word = this.goToEndOfWord(action, beginingPos, coord);
                     if (this.isValid(word.letters)) {
                         listOfValidWord.push(word);
+                    } else {
+                        return [];
                     }
                 }
             }
