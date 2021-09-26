@@ -96,8 +96,8 @@ export class Game {
 
     private startTurn() {
         this.turnNumber++;
-        //console.log(' ');
-        //console.log('--- Turn No. : ', this.turnNumber, ' ---');
+        // console.log(' ');
+        // console.log('--- Turn No. : ', this.turnNumber, ' ---');
         // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
         activePlayer.setActive();
@@ -111,14 +111,16 @@ export class Game {
     private endOfTurn(action: Action) {
         this.timer.stop();
 
+        action.end$.subscribe(() => {
+            if (this.isEndOfGame()) {
+                this.onEndOfGame();
+                return;
+            }
+            this.nextPlayer();
+            this.startTurn();
+        });
+
         action.execute(this);
-        // console.log('end of turn');
-        if (this.isEndOfGame()) {
-            this.onEndOfGame();
-            return;
-        }
-        this.nextPlayer();
-        this.startTurn();
     }
 
     private displayLettersLeft() {

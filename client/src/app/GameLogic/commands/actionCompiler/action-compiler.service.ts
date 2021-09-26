@@ -8,6 +8,8 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +17,7 @@ import { User } from '@app/GameLogic/player/user';
 export class ActionCompilerService {
     private letterFactory: LetterCreator = new LetterCreator();
 
-    constructor(private gameInfo: GameInfoService) {}
+    constructor(private gameInfo: GameInfoService, private pointCalculator: PointCalculatorService, private wordSearcher: WordSearcher) {}
 
     // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
@@ -61,7 +63,7 @@ export class ActionCompilerService {
         const placementArguments = args.slice(0, args.length - 1);
         const placementSettings = this.createPlacementSettings(placementArguments);
         const word = args[args.length - 1];
-        return new PlaceLetter(user, word, placementSettings);
+        return new PlaceLetter(user, word, placementSettings, this.pointCalculator, this.wordSearcher);
     }
 
     private createPlacementSettings(placementArgs: string[]): PlacementSetting {
