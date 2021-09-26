@@ -9,15 +9,20 @@ import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { Word } from '@app/GameLogic/validator/word-search/word';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 
 class MockWordSearcher extends WordSearcher {
     validity = true;
     // eslint-disable-next-line no-unused-vars
-    listOfValidWord(action: PlaceLetter): Tile[][] {
+    listOfValidWord(action: PlaceLetter): Word[] {
         if (this.validity) {
-            return [[new Tile(), new Tile()]];
+            const word: Word = {
+                letters: [new Tile(), new Tile()],
+                index: [0, 1],
+            };
+            return [word];
         }
         return [];
     }
@@ -57,7 +62,7 @@ describe('PlaceLetter', () => {
             ],
         });
         const boardService = new BoardService();
-        pointCalculatorService = TestBed.inject(PointCalculatorService);
+        pointCalculatorService = TestBed.inject(MockPointCalculator);
         wordSearcher = TestBed.inject(WordSearcher);
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService);
