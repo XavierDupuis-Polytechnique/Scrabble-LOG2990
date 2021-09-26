@@ -5,6 +5,7 @@ import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
 import { Player } from '@app/GameLogic/player/player';
+import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/GameLogic/point-calculator/calculation-estimation';
 import { BoardService } from '@app/services/board.service';
 
 const MAX_LETTER_IN_RACK = 7;
@@ -22,7 +23,7 @@ export class PointCalculatorService {
     placeLetterCalculation(action: PlaceLetter, wordList: Tile[][]): number {
         let totalPointsOfTurn = 0;
         wordList.forEach((word) => {
-            totalPointsOfTurn += this.calculatePointsOfWord(action, word);
+            totalPointsOfTurn += this.calculatePointsOfWord(word);
         });
         this.desactivateMultiplicators(action);
 
@@ -31,6 +32,19 @@ export class PointCalculatorService {
         }
         action.player.points += totalPointsOfTurn;
         return totalPointsOfTurn;
+    }
+
+    testPlaceLetterCalculation(numberOfLettersToPlace: number, wordList: Tile[][]): PlaceLetterPointsEstimation {
+        const wordsPoints = this.calculatePointsForEachWord(wordList);
+        let totalPoints = 0;
+        wordsPoints.forEach((wordPoint) => {
+            totalPoints += wordPoint.points;
+        });
+        const isBingo = numberOfLettersToPlace >= MAX_LETTER_IN_RACK;
+        if (isBingo) {
+            totalPoints += BONUS;
+        }
+        return { wordsPoints, totalPoints, isBingo };
     }
 
     endOfGamePointdeduction(game: Game): void {
@@ -49,22 +63,9 @@ export class PointCalculatorService {
         }
     }
 
-    testPlaceLetterCalculation(action: PlaceLetter, wordList: Tile[][]) {
-        let totalPointsOfTurn = 0;
-        wordList.forEach((word) => {
-            totalPointsOfTurn += this.calculatePointsOfWord(action, word);
-        });
-        if (action.player.isLetterRackEmpty && action.lettersToRemoveInRack.length >= MAX_LETTER_IN_RACK) {
-            totalPointsOfTurn += BONUS;
-        }
-        action.player.points += totalPointsOfTurn;
-        return totalPointsOfTurn;
-    }
-
-    calculatePointsOfWord(action: PlaceLetter, word: Tile[]): number {
+    calculatePointsOfWord(word: Tile[]): number {
         let sumOfWord = 0;
         let totalWordMultiplicator = 1;
-
         const lettersInWord = new Set(word);
         lettersInWord.forEach((letter) => {
             sumOfWord += letter.letterObject.value * letter.letterMultiplicator;
@@ -72,6 +73,15 @@ export class PointCalculatorService {
         });
         sumOfWord *= totalWordMultiplicator;
         return sumOfWord;
+    }
+
+    calculatePointsForEachWord(wordList: Tile[][]): WordPointsEstimation[] {
+        const wordPoints: WordPointsEstimation[] = wordList.map((wordTile) => {
+            const word = this.tileToString(wordTile);
+            const points = this.calculatePointsOfWord(wordTile);
+            return { word, points };
+        });
+        return wordPoints;
     }
 
     calculatePointsOfRack(player: Player): number {

@@ -38,7 +38,7 @@ export class WordSearcher {
             const wordInTile = this.stringToTile(action.word, action.placement);
             listOfValidWord.push(wordInTile);
 
-            const coordsOfLettersToPlace = this.findCoordOfLettersToPLace(action);
+            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(action);
             for (const coord of coordsOfLettersToPlace) {
                 const direction = action.placement.direction as Direction;
                 if (this.hasNeighbour(coord, direction)) {
@@ -137,7 +137,7 @@ export class WordSearcher {
         return char !== ' ';
     }
 
-    findCoordOfLettersToPLace(action: PlaceLetter): Vec2[] {
+    findCoordOfLettersToPlace(action: PlaceLetter): Vec2[] {
         const listOfCoord: Vec2[] = [];
         const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
         const direction = action.placement.direction;

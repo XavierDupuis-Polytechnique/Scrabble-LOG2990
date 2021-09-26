@@ -86,7 +86,7 @@ describe('WordSearcher', () => {
     it('should find coord of tile ', () => {
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
-        const coord = wordSearcher.findCoordOfLettersToPLace(action);
+        const coord = wordSearcher.findCoordOfLettersToPlace(action);
 
         expect(coord[0]).toEqual({ x: 4, y: 1 });
         expect(coord[1]).toEqual({ x: 5, y: 1 });
