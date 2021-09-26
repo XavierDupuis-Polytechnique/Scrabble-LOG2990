@@ -88,8 +88,9 @@ export abstract class Bot extends Player {
                         placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
                     }
                     const fakeAction = new PlaceLetter(this, word.word, placement);
-                    if (this.wordValidator.validateWords(fakeAction)) {
-                        // word.adjacentWords = { ...this.wordValidator.listOfValidWord };
+                    const validWords = this.wordValidator.listOfValidWord(fakeAction);
+                    const wordIsValid = validWords.length !== 0;
+                    if (wordIsValid) {
                         // TODO: update word value
                         // word.value = this.pointCalculatorService.testPlaceLetterPointsCalculation(fakeAction);
                     }
