@@ -13,13 +13,14 @@ const BONUS = 50;
     providedIn: 'root',
 })
 export class PointCalculatorService {
-    // ON feed la liste des mots ecrits
-    placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][], boardService: BoardService): number {
+
+    constructor(private boardService: BoardService) {}
+    placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][]): number {
         let totalPointsOfTurn = 0;
         wordList.forEach((word) => {
             totalPointsOfTurn += this.calculatePointsOfWord(action, word);
         });
-        this.desactivateMultiplicators(action, boardService);
+        this.desactivateMultiplicators(action);
 
         if (action.affectedCoords.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
@@ -102,11 +103,11 @@ export class PointCalculatorService {
     //     return wordInTile;
     // }
 
-    desactivateMultiplicators(action: PlaceLetter, boardService: BoardService): void {
+    desactivateMultiplicators(action: PlaceLetter): void {
         const coord: Vec2 = { x: action.placement.x, y: action.placement.y };
         for (let i = 0; i < action.word.length; i++) {
-            boardService.board.grid[coord.y][coord.x].letterMultiplicator = 1;
-            boardService.board.grid[coord.y][coord.x].wordMultiplicator = 1;
+            this.boardService.board.grid[coord.y][coord.x].letterMultiplicator = 1;
+            this.boardService.board.grid[coord.y][coord.x].wordMultiplicator = 1;
 
             if (action.placement.direction === Direction.Horizontal) {
                 coord.x++;
