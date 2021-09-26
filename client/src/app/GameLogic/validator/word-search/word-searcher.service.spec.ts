@@ -49,14 +49,9 @@ class MockBoard extends Board {
         this.grid[0][4].letterObject = { char: 'O', value: 1 };
         this.grid[0][5].letterObject = { char: 'N', value: 1 };
 
-
-
         this.grid[1][3].letterObject = { char: 'O', value: 1 };
 
         this.grid[2][3].letterObject = { char: 'N', value: 1 };
-
-
-
 
         // this.grid[4][1].letterObject = { char: 'E', value: 1 };
         // this.grid[4][2].letterObject = { char: 'L', value: 1 };
@@ -71,11 +66,11 @@ describe('WordSearcher', () => {
     let dictionaryService: MockDictionaryService;
     let boardService: BoardService;
 
-    let player: Player = new User('Max');
+    const player: Player = new User('Max');
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [MockDictionaryService, BoardService]
+            providers: [MockDictionaryService, BoardService],
         });
         boardService = TestBed.inject(BoardService);
         dictionaryService = TestBed.inject(MockDictionaryService);
@@ -91,14 +86,13 @@ describe('WordSearcher', () => {
     it('should find coord of tile ', () => {
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
-        const coord = wordSearcher.findCoordOfLettersToPLace(action);
+        const coord = wordSearcher.findCoordOfLettersToPlace(action);
 
         expect(coord[0]).toEqual({ x: 4, y: 1 });
         expect(coord[1]).toEqual({ x: 5, y: 1 });
     });
 
     it('should go to beginning of word', () => {
-
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
         const position: Vec2 = { x: 4, y: 1 };
@@ -114,15 +108,14 @@ describe('WordSearcher', () => {
         const action = new PlaceLetter(player, 'oui', placement);
         const beginingPosition: Vec2 = { x: 5, y: 0 };
         const letterPosition: Vec2 = { x: 5, y: 1 };
-        const endLetter = wordSearcher.goToEndOfWord(action, beginingPosition, letterPosition);
-        expect(wordSearcher.tileToString(endLetter)).toEqual('NIL');
+        const word = wordSearcher.goToEndOfWord(action, beginingPosition, letterPosition);
+        expect(wordSearcher.tileToString(word.letters)).toEqual('NIL');
     });
 
     it('should find 0 neighbour if first word ', () => {
         const placement: PlacementSetting = { x: 4, y: 0, direction: Direction.Horizontal };
         const hasNeighbour = wordSearcher.hasNeighbour({ x: placement.x, y: placement.y }, placement.direction as Direction);
         expect(hasNeighbour).toBe(false);
-
     });
 
     it('should validate word if first word ', () => {
@@ -130,7 +123,6 @@ describe('WordSearcher', () => {
         const action = new PlaceLetter(player, 'on', placement);
         const wordIsValid = wordSearcher.validateWords(action);
         expect(wordIsValid).toBe(true);
-
     });
 
     it('should find all valid words', () => {
@@ -138,11 +130,24 @@ describe('WordSearcher', () => {
 
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
-        const validWord = wordSearcher.listOfValidWord(action);
-        expect(wordSearcher.tileToString(validWord[0])).toEqual('OUI');
-        expect(wordSearcher.tileToString(validWord[1])).toEqual('OU');
-        expect(wordSearcher.tileToString(validWord[2])).toEqual('NI');
+        const validWords = wordSearcher.listOfValidWord(action);
 
+        expect(wordSearcher.tileToString(validWords[0].letters)).toEqual('OUI');
+        expect(wordSearcher.tileToString(validWords[1].letters)).toEqual('OU');
+        expect(wordSearcher.tileToString(validWords[2].letters)).toEqual('NI');
+    });
+
+    it('should find index of letters to place for all valid words', () => {
+        const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
+        const action = new PlaceLetter(player, 'oui', placement);
+        const validWords = wordSearcher.listOfValidWord(action);
+        const indexFirstWord = validWords[0].index;
+        const indexSecondWord = validWords[1].index;
+        const indexThirdWord = validWords[2].index;
+        expect(indexFirstWord[0]).toBe(1);
+        expect(indexFirstWord[1]).toBe(2);
+        expect(indexSecondWord[0]).toBe(1);
+        expect(indexThirdWord[0]).toEqual(1);
     });
     it('should find all neighbors', () => {
         // On ajoute le mot oui a la poisition (3,1) on a u(1,3);
@@ -150,8 +155,7 @@ describe('WordSearcher', () => {
         const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
         const action = new PlaceLetter(player, 'bateau', placement);
         const validWord = wordSearcher.listOfValidWord(action);
-        console.log('VALID:', validWord);
-        expect(wordSearcher.tileToString(validWord[0])).toEqual('BATEAU');
-        expect(wordSearcher.tileToString(validWord[1])).toEqual('BON');
+        expect(wordSearcher.tileToString(validWord[0].letters)).toEqual('BATEAU');
+        expect(wordSearcher.tileToString(validWord[1].letters)).toEqual('BON');
     });
 });
