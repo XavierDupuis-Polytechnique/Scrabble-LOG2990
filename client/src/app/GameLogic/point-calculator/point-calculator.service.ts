@@ -13,9 +13,13 @@ const BONUS = 50;
     providedIn: 'root',
 })
 export class PointCalculatorService {
-
     constructor(private boardService: BoardService) {}
-    placeLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][]): number {
+
+    get grid() {
+        return this.boardService.board.grid;
+    }
+
+    placeLetterCalculation(action: PlaceLetter, wordList: Tile[][]): number {
         let totalPointsOfTurn = 0;
         wordList.forEach((word) => {
             totalPointsOfTurn += this.calculatePointsOfWord(action, word);
@@ -44,7 +48,8 @@ export class PointCalculatorService {
             }
         }
     }
-    testPlaceLetterPointsCalculation(action: PlaceLetter, wordList: Tile[][], boardService: BoardService) {
+
+    testPlaceLetterCalculation(action: PlaceLetter, wordList: Tile[][]) {
         let totalPointsOfTurn = 0;
         wordList.forEach((word) => {
             totalPointsOfTurn += this.calculatePointsOfWord(action, word);
@@ -55,6 +60,7 @@ export class PointCalculatorService {
         action.player.points += totalPointsOfTurn;
         return totalPointsOfTurn;
     }
+
     calculatePointsOfWord(action: PlaceLetter, word: Tile[]): number {
         let sumOfWord = 0;
         let totalWordMultiplicator = 1;
@@ -70,11 +76,32 @@ export class PointCalculatorService {
 
     calculatePointsOfRack(player: Player): number {
         let sumOfRack = 0;
-        const letterRack = new Set(player.letterRack);
+        const letterRack = player.letterRack;
         for (const letter of letterRack) {
             sumOfRack += letter.value;
         }
         return sumOfRack;
+    }
+
+    desactivateMultiplicators(action: PlaceLetter): void {
+        const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
+        const direction = action.placement.direction;
+        const word = action.word;
+        if (direction === Direction.Horizontal) {
+            const y = startCoord.y;
+            const wordEnd = startCoord.x + word.length;
+            for (let x = startCoord.x; x < wordEnd; x++) {
+                this.grid[y][x].letterMultiplicator = 1;
+                this.grid[y][x].wordMultiplicator = 1;
+            }
+        } else {
+            const x = startCoord.x;
+            const wordEnd = startCoord.y + word.length;
+            for (let y = startCoord.y; y < wordEnd; y++) {
+                this.grid[y][x].letterMultiplicator = 1;
+                this.grid[y][x].wordMultiplicator = 1;
+            }
+        }
     }
 
     tileToString(word: Tile[]): string {
@@ -83,37 +110,5 @@ export class PointCalculatorService {
             wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
         });
         return wordTemp;
-    }
-    // wordPlaced(action: PlaceLetter): Tile[] {
-    //     const wordInTile: Tile[] = [];
-    //     const startX = action.placement.x;
-    //     const startY = action.placement.y;
-    //     for (let wordIndex = 0; wordIndex < action.word.length; wordIndex++) {
-    //         let x = 0;
-    //         let y = 0;
-    //         if (action.placement.direction === Direction.Horizontal) {
-    //             x = startX + wordIndex;
-    //             wordInTile.push(this.board.grid[y][x]);
-    //         } else if (action.placement.direction === Direction.Horizontal) {
-    //             y = startY + wordIndex;
-    //             wordInTile.push(this.board.grid[y][x]);
-    //         }
-
-    //     }
-    //     return wordInTile;
-    // }
-
-    desactivateMultiplicators(action: PlaceLetter): void {
-        const coord: Vec2 = { x: action.placement.x, y: action.placement.y };
-        for (let i = 0; i < action.word.length; i++) {
-            this.boardService.board.grid[coord.y][coord.x].letterMultiplicator = 1;
-            this.boardService.board.grid[coord.y][coord.x].wordMultiplicator = 1;
-
-            if (action.placement.direction === Direction.Horizontal) {
-                coord.x++;
-            } else {
-                coord.y++;
-            }
-        }
     }
 }

@@ -25,7 +25,7 @@ export class WordSearcher {
     }
 
     validateWords(action: PlaceLetter): boolean {
-        const listOfValidWord = this.listOfValidWord(action)
+        const listOfValidWord = this.listOfValidWord(action);
         if (listOfValidWord.length > 0) {
             return true;
         }
@@ -49,7 +49,6 @@ export class WordSearcher {
                     }
                 }
             }
-
         }
         return listOfValidWord;
     }
@@ -67,7 +66,7 @@ export class WordSearcher {
     goToBeginningOfWord(direction: Direction, letterPos: Vec2): Vec2 {
         let x = letterPos.x;
         let y = letterPos.y;
-        if (direction as Direction === Direction.Horizontal) {
+        if ((direction as Direction) === Direction.Horizontal) {
             while (this.tileIsOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
                 y -= 1;
             }
@@ -127,10 +126,7 @@ export class WordSearcher {
     }
 
     isInsideBoard(x: number, y: number): boolean {
-        return x >= BOARD_MIN_POSITION_X
-            && y >= BOARD_MIN_POSITION_Y
-            && x <= BOARD_MAX_POSITION_X
-            && y <= BOARD_MAX_POSITION_Y;
+        return x >= BOARD_MIN_POSITION_X && y >= BOARD_MIN_POSITION_Y && x <= BOARD_MAX_POSITION_X && y <= BOARD_MAX_POSITION_Y;
     }
 
     tileIsOccupied(x: number, y: number): boolean {
@@ -139,7 +135,6 @@ export class WordSearcher {
         }
         const char = this.grid[y][x].letterObject.char;
         return char !== ' ';
-
     }
 
     findCoordOfLettersToPLace(action: PlaceLetter): Vec2[] {
@@ -170,9 +165,9 @@ export class WordSearcher {
     stringToTile(word: string, placement: PlacementSetting): Tile[] {
         let x = placement.x;
         let y = placement.y;
-        let wordTile: Tile[] = [];
+        const wordTile: Tile[] = [];
         for (const letter of word) {
-            let tile = this.createTile(letter, { x, y })
+            const tile = this.createTile(letter, { x, y });
             wordTile.push(tile);
             if (placement.direction === Direction.Horizontal) {
                 x++;
@@ -183,6 +178,14 @@ export class WordSearcher {
         return wordTile;
     }
 
+    tileToString(word: Tile[]): string {
+        let wordTemp = '';
+        word.forEach((tile) => {
+            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
+        });
+        return wordTemp;
+    }
+
     private createTile(char: string, pos: Vec2): Tile {
         const tile = this.grid[pos.y][pos.x];
         const letterMultiplicator = tile.letterMultiplicator;
@@ -190,13 +193,5 @@ export class WordSearcher {
         const newTile = new Tile(letterMultiplicator, wordMultiplicator);
         newTile.letterObject = this.letterCreator.createLetter(char);
         return newTile;
-    }
-
-    tileToString(word: Tile[]): string {
-        let wordTemp = '';
-        word.forEach((tile) => {
-            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
-        });
-        return wordTemp;
     }
 }
