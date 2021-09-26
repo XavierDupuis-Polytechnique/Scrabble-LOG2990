@@ -1,10 +1,8 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
-import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-// import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
@@ -21,49 +19,22 @@ export abstract class Bot extends Player {
     isBoardEmpty: boolean;
     validWordList: ValidWord[];
     wordValidator: WordSearcher;
-    game: Game;
 
     private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
-    pointCalculatorService: PointCalculatorService;
     chooseAction(action: Action) {
         this.chosenAction$.next(action);
         this.chosenAction$.complete();
     }
 
     // TODO: find better name
-    // startTimerAction() {
-    //     const timerPass = timer(TIME_BEFORE_PASS);
-    //     timerPass.subscribe(() => {
-    //         this.play(new PassTurn(this));
-    //     });
-    //     timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
-    //         const action = this.chosenAction$.value;
-    //         if (action !== undefined) {
-    //             this.play(action);
-    //         } else {
-    //             this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
-    //                 if (chosenAction !== undefined) {
-    //                     this.play(chosenAction);
-    //                 }
-    //             });
-    //         }
-    //     });
-    // }
-
     startTimerAction() {
         const timerPass = timer(TIME_BEFORE_PASS);
         timerPass.subscribe(() => {
             this.play(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
-            console.log('timer time 3s up');
-            console.log(JSON.stringify(this.letterRack));
             const action = this.chosenAction$.value;
             if (action !== undefined) {
-                console.log('bot play action');
-                if (action instanceof PlaceLetter) {
-                    console.log('word to play', action as PlaceLetter);
-                }
                 this.play(action);
             } else {
                 this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
@@ -74,21 +45,47 @@ export abstract class Bot extends Player {
             }
         });
     }
+    // Start of debug code
+    // startTimerAction() {
+    //     const timerPass = timer(TIME_BEFORE_PASS);
+    //     timerPass.subscribe(() => {
+    //         this.play(new PassTurn(this));
+    //     });
+    //     timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
+    //         console.log('timer time 3s up');
+    //         console.log(JSON.stringify(this.letterRack));
+    //         const action = this.chosenAction$.value;
+    //         if (action !== undefined) {
+    //             console.log('bot play action');
+    //             if (action instanceof PlaceLetter) {
+    //                 console.log('word to play', action as PlaceLetter);
+    //             }
+    //             this.play(action);
+    //         } else {
+    //             this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+    //                 if (chosenAction !== undefined) {
+    //                     this.play(chosenAction);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
+    // End of debug code
 
     // Bot constructor takes opponent name as argument to prevent same name
     constructor(
         name: string,
         private boardService: BoardService,
         private dictionaryService: DictionaryService,
-        // private pointCalculatorService: PointCalculatorService,
-        game: Game,
+        public pointCalculatorService: PointCalculatorService,
+        // private game: Game,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
         this.isBoardEmpty = true;
         this.validWordList = [];
         this.wordValidator = new WordSearcher(boardService, this.dictionaryService);
-        this.game = game;
+        // this.game = game;
     }
 
     getRandomInt(max: number, min: number = 0) {
@@ -102,6 +99,7 @@ export abstract class Bot extends Player {
     }
 
     // TODO Implement the 3 and 20 seconds timers and related functions
+    // TODO Put the 20 seconds timesUp thingy
     bruteForceStart(): ValidWord[] {
         const grid = this.boardService.board.grid;
         const startingX = 0;
@@ -145,7 +143,7 @@ export abstract class Bot extends Player {
                     } else {
                         placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
                     }
-                    const fakeAction = new PlaceLetter(this, word.word, placement);
+                    const fakeAction = new PlaceLetter(this, word.word, placement, this.pointCalculatorService, this.wordValidator);
                     const validWords = this.wordValidator.listOfValidWord(fakeAction);
                     const wordIsValid = validWords.length !== 0;
                     if (wordIsValid) {
@@ -157,8 +155,8 @@ export abstract class Bot extends Player {
                         // for (const tmpword of validWords) {
                         //     tmpList.push(tmpword.letters);
                         // }
-                        // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, tmpList).totalPoints;
                         // tmp end
+                        // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, validWords).totalPoints;
 
                         this.validWordList.push(word);
                     }
@@ -360,7 +358,7 @@ export abstract class Bot extends Player {
                     placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
                 }
 
-                const fakeAction = new PlaceLetter(this, word.word, placement);
+                const fakeAction = new PlaceLetter(this, word.word, placement, this.pointCalculatorService, this.wordValidator);
                 const validWords = this.wordValidator.listOfValidWord(fakeAction);
                 const wordIsValid = validWords.length > 0;
                 if (wordIsValid) {

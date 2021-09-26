@@ -1,10 +1,8 @@
-// import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Action } from '@app/GameLogic/actions/action';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { TestBoard } from '@app/GameLogic/player/bot.spec';
-// import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';

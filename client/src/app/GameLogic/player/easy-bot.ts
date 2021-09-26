@@ -29,10 +29,11 @@ export class EasyBot extends Bot {
         // TODO: Start computation for picking actions
         const action = this.randomActionPicker();
         this.chooseAction(action);
+        console.log(action);
         return action;
 
     }
-
+    // TODO change behavior of play
     randomActionPicker(): Action {
         const randomValue = Math.random();
         if (randomValue <= EasyBot.actionProbabibility.play) {
@@ -95,7 +96,7 @@ export class EasyBot extends Bot {
                 y: pickedWord.startingTileY,
                 direction: pickedWord.isVertical ? 'V' : 'H',
             };
-            const action = new PlaceLetter(this, pickedWord.word, placeSetting);
+            const action = new PlaceLetter(this, pickedWord.word, placeSetting, this.pointCalculatorService, this.wordValidator);
             // this.chooseAction(action);
             return action;
         } else {
