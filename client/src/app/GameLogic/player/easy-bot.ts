@@ -22,6 +22,13 @@ export class EasyBot extends Bot {
             value: 18,
         },
     };
+
+    setActive() {
+        this.startTimerAction();
+        // TODO: Start computation for picking actions
+        this.randomActionPicker()
+    }
+
     randomActionPicker() {
         const randomValue = Math.random();
         if (randomValue <= EasyBot.actionProbabibility.play) {
@@ -69,7 +76,7 @@ export class EasyBot extends Bot {
             direction: pickedWord.isVertical ? 'V' : 'H',
         };
         const action = new PlaceLetter(this, pickedWord.word, placeSetting);
-        this.action$.next(action);
+        this.chooseAction(action);
         return;
     }
 
@@ -88,11 +95,11 @@ export class EasyBot extends Bot {
             indexArray.splice(randomInt, 1);
             lettersToExchange.push(this.letterRack[lettersToExchangeIndex]);
         }
-        this.action$.next(new ExchangeLetter(this, lettersToExchange));
+        this.chooseAction(new ExchangeLetter(this, lettersToExchange));
     }
 
     pass() {
-        this.action$.next(new PassTurn(this));
+        this.chooseAction(new PassTurn(this));
     }
 
     private randomInInterval(min: number, max: number): number {

@@ -1,6 +1,13 @@
 import { Bot } from './bot';
 
 export class HardBot extends Bot {
+
+    setActive() {
+        this.startTimerAction();
+        // TODO: Start computation for picking actions
+    }
+
+
     play(): void {
         throw new Error('Method not implemented.');
     }

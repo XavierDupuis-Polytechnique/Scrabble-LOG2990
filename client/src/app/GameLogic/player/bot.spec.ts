@@ -11,7 +11,12 @@ import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 import { Bot } from './bot';
 
-class TestBot extends Bot {}
+class TestBot extends Bot {
+    setActive() {
+        this.startTimerAction();
+        // TODO: Start computation for picking actions
+    }
+}
 class TestBoard extends Board {
     letterCreator = new LetterCreator();
     placeWord(x: number, y: number, isVertical: boolean, word: string) {
