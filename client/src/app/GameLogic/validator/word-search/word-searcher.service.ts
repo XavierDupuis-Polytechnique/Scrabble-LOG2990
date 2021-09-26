@@ -116,7 +116,6 @@ export class WordSearcher {
                     letters.push(this.grid[y][x]);
                 } else {
                     const indexInWord = x - action.placement.x;
-
                     letters.push(this.createTile(action.word[indexInWord], { x, y }));
                     index.push(indexInNeighbor);
                 }
@@ -143,10 +142,8 @@ export class WordSearcher {
 
     isValid(word: Tile[]): boolean {
         const wordString = this.tileToString(word).toLowerCase();
-        if (word.length >= 2) {
-            if (this.dictionaryService.isWordInDict(wordString)) {
-                return true;
-            }
+        if (this.dictionaryService.isWordInDict(wordString)) {
+            return true;
         }
         return false;
     }

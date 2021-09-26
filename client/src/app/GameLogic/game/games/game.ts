@@ -63,7 +63,7 @@ export class Game {
 
     onEndOfGame() {
         // console.log('Game ended');
-        this.pointCalculator.endOfGamePointdeduction(this);
+        this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
         for (const player of this.getWinner()) {
             // TODO Envoyer dans la boite de communication
