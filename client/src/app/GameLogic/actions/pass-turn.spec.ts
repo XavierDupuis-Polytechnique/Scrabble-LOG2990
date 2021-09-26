@@ -15,7 +15,8 @@ describe('PassTurn', () => {
 
     beforeEach(() => {
         timer = new TimerService();
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, new PointCalculatorService(), new BoardService());
+        const boardService = new BoardService();
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, new PointCalculatorService(boardService), boardService);
         game.players.push(player1);
         game.players.push(player2);
         game.start();
