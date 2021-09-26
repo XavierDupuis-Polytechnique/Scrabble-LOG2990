@@ -19,8 +19,8 @@ export class MessagesService {
             content,
             from: forwarder,
         };
-        const isCommand = this.commandParser.parse(message.content);
         try {
+            const isCommand = this.commandParser.parse(message.content);
             if (isCommand === false) {
                 message.type = MessageType.Player1;
             }
