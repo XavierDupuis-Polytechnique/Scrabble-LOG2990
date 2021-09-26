@@ -139,4 +139,12 @@ describe('WordSearcher', () => {
         expect(wordSearcher.tileToString(validWord[0].letters)).toEqual('BATEAU');
         expect(wordSearcher.tileToString(validWord[1].letters)).toEqual('BON');
     });
+
+    it('should return empty arrat if a word is invalid', () => {
+        mockBoard.grid[2][2].letterObject = { char: 'O', value: 1 };
+        const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
+        const action = new PlaceLetter(player, 'rateau', placement);
+        const validWord = wordSearcher.listOfValidWord(action);
+        expect(validWord.length).toEqual(0);
+    });
 });
