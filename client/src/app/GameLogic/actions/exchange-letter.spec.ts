@@ -12,7 +12,8 @@ describe('ExchangeLetter', () => {
     let game: Game;
     const player: Player = new User('Tim');
     beforeEach(() => {
-        game = new Game(DEFAULT_TIME_PER_TURN, new TimerService(), new PointCalculatorService(), new BoardService());
+        const boardService = new BoardService();
+        game = new Game(DEFAULT_TIME_PER_TURN, new TimerService(), new PointCalculatorService(boardService), boardService);
         game.players[0] = player;
         game.start();
     });
