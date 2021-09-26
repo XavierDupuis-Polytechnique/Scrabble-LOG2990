@@ -31,7 +31,7 @@ describe('Bot', () => {
     let board: TestBoard;
     const boardService = new BoardService();
     const dictionaryService = new DictionaryService();
-    const pointCalculator = new PointCalculatorService();
+    const pointCalculator = new PointCalculatorService(boardService);
     const timer = new TimerService();
     const game = new Game(10, timer, pointCalculator, boardService);
 
@@ -315,7 +315,7 @@ describe('Bot', () => {
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
         // TODO change number when crosscheck works
-        const expected: number = 582; // It would take too long to list all the possibilities with any more details in this test.
+        const expected: number = 590; // It would take too long to list all the possibilities with any more details in this test.
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
@@ -336,10 +336,9 @@ describe('Bot', () => {
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
         // TODO change number when crosscheck works
-        // const expected: number = 238; // It would take too long to list all the possibilities with any more details in this test.
-        const expected: ValidWord[] = [];
+        const expected: number = 1372; // It would take too long to list all the possibilities with any more details in this test.
         result = bot.bruteForceStart();
-        expect(result).toEqual(expected);
+        expect(result.length).toEqual(expected);
     });
 });
 

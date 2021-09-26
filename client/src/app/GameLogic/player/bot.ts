@@ -3,10 +3,11 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
 // import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord, VERTICAL } from './valid-word';
+
 
 export abstract class Bot extends Player {
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
@@ -61,36 +62,37 @@ export abstract class Bot extends Player {
     }
 
     botFirstTurn() {
-        const minNumber = 0;
-        const maxNumber = 6;
-        const randomIndex = this.getRandomInt(minNumber, maxNumber);
-        const startingLetter = this.letterRack[randomIndex].char;
-        if (startingLetter === '*') {
-            this.botFirstTurn();
-        } else {
-            const placedLetter: ValidWord[] = [];
-            const initialWord = new ValidWord(startingLetter);
-            if (randomIndex % 1) {
-                initialWord.isVertical = VERTICAL;
-            }
-            initialWord.startingTileX = Bot.MIDDLE_OF_BOARD;
-            initialWord.startingTileY = Bot.MIDDLE_OF_BOARD;
-            initialWord.leftCount = Bot.MIDDLE_OF_BOARD;
-            initialWord.rightCount = Bot.MIDDLE_OF_BOARD;
-            placedLetter.push(initialWord);
-            const possiblyValidWords: ValidWord[] = this.wordCheck(placedLetter);
-            for (const word of possiblyValidWords) {
-                let placement: PlacementSetting;
-                if (word.isVertical) {
-                    placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
-                } else {
-                    placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+        for (let rackIndex = 0; rackIndex < this.letterRack.length; rackIndex++) {
+            const startingLetter = this.letterRack[rackIndex].char.toLowerCase();
+            if (startingLetter !== '*') {
+                const placedLetter: ValidWord[] = [];
+                const initialWord = new ValidWord(startingLetter);
+                const tmpLetter = this.letterRack.splice(rackIndex, 1);
+
+                if (this.getRandomInt(0, 1)) {
+                    initialWord.isVertical = VERTICAL;
                 }
-                const fakeAction = new PlaceLetter(this, word.word, placement);
-                if (this.wordValidator.validateWords(fakeAction)) {
-                    word.adjacentWords = { ...this.wordValidator.listOfValidWord };
-                    // TODO: update word value
-                    // word.value = this.pointCalculatorService.testPlaceLetterPointsCalculation(fakeAction);
+                initialWord.startingTileX = Bot.MIDDLE_OF_BOARD;
+                initialWord.startingTileY = Bot.MIDDLE_OF_BOARD;
+                initialWord.leftCount = Bot.MIDDLE_OF_BOARD;
+                initialWord.rightCount = Bot.MIDDLE_OF_BOARD;
+                placedLetter.push(initialWord);
+                const possiblyValidWords: ValidWord[] = this.wordCheck(placedLetter);
+
+                this.letterRack.push(tmpLetter[0]);
+                for (const word of possiblyValidWords) {
+                    let placement: PlacementSetting;
+                    if (word.isVertical) {
+                        placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
+                    } else {
+                        placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+                    }
+                    const fakeAction = new PlaceLetter(this, word.word, placement);
+                    if (this.wordValidator.validateWords(fakeAction)) {
+                        // word.adjacentWords = { ...this.wordValidator.listOfValidWord };
+                        // TODO: update word value
+                        // word.value = this.pointCalculatorService.testPlaceLetterPointsCalculation(fakeAction);
+                    }
                     this.validWordList.push(word);
                 }
             }

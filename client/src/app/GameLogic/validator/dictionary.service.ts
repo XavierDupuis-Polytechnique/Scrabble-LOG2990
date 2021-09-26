@@ -183,8 +183,8 @@ export class DictionaryService {
         if (INDEX === notFound) {
             return false;
         }
-        // TODO ? The person to make a single while out of the next three while deserves a raise.
-        while (INDEX !== firstLetterIndex) {
+
+        while (INDEX > firstLetterIndex) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
             INDEX = dictWord.word.search(regex);
