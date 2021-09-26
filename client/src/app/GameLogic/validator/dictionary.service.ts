@@ -155,13 +155,14 @@ export class DictionaryService {
         return wordList;
     }
 
-    regexCheck(dictWord: ValidWord, placedLetters: string, bot: Bot): boolean {
+    regexCheck(dictWord: ValidWord, placedLetters: string, bot: Bot): string {
         const letterRack = bot.letterRack;
         const mapRack = new Map<string, number>();
         const notFound = -1;
         const firstLetterIndex = 1;
         const wordLength = dictWord.word.length;
         let placedWord = '';
+        let tmpPlacedWord;
         for (const letter of placedLetters) {
             if (letter === '-') {
                 placedWord += '.';
@@ -178,20 +179,23 @@ export class DictionaryService {
                 mapRack.set(letter.char.toLowerCase(), 1);
             }
         }
-        let regex = new RegExp(placedWord.toLowerCase());
+        tmpPlacedWord = placedWord;
+        let regex = new RegExp(tmpPlacedWord.toLowerCase());
         let INDEX = dictWord.word.search(regex);
         if (INDEX === notFound) {
-            return false;
+            return 'false';
         }
 
         while (INDEX > firstLetterIndex) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
-            regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
+            tmpPlacedWord = placedWord;
+            regex = new RegExp('(?<=[' + lettersLeft + '])' + tmpPlacedWord.toLowerCase());
             INDEX = dictWord.word.search(regex);
 
             if (INDEX === notFound) {
                 if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
+                    tmpPlacedWord = placedWord;
+                    regex = new RegExp(tmpPlacedWord.toLowerCase());
                     INDEX = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord = dictWord.word[INDEX - 1].toUpperCase() + placedWord;
@@ -209,11 +213,12 @@ export class DictionaryService {
             INDEX = dictWord.word.search(regex);
             if (INDEX === notFound) {
                 if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
+                    tmpPlacedWord = placedWord;
+                    regex = new RegExp(tmpPlacedWord.toLowerCase());
                     INDEX = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord =
-                        placedWord.substring(0, indexOfDot) + dictWord.word[placedWord.length].toUpperCase() + placedWord.substring(indexOfDot + 1);
+                        placedWord.substring(0, indexOfDot) + dictWord.word[placedWord.substring(0, indexOfDot).length].toUpperCase() + placedWord.substring(indexOfDot + 1);
                 } else break;
             } else {
                 this.deleteTmpLetter(dictWord.word[indexOfDot], mapRack);
@@ -227,11 +232,13 @@ export class DictionaryService {
 
         while (placedWord.length !== wordLength) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
-            regex = new RegExp(placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
+            tmpPlacedWord = placedWord;
+            regex = new RegExp(tmpPlacedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
             INDEX = dictWord.word.search(regex);
             if (INDEX === notFound) {
                 if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
+                    tmpPlacedWord = placedWord;
+                    regex = new RegExp(tmpPlacedWord.toLowerCase());
                     INDEX = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord = placedWord + dictWord.word[placedWord.length].toUpperCase();
@@ -241,10 +248,12 @@ export class DictionaryService {
                 placedWord = placedWord + dictWord.word[placedWord.length];
             }
         }
-        if (dictWord.word === placedWord.toLowerCase()) {
-            return true;
+
+        tmpPlacedWord = placedWord;
+        if (dictWord.word === tmpPlacedWord.toLowerCase()) {
+            return placedWord;
         } else {
-            return false;
+            return 'false';
         }
     }
 

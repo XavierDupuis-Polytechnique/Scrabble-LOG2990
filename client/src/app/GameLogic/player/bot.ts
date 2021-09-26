@@ -31,14 +31,39 @@ export abstract class Bot extends Player {
     }
 
     // TODO: find better name
+    // startTimerAction() {
+    //     const timerPass = timer(TIME_BEFORE_PASS);
+    //     timerPass.subscribe(() => {
+    //         this.play(new PassTurn(this));
+    //     });
+    //     timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
+    //         const action = this.chosenAction$.value;
+    //         if (action !== undefined) {
+    //             this.play(action);
+    //         } else {
+    //             this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+    //                 if (chosenAction !== undefined) {
+    //                     this.play(chosenAction);
+    //                 }
+    //             });
+    //         }
+    //     });
+    // }
+
     startTimerAction() {
         const timerPass = timer(TIME_BEFORE_PASS);
         timerPass.subscribe(() => {
             this.play(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
+            console.log('timer time 3s up');
+            console.log(JSON.stringify(this.letterRack));
             const action = this.chosenAction$.value;
             if (action !== undefined) {
+                console.log('bot play action');
+                if (action instanceof PlaceLetter) {
+                    console.log('word to play', action as PlaceLetter);
+                }
                 this.play(action);
             } else {
                 this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
@@ -337,7 +362,7 @@ export abstract class Bot extends Player {
 
                 const fakeAction = new PlaceLetter(this, word.word, placement);
                 const validWords = this.wordValidator.listOfValidWord(fakeAction);
-                const wordIsValid = validWords.length !== 0;
+                const wordIsValid = validWords.length > 0;
                 if (wordIsValid) {
                     // TODO: update word value
                     // TODO get the number of letter placed
@@ -398,8 +423,9 @@ export abstract class Bot extends Player {
         for (const placedLetters of allPlacedLettersCombination) {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
             for (const word of tmpWordList) {
-                if (this.dictionaryService.regexCheck(word, placedLetters.word, this)) {
-                    possiblyValidWords.push(word);
+                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, this);
+                if (wordToValidate !== 'false') {
+                    possiblyValidWords.push(new ValidWord(wordToValidate, word.indexFound, word.emptyCount, word.leftCount, word.rightCount, word.isVertical, word.startingTileX, word.startingTileY));
                 }
             }
         }

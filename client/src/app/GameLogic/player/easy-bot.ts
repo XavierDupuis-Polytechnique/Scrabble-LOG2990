@@ -38,7 +38,7 @@ export class EasyBot extends Bot {
         if (randomValue <= EasyBot.actionProbabibility.play) {
             let action = this.playAction();
             if (action === undefined) {
-                action = this.passAction();
+                action = this.exchangeAction();
             }
             return action;
         } else if (randomValue <= EasyBot.actionProbabibility.play + EasyBot.actionProbabibility.exchange) {
@@ -89,12 +89,12 @@ export class EasyBot extends Bot {
     playAction(): Action {
         this.bruteForceStart();
         const pickedWord: ValidWord = this.randomWordPicker();
-        const placeSetting: PlacementSetting = {
-            x: pickedWord.startingTileX,
-            y: pickedWord.startingTileY,
-            direction: pickedWord.isVertical ? 'V' : 'H',
-        };
         if (pickedWord !== undefined) {
+            const placeSetting: PlacementSetting = {
+                x: pickedWord.startingTileX,
+                y: pickedWord.startingTileY,
+                direction: pickedWord.isVertical ? 'V' : 'H',
+            };
             const action = new PlaceLetter(this, pickedWord.word, placeSetting);
             // this.chooseAction(action);
             return action;
@@ -103,7 +103,6 @@ export class EasyBot extends Bot {
             // this.chooseAction(action);
             return action
         }
-
     }
 
     exchangeAction(): Action {
