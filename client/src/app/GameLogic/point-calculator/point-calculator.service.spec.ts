@@ -365,18 +365,17 @@ describe('PointCalculatorService', () => {
     });
 
     it('should not calculate bonus when player place all letter if rack was not full (on end of game)', () => {
-        const totalPointsOfWord = 8;
+        const totalPointsOfWord = 7;
         const initialPointPlayer1 = 150;
         const initialPointPlayer2 = 50;
         player1.points = initialPointPlayer1;
         player2.points = initialPointPlayer2;
         game.consecutivePass = 0;
-        word = [
-            { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
-            { letterObject: { char: 'E', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-            { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-        ];
-        listOfWord.push(word);
+        grid[0][5].letterObject = { char: 'C', value: 3 };
+        grid[1][5].letterObject = { char: 'E', value: 1 };
+        grid[2][5].letterObject = { char: 'T', value: 1 };
+        const wordCet = [grid[0][5], grid[1][5], grid[2][5]];
+        listOfWord.push(wordCet);
         player1.letterRack = [
             { char: 'A', value: 1 },
             { char: 'T', value: 1 },
@@ -398,7 +397,53 @@ describe('PointCalculatorService', () => {
         expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
         const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + servicePoints.calculatePointsOfRack(game.otherPlayer);
         const otherPlayerEOGamePoints = initialPointPlayer2 - servicePoints.calculatePointsOfRack(game.otherPlayer);
-        servicePoints.endOfGamePointdeduction(game as Game);
+        servicePoints.endOfGamePointDeduction(game as Game);
+        expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
+        expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);
+    });
+
+    it('should calculate bonus when player place all letter if rack was full (on end of game)', () => {
+        const totalPointsOfWord = 72;
+        const initialPointPlayer1 = 150;
+        const initialPointPlayer2 = 50;
+        player1.points = initialPointPlayer1;
+        player2.points = initialPointPlayer2;
+        game.consecutivePass = 1;
+        grid[0][4].letterObject = { char: 'P', value: 3 };
+        grid[1][4].letterObject = { char: 'I', value: 1 };
+        grid[2][4].letterObject = { char: 'M', value: 3 };
+        grid[3][4].letterObject = { char: 'E', value: 1 };
+        grid[4][4].letterObject = { char: 'N', value: 1 };
+        grid[5][4].letterObject = { char: 'T', value: 1 };
+        grid[6][4].letterObject = { char: 'S', value: 1 };
+        const wordPiments = [grid[0][4], grid[1][4], grid[2][4], grid[3][4], grid[4][4], grid[5][4], grid[6][4]];
+        listOfWord.push(wordPiments);
+        player2.letterRack = [
+            { char: 'P', value: 3 },
+            { char: 'I', value: 1 },
+            { char: 'M', value: 3 },
+            { char: 'E', value: 1 },
+            { char: 'N', value: 1 },
+            { char: 'T', value: 1 },
+            { char: 'S', value: 1 },
+        ];
+        action = new MockPlaceLetter(player2, 'piments', { x: 4, y: 0, direction: Direction.Vertical });
+        action.affectedCoords = [
+            { x: 4, y: 0 },
+            { x: 4, y: 1 },
+            { x: 4, y: 2 },
+            { x: 4, y: 3 },
+            { x: 4, y: 4 },
+            { x: 4, y: 5 },
+            { x: 4, y: 6 },
+        ];
+        game.activePlayer = player2;
+        game.otherPlayer = player1;
+        expect(servicePoints.placeLetterCalculation(action, listOfWord)).toBe(totalPointsOfWord);
+        expect(player2.points).toBe(initialPointPlayer2 + totalPointsOfWord);
+        const activePlayerEOGamePoints = initialPointPlayer2 + totalPointsOfWord + servicePoints.calculatePointsOfRack(game.otherPlayer);
+        const otherPlayerEOGamePoints = initialPointPlayer1 - servicePoints.calculatePointsOfRack(game.otherPlayer);
+        servicePoints.endOfGamePointDeduction(game as Game);
         expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
         expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);
     });
@@ -417,7 +462,7 @@ describe('PointCalculatorService', () => {
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;
         game.otherPlayer.letterRack = threeLetterRack;
-        servicePoints.endOfGamePointdeduction(game as Game);
+        servicePoints.endOfGamePointDeduction(game as Game);
         expect(game.activePlayer.points).toBe(totalPointsActivePlayer);
         expect(game.otherPlayer.points).toBe(totalPointsOtherPlayer);
     });

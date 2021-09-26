@@ -17,7 +17,7 @@ describe('Game', () => {
     let user2: User;
     beforeEach(() => {
         timerSpy = jasmine.createSpyObj('TimerService', ['start', 'stop']);
-        pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointdeduction']);
+        pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
 
         TestBed.configureTestingModule({
