@@ -3,6 +3,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Tile } from '@app/GameLogic/game/tile';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 // import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -23,7 +24,7 @@ export abstract class Bot extends Player {
     game: Game;
 
     private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
-    pointCalculatorService: any;
+    pointCalculatorService: PointCalculatorService;
     chooseAction(action: Action) {
         this.chosenAction$.next(action);
         this.chosenAction$.complete();
@@ -110,8 +111,8 @@ export abstract class Bot extends Player {
                 initialWord.rightCount = Bot.MIDDLE_OF_BOARD;
                 placedLetter.push(initialWord);
                 const possiblyValidWords: ValidWord[] = this.wordCheck(placedLetter);
-
                 this.letterRack.push(tmpLetter[0]);
+
                 for (const word of possiblyValidWords) {
                     let placement: PlacementSetting;
                     if (word.isVertical) {
@@ -125,9 +126,17 @@ export abstract class Bot extends Player {
                     if (wordIsValid) {
                         // TODO: update word value
                         // TODO get the number of letter placed
-                        word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, fakeAction);
+
+                        // tmp start
+                        // const tmpList: Tile[][] = [];
+                        // for (const tmpword of validWords) {
+                        //     tmpList.push(tmpword.letters);
+                        // }
+                        // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, tmpList).totalPoints;
+                        // tmp end
+
+                        this.validWordList.push(word);
                     }
-                    this.validWordList.push(word);
                 }
             }
         }
@@ -312,27 +321,44 @@ export abstract class Bot extends Player {
             const allPlacedLettersCombination = this.lineSplitter(lettersOnLine);
             const possiblyValidWords: ValidWord[] = this.wordCheck(allPlacedLettersCombination);
 
-            // start
-            for (const word of possiblyValidWords) {
-                this.validWordList.push(word);
-            }
-            // end
-
+            // // start
             // for (const word of possiblyValidWords) {
-            //     let placement: PlacementSetting;
-            //     if (word.isVertical) {
-            //         placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
-            //     } else {
-            //         placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
-            //     }
-
-            //     const fakeAction = new PlaceLetter(this, word.word, placement);
-
-            //     if (this.wordValidator.validatePlacement(fakeAction)) {
-            //         word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
-            //         this.validWordList.push(word);
-            //     }
+            //     this.validWordList.push(word);
             // }
+            // // end
+
+            for (const word of possiblyValidWords) {
+                let placement: PlacementSetting;
+                if (word.isVertical) {
+                    placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
+                } else {
+                    placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+                }
+
+                const fakeAction = new PlaceLetter(this, word.word, placement);
+                const validWords = this.wordValidator.listOfValidWord(fakeAction);
+                const wordIsValid = validWords.length !== 0;
+                if (wordIsValid) {
+                    // TODO: update word value
+                    // TODO get the number of letter placed
+
+                    // tmp start
+                    // const tmpList: Tile[][] = [];
+                    // for (const tmpword of validWords) {
+                    //     tmpList.push(tmpword.letters);
+                    // }
+                    // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, tmpList).totalPoints;
+                    // tmp end
+
+                    this.validWordList.push(word);
+                }
+
+
+                // if (this.wordValidator.validatePlacement(fakeAction)) {
+                //     word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
+                //     this.validWordList.push(word);
+                // }
+            }
         }
 
         if (isVertical && x < endOfBoard) {

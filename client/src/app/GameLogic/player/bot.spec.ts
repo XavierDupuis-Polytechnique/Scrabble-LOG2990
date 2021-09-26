@@ -17,7 +17,7 @@ class TestBot extends Bot {
         // TODO: Start computation for picking actions
     }
 }
-class TestBoard extends Board {
+export class TestBoard extends Board {
     letterCreator = new LetterCreator();
     placeWord(x: number, y: number, isVertical: boolean, word: string) {
         for (const letter of word) {

@@ -1,5 +1,10 @@
+// import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { Action } from '@app/GameLogic/actions/action';
 import { Game } from '@app/GameLogic/game/games/game';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { TestBoard } from '@app/GameLogic/player/bot.spec';
+// import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
@@ -10,19 +15,23 @@ describe('EasyBot', () => {
     let spyPlay: jasmine.Spy;
     let spyExchange: jasmine.Spy;
     let spyPass: jasmine.Spy;
+    let board: TestBoard;
+    let boardService: BoardService;
+
     beforeEach(() => {
-        const boardService = new BoardService();
+        boardService = new BoardService();
         const dictionaryService = new DictionaryService();
         const pointCalculator = new PointCalculatorService(boardService);
         const timer = new TimerService();
         const TIME_PER_TURN = 10;
         const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
+        board = new TestBoard();
 
         // easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());
         easyBot = new EasyBot('Tim', boardService, dictionaryService, game);
-        spyPlay = spyOn(easyBot, 'play');
-        spyExchange = spyOn(easyBot, 'exchange');
-        spyPass = spyOn(easyBot, 'pass');
+        spyPlay = spyOn(easyBot, 'playAction');
+        spyExchange = spyOn(easyBot, 'exchangeAction');
+        spyPass = spyOn(easyBot, 'passAction');
     });
 
     it('should create an instance', () => {
@@ -42,4 +51,25 @@ describe('EasyBot', () => {
         value = Math.round((spyPlay.calls.count() / numberOfTime) * mul) / mul;
         expect(value).toBeCloseTo(EasyBot.actionProbabibility.play);
     });
+
+    it('should return a valid first turn action (empty board))', () => {
+        const letters: Letter[] = [
+            { char: 'A', value: 1 },
+            { char: 'P', value: 1 },
+            { char: '*', value: 1 },
+            { char: 'C', value: 1 },
+            { char: 'U', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'V', value: 1 },
+        ];
+        easyBot.letterRack = letters;
+
+        boardService.board.grid = board.grid;
+        let result: Action;
+        // TODO change number when crosscheck works
+        result = easyBot.setActive();
+        console.log(result);
+        expect(result).toBeFalsy;
+    });
+
 });

@@ -1,3 +1,4 @@
+import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
@@ -23,20 +24,27 @@ export class EasyBot extends Bot {
         },
     };
 
-    setActive() {
+    setActive(): Action {
         this.startTimerAction();
         // TODO: Start computation for picking actions
-        this.randomActionPicker()
+        const action = this.randomActionPicker();
+        this.chooseAction(action);
+        return action;
+
     }
 
-    randomActionPicker() {
+    randomActionPicker(): Action {
         const randomValue = Math.random();
         if (randomValue <= EasyBot.actionProbabibility.play) {
-            this.play();
+            let action = this.playAction();
+            if (action === undefined) {
+                action = this.passAction();
+            }
+            return action;
         } else if (randomValue <= EasyBot.actionProbabibility.play + EasyBot.actionProbabibility.exchange) {
-            this.exchange();
+            return this.exchangeAction();
         } else {
-            this.pass();
+            return this.passAction();
         }
     }
 
@@ -57,17 +65,28 @@ export class EasyBot extends Bot {
                 wordP13To18.push(word);
             }
         });
-
+        let wordPicked: ValidWord;
         if (randomValue <= EasyBot.botPointSetting.sixOrLess.prob) {
-            return this.wordPicker(wordP6);
+            wordPicked = this.wordPicker(wordP6);
+            if (wordPicked !== undefined) {
+                return wordPicked;
+            }
         } else if (randomValue <= EasyBot.botPointSetting.sevenToTwelve.prob + EasyBot.botPointSetting.other.prob) {
-            return this.wordPicker(wordP7to12);
+            wordPicked = this.wordPicker(wordP7to12);
+            if (wordPicked !== undefined) {
+                return wordPicked;
+            }
         } else {
-            return this.wordPicker(wordP13To18);
+            wordPicked = this.wordPicker(wordP13To18);
+            if (wordPicked !== undefined) {
+                return wordPicked;
+            }
         }
+        wordPicked = this.wordPicker(validWordList);
+        return wordPicked;
     }
 
-    play() {
+    playAction(): Action {
         this.bruteForceStart();
         const pickedWord: ValidWord = this.randomWordPicker();
         const placeSetting: PlacementSetting = {
@@ -75,12 +94,19 @@ export class EasyBot extends Bot {
             y: pickedWord.startingTileY,
             direction: pickedWord.isVertical ? 'V' : 'H',
         };
-        const action = new PlaceLetter(this, pickedWord.word, placeSetting);
-        this.chooseAction(action);
-        return;
+        if (pickedWord !== undefined) {
+            const action = new PlaceLetter(this, pickedWord.word, placeSetting);
+            // this.chooseAction(action);
+            return action;
+        } else {
+            const action = new PassTurn(this);
+            // this.chooseAction(action);
+            return action
+        }
+
     }
 
-    exchange() {
+    exchangeAction(): Action {
         const numberOfLettersToExchange = this.getRandomInt(LetterBag.playerLetterCount, 1);
         let lettersToExchangeIndex;
         const lettersToExchange = [];
@@ -95,11 +121,15 @@ export class EasyBot extends Bot {
             indexArray.splice(randomInt, 1);
             lettersToExchange.push(this.letterRack[lettersToExchangeIndex]);
         }
-        this.chooseAction(new ExchangeLetter(this, lettersToExchange));
+        const action = new ExchangeLetter(this, lettersToExchange);
+        // this.chooseAction(action);
+        return action;
     }
 
-    pass() {
-        this.chooseAction(new PassTurn(this));
+    passAction(): Action {
+        const action = new PassTurn(this)
+        // this.chooseAction(action);
+        return action;
     }
 
     private randomInInterval(min: number, max: number): number {
