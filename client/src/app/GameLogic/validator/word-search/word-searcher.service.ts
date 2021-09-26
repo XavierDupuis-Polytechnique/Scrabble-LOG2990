@@ -107,16 +107,19 @@ export class WordSearcher {
         let y = beginingPos.y;
         const letters: Tile[] = [];
         const index: number[] = [];
+        let indexInNeighbor = 0;
         if (direction === Direction.Horizontal) {
             while (this.tileIsOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
                 if (this.tileIsOccupied(x, y)) {
                     letters.push(this.grid[y][x]);
                 } else {
                     const indexInWord = x - action.placement.x;
+
                     letters.push(this.createTile(action.word[indexInWord], { x, y }));
-                    index.push(indexInWord);
+                    index.push(indexInNeighbor);
                 }
                 y += 1;
+                indexInNeighbor += 1;
             }
             y -= 1;
         } else {
@@ -126,9 +129,10 @@ export class WordSearcher {
                 } else {
                     const indexInWord = y - action.placement.y;
                     letters.push(this.createTile(action.word[indexInWord], { x, y }));
-                    index.push(indexInWord);
+                    index.push(indexInNeighbor);
                 }
                 x += 1;
+                indexInNeighbor += 1;
             }
             x -= 1;
         }

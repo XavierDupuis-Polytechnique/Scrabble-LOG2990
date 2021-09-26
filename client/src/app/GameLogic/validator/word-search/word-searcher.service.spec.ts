@@ -131,9 +131,23 @@ describe('WordSearcher', () => {
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
         const validWords = wordSearcher.listOfValidWord(action);
+
         expect(wordSearcher.tileToString(validWords[0].letters)).toEqual('OUI');
         expect(wordSearcher.tileToString(validWords[1].letters)).toEqual('OU');
         expect(wordSearcher.tileToString(validWords[2].letters)).toEqual('NI');
+    });
+
+    it('should find index of letters to place for all valid words', () => {
+        const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
+        const action = new PlaceLetter(player, 'oui', placement);
+        const validWords = wordSearcher.listOfValidWord(action);
+        const indexFirstWord = validWords[0].index;
+        const indexSecondWord = validWords[1].index;
+        const indexThirdWord = validWords[2].index;
+        expect(indexFirstWord[0]).toBe(1);
+        expect(indexFirstWord[1]).toBe(2);
+        expect(indexSecondWord[0]).toBe(1);
+        expect(indexThirdWord[0]).toEqual(1);
     });
     it('should find all neighbors', () => {
         // On ajoute le mot oui a la poisition (3,1) on a u(1,3);
