@@ -99,12 +99,12 @@ export abstract class Bot extends Player {
     }
 
     // TODO Implement the 3 and 20 seconds timers and related functions
-    // TODO Put the 20 seconds timesUp thingy
     bruteForceStart(): ValidWord[] {
         const grid = this.boardService.board.grid;
         const startingX = 0;
         const startingY = 0;
         const startingDirection = HORIZONTAL;
+        // TODO Put the 20 seconds timesUp thingy
         // let isTimesUp = false;
 
         this.validWordList = [];
@@ -156,6 +156,7 @@ export abstract class Bot extends Player {
                         //     tmpList.push(tmpword.letters);
                         // }
                         // tmp end
+                        // TODO Calculate the number of placed letters
                         // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, validWords).totalPoints;
 
                         this.validWordList.push(word);
