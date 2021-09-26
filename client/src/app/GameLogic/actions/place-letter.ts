@@ -5,6 +5,7 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { timer } from 'rxjs';
 
@@ -32,7 +33,7 @@ export class PlaceLetter extends Action {
         player: Player,
         public word: string,
         public placement: PlacementSetting,
-        // private pointCalculator: PointCalculatorService,
+        private pointCalculator: PointCalculatorService,
         private wordSearcher: WordSearcher,
     ) {
         super(player);
@@ -51,12 +52,12 @@ export class PlaceLetter extends Action {
     }
 
     protected perform(game: Game) {
-        const wordValid: boolean = this.wordSearcher.validateWords(this);
+        const validWordList = this.wordSearcher.listOfValidWord(this);
         this.putLettersOnBoard(game);
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
-        console.log(wordValid);
+        const wordValid = validWordList.length !== 0;
         if (wordValid) {
-            // this.pointCalculator.placeLetterPointsCalculation(this,);
+            this.pointCalculator.placeLetterPointsCalculation(this, validWordList);
             this.drawLettersForPlayer(game);
             this.end();
         } else {
