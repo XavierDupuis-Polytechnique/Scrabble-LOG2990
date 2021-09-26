@@ -18,6 +18,7 @@ import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 
 describe('ActionValidatorService', () => {
@@ -31,6 +32,7 @@ describe('ActionValidatorService', () => {
     let board: BoardService;
     let dictonary: DictionaryService;
     let info: GameInfoService;
+    let wordSearcher: WordSearcher;
     const centerPosition = Math.floor(NUM_TILES / 2);
 
     class FakeAction extends Action {
@@ -57,13 +59,16 @@ describe('ActionValidatorService', () => {
                 DictionaryService,
                 TimerService,
                 GameInfoService,
+                PointCalculatorService,
+                WordSearcher,
             ],
         });
         service = TestBed.inject(ActionValidatorService);
         timer = TestBed.inject(TimerService);
-        pointCalculator = TestBed.inject(PointCalculatorService);
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
+        pointCalculator = TestBed.inject(PointCalculatorService);
+        wordSearcher = TestBed.inject(WordSearcher);
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
         p1User = new User('testUser');
@@ -108,7 +113,13 @@ describe('ActionValidatorService', () => {
 
     it('should invalidate an invalid PlaceLetter because the player tried to perform an action outside of its turn', () => {
         const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
-        const action = new PlaceLetter(otherPlayer, '', { x: centerPosition, y: centerPosition, direction: Direction.Vertical });
+        const action = new PlaceLetter(
+            otherPlayer,
+            '',
+            { x: centerPosition, y: centerPosition, direction: Direction.Vertical },
+            pointCalculator,
+            wordSearcher,
+        );
         expect(service.validateAction(action)).not.toBeTruthy();
     });
     /// ////////////////// ///
@@ -192,7 +203,7 @@ describe('ActionValidatorService', () => {
         const word = 'a';
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: centerPosition, y: centerPosition };
         currentPlayer.letterRack[0].char = word.charAt(0);
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
@@ -200,7 +211,7 @@ describe('ActionValidatorService', () => {
         const word = 'a';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         currentPlayer.letterRack[0].char = word.charAt(0);
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
@@ -215,7 +226,7 @@ describe('ActionValidatorService', () => {
         ];
         const word = 'abacada';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -231,44 +242,44 @@ describe('ActionValidatorService', () => {
         ];
         const word = 'abacAda';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the player has jokers ', () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
-        currentPlayer.letterRack = []
+        currentPlayer.letterRack = [];
         for (let i = 0; i < LetterBag.playerLetterCount; i++) {
             currentPlayer.letterRack.push({ char: '*', value: 0 });
         }
         const word = 'aBACADA';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the player has jokers but uses them incorrectly', () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
-        currentPlayer.letterRack = []
+        currentPlayer.letterRack = [];
         for (let i = 0; i < LetterBag.playerLetterCount; i++) {
             currentPlayer.letterRack.push({ char: '*', value: 0 });
         }
         const word = 'abacada';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
     it("should invalidate an invalid PlaceLetter because the player doesn't have enough jokers", () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
-        currentPlayer.letterRack = []
+        currentPlayer.letterRack = [];
         for (let i = 0; i < LetterBag.playerLetterCount - 1; i++) {
             currentPlayer.letterRack.push({ char: '*', value: 0 });
         }
         currentPlayer.letterRack.push({ char: 'z', value: 0 });
         const word = 'AAAAAAAA';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition + 1, y: centerPosition - 1 };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -283,7 +294,7 @@ describe('ActionValidatorService', () => {
         ];
         const word = 'abacad';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
@@ -291,7 +302,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: 0, y: 0 };
         const word = 'b';
         currentPlayer.letterRack[0].char = word.charAt(0);
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -300,7 +311,7 @@ describe('ActionValidatorService', () => {
         const word = 'ab';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         currentPlayer.letterRack[0].char = word.charAt(1);
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).toBeTruthy();
     });
 
@@ -313,7 +324,7 @@ describe('ActionValidatorService', () => {
         for (let i = 0; i < word.length; i++) {
             currentPlayer.letterRack[i].char = word.charAt(i);
         }
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -326,7 +337,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x, y };
         game.board.grid[y][x].letterObject.char = word.charAt(0);
         currentPlayer.letterRack[0].char = word.charAt(1);
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -340,7 +351,7 @@ describe('ActionValidatorService', () => {
             }
         }
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 0, y: centerPosition };
-        const action = new PlaceLetter(currentPlayer, horizontalWord, placement);
+        const action = new PlaceLetter(currentPlayer, horizontalWord, placement, pointCalculator, wordSearcher);
 
         expect(service.validateAction(action)).toBeTruthy();
     });
@@ -355,7 +366,7 @@ describe('ActionValidatorService', () => {
             }
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
-        const action = new PlaceLetter(currentPlayer, verticalWord, placement);
+        const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
         expect(service.validateAction(action)).toBeTruthy();
     });
@@ -374,7 +385,7 @@ describe('ActionValidatorService', () => {
         }
 
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: beginPos, y: 0 };
-        const action = new PlaceLetter(currentPlayer, word, placement);
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
 
         expect(service.validateAction(action)).not.toBeTruthy();
 
