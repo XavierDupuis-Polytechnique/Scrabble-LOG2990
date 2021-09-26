@@ -300,6 +300,10 @@ describe('PointCalculatorService', () => {
             { char: 'N', value: 1 },
             { char: 'N', value: 1 },
         ];
+        game.board.grid[2][0].letterObject = { char: 'B', value: 3 };
+        game.board.grid[2][1].letterObject = { char: 'A', value: 1 };
+        game.board.grid[2][2].letterObject = { char: 'K', value: 5 };
+        game.board.grid[2][3].letterObject = { char: 'E', value: 1 };
         action = new MockPlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal });
         action.execute(game);
         action.affectedCoords = [
