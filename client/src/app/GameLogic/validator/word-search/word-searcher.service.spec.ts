@@ -108,8 +108,8 @@ describe('WordSearcher', () => {
         const action = new PlaceLetter(player, 'oui', placement);
         const beginingPosition: Vec2 = { x: 5, y: 0 };
         const letterPosition: Vec2 = { x: 5, y: 1 };
-        const endLetter = wordSearcher.goToEndOfWord(action, beginingPosition, letterPosition);
-        expect(wordSearcher.tileToString(endLetter)).toEqual('NIL');
+        const word = wordSearcher.goToEndOfWord(action, beginingPosition, letterPosition);
+        expect(wordSearcher.tileToString(word.letters)).toEqual('NIL');
     });
 
     it('should find 0 neighbour if first word ', () => {
@@ -130,10 +130,10 @@ describe('WordSearcher', () => {
 
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
-        const validWord = wordSearcher.listOfValidWord(action);
-        expect(wordSearcher.tileToString(validWord[0])).toEqual('OUI');
-        expect(wordSearcher.tileToString(validWord[1])).toEqual('OU');
-        expect(wordSearcher.tileToString(validWord[2])).toEqual('NI');
+        const validWords = wordSearcher.listOfValidWord(action);
+        expect(wordSearcher.tileToString(validWords[0].letters)).toEqual('OUI');
+        expect(wordSearcher.tileToString(validWords[1].letters)).toEqual('OU');
+        expect(wordSearcher.tileToString(validWords[2].letters)).toEqual('NI');
     });
     it('should find all neighbors', () => {
         // On ajoute le mot oui a la poisition (3,1) on a u(1,3);
@@ -141,7 +141,7 @@ describe('WordSearcher', () => {
         const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
         const action = new PlaceLetter(player, 'bateau', placement);
         const validWord = wordSearcher.listOfValidWord(action);
-        expect(wordSearcher.tileToString(validWord[0])).toEqual('BATEAU');
-        expect(wordSearcher.tileToString(validWord[1])).toEqual('BON');
+        expect(wordSearcher.tileToString(validWord[0].letters)).toEqual('BATEAU');
+        expect(wordSearcher.tileToString(validWord[1].letters)).toEqual('BON');
     });
 });
