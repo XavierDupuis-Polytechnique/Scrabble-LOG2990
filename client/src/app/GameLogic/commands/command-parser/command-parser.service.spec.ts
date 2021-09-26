@@ -28,37 +28,37 @@ describe('CommandParser', () => {
     /// //////////////// CREATE COMMAND /////////////////////////
     it('should return false as it is not a command', () => {
         message.content = 'Hier fut une bien belle journée';
-        expect(service.parse(message)).toBe(false);
+        expect(service.parse(message.content)).toBe(false);
     });
     /// ////////////////     Parse      /////////////////////////
     // passer une fausse commande
     it('should throw !manger est une commande invalide', () => {
         message.content = '!manger duGateau';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError('!manger est une commande invalide');
     });
 
     // passer une vrai commande
     it('should be return true', () => {
-        expect(service.parse(message)).toBeTruthy();
+        expect(service.parse(message.content)).toBeTruthy();
     });
     it('should be return true', () => {
         message.content = '!debug';
-        expect(service.parse(message)).toBe(true);
+        expect(service.parse(message.content)).toBe(true);
     });
     // passer une commande en majuscule
     it('should throw !PLACER est une commande invalide', () => {
         message.content = '!PLACER a1v bob';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError('!PLACER est une commande invalide');
     });
     // passer un espace pour placer lettre
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v  ';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError1);
     });
 
@@ -78,89 +78,89 @@ describe('CommandParser', () => {
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v    ';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError1);
     });
     // mettre 1 lettre
     it('should throw ' + syntaxError3, () => {
         message.content = '!placer a1v a';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError3);
     });
     // mettre 16 lettre
     it('should throw ' + syntaxError3, () => {
         message.content = '!placer a1v abcdefghijklmnop';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError3);
     });
     // mettre coordonné negative
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer a-1v abc';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError7);
     });
     // mettre coordonné depassant 15
     it('should throw ' + syntaxError4, () => {
         message.content = '!placer a16v abc';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError4);
     });
     // pas de lettres
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1V';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError1);
     });
     // coordonné en majuscule
     it('should throw ' + syntaxError2, () => {
         message.content = '!placer A1v allo';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError2);
     });
 
     it('should throw ' + syntaxError5, () => {
         message.content = '!placer a1V allo';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError5);
     });
 
     it('should throw ' + syntaxError6, () => {
         message.content = '!placer a12vv allo';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError6);
     });
 
     it('should throw ' + syntaxError6, () => {
         message.content = '!placer a1 allo';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError6);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer abh allo';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError7);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer a1bh allo';
         expect(() => {
-            service.parse(message);
+            service.parse(message.content);
         }).toThrowError(syntaxError7);
     });
     // bonne coordonné
     it('should be return true', () => {
         message.content = '!placer a1v allo';
-        expect(service.parse(message)).toBeTruthy();
+        expect(service.parse(message.content)).toBeTruthy();
     });
 });
