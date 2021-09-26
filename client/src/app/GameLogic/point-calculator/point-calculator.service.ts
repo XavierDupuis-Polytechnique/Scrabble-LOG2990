@@ -47,7 +47,7 @@ export class PointCalculatorService {
         return { wordsPoints, totalPoints, isBingo };
     }
 
-    endOfGamePointdeduction(game: Game): void {
+    endOfGamePointDeduction(game: Game): void {
         const activePlayer = game.getActivePlayer();
         if (game.consecutivePass >= Game.maxConsecutivePass) {
             for (const player of game.players) {

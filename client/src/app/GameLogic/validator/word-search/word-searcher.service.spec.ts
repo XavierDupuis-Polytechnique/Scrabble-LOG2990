@@ -20,7 +20,7 @@ class MockDictionaryService extends DictionaryService {
     mockDictionary: Dictionary = {
         title: 'dictionnaire',
         description: 'mots',
-        words: ['bateau', 'butte', 'allo', 'ou', 'oui', 'nil', 'ni', 'on', 'bon'],
+        words: ['bateau', 'butte', 'allo', 'ou', 'oui', 'nil', 'ni', 'on', 'bon', 'rat', 'bu'],
     };
 
     isWordInDict(word: string): boolean {
@@ -44,7 +44,8 @@ class MockBoard extends Board {
         this.grid[0][4].letterObject = { char: 'O', value: 1 };
         this.grid[0][5].letterObject = { char: 'N', value: 1 };
         this.grid[1][3].letterObject = { char: 'O', value: 1 };
-        this.grid[2][3].letterObject = { char: 'N', value: 1 };
+        this.grid[0][6].letterObject = { char: 'N', value: 1 };
+        // this.grid[2][3].letterObject = { char: 'N', value: 1 };
     }
 }
 
@@ -70,12 +71,27 @@ describe('WordSearcher', () => {
         expect(wordSearcher).toBeTruthy();
     });
 
-    it('should find coord of tile ', () => {
+    it('should return false if word is one letter', () => {
+        const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
+        const action = new PlaceLetter(player, 'b', placement);
+        const isValid = wordSearcher.validateWords(action);
+        expect(isValid).toBe(false);
+    });
+
+    it('should find coord of tile horizontally', () => {
         const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'oui', placement);
         const coord = wordSearcher.findCoordOfLettersToPlace(action);
         expect(coord[0]).toEqual({ x: 4, y: 1 });
         expect(coord[1]).toEqual({ x: 5, y: 1 });
+    });
+
+    it('should find coord of tile vertically', () => {
+        const placement: PlacementSetting = { x: 6, y: 0, direction: Direction.Vertical };
+        const action = new PlaceLetter(player, 'non', placement);
+        const coord = wordSearcher.findCoordOfLettersToPlace(action);
+        expect(coord[0]).toEqual({ x: 6, y: 1 });
+        expect(coord[1]).toEqual({ x: 6, y: 2 });
     });
 
     it('should go to beginning of word', () => {
@@ -131,20 +147,29 @@ describe('WordSearcher', () => {
         expect(indexSecondWord[0]).toBe(1);
         expect(indexThirdWord[0]).toEqual(1);
     });
+
     it('should find all neighbors', () => {
-        mockBoard.grid[2][2].letterObject = { char: 'O', value: 1 };
+        mockBoard.grid[2][2].letterObject = { char: 'U', value: 1 };
         const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
         const action = new PlaceLetter(player, 'bateau', placement);
         const validWord = wordSearcher.listOfValidWord(action);
         expect(wordSearcher.tileToString(validWord[0].letters)).toEqual('BATEAU');
-        expect(wordSearcher.tileToString(validWord[1].letters)).toEqual('BON');
+        expect(wordSearcher.tileToString(validWord[1].letters)).toEqual('BU');
     });
 
-    it('should return empty arrat if a word is invalid', () => {
+    it('should return empty array if a word is invalid', () => {
+        mockBoard.grid[2][2].letterObject = { char: 'O', value: 1 };
+        const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
+        const action = new PlaceLetter(player, 'rat', placement);
+        const validWord = wordSearcher.listOfValidWord(action);
+        expect(validWord.length).toEqual(0);
+    });
+
+    it('should return false if a word is invalid', () => {
         mockBoard.grid[2][2].letterObject = { char: 'O', value: 1 };
         const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
         const action = new PlaceLetter(player, 'rateau', placement);
-        const validWord = wordSearcher.listOfValidWord(action);
-        expect(validWord.length).toEqual(0);
+        const isValid = wordSearcher.validateWords(action);
+        expect(isValid).toBe(false);
     });
 });
