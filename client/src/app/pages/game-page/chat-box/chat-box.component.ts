@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
+import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable } from 'rxjs';
@@ -21,6 +22,8 @@ export class ChatBoxComponent {
         Validators.maxLength(MAX_MESSAGE_LENGTH),
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
+
+    private boldPipe = new BoldPipe();
 
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
 
@@ -49,5 +52,10 @@ export class ChatBoxComponent {
     scrollDownChat() {
         const chatNativeElement = this.chat.nativeElement;
         chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
+    }
+
+    generateMessageHTML(message: Message) {
+        const transformedContent = this.boldPipe.transform(message.content);
+        return message.from + ': ' + transformedContent;
     }
 }
