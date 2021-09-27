@@ -78,13 +78,13 @@ export abstract class Bot extends Player {
         private boardService: BoardService,
         private dictionaryService: DictionaryService,
         public pointCalculatorService: PointCalculatorService,
-        // private game: Game,
+        private wordSearcher: WordSearcher, // private game: Game,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
         this.isBoardEmpty = true;
         this.validWordList = [];
-        this.wordValidator = new WordSearcher(boardService, this.dictionaryService);
+        // this.wordValidator = new WordSearcher(boardService, this.dictionaryService);
         // this.game = game;
     }
 
@@ -108,7 +108,7 @@ export abstract class Bot extends Player {
         // let isTimesUp = false;
 
         this.validWordList = [];
-        const letterInMiddleBox = grid[Bot.MIDDLE_OF_BOARD][Bot.MIDDLE_OF_BOARD].letterObject.char
+        const letterInMiddleBox = grid[Bot.MIDDLE_OF_BOARD][Bot.MIDDLE_OF_BOARD].letterObject.char;
         if (letterInMiddleBox !== ' ') {
             this.boardCrawler(startingX, startingY, grid, startingDirection);
         } else {
@@ -377,7 +377,6 @@ export abstract class Bot extends Player {
                     this.validWordList.push(word);
                 }
 
-
                 // if (this.wordValidator.validatePlacement(fakeAction)) {
                 //     word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
                 //     this.validWordList.push(word);
@@ -424,14 +423,23 @@ export abstract class Bot extends Player {
             for (const word of tmpWordList) {
                 const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, this);
                 if (wordToValidate !== 'false') {
-                    possiblyValidWords.push(new ValidWord(wordToValidate, word.indexFound, word.emptyCount, word.leftCount, word.rightCount, word.isVertical, word.startingTileX, word.startingTileY));
+                    possiblyValidWords.push(
+                        new ValidWord(
+                            wordToValidate,
+                            word.indexFound,
+                            word.emptyCount,
+                            word.leftCount,
+                            word.rightCount,
+                            word.isVertical,
+                            word.startingTileX,
+                            word.startingTileY,
+                        ),
+                    );
                 }
             }
         }
         return possiblyValidWords;
     }
-
-
 }
 
 // if (x < endOfBoard) {
