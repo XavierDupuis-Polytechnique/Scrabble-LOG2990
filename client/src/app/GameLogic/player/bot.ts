@@ -149,6 +149,8 @@ export abstract class Bot extends Player {
                     const validWords = this.wordValidator.listOfValidWord(fakeAction);
                     const wordIsValid = validWords.length !== 0;
                     if (wordIsValid) {
+                        const words = validWords.map((validWord) => validWord.letters);
+
                         // TODO: update word value
                         // TODO get the number of letter placed
 
@@ -159,7 +161,7 @@ export abstract class Bot extends Player {
                         // }
                         // tmp end
                         // TODO Calculate the number of placed letters
-                        // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, validWords).totalPoints;
+                        word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, words).totalPoints;
 
                         this.validWordList.push(word);
                     }
