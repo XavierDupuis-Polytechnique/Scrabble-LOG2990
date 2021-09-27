@@ -19,11 +19,7 @@ class MockWordSearcher extends WordSearcher {
     // eslint-disable-next-line no-unused-vars
     listOfValidWord(action: PlaceLetter): Word[] {
         if (this.validity) {
-            const word: Word = {
-                letters: [new Tile(), new Tile()],
-                index: [0, 1],
-            };
-            return [word];
+            return [{ letters: [new Tile()], index: [0] }];
         }
         return [];
     }

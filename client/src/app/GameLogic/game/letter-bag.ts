@@ -1,7 +1,7 @@
 import { LetterCreator } from './letter-creator';
 import { Letter } from './letter.interface';
 
-const PLAYER_LETTER_COUNT = 7;
+export const PLAYER_LETTER_COUNT = 7;
 
 export class LetterBag {
     static readonly playerLetterCount = PLAYER_LETTER_COUNT;
