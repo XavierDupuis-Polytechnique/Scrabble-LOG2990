@@ -1,10 +1,16 @@
-.body {
-    display: flex;
+mat-card{
+    margin: 5%;
 }
-h1 {
-    display: flex;
-    justify-content: center;
-    background-color: navy;
-    color: rgb(233, 231, 231);
-    border-radius: 5%;
+.name {
+    justify-self: center;
+    font-size: 125%;
+    font-weight: 900;
+}
+.score {
+    justify-self: end;
+    font-size: 85%;
+}
+button{
+    display:flex;
+    align-items: flex-end;
 }

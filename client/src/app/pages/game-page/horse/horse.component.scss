@@ -1,8 +1,11 @@
 mat-grid-tile {
-    border: 2px solid rgb(0, 0, 0);
+    // border: 2px solid rgb(0, 0, 0);
     font-weight: 700;
     border-radius: 10%;
     background-color: rgb(240, 231, 216);
+    background-image: url(/assets/img/Rectangle.png) no-repeat center top;
+    box-shadow: 2px 2px 2px 0.2;
+    
 }
 
 mat-grid-list {

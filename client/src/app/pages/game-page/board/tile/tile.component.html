@@ -1,4 +1,6 @@
 <div style="height: 100%; width: 100%; text-align: center" [ngClass]="class">
+    {{ multiplicatorType }} {{numberMultiplicator}}
     {{ tile.letterObject.char }}
     <sub *ngIf="tile.letterObject.char !== ' '">{{ tile.letterObject.value }}</sub>
 </div>
+

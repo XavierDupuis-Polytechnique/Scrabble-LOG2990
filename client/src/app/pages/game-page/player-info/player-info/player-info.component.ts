@@ -10,7 +10,8 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     styleUrls: ['./player-info.component.scss'],
 })
 export class PlayerInfoComponent implements OnChanges {
-    constructor(private gameManager: GameManagerService, private info: GameInfoService, private avs: ActionValidatorService) {}
+
+    constructor(private gameManager: GameManagerService, public info: GameInfoService, private avs: ActionValidatorService) {}
 
     ngOnChanges() {}
 

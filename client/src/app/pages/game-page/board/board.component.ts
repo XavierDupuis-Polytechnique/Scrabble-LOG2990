@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { MatSliderChange } from '@angular/material/slider';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
@@ -25,19 +26,19 @@ export class BoardComponent implements AfterViewInit {
         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
     }
 
-    increaseFont(): void {
-        if (this.fontSize < this.maxFontSize) {
-            this.fontSize++;
-            (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
-        }
-    }
+    // increaseFont(): void {
+    //     if (this.fontSize < this.maxFontSize) {
+    //         this.fontSize++;
+    //         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
+    //     }
+    // }  
 
-    decreaseFont(): void {
-        if (this.fontSize > this.minFontSize) {
-            this.fontSize--;
-            (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
-        }
-    }
+    // decreaseFont(): void {
+    //     if (this.fontSize > this.minFontSize) {
+    //         this.fontSize--;
+    //         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
+    //     }
+    // }
 
     getFont(): string {
         return `font-size: ${this.fontSize}px;`;
@@ -46,4 +47,13 @@ export class BoardComponent implements AfterViewInit {
     convertASCIIToChar(code: number): string {
         return String.fromCharCode(ASCII_CODE + code);
     }
+
+    updateSetting(event: MatSliderChange) {
+        if (event.value != null) {
+            this.fontSize = event.value;
+            (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
+
+        }
+    }
+
 }

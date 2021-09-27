@@ -21,7 +21,7 @@ export class ChatBoxComponent {
         Validators.maxLength(MAX_MESSAGE_LENGTH),
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
-
+    readonly maxMessageLength = MAX_MESSAGE_LENGTH;
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
 
     sendMessage() {

@@ -1,19 +1,30 @@
-.chat {
-    width: 100%;
-    resize: none;
-    size: 25%;
-    box-sizing: border-box;
-    border : 1px solid var(--darkgray);
-    background-color: var(--lightgray);
+mat-hint{
+    text-align:left;
 }
+mat-form-field{
+    width: 100%; 
+    margin: 2px;
+}
+.mat-form-field-appearance-fill .mat-form-field-flex{
+    background-color: rgb(233, 49, 49);
+}
+// .chat {
+//     // width: 100%;
+//     // resize: none;
+//     // size: 25%;
+//     // box-sizing: border-box;
+//     border : 1px solid var(--darkgray);
+//     background-color: var(--lightgray);
+// }
 
 .sharedChat {
-    height: 15vh;
+    // height: 15vh;
+    height: 20vh;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
     background-color: var(--lightblue);
-    margin-right: 5%;
+    margin-right: 3%;
 }
 
 #message {
