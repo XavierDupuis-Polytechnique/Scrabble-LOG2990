@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
-import { Bot } from '@app/GameLogic/player/bot';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
@@ -155,8 +155,8 @@ export class DictionaryService {
         return wordList;
     }
 
-    regexCheck(dictWord: ValidWord, placedLetters: string, bot: Bot): string {
-        const letterRack = bot.letterRack;
+    regexCheck(dictWord: ValidWord, placedLetters: string, botLetterRack: Letter[]): string {
+        const letterRack = botLetterRack;
         const mapRack = new Map<string, number>();
         const notFound = -1;
         const firstLetterIndex = 1;

@@ -2,6 +2,8 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -12,12 +14,12 @@ import { takeUntil } from 'rxjs/operators';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord, VERTICAL } from './valid-word';
 
-const TIME_BEFORE_PICKING_ACTION = 3000;
+const TIME_BEFORE_PICKING_ACTION = 100; // TODO Was 3000
 const TIME_BEFORE_PASS = 20000;
 export abstract class Bot extends Player {
+    letterCreator = new LetterCreator();
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
     static MIDDLE_OF_BOARD = 7;
-    isBoardEmpty: boolean;
     validWordList: ValidWord[];
 
     private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
@@ -86,7 +88,6 @@ export abstract class Bot extends Player {
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
-        this.isBoardEmpty = true;
         this.validWordList = [];
         // this.game = game;
     }
@@ -112,10 +113,10 @@ export abstract class Bot extends Player {
 
         this.validWordList = [];
         const letterInMiddleBox = grid[Bot.MIDDLE_OF_BOARD][Bot.MIDDLE_OF_BOARD].letterObject.char;
-        if (letterInMiddleBox !== ' ') {
-            this.boardCrawler(startingX, startingY, grid, startingDirection);
-        } else {
+        if (letterInMiddleBox === ' ') {
             this.botFirstTurn();
+        } else {
+            this.boardCrawler(startingX, startingY, grid, startingDirection);
         }
         return this.validWordList;
     }
@@ -128,6 +129,7 @@ export abstract class Bot extends Player {
                 const initialWord = new ValidWord(startingLetter);
                 const tmpLetter = this.letterRack.splice(rackIndex, 1);
 
+                // TODO Verify the requirement about first turn direction
                 if (this.getRandomInt(1)) {
                     initialWord.isVertical = VERTICAL;
                 }
@@ -149,24 +151,10 @@ export abstract class Bot extends Player {
                     const fakeAction = new PlaceLetter(this, word.word, placement, this.pointCalculatorService, this.wordValidator);
                     const validWords = this.wordValidator.listOfValidWord(fakeAction);
                     const wordIsValid = validWords.length !== 0;
-                    console.log('asdf');
                     if (wordIsValid) {
                         const words = validWords.map((validWord) => validWord.letters);
-
-                        // TODO: update word value
-                        // TODO get the number of letter placed
-
-                        // tmp start
-                        // const tmpList: Tile[][] = [];
-                        // for (const tmpword of validWords) {
-                        //     tmpList.push(tmpword.letters);
-                        // }
-                        // tmp end
-                        // TODO Calculate the number of placed letters
-                        const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(5, words);
-                        console.log('pointEstimation', pointEstimation);
+                        const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(word.numberOfLettersPlaced, words);
                         word.value = pointEstimation.totalPoints;
-                        console.log(word);
                         this.validWordList.push(word);
                     }
                 }
@@ -191,8 +179,10 @@ export abstract class Bot extends Player {
             allPossibilities.push(lettersOnLine);
         } else {
             let maxGroupSize = 1;
+
             while (emptyBox !== notFound) {
                 maxGroupSize++;
+
                 while (lettersOnLine.word.charAt(index) === '-') {
                     index++;
                 }
@@ -204,6 +194,7 @@ export abstract class Bot extends Player {
             let tmpSubWord: ValidWord = new ValidWord('');
             let leftCounter = 0;
             let rightCounter = 0;
+
             for (let groupsOf = 1; groupsOf <= maxGroupSize; groupsOf++) {
                 tmpSubWord = new ValidWord('');
                 leftIndex = startOfLine;
@@ -218,8 +209,8 @@ export abstract class Bot extends Player {
                     emptyBox = lettersOnLine.word.indexOf('-', rightIndex);
                     index = emptyBox;
                 }
-
                 rightIndex = index;
+
                 while (emptyBox !== notFound) {
                     tmpSubWord = new ValidWord('');
                     subWord = lettersOnLine.word.substring(leftIndex, rightIndex);
@@ -239,6 +230,7 @@ export abstract class Bot extends Player {
                     }
                     rightCounter = 0;
                     rightIndex++;
+
                     while (lettersOnLine.word.charAt(rightIndex) === '-') {
                         rightCounter++;
                         rightIndex++;
@@ -251,16 +243,15 @@ export abstract class Bot extends Player {
                     }
                     leftCounter = 0;
                     leftIndex++;
+
                     while (lettersOnLine.word.charAt(leftIndex) === '-') {
                         leftCounter++;
                         leftIndex++;
                     }
-
                     emptyBox = lettersOnLine.word.indexOf('-', rightIndex);
                     rightIndex = emptyBox;
                 }
                 tmpSubWord = new ValidWord('');
-
                 subWord = lettersOnLine.word.substring(leftIndex, endOfLine);
                 tmpSubWord.word = subWord.toLowerCase();
                 if (leftIndex === startOfLine) {
@@ -289,8 +280,8 @@ export abstract class Bot extends Player {
         const endOfBoard = 14;
         const startOfBoard = 0;
         let isVertical = isVerticalFlag;
-
         let letterInBox = grid[y][x].letterObject.char;
+
         while (letterInBox === ' ') {
             if (isVertical) {
                 if (y !== endOfBoard) {
@@ -305,7 +296,6 @@ export abstract class Bot extends Player {
         }
         if (letterInBox !== ' ') {
             const lettersOnLine: ValidWord = new ValidWord('');
-            this.isBoardEmpty = false;
             let lastLetterOfLine: number;
             let rightCount = 0;
             if (isVertical) {
@@ -319,6 +309,7 @@ export abstract class Bot extends Player {
             if (isVertical) {
                 let tmpY = endOfBoard;
                 let tmpYLetterInBox = grid[tmpY][x].letterObject.char;
+
                 while (tmpYLetterInBox === ' ') {
                     tmpY--;
                     rightCount++;
@@ -327,6 +318,7 @@ export abstract class Bot extends Player {
                 lastLetterOfLine = tmpY;
                 lettersOnLine.rightCount = rightCount;
                 tmpY = y;
+
                 while (tmpY <= lastLetterOfLine) {
                     letterInBox = grid[tmpY][x].letterObject.char;
                     lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
@@ -335,6 +327,7 @@ export abstract class Bot extends Player {
             } else {
                 let tmpX = endOfBoard;
                 let tmpXLetterInBox = grid[y][tmpX].letterObject.char;
+
                 while (tmpXLetterInBox === ' ') {
                     tmpX--;
                     rightCount++;
@@ -343,21 +336,15 @@ export abstract class Bot extends Player {
                 lastLetterOfLine = tmpX;
                 lettersOnLine.rightCount = rightCount;
                 tmpX = x;
+
                 while (tmpX <= lastLetterOfLine) {
                     letterInBox = grid[y][tmpX].letterObject.char;
                     lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                     tmpX++;
                 }
             }
-
             const allPlacedLettersCombination = this.lineSplitter(lettersOnLine);
             const possiblyValidWords: ValidWord[] = this.wordCheck(allPlacedLettersCombination);
-
-            // // start
-            // for (const word of possiblyValidWords) {
-            //     this.validWordList.push(word);
-            // }
-            // // end
 
             for (const word of possiblyValidWords) {
                 let placement: PlacementSetting;
@@ -366,31 +353,16 @@ export abstract class Bot extends Player {
                 } else {
                     placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
                 }
-
                 const fakeAction = new PlaceLetter(this, word.word, placement, this.pointCalculatorService, this.wordValidator);
                 const validWords = this.wordValidator.listOfValidWord(fakeAction);
                 const wordIsValid = validWords.length > 0;
                 if (wordIsValid) {
-                    // TODO: update word value
                     const words = validWords.map((validWord) => validWord.letters);
-                    // TODO get the number of letter placed
-                    const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(5, words);
+                    const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(word.numberOfLettersPlaced, words);
                     word.value = pointEstimation.totalPoints;
-                    // tmp start
-                    // const tmpList: Tile[][] = [];
-                    // for (const tmpword of validWords) {
-                    //     tmpList.push(tmpword.letters);
-                    // }
-                    // word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, tmpList).totalPoints;
-                    // tmp end
-
+                    word.adjacentWords = validWords;
                     this.validWordList.push(word);
                 }
-
-                // if (this.wordValidator.validatePlacement(fakeAction)) {
-                //     word.value = this.pointCalculatorService.placeLetterPointsCalculation(fakeAction, word.adjacentWords, this, this.game);
-                //     this.validWordList.push(word);
-                // }
             }
         }
 
@@ -430,8 +402,14 @@ export abstract class Bot extends Player {
 
         for (const placedLetters of allPlacedLettersCombination) {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
+
             for (const word of tmpWordList) {
-                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, this);
+                let tmpLetterRack: Letter[] = [];
+
+                for (const letter of this.letterRack) {
+                    tmpLetterRack.push(this.letterCreator.createLetter(letter.char));
+                }
+                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, tmpLetterRack);
                 if (wordToValidate !== 'false') {
                     possiblyValidWords.push(
                         new ValidWord(
@@ -443,6 +421,7 @@ export abstract class Bot extends Player {
                             word.isVertical,
                             word.startingTileX,
                             word.startingTileY,
+                            word.numberOfLettersPlaced,
                         ),
                     );
                 }
@@ -451,19 +430,3 @@ export abstract class Bot extends Player {
         return possiblyValidWords;
     }
 }
-
-// if (x < endOfBoard) {
-//     x++;
-//     this.boardCrawler(x, y, grid, isVertical);
-// } else if (y < endOfBoard && x === endOfBoard) {
-//     x = startOfBoard;
-//     y++;
-//     this.boardCrawler(x, y, grid, isVertical);
-// } else if (y === endOfBoard && x === endOfBoard && !isVertical) {
-//     x = startOfBoard;
-//     y = startOfBoard;
-//     isVertical = true;
-// }
-// return;
-
-// this.boardCrawler(newX, newY, grid);

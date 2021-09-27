@@ -1,10 +1,10 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
-import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { TestBoard } from '@app/GameLogic/player/bot.spec';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 import { EasyBot } from './easy-bot';
 
@@ -15,18 +15,22 @@ describe('EasyBot', () => {
     let spyPass: jasmine.Spy;
     let board: TestBoard;
     let boardService: BoardService;
+    let botCreatorService: BotCreatorService;
+    let wordSearcher: WordSearcher;
 
     beforeEach(() => {
         boardService = new BoardService();
         const dictionaryService = new DictionaryService();
         const pointCalculator = new PointCalculatorService(boardService);
-        const timer = new TimerService();
-        const TIME_PER_TURN = 10;
-        const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
+        // const timer = new TimerService();
+        // const TIME_PER_TURN = 10;
+        wordSearcher = new WordSearcher(boardService, dictionaryService);
+        botCreatorService = new BotCreatorService(boardService, dictionaryService, pointCalculator, wordSearcher);
+        // const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
         board = new TestBoard();
 
         // easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());
-        easyBot = new EasyBot('Tim', boardService, dictionaryService, game);
+        easyBot = botCreatorService.createBot('Tim', 'easy')
         spyPlay = spyOn(easyBot, 'playAction');
         spyExchange = spyOn(easyBot, 'exchangeAction');
         spyPass = spyOn(easyBot, 'passAction');

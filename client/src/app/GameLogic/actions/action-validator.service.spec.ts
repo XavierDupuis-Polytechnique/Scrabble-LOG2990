@@ -14,7 +14,7 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { Bot } from '@app/GameLogic/player/bot';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -22,16 +22,23 @@ import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 
+
+class TestBot extends Bot {
+    setActive() {
+    }
+}
+
+
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
     let game: Game;
     let p1User: User;
-    let p2Bot: EasyBot;
+    let p2Bot: TestBot;
     let currentPlayer: Player;
     let timer: TimerService;
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
-    let dictonary: DictionaryService;
+    let dictionary: DictionaryService;
     let info: GameInfoService;
     let wordSearcher: WordSearcher;
     const centerPosition = Math.floor(NUM_TILES / 2);
@@ -73,8 +80,8 @@ describe('ActionValidatorService', () => {
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
         p1User = new User('testUser');
-        // p2Bot = new EasyBot('testUser', board, dictonary, pointCalculator, game);
-        p2Bot = new EasyBot('testUser', board, dictonary, game);
+        // p2Bot = new EasyBot('testUser', board, dictionary, pointCalculator, game);
+        p2Bot = new TestBot('testUser', board, dictionary, pointCalculator, wordSearcher);
         game.players.push(p1User);
         game.players.push(p2Bot);
         info.receiveGame(game);
