@@ -63,8 +63,15 @@ export class LetterCreator {
         if (char.length !== 1) {
             throw Error('Invalid char entered');
         }
+        char = char.toUpperCase();
+        if (char === '*') {
+            return {
+                char,
+                value: LetterCreator.gameLettersValue[LetterCreator.gameLettersValue.length - 1],
+            };
+        }
         return {
-            char: char.toUpperCase(),
+            char,
             value: LetterCreator.gameLettersValue[char.toUpperCase().charCodeAt(0) - this.indexRectifier],
         };
     }
