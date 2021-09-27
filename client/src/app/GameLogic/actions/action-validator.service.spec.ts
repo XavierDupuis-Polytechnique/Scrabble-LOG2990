@@ -11,7 +11,7 @@ import { CommandParserService } from '@app/GameLogic/commands/command-parser/com
 import { NUM_TILES } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
-import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { PLAYER_LETTER_COUNT } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
@@ -156,6 +156,12 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
+    it('should invalidate an invalid ExchangeLetter because the LetterBag has less than 7 letters', () => {
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - (PLAYER_LETTER_COUNT - 1)); // 102 - 96 = 6 letters remaining
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 1)); // 5 letters to exchange
+        expect(service.validateAction(action)).not.toBeTruthy();
+    });
+
     it('should validate a valid ExchangeLetter because a player can exchange many of the same letter', () => {
         currentPlayer.letterRack = [
             { char: 'a', value: 1 },
@@ -250,7 +256,7 @@ describe('ActionValidatorService', () => {
     it('should validate a valid PlaceLetter because the player has jokers ', () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
         currentPlayer.letterRack = [];
-        for (let i = 0; i < LetterBag.playerLetterCount; i++) {
+        for (let i = 0; i < PLAYER_LETTER_COUNT; i++) {
             currentPlayer.letterRack.push({ char: '*', value: 0 });
         }
         const word = 'aBACADA';
@@ -262,7 +268,7 @@ describe('ActionValidatorService', () => {
     it('should invalidate an invalid PlaceLetter because the player has jokers but uses them incorrectly', () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
         currentPlayer.letterRack = [];
-        for (let i = 0; i < LetterBag.playerLetterCount; i++) {
+        for (let i = 0; i < PLAYER_LETTER_COUNT; i++) {
             currentPlayer.letterRack.push({ char: '*', value: 0 });
         }
         const word = 'abacada';
@@ -274,7 +280,7 @@ describe('ActionValidatorService', () => {
     it("should invalidate an invalid PlaceLetter because the player doesn't have enough jokers", () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
         currentPlayer.letterRack = [];
-        for (let i = 0; i < LetterBag.playerLetterCount - 1; i++) {
+        for (let i = 0; i < PLAYER_LETTER_COUNT - 1; i++) {
             currentPlayer.letterRack.push({ char: '*', value: 0 });
         }
         currentPlayer.letterRack.push({ char: 'z', value: 0 });
@@ -346,7 +352,7 @@ describe('ActionValidatorService', () => {
         const horizontalWord = 'abcdefghijk';
         for (let x = 0; x < horizontalWord.length; x++) {
             if (x % 2) {
-                currentPlayer.letterRack[x % LetterBag.playerLetterCount].char = horizontalWord.charAt(x);
+                currentPlayer.letterRack[x % PLAYER_LETTER_COUNT].char = horizontalWord.charAt(x);
             } else {
                 game.board.grid[centerPosition][x].letterObject.char = horizontalWord.charAt(x);
             }
@@ -361,7 +367,7 @@ describe('ActionValidatorService', () => {
         const verticalWord = 'abcdefghijk';
         for (let y = 0; y < verticalWord.length; y++) {
             if (y % 2) {
-                currentPlayer.letterRack[y % LetterBag.playerLetterCount].char = verticalWord.charAt(y);
+                currentPlayer.letterRack[y % PLAYER_LETTER_COUNT].char = verticalWord.charAt(y);
             } else {
                 game.board.grid[y][centerPosition].letterObject.char = verticalWord.charAt(y);
             }
@@ -381,7 +387,7 @@ describe('ActionValidatorService', () => {
         game.board.grid[0][beginPos + 1].letterObject.char = finalBoardRowChars[1];
         game.board.grid[0][beginPos + 2].letterObject.char = finalBoardRowChars[2];
         for (let i = 3; i < finalBoardRowChars.length; i++) {
-            currentPlayer.letterRack[i % LetterBag.playerLetterCount].char = finalBoardRowChars[i];
+            currentPlayer.letterRack[i % PLAYER_LETTER_COUNT].char = finalBoardRowChars[i];
             word += finalBoardRowChars.charAt(i);
         }
 
