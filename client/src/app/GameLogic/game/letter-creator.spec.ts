@@ -1,5 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
+import { ASCII_CODE } from '@app/GameLogic/game/board';
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { LetterCreator } from './letter-creator';
 
 describe('Service: LetterCreator', () => {
@@ -13,8 +15,14 @@ describe('Service: LetterCreator', () => {
     });
 
     it('should create letters', () => {
-        // const lettersToCreate: string[] = ['A', 'B', 'C'];
-        // const lettersCreated = [{ char: 'A', value: 1}, { char: 'B', value: 1}, { char: 'C', value: 1}]
-        // expect(letterCreator.createLetters(lettersToCreate)).toEqual(lettersCreated);
+        const lettersToCreate: string[] = ['A', 'B', 'C'];
+        const lettersToBeCreated = [];
+        let newLetter: Letter;
+        for (let i = 0; i < lettersToCreate.length; i++) {
+            newLetter = { char: lettersToCreate[i], value: LetterCreator.gameLettersValue[lettersToCreate[i].charCodeAt(0) - ASCII_CODE] };
+            lettersToBeCreated.push(newLetter);
+        }
+        const letterCreated = letterCreator.createLetters(lettersToCreate);
+        expect(letterCreated).toEqual(lettersToBeCreated);
     });
 });

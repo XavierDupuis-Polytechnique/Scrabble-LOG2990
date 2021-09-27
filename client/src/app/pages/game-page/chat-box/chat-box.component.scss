@@ -1,17 +1,19 @@
 .chat {
-    width     : 100%;
-    resize    : none;
+    width: 100%;
+    resize: none;
     size: 25%;
     box-sizing: border-box;
+    border : 1px solid var(--darkgray);
+    background-color: var(--lightgray);
 }
 
 .sharedChat {
-    height          : 15vh;
-    overflow-y      : scroll;
-    overflow-x      : hidden;
-    scrollbar-width : thin;
-    background-color: rgb(218, 218, 218);
-    margin-right    : 5%;
+    height: 15vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    background-color: var(--lightblue);
+    margin-right: 5%;
 }
 
 #message {
@@ -24,11 +26,14 @@
     font-family: cursive;
 }
 
-.playerMessage {
+.System {
+    color: red;
+}
+
+.Player1 {
     color: black;
 }
 
-.OpponentMesage {
-    color: blue;
-
+.Player2 {
+    color: red;
 }

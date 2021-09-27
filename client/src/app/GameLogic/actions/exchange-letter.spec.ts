@@ -12,7 +12,8 @@ describe('ExchangeLetter', () => {
     let game: Game;
     const player: Player = new User('Tim');
     beforeEach(() => {
-        game = new Game(DEFAULT_TIME_PER_TURN, new TimerService(), new PointCalculatorService(), new BoardService());
+        const boardService = new BoardService();
+        game = new Game(DEFAULT_TIME_PER_TURN, new TimerService(), new PointCalculatorService(boardService), boardService);
         game.players[0] = player;
         game.start();
     });
@@ -23,7 +24,7 @@ describe('ExchangeLetter', () => {
     });
 
     it('letter rack should be different when exchanging letters', () => {
-        const initialLetterRack: Letter[] = player.letterRack;
+        const initialLetterRack: Letter[] = [...player.letterRack];
         const lettersToExchange: Letter[] = initialLetterRack.slice(0, 3);
         const exchangeAction = new ExchangeLetter(player, lettersToExchange);
 

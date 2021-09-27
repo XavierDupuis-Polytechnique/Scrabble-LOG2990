@@ -1,3 +1,5 @@
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { BoardService } from '@app/services/board.service';
 import { EasyBot } from './easy-bot';
 
 describe('EasyBot', () => {
@@ -6,15 +8,14 @@ describe('EasyBot', () => {
     let spyExchange: jasmine.Spy;
     let spyPass: jasmine.Spy;
     beforeEach(() => {
-        // easyBot = new EasyBot('Tim');
+        easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());
         spyPlay = spyOn(easyBot, 'play');
         spyExchange = spyOn(easyBot, 'exchange');
         spyPass = spyOn(easyBot, 'pass');
     });
 
     it('should create an instance', () => {
-        // new EasyBot('Tim')
-        expect(undefined).toBeTruthy();
+        expect(easyBot).toBeTruthy();
     });
 
     it('should call actions based on setting', () => {

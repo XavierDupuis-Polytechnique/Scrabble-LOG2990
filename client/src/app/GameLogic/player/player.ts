@@ -23,9 +23,9 @@ export abstract class Player {
         this.action$.next(action);
     }
 
-    // TODO: log into message service
     displayGameLetters(): void {
-        console.log(this.letterRack);
+        // TODO: log into message service
+        // console.log(this.letterRack);
     }
 
     getLettersFromRack(mockLetters: Letter[]): Letter[] {

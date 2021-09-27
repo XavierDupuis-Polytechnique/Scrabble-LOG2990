@@ -8,6 +8,8 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 @Injectable({
     providedIn: 'root',
@@ -15,7 +17,7 @@ import { User } from '@app/GameLogic/player/user';
 export class ActionCompilerService {
     private letterFactory: LetterCreator = new LetterCreator();
 
-    constructor(private gameInfo: GameInfoService) {}
+    constructor(private gameInfo: GameInfoService, private pointCalculator: PointCalculatorService, private wordSearcher: WordSearcher) {}
 
     // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
@@ -45,33 +47,30 @@ export class ActionCompilerService {
         if (!args) {
             throw new Error('No argument was given for exchange letter creation');
         }
-        console.log(args);
         const letters = args[0].split('');
         const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters);
-        console.log(lettersToExchange);
         return new ExchangeLetter(user, lettersToExchange);
     }
 
     private createPlaceLetter(user: User, args: string[] | undefined) {
-        // TODO: implement createPlaceLetter
         if (!args) {
-            throw new Error('No argument was given for place letter creation');
+            throw Error('No argument was given for place letter creation');
         }
-        console.log(args);
-        const placementSettings = this.createPlacementSettings(args[0]);
-        const word = args[1];
-        // const lettersToPlace = ;
-        return new PlaceLetter(user, word, placementSettings);
+        const PLACE_LETTER_ARGS_LENGTH = 4;
+        if (args.length !== PLACE_LETTER_ARGS_LENGTH) {
+            throw Error('Invalid number of arguments');
+        }
+        const placementArguments = args.slice(0, args.length - 1);
+        const placementSettings = this.createPlacementSettings(placementArguments);
+        const word = args[args.length - 1];
+        return new PlaceLetter(user, word, placementSettings, this.pointCalculator, this.wordSearcher);
     }
 
-    private createPlacementSettings(placementArg: string): PlacementSetting {
-        if (placementArg.length !== 3) {
-            throw Error('arg invalid for creating placementSetting');
-        }
-        const y = placementArg.charCodeAt(0) - 'a'.charCodeAt(0);
-        const xString = placementArg.charAt(1);
+    private createPlacementSettings(placementArgs: string[]): PlacementSetting {
+        const xString = placementArgs[1];
         const x = Number.parseInt(xString, 10) - 1;
-        const direction = placementArg.charAt(2).toUpperCase();
+        const y = placementArgs[0].charCodeAt(0) - 'a'.charCodeAt(0);
+        const direction = placementArgs[2].toUpperCase();
         return { x, y, direction };
     }
 }

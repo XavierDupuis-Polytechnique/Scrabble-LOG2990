@@ -4,6 +4,8 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { User } from '@app/GameLogic/player/user';
 
 // TODO: implement MockGameService
 // class MockGameInfoService {
@@ -15,15 +17,17 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 // {provide: GameInfoService, useClass: MockGameService}
 describe('ActionCompilerService', () => {
     let service: ActionCompilerService;
+    let gameInfo: GameInfoService;
     // let gameInfoService: GameInfoService;
     // let user: User;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [ActionCompilerService],
+            providers: [ActionCompilerService, GameInfoService],
         });
         service = TestBed.inject(ActionCompilerService);
+        gameInfo = TestBed.inject(GameInfoService);
 
-        // user = new User('Hello World!');
+        gameInfo.user = new User('p1');
     });
 
     it('should be created', () => {
@@ -57,12 +61,22 @@ describe('ActionCompilerService', () => {
     it('should create PlaceLetter object', () => {
         const command: Command = {
             type: CommandType.Place,
-            args: ['A', 'B', 'C'],
+            args: ['a', '1', 'h', 'abc'],
         };
         expect(service.translate(command)).toBeInstanceOf(PlaceLetter);
     });
 
-    it('#createExchangeLetter should throw error when invalid command exchange', () => {
+    it('should throw error when invalid number of args for PlaceLetter object', () => {
+        const invalidCommand: Command = {
+            type: CommandType.Place,
+            args: ['a', '1', 'h'],
+        };
+        expect(() => {
+            service.translate(invalidCommand);
+        }).toThrowError();
+    });
+
+    it('should throw error when invalid command exchange', () => {
         const invalidCommand: Command = {
             type: CommandType.Exchange,
         };
@@ -71,7 +85,7 @@ describe('ActionCompilerService', () => {
         }).toThrowError();
     });
 
-    it('#createExchangeLetter should throw error when invalid command place', () => {
+    it('should throw error when invalid command place', () => {
         const invalidCommand: Command = {
             type: CommandType.Place,
         };

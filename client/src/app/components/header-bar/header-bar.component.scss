@@ -1,7 +1,17 @@
-#headerbar {
-    background-color:lightskyblue;
-    padding-top: 2%;
-    padding-left: 2%;
-    margin-bottom: 2%;
-    border-bottom: medium solid navy;
+// #headerbar {
+//     background-color: lightskyblue;
+//     padding-top: 2%;
+//     padding-left: 2%;
+//     margin-bottom: 2%;
+//     height: 5%;
+//     border-bottom: medium solid navy;
+// }
+
+mat-toolbar {
+    display: flex;
+    position: relative;
+}
+
+#title {
+    margin: 2%;
 }
