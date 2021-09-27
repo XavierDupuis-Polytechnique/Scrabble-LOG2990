@@ -9,6 +9,7 @@ import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
@@ -29,9 +30,11 @@ class MockWordSearcher extends WordSearcher {
 }
 
 class MockPointCalculator extends PointCalculatorService {
-    placeLetterPointsCalculation(action: PlaceLetter, listOfWord: Tile[][]) {
+    placeLetterCalculation(action: PlaceLetter, listOfWord: Tile[][]) {
         const points = action.word.length + listOfWord.length;
-        action.player.points += points;
+        const player = action.player;
+        player.points = points;
+        console.log('adding points to player', player, points);
         return points;
     }
 }
@@ -49,7 +52,7 @@ describe('PlaceLetter', () => {
     let game: Game;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
-    let pointCalculatorService: PointCalculatorService;
+    let pointCalculatorService: MockPointCalculator;
     let wordSearcher: WordSearcher;
     let placeLetter: PlaceLetter;
     beforeEach(() => {
@@ -57,13 +60,15 @@ describe('PlaceLetter', () => {
         TestBed.configureTestingModule({
             providers: [
                 BoardService,
+                DictionaryService,
                 { provide: PointCalculatorService, useClass: MockPointCalculator },
                 { provide: WordSearcher, useClass: MockWordSearcher },
             ],
         });
-        const boardService = new BoardService();
-        pointCalculatorService = TestBed.inject(MockPointCalculator);
-        wordSearcher = TestBed.inject(WordSearcher);
+        const boardService = TestBed.inject(BoardService);
+        pointCalculatorService = new MockPointCalculator(boardService);
+        const dictionaryService = TestBed.inject(DictionaryService);
+        wordSearcher = new MockWordSearcher(boardService, dictionaryService);
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService);
         game.players.push(player1);
