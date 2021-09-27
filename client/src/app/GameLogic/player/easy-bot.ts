@@ -31,7 +31,6 @@ export class EasyBot extends Bot {
         this.chooseAction(action);
         console.log(action);
         return action;
-
     }
     // TODO change behavior of play
     randomActionPicker(): Action {
@@ -102,7 +101,7 @@ export class EasyBot extends Bot {
         } else {
             const action = new PassTurn(this);
             // this.chooseAction(action);
-            return action
+            return action;
         }
     }
 
@@ -127,7 +126,7 @@ export class EasyBot extends Bot {
     }
 
     passAction(): Action {
-        const action = new PassTurn(this)
+        const action = new PassTurn(this);
         // this.chooseAction(action);
         return action;
     }

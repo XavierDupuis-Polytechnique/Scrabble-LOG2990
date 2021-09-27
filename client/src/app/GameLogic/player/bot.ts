@@ -28,15 +28,19 @@ export abstract class Bot extends Player {
     // TODO: find better name
     startTimerAction() {
         const timerPass = timer(TIME_BEFORE_PASS);
-        timerPass.subscribe(() => {
+        timerPass.pipe(takeUntil(this.action$)).subscribe(() => {
+            console.log('after 20s');
             this.play(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
+            console.log('action to play', action);
             if (action !== undefined) {
                 this.play(action);
             } else {
+                console.log('action undefined');
                 this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+                    console.log('received after 3s', action);
                     if (chosenAction !== undefined) {
                         this.play(chosenAction);
                     }
@@ -76,8 +80,8 @@ export abstract class Bot extends Player {
         name: string,
         private boardService: BoardService,
         private dictionaryService: DictionaryService,
-        public pointCalculatorService: PointCalculatorService,
-        private wordValidator: WordSearcher, // private game: Game,
+        protected pointCalculatorService: PointCalculatorService,
+        protected wordValidator: WordSearcher, // private game: Game,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
