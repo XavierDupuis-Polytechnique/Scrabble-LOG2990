@@ -73,7 +73,6 @@ describe('PointCalculatorService', () => {
     let listOfWord: Tile[][];
     let word: Tile[];
     let wordSearcher: WordSearcher;
-
     beforeEach(() => {
         TestBed.configureTestingModule({ providers: [TimerService, BoardService, PointCalculatorService, WordSearcher] });
         timer = TestBed.inject(TimerService);
@@ -374,18 +373,17 @@ describe('PointCalculatorService', () => {
     });
 
     it('should not calculate bonus when player place all letter if rack was not full (on end of game)', () => {
-        const totalPointsOfWord = 8;
+        const totalPointsOfWord = 7;
         const initialPointPlayer1 = 150;
         const initialPointPlayer2 = 50;
         player1.points = initialPointPlayer1;
         player2.points = initialPointPlayer2;
         game.consecutivePass = 0;
-        word = [
-            { letterObject: { char: 'C', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
-            { letterObject: { char: 'E', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-            { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
-        ];
-        listOfWord.push(word);
+        grid[0][5].letterObject = { char: 'C', value: 3 };
+        grid[1][5].letterObject = { char: 'E', value: 1 };
+        grid[2][5].letterObject = { char: 'T', value: 1 };
+        const wordCet = [grid[0][5], grid[1][5], grid[2][5]];
+        listOfWord.push(wordCet);
         player1.letterRack = [
             { char: 'A', value: 1 },
             { char: 'T', value: 1 },
@@ -426,7 +424,7 @@ describe('PointCalculatorService', () => {
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;
         game.otherPlayer.letterRack = threeLetterRack;
-        pointCalculator.endOfGamePointdeduction(game as Game);
+        pointCalculator.endOfGamePointDeduction(game as Game);
         expect(game.activePlayer.points).toBe(totalPointsActivePlayer);
         expect(game.otherPlayer.points).toBe(totalPointsOtherPlayer);
     });

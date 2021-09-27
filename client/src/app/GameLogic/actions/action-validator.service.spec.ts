@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { Action } from '@app/GameLogic/actions/action';
