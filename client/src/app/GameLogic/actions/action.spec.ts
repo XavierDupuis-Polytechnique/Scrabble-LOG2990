@@ -19,7 +19,8 @@ describe('Action', () => {
     let user: User;
     let gameSpy: jasmine.Spy<(action: Action) => void>;
     beforeEach(() => {
-        game = new Game(TIME_PER_TURN, new TimerService(), new PointCalculatorService(), new BoardService());
+        const boardService = new BoardService();
+        game = new Game(TIME_PER_TURN, new TimerService(), new PointCalculatorService(boardService), boardService);
         gameSpy = spyOn(game, 'doAction');
         user = new User('Paul');
         action = new TestAction(user);
