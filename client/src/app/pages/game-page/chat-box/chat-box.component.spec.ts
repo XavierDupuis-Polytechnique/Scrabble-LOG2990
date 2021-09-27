@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 
 import { ChatBoxComponent } from './chat-box.component';
 
@@ -10,7 +9,6 @@ describe('ChatBoxComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ChatBoxComponent],
-            imports: [ReactiveFormsModule],
         }).compileComponents();
     });
 
@@ -22,28 +20,5 @@ describe('ChatBoxComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('should not send message if more than 512 character', () => {
-        let testString = '';
-        for (let i = 0; i < 513; i++) {
-            testString += '+';
-        }
-        const el = fixture.nativeElement.querySelector('input');
-        el.value = testString;
-        el.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
-        component.sendMessage();
-        expect(component.messageValid).toBeFalse();
-    });
-
-    it('should send message if correct format', () => {
-        const testString = 'hello';
-        const el = fixture.nativeElement.querySelector('input');
-        el.value = testString;
-        el.dispatchEvent(new Event('input'));
-        fixture.detectChanges();
-        component.sendMessage();
-        expect(component.messageValid).toBeTrue();
     });
 });
