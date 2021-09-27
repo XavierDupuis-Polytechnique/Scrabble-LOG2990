@@ -119,7 +119,7 @@ export class ActionValidatorService {
             return false;
         }
 
-        if (!this.hasLettersOrJokersInRack(action.player.letterRack, lettersNeeded)) {
+        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
             let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
             if (this.hasAJoker(action.player.letterRack)) {
                 message = message.concat(
@@ -151,7 +151,7 @@ export class ActionValidatorService {
 
         let actionLetters = '';
         for (const letter of action.lettersToExchange) {
-            actionLetters += letter.char;
+            actionLetters += letter.char.toLowerCase();
         }
 
         if (!this.hasLettersInRack(action.player.letterRack, actionLetters)) {
@@ -162,7 +162,7 @@ export class ActionValidatorService {
         return true;
     }
 
-    private hasLettersOrJokersInRack(rackLetters: Letter[], actionLetters: string): boolean {
+    private hasLettersInRack(rackLetters: Letter[], actionLetters: string): boolean {
         const rackChars = rackLetters.map((value) => value.char);
         const actionChars: string[] = actionLetters.split('');
 
@@ -193,34 +193,6 @@ export class ActionValidatorService {
             }
             occurence--;
             rackCharsOccurences.set(char, occurence);
-        }
-        return true;
-    }
-
-    private hasLettersInRack(rackLetters: Letter[], actionLetters: string): boolean {
-        const rackChars = rackLetters.map((value) => value.char);
-        const actionChars: string[] = actionLetters.split('');
-
-        const rackCharsOccurences = new Map<string, number>();
-        for (const char of rackChars) {
-            const lowerChar = char.toLowerCase();
-            let occurence = rackCharsOccurences.get(lowerChar);
-            if (occurence) {
-                occurence++;
-                rackCharsOccurences.set(lowerChar, occurence);
-            } else {
-                rackCharsOccurences.set(lowerChar, 1);
-            }
-        }
-
-        for (const char of actionChars) {
-            const lowerChar = char.toLowerCase();
-            let occurence = rackCharsOccurences.get(lowerChar);
-            if (occurence === undefined || occurence === 0) {
-                return false;
-            }
-            occurence--;
-            rackCharsOccurences.set(lowerChar, occurence);
         }
         return true;
     }
