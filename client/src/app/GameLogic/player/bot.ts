@@ -18,7 +18,6 @@ export abstract class Bot extends Player {
     static MIDDLE_OF_BOARD = 7;
     isBoardEmpty: boolean;
     validWordList: ValidWord[];
-    wordValidator: WordSearcher;
 
     private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
     chooseAction(action: Action) {
@@ -78,13 +77,12 @@ export abstract class Bot extends Player {
         private boardService: BoardService,
         private dictionaryService: DictionaryService,
         public pointCalculatorService: PointCalculatorService,
-        private wordSearcher: WordSearcher, // private game: Game,
+        private wordValidator: WordSearcher, // private game: Game,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
         this.isBoardEmpty = true;
         this.validWordList = [];
-        // this.wordValidator = new WordSearcher(boardService, this.dictionaryService);
         // this.game = game;
     }
 
