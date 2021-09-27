@@ -4,14 +4,15 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { NUM_TILES } from '@app/GameLogic/game/board';
+import { EMPTY_CHAR, NUM_TILES } from '@app/GameLogic/game/board';
 // import { NUM_TILES } from '@app/GameLogic/game/board';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { PLAYER_LETTER_COUNT } from '@app/GameLogic/game/letter-bag';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BoardService } from '@app/services/board.service';
 
-// TODO: put throw error
+const JOKER = '*';
 @Injectable({
     providedIn: 'root',
 })
@@ -49,14 +50,14 @@ export class ActionValidatorService {
         return this.gameInfo.activePlayer === action.player;
     }
 
+    // eslint-disable-next-line complexity
     private validatePlaceLetter(action: PlaceLetter): boolean {
         if (!this.board.board.grid) {
             return false;
         }
 
         const centerTilePosition: number = Math.floor(NUM_TILES / 2);
-        const board = this.board.board;
-        let hasCenterTile = board.grid[centerTilePosition][centerTilePosition].letterObject.char !== ' ';
+        let hasCenterTile = this.board.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
 
         let hasNeighbour = false;
 
@@ -68,24 +69,24 @@ export class ActionValidatorService {
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
             if (nextPos >= NUM_TILES || y >= NUM_TILES) {
                 this.sendErrorMessage(
-                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + x,
+                    'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + ++x,
                 );
                 return false;
             }
 
-            const currentTile = board.grid[y][x];
-            const currentChar = action.word.charAt(letterIndex);
+            const currentTileChar = this.board.board.grid[y][x].letterObject.char.toLowerCase();
+            const wordCurrentChar = action.word.charAt(letterIndex);
 
-            if (currentTile.letterObject.char === ' ') {
-                lettersNeeded = lettersNeeded.concat(currentChar);
+            if (currentTileChar === EMPTY_CHAR) {
+                lettersNeeded = lettersNeeded.concat(wordCurrentChar);
             } else {
-                if (currentChar !== currentTile.letterObject.char) {
+                if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                        currentChar +
+                        wordCurrentChar +
                         '" ne peut être placé en ' +
                         String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                        x,
+                        ++x,
                     );
                     return false;
                 }
@@ -101,7 +102,7 @@ export class ActionValidatorService {
                 }
             } else {
                 if (!hasNeighbour) {
-                    hasNeighbour = this.hasNeighbour(x, y);
+                    hasNeighbour = this.board.hasNeighbour(x, y);
                 }
             }
 
@@ -119,46 +120,38 @@ export class ActionValidatorService {
         }
 
         if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
-            this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
+            let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
+            if (this.hasAJoker(action.player.letterRack)) {
+                message = message.concat(
+                    ' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.',
+                );
+            }
+            this.sendErrorMessage(message);
             return false;
         }
+
         this.sendSystemMessage(action.player.name + ' PLACE des lettres');
         return true;
     }
 
-    private hasNeighbour(x: number, y: number): boolean {
-        if (x + 1 < NUM_TILES) {
-            if (this.board.board.grid[y][x + 1].letterObject.char !== ' ') {
-                return true;
-            }
-        }
-        if (x - 1 >= 0) {
-            if (this.board.board.grid[y][x - 1].letterObject.char !== ' ') {
-                return true;
-            }
-        }
-        if (y + 1 < NUM_TILES) {
-            if (this.board.board.grid[y + 1][x].letterObject.char !== ' ') {
-                return true;
-            }
-        }
-        if (y - 1 >= 0) {
-            if (this.board.board.grid[y - 1][x].letterObject.char !== ' ') {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private validateExchangeLetter(action: ExchangeLetter): boolean {
+        if (this.gameInfo.numberOfLettersRemaining < PLAYER_LETTER_COUNT) {
+            this.sendErrorMessage(
+                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de' + PLAYER_LETTER_COUNT,
+            );
+            return false;
+        }
+
         if (action.lettersToExchange.length > this.gameInfo.numberOfLettersRemaining) {
-            this.sendErrorMessage('Commande impossible à réaliser : La réserve ne contient pas assez de lettres');
+            this.sendErrorMessage(
+                'Commande impossible à réaliser : La réserve ne contient pas assez de lettres pour en échanger ' + action.lettersToExchange.length,
+            );
             return false;
         }
 
         let actionLetters = '';
         for (const letter of action.lettersToExchange) {
-            actionLetters += letter.char;
+            actionLetters += letter.char.toLowerCase();
         }
 
         if (!this.hasLettersInRack(action.player.letterRack, actionLetters)) {
@@ -185,16 +178,32 @@ export class ActionValidatorService {
             }
         }
 
-        for (const char of actionChars) {
-            const lowerChar = char.toLowerCase();
-            let occurence = rackCharsOccurences.get(lowerChar);
+        for (let char of actionChars) {
+            let occurence = rackCharsOccurences.get(char);
             if (occurence === undefined || occurence === 0) {
-                return false;
+                if (char.toUpperCase() === char) {
+                    occurence = rackCharsOccurences.get(JOKER);
+                    char = JOKER;
+                    if (occurence === undefined || occurence === 0) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
             }
             occurence--;
-            rackCharsOccurences.set(lowerChar, occurence);
+            rackCharsOccurences.set(char, occurence);
         }
         return true;
+    }
+
+    private hasAJoker(letterRack: Letter[]): boolean {
+        for (const letter of letterRack) {
+            if ((letter.char = JOKER)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private validatePassTurn(action: PassTurn) {
