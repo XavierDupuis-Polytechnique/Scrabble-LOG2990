@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
@@ -148,6 +149,7 @@ export abstract class Bot extends Player {
                     const fakeAction = new PlaceLetter(this, word.word, placement, this.pointCalculatorService, this.wordValidator);
                     const validWords = this.wordValidator.listOfValidWord(fakeAction);
                     const wordIsValid = validWords.length !== 0;
+                    console.log('asdf');
                     if (wordIsValid) {
                         const words = validWords.map((validWord) => validWord.letters);
 
@@ -161,8 +163,10 @@ export abstract class Bot extends Player {
                         // }
                         // tmp end
                         // TODO Calculate the number of placed letters
-                        word.value = this.pointCalculatorService.testPlaceLetterCalculation(5, words).totalPoints;
-
+                        const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(5, words);
+                        console.log('pointEstimation', pointEstimation);
+                        word.value = pointEstimation.totalPoints;
+                        console.log(word);
                         this.validWordList.push(word);
                     }
                 }
@@ -368,8 +372,10 @@ export abstract class Bot extends Player {
                 const wordIsValid = validWords.length > 0;
                 if (wordIsValid) {
                     // TODO: update word value
+                    const words = validWords.map((validWord) => validWord.letters);
                     // TODO get the number of letter placed
-
+                    const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(5, words);
+                    word.value = pointEstimation.totalPoints;
                     // tmp start
                     // const tmpList: Tile[][] = [];
                     // for (const tmpword of validWords) {
