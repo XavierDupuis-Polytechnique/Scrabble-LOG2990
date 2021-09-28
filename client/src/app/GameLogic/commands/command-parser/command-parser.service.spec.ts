@@ -75,7 +75,7 @@ describe('CommandParser', () => {
     it('should be return true', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
-        expect(service.placeLetterFormatter(testArg)).toBe(expectedArg);
+        expect(service.placeLetterFormatter(testArg)).toEqual(expectedArg);
     });
 
     it('should throw ' + syntaxError1, () => {
