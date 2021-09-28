@@ -34,7 +34,7 @@ export class ChatBoxComponent {
         }
 
         const content = this.messageForm.value;
-        const playerName = this.gameInfoService.user.name;
+        const playerName = this.gameInfo.user.name;
         this.messageService.receiveMessage(playerName, content);
 
         this.messageForm.reset();
