@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 
 describe('CommandParser', () => {
@@ -61,13 +62,13 @@ describe('CommandParser', () => {
 
     it('should throw ' + syntaxError3, () => {
         expect(() => {
-            service.placeLetterFormatter(['a1v', ' ']);
+            service.placeLetterFormatter(['a1v', EMPTY_CHAR]);
         }).toThrowError(syntaxError3);
     });
 
     it('should throw ' + syntaxError3, () => {
         expect(() => {
-            service.placeLetterFormatter(['a1v', '   ']);
+            service.placeLetterFormatter(['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
         }).toThrowError(syntaxError3);
     });
 

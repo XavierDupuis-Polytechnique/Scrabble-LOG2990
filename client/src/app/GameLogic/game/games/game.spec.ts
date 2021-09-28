@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
-
 const TIME_PER_TURN = 10;
-const MAX_LETTERS_IN_RACK = 7;
 
 describe('Game', () => {
     let game: Game;
@@ -47,8 +46,8 @@ describe('Game', () => {
 
     it('should draw 7 letter @ start', () => {
         game.start();
-        expect(user1.letterRack.length).toBe(MAX_LETTERS_IN_RACK);
-        expect(user2.letterRack.length).toBe(MAX_LETTERS_IN_RACK);
+        expect(user1.letterRack.length).toBe(RACK_LETTER_COUNT);
+        expect(user2.letterRack.length).toBe(RACK_LETTER_COUNT);
     });
 
     it('should end game when letter bag is empty and one player rack is empty', () => {

@@ -1,6 +1,6 @@
-import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
