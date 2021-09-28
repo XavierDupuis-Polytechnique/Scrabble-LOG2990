@@ -1,9 +1,5 @@
-$hookers-green: rgba(67, 109, 102, 1);
-$black-chocolate: rgba(20, 16, 9, 1);
-$bone: rgba(203, 199, 174, 1);
-
 mat-grid-tile {
-    background-color: rgb(240, 231, 216);
+    background-color: var(--bone);
 }
 
 app-tile {
@@ -17,7 +13,7 @@ mat-grid-list {
     border: 3px solid white;
 }
 
-mat-slider{
+mat-slider {
     width: 3%;
 }
 // .Column {
@@ -32,7 +28,7 @@ mat-slider{
     margin-left: 25%;
     // margin-right: 25%;
     max-width: 66vmin;
-    border: 10px solid $hookers-green;
+    border: 10px solid var(--hookers-green);
     background-color: var(--white);
     grid-area: Grid;
 }
@@ -43,7 +39,7 @@ mat-slider{
     // font-size: 80%;
     // margin-left: 75%;
     // margin-top: 1%;
-   
+
     // height: 5%;
     // border-radius: 3%;
     // background-color: rgb(235, 235, 235);

@@ -1,20 +1,15 @@
-$melon: rgba(242, 185, 176, 1);
-$blue-munsell: rgba(41, 151, 164, 1);
-$salmon: rgba(242, 121, 102, 1);
-$powder-blue: rgba(202, 225, 225, 1);
-
 .letterX2 {
-    background-color: $powder-blue;
+    background-color: var(--powder-blue);
 }
 
 .letterX3 {
-    background-color: $blue-munsell;
+    background-color: var(--blue-munsell);
 }
 
 .wordX2 {
-    background-color: $melon;
+    background-color: var(--melon);
 }
 
 .wordX3 {
-    background-color: $salmon;
+    background-color: var(--salmon);
 }

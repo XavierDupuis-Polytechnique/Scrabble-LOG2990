@@ -15,16 +15,16 @@ export class TileComponent implements OnInit {
     ngOnInit() {
         if (this.tile.letterMultiplicator !== 1) {
             this.class = `letterX${this.tile.letterMultiplicator}`;
-            this.multiplicatorType = `lettre`;
-
+            this.multiplicatorType = 'lettre';
         } else if (this.tile.wordMultiplicator !== 1) {
             this.class = `wordX${this.tile.wordMultiplicator}`;
-            this.multiplicatorType = `mot`;
+            this.multiplicatorType = 'mot';
         }
         if (this.tile.wordMultiplicator === 2 || this.tile.letterMultiplicator === 2) {
-            this.numberMultiplicator = `double`;
-        } if (this.tile.wordMultiplicator === 3 || this.tile.letterMultiplicator === 3) {
-            this.numberMultiplicator = `triple`;
+            this.numberMultiplicator = 'double';
+        }
+        if (this.tile.wordMultiplicator === 3 || this.tile.letterMultiplicator === 3) {
+            this.numberMultiplicator = 'triple';
         }
     }
 }
