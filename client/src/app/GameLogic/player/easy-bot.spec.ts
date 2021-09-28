@@ -12,7 +12,6 @@ describe('EasyBot', () => {
     let easyBot: EasyBot;
     let spyPlay: jasmine.Spy;
     let spyExchange: jasmine.Spy;
-    let spyPass: jasmine.Spy;
     let board: TestBoard;
     let boardService: BoardService;
     let botCreatorService: BotCreatorService;
@@ -30,10 +29,9 @@ describe('EasyBot', () => {
         board = new TestBoard();
 
         // easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());
-        easyBot = botCreatorService.createBot('Tim', 'easy')
+        easyBot = botCreatorService.createBot('Tim', 'easy');
         spyPlay = spyOn(easyBot, 'playAction');
         spyExchange = spyOn(easyBot, 'exchangeAction');
-        spyPass = spyOn(easyBot, 'passAction');
     });
 
     it('should create an instance', () => {
@@ -46,8 +44,7 @@ describe('EasyBot', () => {
         for (let i = 0; i < numberOfTime; i++) {
             easyBot.randomActionPicker();
         }
-        let value = Math.round((spyPass.calls.count() / numberOfTime) * mul) / mul;
-        expect(value).toBeCloseTo(EasyBot.actionProbabibility.pass);
+        let value;
         value = Math.round((spyExchange.calls.count() / numberOfTime) * mul) / mul;
         expect(value).toBeCloseTo(EasyBot.actionProbabibility.exchange);
         value = Math.round((spyPlay.calls.count() / numberOfTime) * mul) / mul;
@@ -71,7 +68,6 @@ describe('EasyBot', () => {
         // TODO change number when crosscheck works
         result = easyBot.setActive();
         console.log(result);
-        expect(result).toBeFalsy;
+        expect(result).toBeTruthy();
     });
-
 });
