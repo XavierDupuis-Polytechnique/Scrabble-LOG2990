@@ -68,7 +68,7 @@ export class CommandParserService {
     }
 
     placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
-        const letters = new RegExp('/^[a-zA-Z]+$/');
+        const letters = new RegExp('^(?=.*?[A-Za-z])[A-Za-z+]+$');
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             throw Error(this.errorSyntax + ': ligne hors champ');
         }
