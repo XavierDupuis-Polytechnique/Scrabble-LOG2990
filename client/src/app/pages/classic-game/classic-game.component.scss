@@ -1,3 +1,9 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: url(/assets/img/backgroundHome.png) no-repeat center top;
+    background-size: 100vw 100vh;
+}
 .justified {
     display: flex;
     flex-direction: column;
@@ -6,11 +12,15 @@
     align-items: center;
 }
 
+button {
+    margin: 0.5%;
+}
+
 app-new-solo-game-form {
     z-index: 1;
     left: 35%;
     top: 15%;
-    width: 30%;
+    min-width: 40%;
     height: 55%;
     position: absolute;
     overflow: auto;

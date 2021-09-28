@@ -18,3 +18,15 @@
     padding-top: 14%;
     display: block;
 }
+.letter {
+    font-family: 'overpass';
+    font-size: 1rem;
+    font-weight: 700;
+    size: inherit;
+    border-radius: 10%;
+    border: 1px solid rgb(134, 114, 98);
+    background-color: rgb(240, 231, 216);
+    background-image: url(/assets/img/tuile.png);
+    background-size: contain;
+    box-shadow: 2px 2px 2px 0.2;
+}
