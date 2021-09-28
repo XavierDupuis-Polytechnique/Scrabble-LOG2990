@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
+import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable } from 'rxjs';
 
@@ -22,7 +24,9 @@ export class ChatBoxComponent {
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
 
-    constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
+    private boldPipe = new BoldPipe();
+
+    constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef, private gameInfo: GameInfoService) {}
 
     sendMessage() {
         if (!this.messageValid) {
@@ -30,8 +34,8 @@ export class ChatBoxComponent {
         }
 
         const content = this.messageForm.value;
-        const newMessage = { content, from: 'player1', type: MessageType.Player1 };
-        this.messageService.receiveMessage(newMessage);
+        const playerName = this.gameInfo.user.name;
+        this.messageService.receiveMessage(playerName, content);
 
         this.messageForm.reset();
         this.cdRef.detectChanges();
@@ -49,5 +53,10 @@ export class ChatBoxComponent {
     scrollDownChat() {
         const chatNativeElement = this.chat.nativeElement;
         chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
+    }
+
+    generateMessageHTML(message: Message) {
+        const transformedContent = this.boldPipe.transform(message.content);
+        return message.from + ': ' + transformedContent;
     }
 }
