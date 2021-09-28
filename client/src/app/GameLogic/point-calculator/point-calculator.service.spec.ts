@@ -8,6 +8,7 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -24,8 +25,14 @@ class MockGame extends Game {
     consecutivePass: number = MAX_CONSECUTIVE_PASS;
     board: Board;
 
-    constructor(time: number, timerService: TimerService, pointCalculatorService: PointCalculatorService, boardService: BoardService) {
-        super(time, timerService, pointCalculatorService, boardService);
+    constructor(
+        time: number,
+        timerService: TimerService,
+        pointCalculatorService: PointCalculatorService,
+        boardService: BoardService,
+        messageService: MessagesService,
+    ) {
+        super(time, timerService, pointCalculatorService, boardService, messageService);
         this.players = [this.activePlayer, this.otherPlayer];
         this.board = boardService.board;
     }
@@ -59,6 +66,7 @@ describe('PointCalculatorService', () => {
     let action: MockPlaceLetter;
     let game: MockGame;
     let grid: Tile[][];
+    let messages: MessagesService;
     const timePerTurn = 30;
     const emptyRack: Letter[] = [];
     const rack: Letter[] = [
@@ -74,12 +82,13 @@ describe('PointCalculatorService', () => {
     let word: Tile[];
     let wordSearcher: WordSearcher;
     beforeEach(() => {
-        TestBed.configureTestingModule({ providers: [TimerService, BoardService, PointCalculatorService, WordSearcher] });
+        TestBed.configureTestingModule({ providers: [TimerService, BoardService, PointCalculatorService, WordSearcher, MessagesService] });
         timer = TestBed.inject(TimerService);
         boardService = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
-        game = new MockGame(timePerTurn, timer, pointCalculator, boardService);
+        messages = TestBed.inject(MessagesService);
+        game = new MockGame(timePerTurn, timer, pointCalculator, boardService, messages);
         player1 = new User('Tim');
         player2 = new User('Max');
         listOfWord = [];
@@ -419,7 +428,7 @@ describe('PointCalculatorService', () => {
             { char: 'T', value: 1 },
         ];
         const timeTurn = 30;
-        game = new MockGame(timeTurn, timer, pointCalculator, boardService);
+        game = new MockGame(timeTurn, timer, pointCalculator, boardService, messages);
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;

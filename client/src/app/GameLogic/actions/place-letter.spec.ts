@@ -3,10 +3,12 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { isCharUpperCase, PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -68,7 +70,7 @@ describe('PlaceLetter', () => {
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService);
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService, new MessagesService(new CommandParserService()));
         game.players.push(player1);
         game.players.push(player2);
         game.start();
