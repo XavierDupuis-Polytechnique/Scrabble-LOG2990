@@ -344,4 +344,22 @@ describe('DictionaryService', () => {
         const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
+
+    it('should check if its possible to form the word eteTa with the available letters (edge case 2 bug fixing test)', () => {
+        const testLine = 'e';
+        const testWord = new ValidWord('eteta');
+        const letters: Letter[] = [
+            { char: 'A', value: 1 },
+            { char: 'X', value: 1 },
+            { char: 'P', value: 1 },
+            { char: 'T', value: 1 },
+            { char: 'A', value: 1 },
+            { char: '*', value: 1 },
+            { char: 'V', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
 });

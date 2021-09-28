@@ -235,7 +235,7 @@ export class DictionaryService {
             tmpPlacedWord = placedWord;
             regex = new RegExp(tmpPlacedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
             index = dictWord.word.search(regex);
-            if (index > tmpPlacedWord.length) return 'false';
+            if (index > 0) return 'false';
             if (index === notFound) {
                 if (mapRack.has('*')) {
                     tmpPlacedWord = placedWord;
