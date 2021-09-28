@@ -1,5 +1,6 @@
 import { Tile } from './tile';
 export const NUM_TILES = 15;
+export const EMPTY_CHAR = ' ';
 export const ASCII_CODE = 65;
 interface BoardSettingPosition {
     x: number;
