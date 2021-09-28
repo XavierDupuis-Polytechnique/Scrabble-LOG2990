@@ -3,9 +3,11 @@ import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board';
 import { Tile } from '@app/GameLogic/game/tile';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -39,7 +41,7 @@ class MockBoard extends Board {
             this.grid[i] = [];
             for (let j = 0; j < BOARD_LENGTH; j++) {
                 this.grid[i][j] = new Tile();
-                this.grid[i][j].letterObject = { char: ' ', value: 1 };
+                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
             }
         }
         this.grid[0][4].letterObject = { char: 'O', value: 1 };

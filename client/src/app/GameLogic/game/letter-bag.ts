@@ -1,10 +1,9 @@
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { LetterCreator } from './letter-creator';
 import { Letter } from './letter.interface';
 
-export const PLAYER_LETTER_COUNT = 7;
-
 export class LetterBag {
-    static readonly playerLetterCount = PLAYER_LETTER_COUNT;
+    static readonly playerLetterCount = RACK_LETTER_COUNT;
 
     gameLetters: Letter[] = [];
     private letterCreator: LetterCreator = new LetterCreator();

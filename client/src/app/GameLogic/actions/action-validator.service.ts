@@ -4,15 +4,11 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { EMPTY_CHAR, NUM_TILES } from '@app/GameLogic/game/board';
-// import { NUM_TILES } from '@app/GameLogic/game/board';
+import { BOARD_DIMENSION, EMPTY_CHAR, JOKER_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { PLAYER_LETTER_COUNT } from '@app/GameLogic/game/letter-bag';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BoardService } from '@app/services/board.service';
-
-const JOKER = '*';
 @Injectable({
     providedIn: 'root',
 })
@@ -27,6 +23,10 @@ export class ActionValidatorService {
     }
 
     validateAction(action: Action): boolean {
+        if (!this.board.board.grid) {
+            return false;
+        }
+
         if (this.validateTurn(action)) {
             if (action instanceof PlaceLetter) {
                 return this.validatePlaceLetter(action as PlaceLetter);
@@ -50,13 +50,8 @@ export class ActionValidatorService {
         return this.gameInfo.activePlayer === action.player;
     }
 
-    // eslint-disable-next-line complexity
     private validatePlaceLetter(action: PlaceLetter): boolean {
-        if (!this.board.board.grid) {
-            return false;
-        }
-
-        const centerTilePosition: number = Math.floor(NUM_TILES / 2);
+        const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
         let hasCenterTile = this.board.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
 
         let hasNeighbour = false;
@@ -67,7 +62,7 @@ export class ActionValidatorService {
         let nextPos = 0;
 
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
-            if (nextPos >= NUM_TILES || y >= NUM_TILES) {
+            if (nextPos >= BOARD_DIMENSION || y >= BOARD_DIMENSION) {
                 this.sendErrorMessage(
                     'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + ++x,
                 );
@@ -135,9 +130,9 @@ export class ActionValidatorService {
     }
 
     private validateExchangeLetter(action: ExchangeLetter): boolean {
-        if (this.gameInfo.numberOfLettersRemaining < PLAYER_LETTER_COUNT) {
+        if (this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
             this.sendErrorMessage(
-                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de' + PLAYER_LETTER_COUNT,
+                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de' + RACK_LETTER_COUNT,
             );
             return false;
         }
@@ -182,8 +177,8 @@ export class ActionValidatorService {
             let occurence = rackCharsOccurences.get(char);
             if (occurence === undefined || occurence === 0) {
                 if (char.toUpperCase() === char) {
-                    occurence = rackCharsOccurences.get(JOKER);
-                    char = JOKER;
+                    occurence = rackCharsOccurences.get(JOKER_CHAR);
+                    char = JOKER_CHAR;
                     if (occurence === undefined || occurence === 0) {
                         return false;
                     }
@@ -199,7 +194,7 @@ export class ActionValidatorService {
 
     private hasAJoker(letterRack: Letter[]): boolean {
         for (const letter of letterRack) {
-            if ((letter.char = JOKER)) {
+            if (letter.char === JOKER_CHAR) {
                 return true;
             }
         }

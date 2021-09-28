@@ -18,12 +18,10 @@ export class MessagesService {
         const message: Message = {
             content,
             from: forwarder,
+            type: MessageType.Player1,
         };
         try {
-            const isCommand = this.commandParser.parse(message.content, forwarder);
-            if (isCommand === false) {
-                message.type = MessageType.Player1;
-            }
+            this.commandParser.parse(content, forwarder);
             this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {
@@ -31,7 +29,6 @@ export class MessagesService {
                 this.receiveError(e as Error);
             }
         }
-        // TODO put command parser here
     }
 
     receiveSystemMessage(content: string) {

@@ -22,11 +22,6 @@ export abstract class Player {
         this.action$.next(action);
     }
 
-    displayGameLetters(): void {
-        // TODO: log into message service
-        // console.log(this.letterRack);
-    }
-
     getLettersFromRack(mockLetters: Letter[]): Letter[] {
         const lettersInRack: Map<string, Letter[]> = new Map();
         for (const letter of this.letterRack) {
@@ -84,6 +79,14 @@ export abstract class Player {
         while (indexesToRemove.length) {
             this.letterRack.splice(indexesToRemove.pop() as number, 1);
         }
+    }
+
+    printLetterRack(): string {
+        let letterRackString = '';
+        for (const letter of this.letterRack) {
+            letterRackString += letter.char + ', ';
+        }
+        return letterRackString.slice(0, letterRackString.length - 1);
     }
 
     get isLetterRackEmpty(): boolean {

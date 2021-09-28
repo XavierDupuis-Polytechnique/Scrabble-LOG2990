@@ -2,12 +2,15 @@
 /* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -15,7 +18,6 @@ import { BoardService } from '@app/services/board.service';
 import { PointCalculatorService } from './point-calculator.service';
 
 const MAX_CONSECUTIVE_PASS = 6;
-const MAX_LETTER_IN_RACK = 7;
 class MockGame extends Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     activePlayer: Player = new User('ActivePlayer');
@@ -24,8 +26,14 @@ class MockGame extends Game {
     consecutivePass: number = MAX_CONSECUTIVE_PASS;
     board: Board;
 
-    constructor(time: number, timerService: TimerService, pointCalculatorService: PointCalculatorService, boardService: BoardService) {
-        super(time, timerService, pointCalculatorService, boardService);
+    constructor(
+        time: number,
+        timerService: TimerService,
+        pointCalculatorService: PointCalculatorService,
+        boardService: BoardService,
+        messageService: MessagesService,
+    ) {
+        super(time, timerService, pointCalculatorService, boardService, messageService);
         this.players = [this.activePlayer, this.otherPlayer];
         this.board = boardService.board;
     }
@@ -59,6 +67,7 @@ describe('PointCalculatorService', () => {
     let action: MockPlaceLetter;
     let game: MockGame;
     let grid: Tile[][];
+    let messages: MessagesService;
     const timePerTurn = 30;
     const emptyRack: Letter[] = [];
     const rack: Letter[] = [
@@ -74,12 +83,13 @@ describe('PointCalculatorService', () => {
     let word: Tile[];
     let wordSearcher: WordSearcher;
     beforeEach(() => {
-        TestBed.configureTestingModule({ providers: [TimerService, BoardService, PointCalculatorService, WordSearcher] });
+        TestBed.configureTestingModule({ providers: [TimerService, BoardService, PointCalculatorService, WordSearcher, MessagesService] });
         timer = TestBed.inject(TimerService);
         boardService = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
-        game = new MockGame(timePerTurn, timer, pointCalculator, boardService);
+        messages = TestBed.inject(MessagesService);
+        game = new MockGame(timePerTurn, timer, pointCalculator, boardService, messages);
         player1 = new User('Tim');
         player2 = new User('Max');
         listOfWord = [];
@@ -194,7 +204,7 @@ describe('PointCalculatorService', () => {
             { x: 6, y: 0 },
         ];
         pointCalculator.placeLetterCalculation(action, listOfWord);
-        const estimation = pointCalculator.testPlaceLetterCalculation(MAX_LETTER_IN_RACK, listOfWord);
+        const estimation = pointCalculator.testPlaceLetterCalculation(RACK_LETTER_COUNT, listOfWord);
         expect(estimation.isBingo).toBe(true);
         expect(estimation.totalPoints).toBe(totalPointsOfWord);
         expect(player2.points).toBe(totalPointsOfWord);
@@ -308,7 +318,7 @@ describe('PointCalculatorService', () => {
             { x: 2, y: 2 },
             { x: 3, y: 2 },
         ];
-        const letterToPlace = MAX_LETTER_IN_RACK - wordBake.length;
+        const letterToPlace = RACK_LETTER_COUNT - wordBake.length;
         const estimation = pointCalculator.testPlaceLetterCalculation(letterToPlace, listOfWord);
         expect(estimation.wordsPoints[0].points).toBe(pointBat);
         expect(estimation.wordsPoints[1].points).toBe(pointBake);
@@ -366,7 +376,7 @@ describe('PointCalculatorService', () => {
             { x: 2, y: 2 },
             { x: 3, y: 2 },
         ];
-        const letterToPlace = MAX_LETTER_IN_RACK - wordBake.length;
+        const letterToPlace = RACK_LETTER_COUNT - wordBake.length;
         const estimation = pointCalculator.testPlaceLetterCalculation(letterToPlace, listOfWord);
         expect(estimation.wordsPoints[0].points).toBe(pointBat);
         expect(estimation.wordsPoints[1].points).toBe(pointBake);
@@ -419,7 +429,7 @@ describe('PointCalculatorService', () => {
             { char: 'T', value: 1 },
         ];
         const timeTurn = 30;
-        game = new MockGame(timeTurn, timer, pointCalculator, boardService);
+        game = new MockGame(timeTurn, timer, pointCalculator, boardService, messages);
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;

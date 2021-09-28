@@ -1,6 +1,5 @@
+import { BOARD_DIMENSION, EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Tile } from './tile';
-export const NUM_TILES = 15;
-export const EMPTY_CHAR = ' ';
 export const ASCII_CODE = 65;
 interface BoardSettingPosition {
     x: number;
@@ -100,11 +99,11 @@ export class Board {
     grid: Tile[][];
     constructor() {
         this.grid = [];
-        for (let i = 0; i < NUM_TILES; i++) {
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
             this.grid[i] = [];
-            for (let j = 0; j < NUM_TILES; j++) {
+            for (let j = 0; j < BOARD_DIMENSION; j++) {
                 this.grid[i][j] = new Tile();
-                this.grid[i][j].letterObject = { char: ' ', value: 1 };
+                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
             }
         }
 
