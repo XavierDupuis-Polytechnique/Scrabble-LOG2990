@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -11,7 +11,7 @@ const MAX_MESSAGE_LENGTH = 512;
     templateUrl: './chat-box.component.html',
     styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent implements AfterViewInit {
     // Avoir une autre fonction linker/binder aver le placement etc...
     @ViewChild('chat') chat: ElementRef;
 
@@ -21,14 +21,11 @@ export class ChatBoxComponent implements OnInit {
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
 
-    constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {
-        // this.messages$.subscribe(() => {
-        //     this.scrollDownChat();
-        // });
-    }
+    constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef) {}
 
-    ngOnInit(): void {
+    ngAfterViewInit(): void {
         this.messages$.subscribe(() => {
+            this.cdRef.detectChanges();
             this.scrollDownChat();
         });
     }
@@ -56,8 +53,7 @@ export class ChatBoxComponent implements OnInit {
     }
 
     scrollDownChat() {
-        // const chatNativeElement = this.chat.nativeElement;
-        // chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
-        this.chat.nativeElement.scrollTo({ behavior: 'smooth', bottom: 0 });
+        const chatNativeElement = this.chat.nativeElement;
+        chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
     }
 }
