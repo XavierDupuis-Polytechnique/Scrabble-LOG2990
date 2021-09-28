@@ -97,9 +97,9 @@ describe('ActionValidatorService', () => {
     /// SEND VALID ACTION TO PLAYER TESTS ///
     it('should propagate a valid action to the player', () => {
         const action = new PassTurn(currentPlayer);
+        const spy = spyOn(currentPlayer, 'play');
         service.sendAction(action);
-        spyOn(currentPlayer, 'play');
-        expect(currentPlayer.play).toHaveBeenCalledWith(action);
+        expect(spy).toHaveBeenCalledWith(action);
     });
     /// ////////////////// ///
 
