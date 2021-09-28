@@ -24,45 +24,46 @@ describe('CommandParser', () => {
     });
 
     it('should be Subject<Command>', () => {
-        const testCommand: Command = { type: CommandType.Debug, args: [] };
+        const from = message.from;
+        const testCommand: Command = { from, type: CommandType.Debug, args: [] };
         service.parsedCommand$.subscribe((command) => {
             expect(command).toEqual(testCommand);
         });
-        service.parse('!debug');
+        service.parse('!debug', message.from);
     });
 
     it('should return false as it is not a command', () => {
         message.content = 'Hier fut une bien belle journée';
-        expect(service.parse(message.content)).toBe(false);
+        expect(service.parse(message.content, message.from)).toBe(false);
     });
 
     it('should throw !manger est une commande invalide', () => {
         message.content = '!manger duGateau';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError('!manger est une commande invalide');
     });
 
     it('should be return true', () => {
-        expect(service.parse(message.content)).toBeTruthy();
+        expect(service.parse(message.content, message.from)).toBeTruthy();
     });
 
     it('should be return true', () => {
         message.content = '!debug';
-        expect(service.parse(message.content)).toBe(true);
+        expect(service.parse(message.content, message.from)).toBe(true);
     });
 
     it('should throw !PLACER est une commande invalide', () => {
         message.content = '!PLACER a1v bob';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError('!PLACER est une commande invalide');
     });
 
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v  ';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError1);
     });
 
@@ -87,89 +88,89 @@ describe('CommandParser', () => {
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v    ';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError1);
     });
 
     it('should throw ' + syntaxError3, () => {
         message.content = '!placer a1v a';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError3);
     });
 
     it('should throw ' + syntaxError3, () => {
         message.content = '!placer a1v abcdefghijklmnop';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError3);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer a-1v abc';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError7);
     });
 
     it('should throw ' + syntaxError4, () => {
         message.content = '!placer a16v abc';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError4);
     });
 
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1V';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError1);
     });
 
     it('should throw ' + syntaxError2, () => {
         message.content = '!placer A1v allo';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError2);
     });
 
     it('should throw ' + syntaxError5, () => {
         message.content = '!placer a1V allo';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError5);
     });
 
     it('should throw ' + syntaxError6, () => {
         message.content = '!placer a12vv allo';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError6);
     });
 
     it('should throw ' + syntaxError6, () => {
         message.content = '!placer a1 allo';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError6);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer abh allo';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError7);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer a1bh allo';
         expect(() => {
-            service.parse(message.content);
+            service.parse(message.content, message.from);
         }).toThrowError(syntaxError7);
     });
 
     it('should be return true', () => {
         message.content = '!placer a1v allo';
-        expect(service.parse(message.content)).toBeTruthy();
+        expect(service.parse(message.content, message.from)).toBeTruthy();
     });
 });

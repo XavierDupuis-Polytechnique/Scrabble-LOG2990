@@ -18,7 +18,6 @@ export abstract class Player {
             this.name = name;
         }
     }
-
     play(action: Action) {
         this.action$.next(action);
     }
@@ -97,4 +96,6 @@ export abstract class Player {
     get isLetterRackFull(): boolean {
         return this.letterRack.length === LetterBag.playerLetterCount;
     }
+
+    abstract setActive(): void;
 }
