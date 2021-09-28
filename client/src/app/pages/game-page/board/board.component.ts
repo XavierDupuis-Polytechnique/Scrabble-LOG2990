@@ -3,8 +3,8 @@ import { MatSliderChange } from '@angular/material/slider';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
-const MAX_FONT_SIZE = 24;
-const MIN_FONT_SIZE = 10;
+const MAX_FONT_SIZE = 16;
+const MIN_FONT_SIZE = 8;
 
 @Component({
     selector: 'app-board',
