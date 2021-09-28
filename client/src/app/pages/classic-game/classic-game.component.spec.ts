@@ -1,22 +1,33 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ClassicGameComponent } from './classic-game.component';
+import { CommonModule } from '@angular/common';
+import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
+import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { Router } from '@angular/router';
 
 describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
     let fixture: ComponentFixture<ClassicGameComponent>;
-
+    let matDialog: jasmine.SpyObj<MatDialog>;
+    let router: Router;
     beforeEach(async () => {
+        matDialog = jasmine.createSpyObj('MatDialog', ['open']);
+
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent],
-            imports: [RouterTestingModule, MatDialogModule],
+            imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
                     useValue: {},
                 },
-                { provide: MatDialogRef, useValue: {} },
+                {
+                    provide: MatDialog,
+                    useValue: matDialog,
+                },
             ],
         }).compileComponents();
     });
@@ -29,5 +40,34 @@ describe('ClassicGameComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('dialog should set game setting and start game', () => {
+        spyOn(component, 'startSoloGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return {
+                    subscribe: (func: (result: GameSettings) => void) =>
+                        func({
+                            botDifficulty: 'easy',
+                            playerName: 'Sam',
+                            timePerTurn: 3000,
+                        }),
+                };
+            },
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            close: () => {},
+        } as MatDialogRef<NewSoloGameFormComponent>);
+        component.openSoloGameForm();
+        expect(component.gameSettings).toBeDefined();
+        expect(component.startSoloGame).toHaveBeenCalled();
+    });
+
+    it('button partie solo should call openSoloGameForm', () => {
+        spyOn(component, 'openSoloGameForm');
+        const el = fixture.nativeElement as HTMLElement;
+        const button = el.querySelector('button');
+        button?.click();
+        expect(component.openSoloGameForm).toHaveBeenCalled();
     });
 });

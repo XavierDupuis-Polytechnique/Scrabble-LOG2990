@@ -30,4 +30,10 @@ describe('NewSoloGameFormComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should contain', () => {
+        const el = fixture.nativeElement as HTMLElement;
+        expect(el.textContent).toContain('Difficulté de votre adversaire');
+        expect(el.textContent).toContain('Nouvelle Partie Solo');
+    });
 });
