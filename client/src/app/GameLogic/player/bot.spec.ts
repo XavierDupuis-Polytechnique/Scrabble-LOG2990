@@ -13,7 +13,6 @@ import { Bot } from './bot';
 class TestBot extends Bot {
     setActive() {
         this.startTimerAction();
-        // TODO: Start computation for picking actions
     }
 }
 export class TestBoard extends Board {
@@ -56,7 +55,7 @@ describe('Bot', () => {
 
         expected.push(new ValidWord('hello'));
 
-        result = bot.lineSplitter(testLine);
+        result = bot.botCrawler.lineSplitter(testLine);
         expect(result).toEqual(expected);
     });
 
@@ -69,7 +68,7 @@ describe('Bot', () => {
         expected.push(new ValidWord('o', 0, 0, 0, 0, false, 4));
         expected.push(new ValidWord('hel-o', 0, 0, 0, 0));
 
-        result = bot.lineSplitter(testLine);
+        result = bot.botCrawler.lineSplitter(testLine);
         expect(result).toEqual(expected);
     });
 
@@ -85,7 +84,7 @@ describe('Bot', () => {
         expected.push(new ValidWord('ng---hello', 0, 0, 0, 4, false, 5));
         expected.push(new ValidWord('test-ng---hello', 0, 0, 8, 4, false));
 
-        result = bot.lineSplitter(testLine);
+        result = bot.botCrawler.lineSplitter(testLine);
         expect(result).toEqual(expected);
     });
 
@@ -94,7 +93,7 @@ describe('Bot', () => {
         let result: ValidWord[] = [];
         const expected = 21; // It would take too long to list all the possibilities with any more details in this test.
 
-        result = bot.lineSplitter(testLine);
+        result = bot.botCrawler.lineSplitter(testLine);
         expect(result.length).toEqual(expected);
     });
 
@@ -114,7 +113,7 @@ describe('Bot', () => {
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
         // TODO change number when crosscheck works
-        const expected: number = 174; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 174; // It would take too long to list all the possibilities with any more details in this test.
         // const expected: ValidWord[] = [];
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
@@ -147,7 +146,7 @@ describe('Bot', () => {
 
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        const expected: number = 967; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 975; // It would take too long to list all the possibilities with any more details in this test.
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
@@ -167,7 +166,7 @@ describe('Bot', () => {
 
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        const expected: number = 1349; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 1349; // It would take too long to list all the possibilities with any more details in this test.
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
@@ -188,9 +187,7 @@ describe('Bot', () => {
 
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        const expected: number = 315; // It would take too long to list all the possibilities with any more details in this test.
-
-
+        const expected = 315; // It would take too long to list all the possibilities with any more details in this test.
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);

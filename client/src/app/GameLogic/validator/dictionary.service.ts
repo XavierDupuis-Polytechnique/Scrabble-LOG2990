@@ -1,22 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Letter } from '@app/GameLogic/game/letter.interface';
-import { Tile } from '@app/GameLogic/game/tile';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
+
+const START_OF_STRING = 0;
+const NOT_FOUND = -1;
+const RESET = 0;
+const ARRAY_BEGIN = 0;
+const MAX_LETTERS_COUNT = 7;
+const FIRST_LETTER_INDEX = 1;
 
 @Injectable({
     providedIn: 'root',
 })
 export class DictionaryService {
     dynamicWordList: Set<string> = new Set();
-    // loadedDictionaries: Dictionary[] = [];
 
     constructor() {
-        // console.log(data);
         const dict = data as Dictionary;
         this.addWords(dict);
-        // this.loadedDictionaries.push(dict);
     }
 
     addWords(dictionary: Dictionary) {
@@ -32,137 +35,183 @@ export class DictionaryService {
     wordGen(partWord: ValidWord): ValidWord[] {
         const dict = data as Dictionary;
         const wordList: ValidWord[] = [];
-        const startOfString = 0;
-        const notFound = -1;
         const tmpWordList: ValidWord[] = [];
-        const reset = 0;
-        const arrayBegin = 0;
-        const maxLetterNumber = 7;
-        let letterCountOfPartWord = 0;
 
-        for (const letter of partWord.word) {
-            if (letter !== '-') {
-                letterCountOfPartWord++;
-            }
-        }
+        let letterCountOfPartWord = 0;
+        letterCountOfPartWord = this.countNumberOfLetters(partWord, letterCountOfPartWord);
 
         if (partWord.word.includes('-')) {
-            const word = partWord.word;
-            let index = word.indexOf('-');
-            let subWord = '';
-            let leftIndex = startOfString;
-            let emptyCount: number = reset;
+            this.getSubWordsOfPartWord(partWord, tmpWordList);
 
-            while (index !== notFound) {
-                subWord = word.substring(leftIndex, index);
-                tmpWordList.push(new ValidWord(subWord, reset, emptyCount));
-                emptyCount = reset;
-                while (word.charAt(index) === '-') {
-                    index++;
-                    emptyCount++;
-                }
-                leftIndex = index;
-                index = word.indexOf('-', leftIndex);
-            }
+            const tmpDict: ValidWord[] = [];
+            const tmpDict2: ValidWord[] = [];
+            const foundIndex: number = START_OF_STRING;
+            let oldSubWordLength: number = RESET;
 
-            subWord = word.substring(leftIndex);
-            tmpWordList.push(new ValidWord(subWord, reset, emptyCount, reset, partWord.rightCount));
-
-            let tmpDict: ValidWord[] = [];
-            let tmpDict2: ValidWord[] = [];
-            let foundIndex: number = startOfString;
-            let oldFoundIndex: number;
-            let oldSubWordLength: number = reset;
-
-            const firstWord = tmpWordList[arrayBegin].word;
-            for (const dictWord of dict.words) {
-                if (dictWord.includes(firstWord)) {
-                    foundIndex = dictWord.indexOf(firstWord);
-                    if (foundIndex <= partWord.leftCount) {
-                        const newWord: ValidWord = new ValidWord(dictWord, foundIndex);
-                        if (partWord.isVertical) {
-                            newWord.startingTileX = partWord.startingTileX;
-                            newWord.startingTileY = partWord.startingTileY - foundIndex;
-                        } else {
-                            newWord.startingTileX = partWord.startingTileX - foundIndex;
-                            newWord.startingTileY = partWord.startingTileY;
-                        }
-                        tmpDict.push(newWord);
-                    }
-                }
-            }
-            oldSubWordLength = firstWord.length;
-
-            const lastIndex = tmpWordList.length - 1;
-            for (let tmpIndex = 1; tmpIndex <= lastIndex; tmpIndex++) {
-                const tmpWord = tmpWordList[tmpIndex];
-                for (const tmpDictWord of tmpDict) {
-                    oldFoundIndex = tmpDictWord.indexFound + oldSubWordLength;
-                    if (tmpDictWord.word.includes(tmpWord.word, oldFoundIndex)) {
-                        foundIndex = tmpDictWord.word.indexOf(tmpWord.word, oldFoundIndex);
-
-                        if (foundIndex - oldFoundIndex === tmpWord.emptyCount && tmpDictWord.word.length - letterCountOfPartWord <= maxLetterNumber) {
-                            if (tmpIndex === lastIndex) {
-                                if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
-                                    tmpDictWord.indexFound = foundIndex;
-
-                                    tmpDict2.push(tmpDictWord);
-                                }
-                            } else {
-                                tmpDictWord.indexFound = foundIndex;
-                                tmpDict2.push(tmpDictWord);
-                            }
-                        }
-                    }
-                }
-                tmpDict = tmpDict2;
-                tmpDict2 = [];
-
-                oldSubWordLength = tmpWord.word.length;
-            }
-            for (const dictWord of tmpDict) {
-                wordList.push(
-                    new ValidWord(dictWord.word, reset, reset, reset, reset, partWord.isVertical, dictWord.startingTileX, dictWord.startingTileY),
-                );
-            }
+            oldSubWordLength = this.initialDictionarySearch(partWord, dict.words, tmpWordList, tmpDict, foundIndex);
+            this.subDictionarySearch(partWord, tmpWordList, tmpDict, tmpDict2, oldSubWordLength, letterCountOfPartWord, wordList);
         } else {
-            let index = 0;
-            if (partWord.leftCount !== 0 || partWord.rightCount !== 0) {
-                for (const word of dict.words) {
-                    if (word.includes(partWord.word) && word.length - letterCountOfPartWord <= maxLetterNumber) {
-                        index = word.indexOf(partWord.word);
-                        if (
-                            index <= partWord.leftCount &&
-                            word.length - (index + partWord.word.length) <= partWord.rightCount &&
-                            word !== partWord.word
-                        ) {
-                            const newWord: ValidWord = new ValidWord(word);
-                            newWord.isVertical = partWord.isVertical;
-                            if (partWord.isVertical) {
-                                newWord.startingTileX = partWord.startingTileX;
-                                newWord.startingTileY = partWord.startingTileY - index;
-                            } else {
-                                newWord.startingTileX = partWord.startingTileX - index;
-                                newWord.startingTileY = partWord.startingTileY;
-                            }
-                            wordList.push(newWord);
-                        }
-                    }
-                }
-            }
+            this.wholePartWordDictionarySearch(partWord, dict.words, letterCountOfPartWord, wordList);
         }
-
         return wordList;
     }
 
     regexCheck(dictWord: ValidWord, placedLetters: string, botLetterRack: Letter[]): string {
         const letterRack = botLetterRack;
         const mapRack = new Map<string, number>();
-        const notFound = -1;
-        const firstLetterIndex = 1;
         const wordLength = dictWord.word.length;
+
+        let placedWord = this.placedWordReformat(placedLetters);
+        this.addLetterRackToMap(letterRack, mapRack);
+
+        const regex = new RegExp(placedWord.toLowerCase());
+        const index = dictWord.word.search(regex);
+        if (index === NOT_FOUND) {
+            return 'false';
+        }
+
+        placedWord = this.checkLeftOfPlacedWord(index, dictWord, placedWord, mapRack);
+        placedWord = this.checkMiddleOfPlacedWord(index, dictWord, placedWord, mapRack);
+        placedWord = this.checkRightOfPlacedWord(index, dictWord, placedWord, mapRack, wordLength);
+
+        if (dictWord.word === placedWord.toLowerCase()) {
+            return placedWord;
+        } else {
+            return 'false';
+        }
+    }
+
+    private countNumberOfLetters(partWord: ValidWord, letterCountOfPartWord: number): number {
+        for (const letter of partWord.word) {
+            if (letter !== '-') {
+                letterCountOfPartWord++;
+            }
+        }
+        return letterCountOfPartWord;
+    }
+
+    private getSubWordsOfPartWord(partWord: ValidWord, tmpWordList: ValidWord[]): number {
+        const word = partWord.word;
+        let index = word.indexOf('-');
+        let subWord = '';
+        let leftIndex: number = START_OF_STRING;
+        let emptyCount: number = RESET;
+        while (index !== NOT_FOUND) {
+            subWord = word.substring(leftIndex, index);
+            tmpWordList.push(new ValidWord(subWord, RESET, emptyCount));
+            emptyCount = RESET;
+            while (word.charAt(index) === '-') {
+                index++;
+                emptyCount++;
+            }
+            leftIndex = index;
+            index = word.indexOf('-', leftIndex);
+        }
+        subWord = word.substring(leftIndex);
+        tmpWordList.push(new ValidWord(subWord, RESET, emptyCount, RESET, partWord.rightCount));
+        return leftIndex;
+    }
+
+    private initialDictionarySearch(
+        partWord: ValidWord,
+        dictWords: string[],
+        tmpWordList: ValidWord[],
+        tmpDict: ValidWord[],
+        foundIndex: number,
+    ): number {
+        const firstWord = tmpWordList[ARRAY_BEGIN].word;
+        for (const dictWord of dictWords) {
+            if (dictWord.includes(firstWord)) {
+                foundIndex = dictWord.indexOf(firstWord);
+                if (foundIndex <= partWord.leftCount) {
+                    const newWord: ValidWord = new ValidWord(dictWord, foundIndex);
+                    if (partWord.isVertical) {
+                        newWord.startingTileX = partWord.startingTileX;
+                        newWord.startingTileY = partWord.startingTileY - foundIndex;
+                    } else {
+                        newWord.startingTileX = partWord.startingTileX - foundIndex;
+                        newWord.startingTileY = partWord.startingTileY;
+                    }
+                    tmpDict.push(newWord);
+                }
+            }
+        }
+        const oldSubWordLength = firstWord.length;
+        return oldSubWordLength;
+    }
+
+    private subDictionarySearch(
+        partWord: ValidWord,
+        tmpWordList: ValidWord[],
+        tmpDict: ValidWord[],
+        tmpDict2: ValidWord[],
+        oldSubWordLength: number,
+        letterCountOfPartWord: number,
+        wordList: ValidWord[],
+    ) {
+        const lastIndex = tmpWordList.length - 1;
+        for (let tmpIndex = 1; tmpIndex <= lastIndex; tmpIndex++) {
+            const tmpWord = tmpWordList[tmpIndex];
+            for (const tmpDictWord of tmpDict) {
+                const oldFoundIndex: number = tmpDictWord.indexFound + oldSubWordLength;
+                if (tmpDictWord.word.includes(tmpWord.word, oldFoundIndex)) {
+                    const foundIndex = tmpDictWord.word.indexOf(tmpWord.word, oldFoundIndex);
+
+                    if (foundIndex - oldFoundIndex === tmpWord.emptyCount && tmpDictWord.word.length - letterCountOfPartWord <= MAX_LETTERS_COUNT) {
+                        if (tmpIndex === lastIndex) {
+                            if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
+                                tmpDictWord.indexFound = foundIndex;
+
+                                tmpDict2.push(tmpDictWord);
+                            }
+                        } else {
+                            tmpDictWord.indexFound = foundIndex;
+                            tmpDict2.push(tmpDictWord);
+                        }
+                    }
+                }
+            }
+            tmpDict = tmpDict2;
+            tmpDict2 = [];
+
+            oldSubWordLength = tmpWord.word.length;
+        }
+        for (const dictWord of tmpDict) {
+            wordList.push(
+                new ValidWord(dictWord.word, RESET, RESET, RESET, RESET, partWord.isVertical, dictWord.startingTileX, dictWord.startingTileY),
+            );
+        }
+    }
+
+    private wholePartWordDictionarySearch(partWord: ValidWord, dictWords: string[], letterCountOfPartWord: number, wordList: ValidWord[]) {
+        let index = 0;
+        if (partWord.leftCount !== 0 || partWord.rightCount !== 0) {
+            for (const word of dictWords) {
+                if (word.includes(partWord.word) && word.length - letterCountOfPartWord <= MAX_LETTERS_COUNT) {
+                    index = word.indexOf(partWord.word);
+                    if (
+                        index <= partWord.leftCount &&
+                        word.length - (index + partWord.word.length) <= partWord.rightCount &&
+                        word !== partWord.word
+                    ) {
+                        const newWord: ValidWord = new ValidWord(word);
+                        newWord.isVertical = partWord.isVertical;
+                        if (partWord.isVertical) {
+                            newWord.startingTileX = partWord.startingTileX;
+                            newWord.startingTileY = partWord.startingTileY - index;
+                        } else {
+                            newWord.startingTileX = partWord.startingTileX - index;
+                            newWord.startingTileY = partWord.startingTileY;
+                        }
+                        wordList.push(newWord);
+                    }
+                }
+            }
+        }
+    }
+
+    private placedWordReformat(placedLetters: string) {
         let placedWord = '';
-        let tmpPlacedWord;
         for (const letter of placedLetters) {
             if (letter === '-') {
                 placedWord += '.';
@@ -170,7 +219,10 @@ export class DictionaryService {
                 placedWord += letter;
             }
         }
+        return placedWord;
+    }
 
+    private addLetterRackToMap(letterRack: Letter[], mapRack: Map<string, number>) {
         for (const letter of letterRack) {
             const letterCount = mapRack.get(letter.char.toLowerCase());
             if (letterCount !== undefined) {
@@ -179,23 +231,17 @@ export class DictionaryService {
                 mapRack.set(letter.char.toLowerCase(), 1);
             }
         }
-        tmpPlacedWord = placedWord;
-        let regex = new RegExp(tmpPlacedWord.toLowerCase());
-        let index = dictWord.word.search(regex);
-        if (index === notFound) {
-            return 'false';
-        }
+    }
 
-        while (index > firstLetterIndex) {
+    private checkLeftOfPlacedWord(index: number, dictWord: ValidWord, placedWord: string, mapRack: Map<string, number>): string {
+        while (index > FIRST_LETTER_INDEX) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
-            tmpPlacedWord = placedWord;
-            regex = new RegExp('(?<=[' + lettersLeft + '])' + tmpPlacedWord.toLowerCase());
+            let regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
             index = dictWord.word.search(regex);
 
-            if (index === notFound) {
+            if (index === NOT_FOUND) {
                 if (mapRack.has('*')) {
-                    tmpPlacedWord = placedWord;
-                    regex = new RegExp(tmpPlacedWord.toLowerCase());
+                    regex = new RegExp(placedWord.toLowerCase());
                     index = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord = dictWord.word[index - 1].toUpperCase() + placedWord;
@@ -205,19 +251,20 @@ export class DictionaryService {
                 placedWord = dictWord.word[index - 1] + placedWord;
             }
         }
+        return placedWord;
+    }
 
+    private checkMiddleOfPlacedWord(index: number, dictWord: ValidWord, placedWord: string, mapRack: Map<string, number>): string {
         let indexOfDot: number = placedWord.indexOf('.');
-        while (indexOfDot !== notFound) {
+        while (indexOfDot !== NOT_FOUND) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             const leftOfDot = placedWord.substring(0, indexOfDot).toLowerCase();
-            regex = new RegExp(leftOfDot + '(?=[' + lettersLeft + '])');
+            let regex = new RegExp(leftOfDot + '(?=[' + lettersLeft + '])');
             index = dictWord.word.search(regex);
-            if (index > 0) return 'false';
             const rightOfDot = placedWord.substring(indexOfDot + 1);
-            if (index === notFound) {
+            if (index === NOT_FOUND || index > 0) {
                 if (mapRack.has('*')) {
-                    tmpPlacedWord = placedWord;
-                    regex = new RegExp(tmpPlacedWord.toLowerCase());
+                    regex = new RegExp(placedWord.toLowerCase());
                     index = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord = leftOfDot + dictWord.word[leftOfDot.length].toUpperCase() + rightOfDot;
@@ -228,18 +275,17 @@ export class DictionaryService {
             }
             indexOfDot = placedWord.indexOf('.');
         }
+        return placedWord;
+    }
 
-
+    private checkRightOfPlacedWord(index: number, dictWord: ValidWord, placedWord: string, mapRack: Map<string, number>, wordLength: number): string {
         while (placedWord.length !== wordLength) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
-            tmpPlacedWord = placedWord;
-            regex = new RegExp(tmpPlacedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
+            let regex = new RegExp(placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
             index = dictWord.word.search(regex);
-            if (index > 0) return 'false';
-            if (index === notFound) {
+            if (index === NOT_FOUND || index > 0) {
                 if (mapRack.has('*')) {
-                    tmpPlacedWord = placedWord;
-                    regex = new RegExp(tmpPlacedWord.toLowerCase());
+                    regex = new RegExp(placedWord.toLowerCase());
                     index = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord = placedWord + dictWord.word[placedWord.length].toUpperCase();
@@ -249,21 +295,7 @@ export class DictionaryService {
                 placedWord = placedWord + dictWord.word[placedWord.length];
             }
         }
-
-        tmpPlacedWord = placedWord;
-        if (dictWord.word === tmpPlacedWord.toLowerCase()) {
-            return placedWord;
-        } else {
-            return 'false';
-        }
-    }
-
-    tileToString(word: Tile[]): string {
-        const wordTemp = '';
-        word.forEach((letter) => {
-            wordTemp.concat(letter.letterObject.char);
-        });
-        return wordTemp;
+        return placedWord;
     }
 
     private deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {

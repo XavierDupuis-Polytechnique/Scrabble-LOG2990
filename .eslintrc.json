@@ -161,7 +161,7 @@
                         "functions": "always-multiline"
                     }
                 ],
-                "complexity": ["error", 25],
+                "complexity": ["error", 15],
                 "constructor-super": "error",
                 "deprecation/deprecation": "error",
                 "dot-notation": "error",
