@@ -71,6 +71,12 @@ describe('CommandParser', () => {
         }).toThrowError(syntaxError3);
     });
 
+    it('should be return true', () => {
+        const testArg = ['h8v', 'çàé'];
+        const expectedArg = ['h', '8', 'v', 'cae'];
+        expect(service.placeLetterFormatter(testArg)).toBe(expectedArg);
+    });
+
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v    ';
         expect(() => {
