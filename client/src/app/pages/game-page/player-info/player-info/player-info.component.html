@@ -1,3 +1,4 @@
 <h1>Actions</h1>
-<button mat-raised-button color="primary" [routerLink]="['/home']" (click)="abandonner()">Abandonner la partie</button><br>
+<button mat-raised-button color="primary" [routerLink]="['/home']" (click)="abandonner()" *ngIf="!isEndOfGame">Abandonner la partie</button>
+<button mat-raised-button color="primary" [routerLink]="['/home']" (click)="abandonner()" *ngIf="isEndOfGame">Quitter</button>
 <button mat-raised-button color="primary" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
