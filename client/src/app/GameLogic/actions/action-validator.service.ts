@@ -199,7 +199,7 @@ export class ActionValidatorService {
 
     private hasAJoker(letterRack: Letter[]): boolean {
         for (const letter of letterRack) {
-            if ((letter.char = JOKER)) {
+            if (letter.char === JOKER) {
                 return true;
             }
         }

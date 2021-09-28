@@ -33,6 +33,7 @@ describe('ActionValidatorService', () => {
     let board: BoardService;
     let dictonary: DictionaryService;
     let info: GameInfoService;
+    let messageService: MessagesService;
     let wordSearcher: WordSearcher;
     const centerPosition = Math.floor(NUM_TILES / 2);
 
@@ -71,7 +72,7 @@ describe('ActionValidatorService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board);
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messageService);
         p1User = new User('testUser');
         p2Bot = new EasyBot('testUser', board, dictonary);
         game.players.push(p1User);
@@ -222,7 +223,29 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should invalidate an invalid PlaceLetter because a player cannot place letter(s) he/she doesnt have', () => {
+    it('should not change the letterRack after an invalid PlaceLetter', () => {
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        currentPlayer.letterRack = [
+            { char: 'c', value: 1 },
+            { char: 'd', value: 1 },
+            { char: 'e', value: 1 },
+            { char: 'f', value: 1 },
+            { char: 'g', value: 1 },
+        ];
+        const word = 'ab';
+        const initialRack = [];
+        for (const letter of currentPlayer.letterRack) {
+            initialRack.push({ ...letter });
+        }
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
+        expect(service.validateAction(action)).not.toBeTruthy();
+        for (let i = 0; i < initialRack.length; i++) {
+            expect(initialRack[i].char).toBe(currentPlayer.letterRack[i].char);
+        }
+    });
+
+    it('should invalidate an invalid PlaceLetter because a player cannot place letter(s) they doesnt have', () => {
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
         currentPlayer.letterRack = [
             { char: 'a', value: 1 },

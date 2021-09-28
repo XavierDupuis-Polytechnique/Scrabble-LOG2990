@@ -1,7 +1,9 @@
 import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -16,10 +18,15 @@ describe('PassTurn', () => {
     beforeEach(() => {
         timer = new TimerService();
         const boardService = new BoardService();
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, new PointCalculatorService(boardService), boardService);
+        game = new Game(
+            DEFAULT_TIME_PER_TURN,
+            timer,
+            new PointCalculatorService(boardService),
+            boardService,
+            new MessagesService(new CommandParserService()),
+        );
         game.players.push(player1);
         game.players.push(player2);
-        game.start();
     });
 
     it('should create an instance', () => {
@@ -27,12 +34,11 @@ describe('PassTurn', () => {
     });
 
     it('should pass turn', () => {
+        game.start();
         const beforePlayer: Player = game.getActivePlayer();
-        const beforePlayerName: string = beforePlayer.name;
         const passAction = new PassTurn(beforePlayer);
         beforePlayer.play(passAction);
         const afterPlayer: Player = game.getActivePlayer();
-        const afterPlayerName: string = afterPlayer.name;
-        expect(beforePlayerName !== afterPlayerName).toBeTrue();
+        expect(beforePlayer.name).not.toBe(afterPlayer.name);
     });
 });
