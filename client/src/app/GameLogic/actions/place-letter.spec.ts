@@ -42,15 +42,15 @@ describe('PlaceLetter', () => {
     let placeLetter: PlaceLetter;
     let activePlayer: Player;
     let letterCreator: LetterCreator;
-    const pointCalculatorSpy = new PointCalculatorService(new BoardService());
-    pointCalculatorSpy.placeLetterCalculation = jasmine.createSpy().and.callFake((action, listOfWord) => {
-        const points = action.word.length + listOfWord.length;
-        const player = action.player;
-        player.points = points;
-        return points;
-    });
     beforeEach(() => {
         timer = new TimerService();
+        const pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['placeLetterCalculation']);
+        pointCalculatorSpy.placeLetterCalculation = jasmine.createSpy().and.callFake((action, listOfWord) => {
+            const points = action.word.length + listOfWord.length;
+            const player = action.player;
+            player.points = points;
+            return points;
+        });
         TestBed.configureTestingModule({
             providers: [
                 BoardService,
