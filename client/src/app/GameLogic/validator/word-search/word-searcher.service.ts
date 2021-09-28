@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR } from '@app/GameLogic/constants';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 import { BoardService } from '@app/services/board.service';
-
-const BOARD_MIN_POSITION_X = 0;
-const BOARD_MIN_POSITION_Y = 0;
-const BOARD_MAX_POSITION_X = 14;
-const BOARD_MAX_POSITION_Y = 14;
 @Injectable({
     providedIn: 'root',
 })
@@ -153,7 +150,7 @@ export class WordSearcher {
     }
 
     isInsideBoard(x: number, y: number): boolean {
-        return x >= BOARD_MIN_POSITION_X && y >= BOARD_MIN_POSITION_Y && x <= BOARD_MAX_POSITION_X && y <= BOARD_MAX_POSITION_Y;
+        return x >= BOARD_MIN_POSITION && y >= BOARD_MIN_POSITION && x <= BOARD_MAX_POSITION && y <= BOARD_MAX_POSITION;
     }
 
     tileIsOccupied(x: number, y: number): boolean {
@@ -161,7 +158,7 @@ export class WordSearcher {
             return false;
         }
         const char = this.grid[y][x].letterObject.char;
-        return char !== ' ';
+        return char !== EMPTY_CHAR;
     }
 
     findCoordOfLettersToPlace(action: PlaceLetter): Vec2[] {

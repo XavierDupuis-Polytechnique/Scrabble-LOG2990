@@ -1,20 +1,15 @@
 import { Vec2 } from '@app/classes/vec2';
 import { Action } from '@app/GameLogic/actions/action';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/GameLogic/constants';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { timer } from 'rxjs';
-
-export interface PlacementSetting {
-    x: number;
-    y: number;
-    direction: string;
-}
-const TIME_FOR_REVERT = 3000;
 
 export const isCharUpperCase = (char: string) => {
     if (char.length !== 1) {
@@ -42,13 +37,6 @@ export class PlaceLetter extends Action {
     revert(game: Game) {
         this.removeLetterFromBoard(game);
         this.giveBackLettersToPlayer();
-        // for (const letter of this.lettersToPlace) {
-        //     // Peut causer des problèmes : la Game ne doit pas fournir de nouvelles lettres avant un possible .revert(game)
-        //     this.player.letterRack.push(letter);
-        // }
-        // for (const tile of this.affectedTiles) {
-        //     tile.letterObject.char = ' ';
-        // }
     }
 
     protected perform(game: Game) {
@@ -74,7 +62,7 @@ export class PlaceLetter extends Action {
         for (const coord of this.affectedCoords) {
             const x = coord.x;
             const y = coord.y;
-            grid[y][x].letterObject.char = ' ';
+            grid[y][x].letterObject.char = EMPTY_CHAR;
         }
     }
 
@@ -110,7 +98,7 @@ export class PlaceLetter extends Action {
                 char = grid[y][x].letterObject.char;
             }
 
-            if (char === ' ') {
+            if (char === EMPTY_CHAR) {
                 const charToCreate = this.word[wordIndex];
                 const letterToRemove = this.letterToRemove(charToCreate);
                 this.lettersToRemoveInRack.push(letterToRemove);
