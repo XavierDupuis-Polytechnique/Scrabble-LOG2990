@@ -1,5 +1,5 @@
 <div style="height: 100%; width: 100%; text-align: center" [ngClass]="class">
-    <span class="multiplicator">{{ multiplicatorType }} {{ numberMultiplicator }} </span>
+    <div class="multiplicator">{{ multiplicatorType }} {{ numberMultiplicator }}</div>
     {{ tile.letterObject.char }}
     <sub *ngIf="tile.letterObject.char !== ' '">{{ tile.letterObject.value }}</sub>
 </div>

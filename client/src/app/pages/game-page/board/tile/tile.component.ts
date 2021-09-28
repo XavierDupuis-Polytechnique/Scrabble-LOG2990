@@ -21,10 +21,10 @@ export class TileComponent implements OnInit {
             this.multiplicatorType = 'mot';
         }
         if (this.tile.wordMultiplicator === 2 || this.tile.letterMultiplicator === 2) {
-            this.numberMultiplicator = 'double';
+            this.numberMultiplicator = 'X2';
         }
         if (this.tile.wordMultiplicator === 3 || this.tile.letterMultiplicator === 3) {
-            this.numberMultiplicator = 'triple';
+            this.numberMultiplicator = 'X3';
         }
     }
 }
