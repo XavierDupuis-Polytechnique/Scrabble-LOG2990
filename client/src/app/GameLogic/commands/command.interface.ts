@@ -1,4 +1,5 @@
 export interface Command {
+    from: string;
     type: CommandType;
     args?: string[]; // dans le cas de debug, le args est optionnel
 }

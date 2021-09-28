@@ -19,8 +19,8 @@ export class CommandParserService {
         return this.command$;
     }
 
-    createCommand(args: string[], commandType: CommandType): Command {
-        const command = { type: commandType, args } as Command;
+    createCommand(from: string, args: string[], commandType: CommandType): Command {
+        const command = { from, type: commandType, args } as Command;
         return command;
     }
 
@@ -28,7 +28,7 @@ export class CommandParserService {
         this.command$.next(command);
     }
 
-    parse(message: string): boolean {
+    parse(message: string, from: string): boolean {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
@@ -41,7 +41,7 @@ export class CommandParserService {
                     }
                     args = this.placeLetterFormatter(args);
                 }
-                const command = this.createCommand(args, commandCondition as CommandType);
+                const command = this.createCommand(from, args, commandCondition as CommandType);
                 this.sendCommand(command);
                 return true;
             }

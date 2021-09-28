@@ -5,6 +5,7 @@ import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-lett
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -33,19 +34,22 @@ export abstract class Bot extends Player {
         const timerPass = timer(TIME_BEFORE_PASS);
         timerPass.pipe(takeUntil(this.action$)).subscribe(() => {
             console.log('after 20s');
-            this.play(new PassTurn(this));
+            this.botMessage.sendAction(new PassTurn(this));
+            // this.play(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
             console.log('action to play', action);
             if (action !== undefined) {
-                this.play(action);
+                this.botMessage.sendAction(action);
+                // this.play(action);
             } else {
                 console.log('action undefined');
                 this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
-                    console.log('received after 3s', action);
+                    console.log('received after 3s', chosenAction);
                     if (chosenAction !== undefined) {
-                        this.play(chosenAction);
+                        this.botMessage.sendAction(chosenAction);
+                        // this.play(chosenAction);
                     }
                 });
             }
@@ -84,7 +88,8 @@ export abstract class Bot extends Player {
         private boardService: BoardService,
         private dictionaryService: DictionaryService,
         protected pointCalculatorService: PointCalculatorService,
-        protected wordValidator: WordSearcher, // private game: Game,
+        protected wordValidator: WordSearcher,
+        protected botMessage: BotMessagesService,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
@@ -404,7 +409,7 @@ export abstract class Bot extends Player {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
 
             for (const word of tmpWordList) {
-                let tmpLetterRack: Letter[] = [];
+                const tmpLetterRack: Letter[] = [];
 
                 for (const letter of this.letterRack) {
                     tmpLetterRack.push(this.letterCreator.createLetter(letter.char));

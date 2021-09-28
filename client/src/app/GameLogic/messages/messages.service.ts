@@ -20,7 +20,7 @@ export class MessagesService {
             from: forwarder,
         };
         try {
-            const isCommand = this.commandParser.parse(message.content);
+            const isCommand = this.commandParser.parse(message.content, forwarder);
             if (isCommand === false) {
                 message.type = MessageType.Player1;
             }
