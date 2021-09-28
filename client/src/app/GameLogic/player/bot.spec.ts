@@ -98,178 +98,6 @@ describe('Bot', () => {
         expect(result.length).toEqual(expected);
     });
 
-    // TODO Move regexCheck to dictionaryService.spec.ts
-    it('should check if its possible to form the word keyboard with the available letters (simple true)', () => {
-        const testLine = 'oa';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'Y', value: 1 },
-            { char: 'D', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'Z', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'keyboard';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    it('should check if its possible to form the word keyboard with the available letters (simple false)', () => {
-        const testLine = 'oa';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'D', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'Z', value: 1 },
-            { char: 'X', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'false';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    it('should check if its possible to form the word keyboard with the available letters (complex true)', () => {
-        const testLine = 'y--a';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'O', value: 1 },
-            { char: 'D', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'Z', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'keyboard';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    it('should check if its possible to form the word keyboard with the available letters (complex false)', () => {
-        const testLine = 'y--a';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'O', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'Z', value: 1 },
-            { char: 'X', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'false';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    it('should check if its possible to form the word keyboards with the available letters (complex+ true)', () => {
-        const testLine = 'y--a--s';
-        const testWord = new ValidWord('keyboards');
-        const letters: Letter[] = [
-            { char: 'O', value: 1 },
-            { char: 'D', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'keyboards';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    it('should check if its possible to form the word keyboard with the available letters (complex+ false)', () => {
-        const testLine = 'y--a--s';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'A', value: 1 },
-            { char: 'D', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'Z', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'X', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'false';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    // TODO Change the test word
-    it('should check if its possible to form the word keyboard with the available letters (double letters false)', () => {
-        const testLine = 'y--a--s';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'O', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'false';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    // TODO Change the test word
-    it('should check if its possible to form the word keyboard with the available letters (double letter true)', () => {
-        const testLine = 'y--a--s';
-        const testWord = new ValidWord('keyboard');
-        const letters: Letter[] = [
-            { char: 'O', value: 1 },
-            { char: 'D', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'false';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
-    it('should check if its possible to form the word skippassent with the available letters (double letter true)', () => {
-        const testLine = 'ki--as--tn';
-        const testWord = new ValidWord('skippassent');
-        const letters: Letter[] = [
-            { char: 'S', value: 1 },
-            { char: 'P', value: 1 },
-            { char: 'P', value: 1 },
-            { char: 'S', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'Z', value: 1 },
-        ];
-        bot.letterRack = letters;
-        const expected = 'false';
-
-        const result: string = dictionaryService.regexCheck(testWord, testLine, bot.letterRack);
-        expect(result).toEqual(expected);
-    });
-
     it('should return a list of all validWord the bot can play (simple board))', () => {
         const letters: Letter[] = [
             { char: 'E', value: 1 },
@@ -286,7 +114,7 @@ describe('Bot', () => {
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
         // TODO change number when crosscheck works
-        const expected: number = 176; // It would take too long to list all the possibilities with any more details in this test.
+        const expected: number = 174; // It would take too long to list all the possibilities with any more details in this test.
         // const expected: ValidWord[] = [];
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
@@ -295,12 +123,12 @@ describe('Bot', () => {
     it('should return a list of all validWord the bot can play (complex board))', () => {
         const letters: Letter[] = [
             { char: '*', value: 1 },
-            // { char: 'K', value: 1 },
-            // { char: 'O', value: 1 },
-            // { char: 'I', value: 1 },
-            // { char: 'N', value: 1 },
-            // { char: 'J', value: 1 },
-            // { char: 'L', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'I', value: 1 },
+            { char: 'N', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'L', value: 1 },
         ];
         bot.letterRack = letters;
 
@@ -319,13 +147,10 @@ describe('Bot', () => {
 
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        // TODO change number when crosscheck works
-        // const expected: number = 297; // It would take too long to list all the possibilities with any more details in this test.
-        const expected: ValidWord[] = [];
-
+        const expected: number = 967; // It would take too long to list all the possibilities with any more details in this test.
 
         result = bot.bruteForceStart();
-        expect(result).toEqual(expected);
+        expect(result.length).toEqual(expected);
     });
 
     it('should return a list of all validWord the bot can play (empty board))', () => {
@@ -342,8 +167,31 @@ describe('Bot', () => {
 
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        // TODO change number when crosscheck works
-        const expected: number = 1372; // It would take too long to list all the possibilities with any more details in this test.
+        const expected: number = 1349; // It would take too long to list all the possibilities with any more details in this test.
+        result = bot.bruteForceStart();
+        expect(result.length).toEqual(expected);
+    });
+
+    it('should return a list of all validWord the bot can play (edge case bug fixing test))', () => {
+        const letters: Letter[] = [
+            { char: 'L', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'I', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'S', value: 1 },
+        ];
+        bot.letterRack = letters;
+
+        board.placeWord(5, 7, false, 'etre');
+
+        boardService.board.grid = board.grid;
+        let result: ValidWord[] = [];
+        const expected: number = 315; // It would take too long to list all the possibilities with any more details in this test.
+
+
+
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });

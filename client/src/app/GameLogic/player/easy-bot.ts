@@ -39,7 +39,7 @@ export class EasyBot extends Bot {
         if (randomValue <= EasyBot.actionProbabibility.play) {
             let action = this.playAction();
             if (action === undefined) {
-                action = this.exchangeAction();
+                action = this.passAction();
             }
             return action;
         } else if (randomValue <= EasyBot.actionProbabibility.play + EasyBot.actionProbabibility.exchange) {
@@ -49,10 +49,10 @@ export class EasyBot extends Bot {
         }
     }
 
-    randomWordPicker(): ValidWord {
+    randomWordPicker(validWordsList: ValidWord[]): ValidWord {
         const randomValue = Math.random();
         // TODO assign validWordList with the calculated wordList from the algorithm
-        const validWordList: ValidWord[] = this.validWordList;
+        const validWordList: ValidWord[] = validWordsList;
         const wordP6: ValidWord[] = [];
         const wordP7to12: ValidWord[] = [];
         const wordP13To18: ValidWord[] = [];
@@ -83,13 +83,13 @@ export class EasyBot extends Bot {
                 return wordPicked;
             }
         }
-        wordPicked = this.wordPicker(validWordList);
+        // wordPicked = this.wordPicker(validWordList);
         return wordPicked;
     }
 
     playAction(): Action {
-        this.bruteForceStart();
-        const pickedWord: ValidWord = this.randomWordPicker();
+        const validWordsList = this.bruteForceStart();
+        const pickedWord: ValidWord = this.randomWordPicker(validWordsList);
         if (pickedWord !== undefined) {
             const placeSetting: PlacementSetting = {
                 x: pickedWord.startingTileX,

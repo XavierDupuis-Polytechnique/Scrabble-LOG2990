@@ -181,65 +181,66 @@ export class DictionaryService {
         }
         tmpPlacedWord = placedWord;
         let regex = new RegExp(tmpPlacedWord.toLowerCase());
-        let INDEX = dictWord.word.search(regex);
-        if (INDEX === notFound) {
+        let index = dictWord.word.search(regex);
+        if (index === notFound) {
             return 'false';
         }
 
-        while (INDEX > firstLetterIndex) {
+        while (index > firstLetterIndex) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             tmpPlacedWord = placedWord;
             regex = new RegExp('(?<=[' + lettersLeft + '])' + tmpPlacedWord.toLowerCase());
-            INDEX = dictWord.word.search(regex);
+            index = dictWord.word.search(regex);
 
-            if (INDEX === notFound) {
+            if (index === notFound) {
                 if (mapRack.has('*')) {
                     tmpPlacedWord = placedWord;
                     regex = new RegExp(tmpPlacedWord.toLowerCase());
-                    INDEX = dictWord.word.search(regex);
+                    index = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
-                    placedWord = dictWord.word[INDEX - 1].toUpperCase() + placedWord;
+                    placedWord = dictWord.word[index - 1].toUpperCase() + placedWord;
                 } else break;
             } else {
-                this.deleteTmpLetter(dictWord.word[INDEX - 1], mapRack);
-                placedWord = dictWord.word[INDEX - 1] + placedWord;
+                this.deleteTmpLetter(dictWord.word[index - 1], mapRack);
+                placedWord = dictWord.word[index - 1] + placedWord;
             }
         }
 
         let indexOfDot: number = placedWord.indexOf('.');
         while (indexOfDot !== notFound) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
-            regex = new RegExp(placedWord.substring(0, indexOfDot).toLowerCase() + '(?=[' + lettersLeft + '])');
-            INDEX = dictWord.word.search(regex);
-            if (INDEX === notFound) {
+            const leftOfDot = placedWord.substring(0, indexOfDot).toLowerCase();
+            regex = new RegExp(leftOfDot + '(?=[' + lettersLeft + '])');
+            index = dictWord.word.search(regex);
+            if (index > leftOfDot.length) return 'false';
+            const rightOfDot = placedWord.substring(indexOfDot + 1);
+            if (index === notFound) {
                 if (mapRack.has('*')) {
                     tmpPlacedWord = placedWord;
                     regex = new RegExp(tmpPlacedWord.toLowerCase());
-                    INDEX = dictWord.word.search(regex);
+                    index = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
-                    placedWord =
-                        placedWord.substring(0, indexOfDot) + dictWord.word[placedWord.substring(0, indexOfDot).length].toUpperCase() + placedWord.substring(indexOfDot + 1);
+                    placedWord = leftOfDot + dictWord.word[leftOfDot.length].toUpperCase() + rightOfDot;
                 } else break;
             } else {
                 this.deleteTmpLetter(dictWord.word[indexOfDot], mapRack);
-                placedWord =
-                    placedWord.substring(0, indexOfDot) +
-                    dictWord.word[placedWord.substring(0, indexOfDot).length] +
-                    placedWord.substring(indexOfDot + 1);
+                placedWord = leftOfDot + dictWord.word[leftOfDot.length] + rightOfDot;
             }
             indexOfDot = placedWord.indexOf('.');
         }
+
 
         while (placedWord.length !== wordLength) {
             const lettersLeft = this.tmpLetterLeft(mapRack);
             tmpPlacedWord = placedWord;
             regex = new RegExp(tmpPlacedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
-            INDEX = dictWord.word.search(regex);
-            if (INDEX === notFound) {
+            index = dictWord.word.search(regex);
+            if (index > tmpPlacedWord.length) return 'false';
+            if (index === notFound) {
                 if (mapRack.has('*')) {
                     tmpPlacedWord = placedWord;
                     regex = new RegExp(tmpPlacedWord.toLowerCase());
-                    INDEX = dictWord.word.search(regex);
+                    index = dictWord.word.search(regex);
                     this.deleteTmpLetter('*', mapRack);
                     placedWord = placedWord + dictWord.word[placedWord.length].toUpperCase();
                 } else break;

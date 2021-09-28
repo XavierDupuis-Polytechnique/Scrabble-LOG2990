@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
+import { Letter } from '@app/GameLogic/game/letter.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
@@ -161,6 +162,186 @@ describe('DictionaryService', () => {
             new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 3),
         ];
         result = dictionaryService.wordGen(searchedLetters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word keyboard with the available letters (simple true)', () => {
+        const testLine = 'oa';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'Y', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'Z', value: 1 },
+        ];
+        const expected = 'keyboard';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word keyboard with the available letters (simple false)', () => {
+        const testLine = 'oa';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'Z', value: 1 },
+            { char: 'X', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word keyboard with the available letters (complex true)', () => {
+        const testLine = 'y--a';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'O', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'Z', value: 1 },
+        ];
+        const expected = 'keyboard';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word keyboard with the available letters (complex false)', () => {
+        const testLine = 'y--a';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'O', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'Z', value: 1 },
+            { char: 'X', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word keyboards with the available letters (complex+ true)', () => {
+        const testLine = 'y--a--s';
+        const testWord = new ValidWord('keyboards');
+        const letters: Letter[] = [
+            { char: 'O', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+        ];
+        const expected = 'keyboards';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word keyboard with the available letters (complex+ false)', () => {
+        const testLine = 'y--a--s';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'A', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'Z', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'X', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    // TODO Change the test word
+    it('should check if its possible to form the word keyboard with the available letters (double letters false)', () => {
+        const testLine = 'y--a--s';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'O', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    // TODO Change the test word
+    it('should check if its possible to form the word keyboard with the available letters (double letter true)', () => {
+        const testLine = 'y--a--s';
+        const testWord = new ValidWord('keyboard');
+        const letters: Letter[] = [
+            { char: 'O', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'K', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word skippassent with the available letters (double letter true)', () => {
+        const testLine = 'ki--as--tn';
+        const testWord = new ValidWord('skippassent');
+        const letters: Letter[] = [
+            { char: 'S', value: 1 },
+            { char: 'P', value: 1 },
+            { char: 'P', value: 1 },
+            { char: 'S', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'N', value: 1 },
+            { char: 'Z', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word ecolier with the available letters (edge case bug fixing test)', () => {
+        const testLine = 'e';
+        const testWord = new ValidWord('ecolier');
+        const letters: Letter[] = [
+            { char: 'L', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'I', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'S', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 });
