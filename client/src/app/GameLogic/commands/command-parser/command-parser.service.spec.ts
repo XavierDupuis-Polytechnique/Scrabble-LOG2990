@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import * as commandParserService from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
-import { Command, CommandType } from '../command.interface';
 
 describe('CommandParser', () => {
     let service: commandParserService.CommandParserService;
@@ -11,7 +12,7 @@ describe('CommandParser', () => {
     const syntaxError3 = 'erreur de syntax: mot invalide';
     const syntaxError4 = 'erreur de syntax: colonne hors champ';
     const syntaxError5 = 'erreur de syntax: direction invalide';
-    const syntaxError6 = 'erreur de syntax: les paramètres sont invalide';
+    const syntaxError6 = 'erreur de syntax: les paramètres sont invalides';
     const syntaxError7 = 'erreur de syntax: colonne invalide';
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -23,9 +24,9 @@ describe('CommandParser', () => {
     });
 
     it('should be Subject<Command>', () => {
-        const testCommand: Command = { type: CommandType.Debug };
+        const testCommand: Command = { type: CommandType.Debug, args: [] };
         service.parsedCommand$.subscribe((command) => {
-            expect(command).toBe(testCommand);
+            expect(command).toEqual(testCommand);
         });
         service.parse('!debug');
     });
@@ -67,13 +68,13 @@ describe('CommandParser', () => {
 
     it('should throw ' + syntaxError3, () => {
         expect(() => {
-            service.placeLetterFormatter(['a1v', ' ']);
+            service.placeLetterFormatter(['a1v', EMPTY_CHAR]);
         }).toThrowError(syntaxError3);
     });
 
     it('should throw ' + syntaxError3, () => {
         expect(() => {
-            service.placeLetterFormatter(['a1v', '   ']);
+            service.placeLetterFormatter(['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
         }).toThrowError(syntaxError3);
     });
 

@@ -23,9 +23,7 @@ export class CommandExecuterService {
         private actionValidator: ActionValidatorService,
         private messageService: MessagesService,
     ) {
-        //console.log('command executer is created');
         this.commandParser.parsedCommand$.subscribe((command) => {
-            //console.log('received command', command);
             this.execute(command);
         });
     }

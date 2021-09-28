@@ -1,13 +1,14 @@
 /* eslint-disable max-classes-per-file */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { isCharUpperCase, PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { isCharUpperCase, PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
