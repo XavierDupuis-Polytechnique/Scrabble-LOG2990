@@ -1,7 +1,8 @@
 /* eslint-disable max-classes-per-file */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
-import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { isCharUpperCase, PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
@@ -30,7 +31,6 @@ class MockPointCalculator extends PointCalculatorService {
         const points = action.word.length + listOfWord.length;
         const player = action.player;
         player.points = points;
-        console.log('adding points to player', player, points);
         return points;
     }
 }
@@ -51,6 +51,8 @@ describe('PlaceLetter', () => {
     let pointCalculatorService: MockPointCalculator;
     let wordSearcher: WordSearcher;
     let placeLetter: PlaceLetter;
+    let activePlayer: Player;
+    let letterCreator: LetterCreator;
     beforeEach(() => {
         timer = new TimerService();
         TestBed.configureTestingModule({
@@ -70,9 +72,9 @@ describe('PlaceLetter', () => {
         game.players.push(player1);
         game.players.push(player2);
         game.start();
-        const letterCreator = new LetterCreator();
+        letterCreator = new LetterCreator();
         const letterObjects = letterCreator.createLetters(lettersToPlace.split(''));
-        const activePlayer = game.getActivePlayer();
+        activePlayer = game.getActivePlayer();
         for (let i = 0; i < letterObjects.length; i++) {
             activePlayer.letterRack[i] = letterObjects[i];
         }
@@ -80,7 +82,7 @@ describe('PlaceLetter', () => {
     });
 
     it('should create an instance', () => {
-        const activePlayer = game.getActivePlayer();
+        activePlayer = game.getActivePlayer();
         expect(new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorService, wordSearcher)).toBeTruthy();
     });
 
@@ -105,7 +107,46 @@ describe('PlaceLetter', () => {
         const LIST_OF_WORD_LENGTH = 1;
         const points = placeLetter.word.length + LIST_OF_WORD_LENGTH;
         placeLetter.execute(game);
-        const activePlayer = game.getActivePlayer();
+        activePlayer = game.getActivePlayer();
         expect(activePlayer.points).toBe(points);
+    });
+
+    it('#isCharUpperCase should throw error', () => {
+        const notChar = 'AB';
+        expect(() => {
+            isCharUpperCase(notChar);
+        }).toThrowError();
+    });
+
+    it('should place letters in vertical', () => {
+        const newPlacement = { ...placement };
+        newPlacement.direction = Direction.Vertical;
+        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, newPlacement, pointCalculatorService, wordSearcher);
+        placeLetter.execute(game);
+
+        const word = placeLetter.word;
+        for (let y = 0; y < word.length; y++) {
+            expect(game.board.grid[y][0].letterObject.char).toBe(word.charAt(y).toUpperCase());
+        }
+    });
+
+    it('should place blank letter', () => {
+        activePlayer.letterRack[0] = letterCreator.createLetter('*');
+        const wordToPlace = 'Bateau';
+        placeLetter = new PlaceLetter(activePlayer, wordToPlace, placement, pointCalculatorService, wordSearcher);
+        placeLetter.execute(game);
+
+        const word = placeLetter.word;
+        for (let x = 0; x < word.length; x++) {
+            expect(game.board.grid[0][x].letterObject.char).toBe(word.charAt(x).toUpperCase());
+        }
+    });
+
+    it('should place letter at right place with letters on board', () => {
+        game.board.grid[0][0].letterObject = letterCreator.createLetter('B');
+        placeLetter.execute(game);
+        for (let i = 0; i < lettersToPlace.length; i++) {
+            expect(game.board.grid[0][i].letterObject.char).toBe(lettersToPlace.charAt(i).toUpperCase());
+        }
     });
 });

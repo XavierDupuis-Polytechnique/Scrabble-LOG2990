@@ -16,7 +16,7 @@ export interface PlacementSetting {
 }
 const TIME_FOR_REVERT = 3000;
 
-const isCharUpperCase = (char: string) => {
+export const isCharUpperCase = (char: string) => {
     if (char.length !== 1) {
         throw Error('the string given is not a char');
     }

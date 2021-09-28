@@ -7,6 +7,7 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
+import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -22,7 +23,7 @@ export class ActionCompilerService {
     // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
         // TODO: get user from player service
-        const user = this.gameInfo.user;
+        const user = this.findPlayer(command.from);
         const args = command.args;
         switch (command.type) {
             case CommandType.Exchange:
@@ -72,5 +73,15 @@ export class ActionCompilerService {
         const y = placementArgs[0].charCodeAt(0) - 'a'.charCodeAt(0);
         const direction = placementArgs[2].toUpperCase();
         return { x, y, direction };
+    }
+
+    private findPlayer(name: string): Player {
+        const players = this.gameInfo.players;
+        for (const player of players) {
+            if (player.name === name) {
+                return player;
+            }
+        }
+        throw Error(`${name} not found in players`);
     }
 }

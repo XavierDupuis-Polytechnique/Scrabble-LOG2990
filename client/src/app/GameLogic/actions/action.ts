@@ -1,13 +1,13 @@
 import { Game } from '@app/GameLogic/game/games/game';
 import { Player } from '@app/GameLogic/player/player';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export abstract class Action {
     static id = 0;
     id;
 
     private endSubject = new Subject<void>();
-    get end$() {
+    get end$(): Observable<void> {
         return this.endSubject;
     }
 

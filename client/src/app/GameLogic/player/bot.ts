@@ -2,6 +2,7 @@ import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { BotCrawler } from '@app/GameLogic/player/bot-crawler';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -11,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord } from './valid-word';
 
-const TIME_BEFORE_PICKING_ACTION = 3000;
+const TIME_BEFORE_PICKING_ACTION = 10;
 const TIME_BEFORE_PASS = 20000;
 const MIDDLE_OF_BOARD = 7;
 
@@ -28,6 +29,7 @@ export abstract class Bot extends Player {
         private dictionaryService: DictionaryService,
         protected pointCalculatorService: PointCalculatorService,
         protected wordValidator: WordSearcher,
+        protected botMessage: BotMessagesService,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
@@ -43,16 +45,20 @@ export abstract class Bot extends Player {
     startTimerAction() {
         const timerPass = timer(TIME_BEFORE_PASS);
         timerPass.pipe(takeUntil(this.action$)).subscribe(() => {
-            this.play(new PassTurn(this));
+            // console.log('after 20s');
+            this.botMessage.sendAction(new PassTurn(this));
+            // this.play(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
             if (action !== undefined) {
-                this.play(action);
+                this.botMessage.sendAction(action);
+                // this.play(action);
             } else {
                 this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
                     if (chosenAction !== undefined) {
-                        this.play(chosenAction);
+                        this.botMessage.sendAction(chosenAction);
+                        // this.play(chosenAction);
                     }
                 });
             }
