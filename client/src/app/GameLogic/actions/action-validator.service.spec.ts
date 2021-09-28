@@ -36,7 +36,7 @@ describe('ActionValidatorService', () => {
     let wordSearcher: WordSearcher;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 
-    class FakeAction extends Action {
+    class UnknownAction extends Action {
         id: number;
         constructor(readonly player: Player) {
             super(player);
@@ -87,7 +87,7 @@ describe('ActionValidatorService', () => {
 
     /// INVALID ACTION TYPE TESTS ///
     it('should throw error when receiving an unrecognized action type', () => {
-        const action = new FakeAction(currentPlayer);
+        const action = new UnknownAction(currentPlayer);
         expect(() => {
             service.validateAction(action);
         }).toThrowError("Action couldn't be validated");
