@@ -212,7 +212,7 @@ export class DictionaryService {
             const leftOfDot = placedWord.substring(0, indexOfDot).toLowerCase();
             regex = new RegExp(leftOfDot + '(?=[' + lettersLeft + '])');
             index = dictWord.word.search(regex);
-            if (index > leftOfDot.length) return 'false';
+            if (index > 0) return 'false';
             const rightOfDot = placedWord.substring(indexOfDot + 1);
             if (index === notFound) {
                 if (mapRack.has('*')) {
