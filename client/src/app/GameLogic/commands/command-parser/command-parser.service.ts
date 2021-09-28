@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 const CHARACTER_V = 'v'.charCodeAt(0);
 const CHARACTER_H = 'h'.charCodeAt(0);
@@ -14,8 +14,7 @@ export class CommandParserService {
     private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
 
-    get parsedCommand$() {
-        /// a tester
+    get parsedCommand$(): Observable<Command> {
         return this.command$;
     }
 
@@ -69,7 +68,7 @@ export class CommandParserService {
     }
 
     placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
-        const whiteSpace = new RegExp('\\s+');
+        const letters = new RegExp('/^[a-zA-Z]+$/');
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             throw Error(this.errorSyntax + ': ligne hors champ');
         }
@@ -79,7 +78,7 @@ export class CommandParserService {
         if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
             throw Error(this.errorSyntax + ': direction invalide');
         }
-        if (word.length < 2 || word.length > MAX_COL || whiteSpace.test(word)) {
+        if (word.length < 2 || word.length > MAX_COL || !letters.test(word)) {
             throw Error(this.errorSyntax + ': mot invalide');
         }
     }

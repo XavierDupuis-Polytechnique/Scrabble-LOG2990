@@ -18,12 +18,10 @@ export class MessagesService {
         const message: Message = {
             content,
             from: forwarder,
+            type: MessageType.Player1,
         };
         try {
-            const isCommand = this.commandParser.parse(message.content);
-            if (isCommand === false) {
-                message.type = MessageType.Player1;
-            }
+            this.commandParser.parse(message.content);
             this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {
