@@ -1,4 +1,4 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -9,11 +9,8 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     templateUrl: './player-info.component.html',
     styleUrls: ['./player-info.component.scss'],
 })
-export class PlayerInfoComponent implements OnChanges {
-
-    constructor(private gameManager: GameManagerService, public info: GameInfoService, private avs: ActionValidatorService) {}
-
-    ngOnChanges() {}
+export class PlayerInfoComponent {
+    constructor(private gameManager: GameManagerService, private info: GameInfoService, private avs: ActionValidatorService) {}
 
     abandonner(): void {
         this.gameManager.stopGame();
@@ -26,6 +23,14 @@ export class PlayerInfoComponent implements OnChanges {
     get isItMyTurn() {
         try {
             return this.info.user === this.info.activePlayer;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    get isEndOfGame() {
+        try {
+            return this.info.isEndOfGame;
         } catch (e) {
             return false;
         }
