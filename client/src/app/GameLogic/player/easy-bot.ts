@@ -1,8 +1,9 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Bot } from './bot';
 

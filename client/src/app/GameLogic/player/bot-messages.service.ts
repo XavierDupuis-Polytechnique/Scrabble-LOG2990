@@ -3,9 +3,10 @@ import { Action } from '@app/GameLogic/actions/action';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { Letter } from '@app/GameLogic/game/letter.interface';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 
 const MAX_Y_VALUE = 14;

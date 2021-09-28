@@ -14,23 +14,13 @@ describe('EasyBot', () => {
     let board: TestBoard;
     let boardService: BoardService;
     let botCreatorService: BotCreatorService;
-    // let wordSearcher: WordSearcher;
-    // let botMessagesService: BotMessagesService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [BoardService, BotCreatorService, BotMessagesService],
         });
         boardService = TestBed.inject(BoardService);
-        // botMessagesService = TestBed.inject(BotMessagesService);
         botCreatorService = TestBed.inject(BotCreatorService);
-        // const dictionaryService = new DictionaryService();
-        // boardService = new BoardService();
-        // const pointCalculator = new PointCalculatorService(boardService);
-        // // const timer = new TimerService();
-        // // const TIME_PER_TURN = 10;
-        // wordSearcher = new WordSearcher(boardService, dictionaryService);
-        // // const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
         board = new TestBoard();
 
         // easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());

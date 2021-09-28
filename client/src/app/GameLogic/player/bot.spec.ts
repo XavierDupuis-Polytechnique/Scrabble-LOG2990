@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 /* eslint-disable max-classes-per-file*/
+import { TestBed } from '@angular/core/testing';
 import { Board } from '@app/GameLogic/game/board';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
+import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
+import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
-import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
-import { Bot } from './bot';
 
-class TestBot extends Bot {
-    setActive() {
-        this.startTimerAction();
-    }
-}
+// class TestBot extends Bot {
+//     setActive() {
+//         this.startTimerAction();
+//     }
+// }
 export class TestBoard extends Board {
     letterCreator = new LetterCreator();
     placeWord(x: number, y: number, isVertical: boolean, word: string) {
@@ -30,18 +31,25 @@ export class TestBoard extends Board {
 }
 
 describe('Bot', () => {
-    let bot: TestBot;
+    TestBed.configureTestingModule({
+        providers: [BoardService, BotCreatorService, BotMessagesService, BoardService, DictionaryService],
+    });
+    let bot: EasyBot;
     let board: TestBoard;
-    const boardService = new BoardService();
-    const dictionaryService = new DictionaryService();
-    const pointCalculator = new PointCalculatorService(boardService);
+    let boardService: BoardService;
+    let botCreator: BotCreatorService;
+    // const boardService = new BoardService();
+    // const dictionaryService = new DictionaryService();
+    // const pointCalculator = new PointCalculatorService(boardService);
     // const timer = new TimerService();
     // const game = new Game(10, timer, pointCalculator, boardService);
-    const wordSearcher = new WordSearcher(boardService, dictionaryService);
+    // const wordSearcher = new WordSearcher(boardService, dictionaryService);
 
     beforeEach(() => {
-        // bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, game);
-        bot = new TestBot('Jimmy', boardService, dictionaryService, pointCalculator, wordSearcher);
+        botCreator = TestBed.inject(BotCreatorService);
+        boardService = TestBed.inject(BoardService);
+
+        bot = botCreator.createBot('testBot', 'easy') as EasyBot;
         board = new TestBoard();
     });
     it('should create an instance', () => {
