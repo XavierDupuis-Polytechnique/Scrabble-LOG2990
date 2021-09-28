@@ -8,12 +8,13 @@ import { Log2990Game } from './log2990-game';
 
 describe('Log2990Game', () => {
     it('should create an instance', () => {
+        const boardservice = new BoardService();
         expect(
             new Log2990Game(
                 DEFAULT_TIME_PER_TURN,
                 new TimerService(),
-                new PointCalculatorService(),
-                new BoardService(),
+                new PointCalculatorService(boardservice),
+                boardservice,
                 new MessagesService(new CommandParserService()),
             ),
         ).toBeTruthy();

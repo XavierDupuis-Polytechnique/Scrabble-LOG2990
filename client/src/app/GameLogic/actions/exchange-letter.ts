@@ -30,5 +30,6 @@ export class ExchangeLetter extends Action {
         for (const letter of this.lettersToExchange) {
             game.letterBag.addLetter({ ...letter });
         }
+        this.end();
     }
 }

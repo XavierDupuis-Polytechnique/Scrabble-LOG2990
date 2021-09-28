@@ -22,7 +22,7 @@ describe('Game', () => {
 
     beforeEach(() => {
         timerSpy = jasmine.createSpyObj('TimerService', ['start', 'stop']);
-        pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointdeduction']);
+        pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
         game = new Game(TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy);

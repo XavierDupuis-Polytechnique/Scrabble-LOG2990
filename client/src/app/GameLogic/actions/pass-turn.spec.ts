@@ -17,11 +17,12 @@ describe('PassTurn', () => {
 
     beforeEach(() => {
         timer = new TimerService();
+        const boardService = new BoardService();
         game = new Game(
             DEFAULT_TIME_PER_TURN,
             timer,
-            new PointCalculatorService(),
-            new BoardService(),
+            new PointCalculatorService(boardService),
+            boardService,
             new MessagesService(new CommandParserService()),
         );
         game.players.push(player1);
@@ -35,10 +36,11 @@ describe('PassTurn', () => {
 
     it('should pass turn', () => {
         const beforePlayer: Player = game.getActivePlayer();
+        const beforePlayerName: string = beforePlayer.name;
         const passAction = new PassTurn(beforePlayer);
-        passAction.execute(game);
-        passAction.player.action$.next(passAction);
+        beforePlayer.play(passAction);
         const afterPlayer: Player = game.getActivePlayer();
-        expect(beforePlayer.name !== afterPlayer.name).toBeTrue();
+        const afterPlayerName: string = afterPlayer.name;
+        expect(beforePlayerName !== afterPlayerName).toBeTrue();
     });
 });

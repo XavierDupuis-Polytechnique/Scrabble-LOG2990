@@ -56,7 +56,7 @@ export class GameInfoService {
         }
     }
 
-    get timeLeftForTurn(): Observable<number> {
+    get timeLeftForTurn(): Observable<number | undefined> {
         return this.timer.timeLeft$;
     }
 

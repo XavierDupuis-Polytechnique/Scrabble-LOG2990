@@ -21,11 +21,12 @@ describe('Action', () => {
     let user: User;
     let gameSpy: jasmine.Spy<(action: Action) => void>;
     beforeEach(() => {
+        const boardService = new BoardService();
         game = new Game(
             TIME_PER_TURN,
             new TimerService(),
-            new PointCalculatorService(),
-            new BoardService(),
+            new PointCalculatorService(boardService),
+            boardService,
             new MessagesService(new CommandParserService()),
         );
         gameSpy = spyOn(game, 'doAction');
