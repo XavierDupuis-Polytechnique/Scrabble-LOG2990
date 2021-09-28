@@ -13,7 +13,6 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -24,13 +23,12 @@ import { BoardService } from '@app/services/board.service';
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
     let game: Game;
-    let p1User: User;
-    let p2Bot: EasyBot;
+    let p1: User;
+    let p2: User;
     let currentPlayer: Player;
     let timer: TimerService;
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
-    let dictonary: DictionaryService;
     let info: GameInfoService;
     let messageService: MessagesService;
     let wordSearcher: WordSearcher;
@@ -61,7 +59,6 @@ describe('ActionValidatorService', () => {
                 TimerService,
                 GameInfoService,
                 PointCalculatorService,
-                WordSearcher,
             ],
         });
         service = TestBed.inject(ActionValidatorService);
@@ -69,13 +66,12 @@ describe('ActionValidatorService', () => {
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
-        wordSearcher = TestBed.inject(WordSearcher);
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messageService);
-        p1User = new User('testUser');
-        p2Bot = new EasyBot('testUser', board, dictonary);
-        game.players.push(p1User);
-        game.players.push(p2Bot);
+        p1 = new User('p1');
+        p2 = new User('p2');
+        game.players.push(p1);
+        game.players.push(p2);
         info.receiveGame(game);
         game.start();
         currentPlayer = game.getActivePlayer();
@@ -110,19 +106,19 @@ describe('ActionValidatorService', () => {
     });
 
     it('should invalidate an invalid PassTurn because the player tried to perform an action outside of its turn', () => {
-        const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
+        const otherPlayer = currentPlayer === p1 ? p2 : p1;
         const action = new PassTurn(otherPlayer);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because the player tried to perform an action outside of its turn', () => {
-        const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
+        const otherPlayer = currentPlayer === p1 ? p2 : p1;
         const action = new ExchangeLetter(otherPlayer, []);
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the player tried to perform an action outside of its turn', () => {
-        const otherPlayer = currentPlayer === p1User ? p2Bot : p1User;
+        const otherPlayer = currentPlayer === p1 ? p2 : p1;
         const action = new PlaceLetter(
             otherPlayer,
             '',
