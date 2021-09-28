@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Letter } from '@app/GameLogic/game/letter.interface';
-import { Tile } from '@app/GameLogic/game/tile';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
@@ -256,14 +255,6 @@ export class DictionaryService {
         } else {
             return 'false';
         }
-    }
-
-    tileToString(word: Tile[]): string {
-        const wordTemp = '';
-        word.forEach((letter) => {
-            wordTemp.concat(letter.letterObject.char);
-        });
-        return wordTemp;
     }
 
     private deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {
