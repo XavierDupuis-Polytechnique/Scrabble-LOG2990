@@ -16,6 +16,10 @@
     <p>{{ info.numberOfLettersRemaining }} letters remaining</p>
 </div>
 
+<div *ngIf="info.isEndOfGame">
+    <H1>Félicitation à: {{this.showWinner()}}</H1>
+</div>
+
 <!-- Nom -->
 <!-- Score -->
 <!-- Nombre de lettre si moins de 7-->

@@ -4,11 +4,13 @@ import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
+// import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 
 const MAX_CONSECUTIVE_PASS = 6;
 
@@ -26,6 +28,7 @@ export class Game {
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
+        private messagesService: MessagesService,
     ) {
         this.boardService.board = this.board;
     }
@@ -62,13 +65,8 @@ export class Game {
     }
 
     onEndOfGame() {
-        // console.log('Game ended');
-        this.pointCalculator.endOfGamePointdeduction(this);
+        this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
-        for (const player of this.getWinner()) {
-            // TODO Envoyer dans la boite de communication
-            console.log('Congratulations!', player.name, 'is the winner.');
-        }
     }
 
     doAction(action: Action) {
@@ -80,6 +78,21 @@ export class Game {
         if (action instanceof PlaceLetter) {
             // calculer points du active player
         }
+    }
+
+    getWinner(): Player[] {
+        let highestScore = Number.MIN_SAFE_INTEGER;
+        let winners: Player[] = [];
+        for (const player of this.players) {
+            if (player.points === highestScore) {
+                winners.push(player);
+            }
+            if (player.points > highestScore) {
+                highestScore = player.points;
+                winners = [player];
+            }
+        }
+        return winners;
     }
 
     private pickFirstPlayer() {
@@ -96,11 +109,7 @@ export class Game {
 
     private startTurn() {
         this.turnNumber++;
-        //console.log(' ');
-        //console.log('--- Turn No. : ', this.turnNumber, ' ---');
-        // TODO timerends emits passturn action + feed action in end turn arguments
         const activePlayer = this.players[this.activePlayerIndex];
-        // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
@@ -110,37 +119,22 @@ export class Game {
     private endOfTurn(action: Action) {
         this.timer.stop();
 
+        action.end$.subscribe(() => {
+            if (this.isEndOfGame()) {
+                this.onEndOfGame();
+                return;
+            }
+            this.nextPlayer();
+            this.startTurn();
+        });
+
         action.execute(this);
-        // console.log('end of turn');
-        if (this.isEndOfGame()) {
-            this.onEndOfGame();
-            return;
-        }
-        this.nextPlayer();
-        this.startTurn();
     }
 
     private displayLettersLeft() {
-        // TODO Envoyer dans la boite de communication
-        console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
-            // TODO Envoyer dans la boite de communication
-            console.log(player.name, ':', player.letterRack);
+            const message = `${player.name}: ${player.printLetterRack()}`;
+            this.messagesService.receiveSystemMessage(message);
         }
-    }
-
-    private getWinner(): Player[] {
-        let highestScore = Number.MIN_SAFE_INTEGER;
-        let winners: Player[] = [];
-        for (const player of this.players) {
-            if (player.points === highestScore) {
-                winners.push(player);
-            }
-            if (player.points > highestScore) {
-                highestScore = player.points;
-                winners = [player];
-            }
-        }
-        return winners;
     }
 }
