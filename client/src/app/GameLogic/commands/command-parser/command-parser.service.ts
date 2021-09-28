@@ -16,7 +16,6 @@ export class CommandParserService {
     private command$: Subject<Command> = new Subject();
 
     get parsedCommand$() {
-        /// a tester
         return this.command$;
     }
 
@@ -30,7 +29,6 @@ export class CommandParserService {
     }
 
     parse(message: Message): boolean {
-        // Couper l'entry par espace pour verifier s'il s'agit d'une commande
         const toVerify = message.content.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
@@ -73,7 +71,6 @@ export class CommandParserService {
     placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
         const whiteSpace = new RegExp('\\s+');
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
-            // si depasse 'o' et inferieur a 'a'
             throw Error(this.errorSyntax + ': ligne hors champ');
         }
         if (col > MAX_COL) {
@@ -86,7 +83,7 @@ export class CommandParserService {
             throw Error(this.errorSyntax + ': mot invalide');
         }
     }
-    // Verifie s'il s'agit d'un axxv ou axv
+
     colArgVerifier(arg1: string): number {
         let col;
         if (this.isNumeric(arg1[1]) && this.isNumeric(arg1[2]) && arg1.length === MAX_PLACE_LETTER_ARG_SIZE) {
