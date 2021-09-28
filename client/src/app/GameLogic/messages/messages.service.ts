@@ -29,7 +29,6 @@ export class MessagesService {
                 this.receiveError(e as Error);
             }
         }
-        // TODO put command parser here
     }
 
     receiveSystemMessage(content: string) {
