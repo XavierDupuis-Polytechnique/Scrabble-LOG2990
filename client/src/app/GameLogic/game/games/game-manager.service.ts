@@ -60,6 +60,5 @@ export class GameManagerService {
 
     private allocatePlayers(players: Player[]) {
         this.game.players = players;
-        // this.info = new GameInfoService(this.timer, this.game);
     }
 }

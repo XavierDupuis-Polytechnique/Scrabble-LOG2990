@@ -1,12 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DEFAULT_TIME_PER_TURN, MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 
-const MAX_NAME_LENGTH = 50;
-const MIN_NAME_LENGTH = 3;
-
-export const DEFAULT_TIME_PER_TURN = 60000;
 const MIN_TIME_PER_TURN = 30000;
 const MAX_TIME_PER_TURN = 300000;
 const STEP_TIME_PER_TURN = 30000;
