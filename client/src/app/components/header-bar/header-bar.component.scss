@@ -10,8 +10,11 @@
 mat-toolbar {
     display: flex;
     position: relative;
+    margin-top: 2%;
+    background-color: transparent;
 }
 
-#title {
+.title {
     margin: 2%;
+    color: var(--melon);
 }
