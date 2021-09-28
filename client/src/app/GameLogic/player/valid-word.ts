@@ -17,6 +17,5 @@ export class ValidWord {
         public numberOfLettersPlaced: number = 0,
         public adjacentWords: Word[] = [],
         public value: number = 0,
-    ) {
-    }
+    ) {}
 }

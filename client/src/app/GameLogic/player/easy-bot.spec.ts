@@ -1,10 +1,9 @@
+import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { TestBoard } from '@app/GameLogic/player/bot.spec';
-import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
 import { EasyBot } from './easy-bot';
 
@@ -15,21 +14,27 @@ describe('EasyBot', () => {
     let board: TestBoard;
     let boardService: BoardService;
     let botCreatorService: BotCreatorService;
-    let wordSearcher: WordSearcher;
+    // let wordSearcher: WordSearcher;
+    // let botMessagesService: BotMessagesService;
 
     beforeEach(() => {
-        boardService = new BoardService();
-        const dictionaryService = new DictionaryService();
-        const pointCalculator = new PointCalculatorService(boardService);
-        // const timer = new TimerService();
-        // const TIME_PER_TURN = 10;
-        wordSearcher = new WordSearcher(boardService, dictionaryService);
-        botCreatorService = new BotCreatorService(boardService, dictionaryService, pointCalculator, wordSearcher);
-        // const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
+        TestBed.configureTestingModule({
+            providers: [BoardService, BotCreatorService, BotMessagesService],
+        });
+        boardService = TestBed.inject(BoardService);
+        // botMessagesService = TestBed.inject(BotMessagesService);
+        botCreatorService = TestBed.inject(BotCreatorService);
+        // const dictionaryService = new DictionaryService();
+        // boardService = new BoardService();
+        // const pointCalculator = new PointCalculatorService(boardService);
+        // // const timer = new TimerService();
+        // // const TIME_PER_TURN = 10;
+        // wordSearcher = new WordSearcher(boardService, dictionaryService);
+        // // const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
         board = new TestBoard();
 
         // easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());
-        easyBot = botCreatorService.createBot('Tim', 'easy');
+        easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
         spyPlay = spyOn(easyBot, 'playAction');
         spyExchange = spyOn(easyBot, 'exchangeAction');
     });
@@ -64,10 +69,9 @@ describe('EasyBot', () => {
         easyBot.letterRack = letters;
 
         boardService.board.grid = board.grid;
-        let result: Action;
+        const result: Action = easyBot.setActive();
         // TODO change number when crosscheck works
-        result = easyBot.setActive();
-        console.log(result);
+        // console.log(result);
         expect(result).toBeTruthy();
     });
 });

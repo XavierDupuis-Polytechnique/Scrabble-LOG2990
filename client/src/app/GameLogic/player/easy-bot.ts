@@ -28,9 +28,9 @@ export class EasyBot extends Bot {
         this.startTimerAction();
         // TODO: Start computation for picking actions
         const action = this.randomActionPicker();
-        console.log(this.letterRack);
+        // console.log(this.letterRack);
         this.chooseAction(action);
-        console.log(action);
+        // console.log(action);
         return action;
     }
     // TODO change behavior of play
