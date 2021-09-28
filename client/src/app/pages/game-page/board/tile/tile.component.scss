@@ -1,16 +1,20 @@
+$melon: rgba(242, 185, 176, 1);
+$blue-munsell: rgba(41, 151, 164, 1);
+$salmon: rgba(242, 121, 102, 1);
+$powder-blue: rgba(202, 225, 225, 1);
 
 .letterX2 {
-    background-color: blue;
+    background-color: $powder-blue;
 }
 
 .letterX3 {
-    background-color: rgb(86, 140, 211);
+    background-color: $blue-munsell;
 }
 
 .wordX2 {
-    background-color: red;
+    background-color: $melon;
 }
 
 .wordX3 {
-    background-color: rgb(248, 104, 104);
+    background-color: $salmon;
 }

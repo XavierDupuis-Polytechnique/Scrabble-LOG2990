@@ -16,12 +16,12 @@ export class BoardComponent implements AfterViewInit {
     board: Board;
     minFontSize = MIN_FONT_SIZE;
     maxFontSize = MAX_FONT_SIZE;
-    fontSize: number = (this.minFontSize + this.maxFontSize) / 2;
+    fontSize: number;
 
     constructor(private boardService: BoardService) {
         this.board = this.boardService.board;
+        this.fontSize = (this.minFontSize + this.maxFontSize) / 2;
     }
-
     ngAfterViewInit() {
         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
     }
@@ -31,7 +31,7 @@ export class BoardComponent implements AfterViewInit {
     //         this.fontSize++;
     //         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
     //     }
-    // }  
+    // }
 
     // decreaseFont(): void {
     //     if (this.fontSize > this.minFontSize) {
@@ -52,8 +52,6 @@ export class BoardComponent implements AfterViewInit {
         if (event.value != null) {
             this.fontSize = event.value;
             (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
-
         }
     }
-
 }

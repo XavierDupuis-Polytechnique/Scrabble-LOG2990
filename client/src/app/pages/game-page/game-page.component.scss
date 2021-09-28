@@ -12,13 +12,11 @@
 
 app-info-box {
     grid-area: Info;
-    border: 1px solid var(--darkgray);
     padding: 1%;
 }
 
 app-chat-box {
     grid-area: Chat;
-    border: 1px solid var(--darkgray);
     width: 100%;
     overflow-wrap: anywhere;
     word-break: normal;
@@ -27,7 +25,6 @@ app-board {
     height: min-content;
     grid-area: Board;
     padding: 1%;
-    border: 2px solid var(--darkgray);
     min-width: 50vw;
     //width: 90%;
 }
@@ -46,5 +43,4 @@ app-player-info {
     grid-area: Player;
     padding: 1%;
     border: 1px solid var(--darkgray);
-    
 }
