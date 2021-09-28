@@ -87,7 +87,7 @@ export abstract class Player {
         for (const letter of this.letterRack) {
             letterRackString += letter.char + ', ';
         }
-        return letterRackString;
+        return letterRackString.slice(0, letterRackString.length - 1);
     }
 
     get isLetterRackEmpty(): boolean {

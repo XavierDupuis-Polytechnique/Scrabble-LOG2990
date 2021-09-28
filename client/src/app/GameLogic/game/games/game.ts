@@ -65,13 +65,8 @@ export class Game {
     }
 
     onEndOfGame() {
-        // console.log('Game ended');
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
-        for (const player of this.getWinner()) {
-            // TODO Envoyer dans la boite de communication
-            console.log('Congratulations!', player.name, 'is the winner.');
-        }
     }
 
     doAction(action: Action) {
@@ -137,8 +132,6 @@ export class Game {
     }
 
     private displayLettersLeft() {
-        // TODO Envoyer dans la boite de communication
-        console.log('Fin de partie - lettres restantes');
         for (const player of this.players) {
             const message = `${player.name}: ${player.printLetterRack()}`;
             this.messagesService.receiveSystemMessage(message);
