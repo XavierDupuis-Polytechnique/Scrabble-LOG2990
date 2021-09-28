@@ -50,7 +50,7 @@ export class CommandParserService {
             const row = args[0].charCodeAt(0);
             const col = this.colArgVerifier(args[0]);
             const direction = args[0].charCodeAt(args[0].length - 1);
-            const word = args[1];
+            const word = args[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
             this.placeLetterArgVerifier(row, col, direction, word);
 
