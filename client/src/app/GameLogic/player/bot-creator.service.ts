@@ -21,9 +21,7 @@ export class BotCreatorService {
         private botMessage: BotMessagesService,
     ) {}
     createBot(playerName: string, botDifficulty: string): Bot {
-        // this.game = game;
         if (botDifficulty === 'hard') {
-            // return new HardBot(playerName, this.boardService, this.dictionaryService, this.game);
             return new HardBot(
                 playerName,
                 this.boardService,
@@ -33,7 +31,6 @@ export class BotCreatorService {
                 this.botMessage,
             );
         } else {
-            // return new EasyBot(playerName, this.boardService, this.dictionaryService, this.game);
             return new EasyBot(
                 playerName,
                 this.boardService,

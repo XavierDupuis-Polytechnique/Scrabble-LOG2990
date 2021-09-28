@@ -11,11 +11,6 @@ import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 
-// class TestBot extends Bot {
-//     setActive() {
-//         this.startTimerAction();
-//     }
-// }
 export class TestBoard extends Board {
     letterCreator = new LetterCreator();
     placeWord(x: number, y: number, isVertical: boolean, word: string) {
@@ -38,12 +33,6 @@ describe('Bot', () => {
     let board: TestBoard;
     let boardService: BoardService;
     let botCreator: BotCreatorService;
-    // const boardService = new BoardService();
-    // const dictionaryService = new DictionaryService();
-    // const pointCalculator = new PointCalculatorService(boardService);
-    // const timer = new TimerService();
-    // const game = new Game(10, timer, pointCalculator, boardService);
-    // const wordSearcher = new WordSearcher(boardService, dictionaryService);
 
     beforeEach(() => {
         botCreator = TestBed.inject(BotCreatorService);
@@ -120,9 +109,7 @@ describe('Bot', () => {
         board.placeWord(9, 7, true, 'elle');
         boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        // TODO change number when crosscheck works
         const expected = 174; // It would take too long to list all the possibilities with any more details in this test.
-        // const expected: ValidWord[] = [];
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
@@ -201,5 +188,3 @@ describe('Bot', () => {
         expect(result.length).toEqual(expected);
     });
 });
-
-// TODO Make more tests

@@ -27,14 +27,10 @@ export class EasyBot extends Bot {
 
     setActive(): Action {
         this.startTimerAction();
-        // TODO: Start computation for picking actions
         const action = this.randomActionPicker();
-        // console.log(this.letterRack);
         this.chooseAction(action);
-        // console.log(action);
         return action;
     }
-    // TODO change behavior of play
     randomActionPicker(): Action {
         const randomValue = Math.random();
         if (randomValue <= EasyBot.actionProbabibility.play) {
@@ -52,7 +48,6 @@ export class EasyBot extends Bot {
 
     randomWordPicker(validWordsList: ValidWord[]): ValidWord {
         const randomValue = Math.random();
-        // TODO assign validWordList with the calculated wordList from the algorithm
         const validWordList: ValidWord[] = validWordsList;
         const wordP6: ValidWord[] = [];
         const wordP7to12: ValidWord[] = [];
@@ -84,7 +79,6 @@ export class EasyBot extends Bot {
                 return wordPicked;
             }
         }
-        // wordPicked = this.wordPicker(validWordList);
         return wordPicked;
     }
 
@@ -98,11 +92,9 @@ export class EasyBot extends Bot {
                 direction: pickedWord.isVertical ? 'V' : 'H',
             };
             const action = new PlaceLetter(this, pickedWord.word, placeSetting, this.pointCalculatorService, this.wordValidator);
-            // this.chooseAction(action);
             return action;
         } else {
             const action = new PassTurn(this);
-            // this.chooseAction(action);
             return action;
         }
     }
@@ -123,13 +115,11 @@ export class EasyBot extends Bot {
             lettersToExchange.push(this.letterRack[lettersToExchangeIndex]);
         }
         const action = new ExchangeLetter(this, lettersToExchange);
-        // this.chooseAction(action);
         return action;
     }
 
     passAction(): Action {
         const action = new PassTurn(this);
-        // this.chooseAction(action);
         return action;
     }
 

@@ -22,8 +22,6 @@ describe('EasyBot', () => {
         boardService = TestBed.inject(BoardService);
         botCreatorService = TestBed.inject(BotCreatorService);
         board = new TestBoard();
-
-        // easyBot = new EasyBot('Tim', new BoardService(), new DictionaryService());
         easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
         spyPlay = spyOn(easyBot, 'playAction');
         spyExchange = spyOn(easyBot, 'exchangeAction');
@@ -60,8 +58,6 @@ describe('EasyBot', () => {
 
         boardService.board.grid = board.grid;
         const result: Action = easyBot.setActive();
-        // TODO change number when crosscheck works
-        // console.log(result);
         expect(result).toBeTruthy();
     });
 });

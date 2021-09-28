@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord } from './valid-word';
 
-const TIME_BEFORE_PICKING_ACTION = 10;
+const TIME_BEFORE_PICKING_ACTION = 3000;
 const TIME_BEFORE_PASS = 20000;
 const MIDDLE_OF_BOARD = 7;
 
@@ -45,20 +45,16 @@ export abstract class Bot extends Player {
     startTimerAction() {
         const timerPass = timer(TIME_BEFORE_PASS);
         timerPass.pipe(takeUntil(this.action$)).subscribe(() => {
-            // console.log('after 20s');
             this.botMessage.sendAction(new PassTurn(this));
-            // this.play(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
             if (action !== undefined) {
                 this.botMessage.sendAction(action);
-                // this.play(action);
             } else {
                 this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
                     if (chosenAction !== undefined) {
                         this.botMessage.sendAction(chosenAction);
-                        // this.play(chosenAction);
                     }
                 });
             }
