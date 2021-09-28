@@ -29,6 +29,10 @@ export class PlayerInfoComponent {
     }
 
     get isEndOfGame() {
-        return this.info.isEndOfGame;
+        try {
+            return this.info.isEndOfGame;
+        } catch (e) {
+            return false;
+        }
     }
 }

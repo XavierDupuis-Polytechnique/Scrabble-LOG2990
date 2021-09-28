@@ -1,6 +1,6 @@
+import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -13,15 +13,18 @@ const MAX_LETTERS_IN_RACK = 7;
 
 describe('Game', () => {
     let game: Game;
-    let timerSpy: jasmine.SpyObj<TimerService>;
+    let timerSpy: TimerService;
     let pointCalculatorSpy: jasmine.SpyObj<PointCalculatorService>;
     let boardSpy: jasmine.SpyObj<BoardService>;
-    let messageSpy = new MessagesService(new CommandParserService()); // TODO change with spy obj
+    let messageSpy: jasmine.SpyObj<MessagesService>;
     let user1: User;
     let user2: User;
 
     beforeEach(() => {
-        timerSpy = jasmine.createSpyObj('TimerService', ['start', 'stop']);
+        TestBed.configureTestingModule({
+            providers: [MessagesService, PointCalculatorService, BoardService, TimerService, PointCalculatorService],
+        });
+        timerSpy = TestBed.inject(TimerService);
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
@@ -32,7 +35,7 @@ describe('Game', () => {
     });
 
     it('should create instance', () => {
-        expect(new Game(TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy));
+        expect(game).toBeTruthy();
     });
 
     it('#start should throw error when no players', () => {

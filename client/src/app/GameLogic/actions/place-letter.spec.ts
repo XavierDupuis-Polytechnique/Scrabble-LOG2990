@@ -70,7 +70,7 @@ describe('PlaceLetter', () => {
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService, new MessagesService(new CommandParserService());
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService, new MessagesService(new CommandParserService()));
         game.players.push(player1);
         game.players.push(player2);
         game.start();
