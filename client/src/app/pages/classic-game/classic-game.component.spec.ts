@@ -1,18 +1,17 @@
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ClassicGameComponent } from './classic-game.component';
-import { CommonModule } from '@angular/common';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
-import { Router } from '@angular/router';
+import { ClassicGameComponent } from './classic-game.component';
 
 describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
     let fixture: ComponentFixture<ClassicGameComponent>;
     let matDialog: jasmine.SpyObj<MatDialog>;
-    let router: Router;
+    // let router: Router;
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
 
