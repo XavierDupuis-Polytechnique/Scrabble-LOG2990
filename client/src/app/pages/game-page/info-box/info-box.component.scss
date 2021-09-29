@@ -1,23 +1,23 @@
-
-.playerInfo {
-    margin: 2%;
-    padding: 2%;
-    border: solid black 2px;
-    justify-self: center;
-}
-.grid-container {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-gap: 10%;
-    grid-column-start: 1;
-    grid-column-end: 2;
-}
-.name {
-    justify-self: center;
+#game-info {
     font-size: 125%;
-    font-weight: 900;
 }
-.score {
-    justify-self: end;
-    font-size: 85%;
+mat-card {
+    margin: 5%;
+    background-color: var(--lightgray);
+    color: var(--black-chocolate);
 }
+// .playerInfo {
+//     margin: 2%;
+//     padding: 2%;
+//     border: solid black 2px;
+//     justify-self: center;
+// }
+
+.name {
+    font-size: 100%;
+    font-weight: 700;
+}
+// .score {
+//     justify-self: end;
+//     font-size: 85%;
+// }

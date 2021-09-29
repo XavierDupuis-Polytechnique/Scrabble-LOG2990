@@ -3,7 +3,7 @@
     <mat-card
         class="playerInfo"
         id="{{ i }}"
-        [ngStyle]="{ 'background-color': player.name === info.activePlayer.name ? 'var(--lightblue)' : 'var(--lightgray)' }"
+        [ngStyle]="{ 'background-color': player.name === info.activePlayer.name ? 'indigo' : 'var(--lightgray)' }"
     >
         <mat-card-header>
             <span class="name">{{ player.name }} </span>
@@ -11,9 +11,11 @@
         <mat-divider inset></mat-divider>
         <mat-card-content class="grid-container">
             <span class="score"> {{ player.points }} points </span><br />
-            <span *ngIf="!player.isLetterRackFull"> {{ player.letterRack.length }} lettres restantes dans le chevalet </span>
+            <span class="score" *ngIf="!player.isLetterRackFull"> {{ player.letterRack.length }} lettres restantes dans le chevalet </span>
         </mat-card-content>
     </mat-card>
 </div>
-<button mat-raised-button color="primary" [routerLink]="['/home']" (click)="abandonner()">Abandonner la partie</button><br />
-<button mat-raised-button color="primary" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
+<div class="button">
+    <button class="passer" mat-raised-button color="accent" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
+    <button class="abandonner" mat-raised-button color="accent" [routerLink]="['/home']" (click)="abandonner()">Abandonner la partie</button><br />
+</div>

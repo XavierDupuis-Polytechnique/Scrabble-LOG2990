@@ -1,7 +1,9 @@
 .container {
     width: 100vw;
     height: 100vh;
-    background: url(/assets/img/backgroundHome.png) no-repeat center top;
+    // background: linear-gradient(130deg, rgb(55, 18, 141) 20%, rgb(167, 10, 70));
+
+    background: url(/assets/img/test.jpg) no-repeat center top;
     background-size: 100vw 100vh;
 }
 .justified {

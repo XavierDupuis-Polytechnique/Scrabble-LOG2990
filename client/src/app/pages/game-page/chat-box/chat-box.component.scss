@@ -1,12 +1,14 @@
-mat-hint{
-    text-align:left;
+mat-hint {
+    display: flex;
+    align-self: flex-end;
 }
-mat-form-field{
-    width: 100%; 
+mat-form-field {
+    width: 100%;
     margin: 2px;
 }
-.mat-form-field-appearance-fill .mat-form-field-flex{
-    background-color: rgb(233, 49, 49);
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+    background-color: blue;
 }
 // .chat {
 //     // width: 100%;
@@ -19,11 +21,11 @@ mat-form-field{
 
 .sharedChat {
     // height: 15vh;
-    height: 20vh;
+    height: 25vh;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
-    background-color: var(--lightblue);
+    background-color: var(--lightgray);
     margin-right: 3%;
 }
 

@@ -1,12 +1,3 @@
-.custom {
-    mat-grid-list {
-        padding-bottom: 0px !important;
-    }
-    mat-grid-tile {
-        padding-top: 0px !important;
-    }
-}
-
 mat-grid-tile {
     background-color: var(--bone);
 }
@@ -18,39 +9,27 @@ app-tile {
 
 mat-grid-list {
     display: flex;
-    justify-content: center;
-    border: 3px solid white;
+    justify-content: space-evenly;
+    border: 10px solid rgb(32, 32, 32);
+    border-radius: 0.4rem; //TODO
+    // background-color: whitesmoke;
 }
 
 mat-slider {
     width: 3%;
 }
-// .Column {
-//     // height: 70%;
-//     display: grid;
-//     grid-template-columns: 10% 90%;
-//     grid-template-areas: 'Zoom Grid';
-// }
+
 .boardContainer {
     // height: max-content;
-    //padding: 1%;
-    margin-left: 25%;
-    // margin-right: 25%;
+    padding-left: 15%;
+    padding-right: 15%;
     max-width: 66vmin;
-    border: 10px solid var(--hookers-green);
-    background-color: var(--white);
-    grid-area: Grid;
+    background-color: transparent;
 }
 .zoomPolice {
-    grid-area: Zoom;
-    justify-content: center;
-    text-align: center;
-    // font-size: 80%;
-    // margin-left: 75%;
-    // margin-top: 1%;
-
-    // height: 5%;
-    // border-radius: 3%;
-    // background-color: rgb(235, 235, 235);
-    // TODO : ajuster zoom
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    color: var(--black-chocolate);
 }

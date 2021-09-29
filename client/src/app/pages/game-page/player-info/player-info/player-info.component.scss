@@ -1,16 +1,27 @@
-mat-card{
+mat-card {
     margin: 5%;
+}
+.playerInfo {
+    // border: solid black 1.5px; en blanc?
+    justify-self: center;
 }
 .name {
     justify-self: center;
-    font-size: 125%;
+    font-size: 150%;
     font-weight: 900;
+    color: var(--black-chocolate);
 }
 .score {
     justify-self: end;
     font-size: 85%;
+    color: var(--black-chocolate);
 }
-button{
-    display:flex;
-    align-items: flex-end;
+button {
+    margin: 2%;
+}
+.button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 45%;
 }

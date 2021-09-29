@@ -9,12 +9,21 @@
         </div>
     </mat-card>
     <mat-divider inset></mat-divider>
-    <form >
-        <mat-form-field  appearance="fill">
-            <input matInput matTextareaAutosize=true #enter type="text" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" placeholder="Aa" />
-            <mat-hint>{{enter.value.length}} /{{maxMessageLength}}</mat-hint>
+    <form>
+        <mat-form-field appearance="fill">
+            <input
+                matInput
+                matTextareaAutosize
+                #enter
+                type="text"
+                [formControl]="messageForm"
+                autocomplete="off"
+                (keyup.enter)="sendMessage()"
+                placeholder="Aa"
+            />
+            <mat-hint>{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
         </mat-form-field>
     </form>
-    
+
     <!-- <button mat-button [disabled]="!messageValid" (click)="sendMessage()">Send</button> -->
 </div>

@@ -1,6 +1,19 @@
-<!-- <div class="Column"> -->
+<div class="border">
+    <div #ScrabbleBoard class="boardContainer">
+        <mat-grid-list cols="16" gutterSize="1.5px" rowHeight="1:1">
+            <mat-grid-tile></mat-grid-tile>
+            <mat-grid-tile *ngFor="let column of board.grid; let i = index">{{ i + 1 }}</mat-grid-tile>
+            <div *ngFor="let row of board.grid; let i = index">
+                <mat-grid-tile>{{ convertASCIIToChar(i) }}</mat-grid-tile>
+                <mat-grid-tile *ngFor="let item of row" class="grid" [style]="getFont()">
+                    <app-tile [tile]="item"></app-tile>
+                </mat-grid-tile>
+            </div>
+        </mat-grid-list>
+    </div>
+</div>
 <div class="zoomPolice">
-    <span class="fontSizeValue">Taille police {{ fontSizeSlider.value }}</span>
+    <span class="fontSizeValue">Taille police</span>
     <mat-slider
         color="primary"
         #fontSizeSlider
@@ -11,22 +24,5 @@
         [value]="fontSize"
         (ngModel)="(fontSize)"
     ></mat-slider>
-
-    <!-- <span>Ajuster la taille</span><br>
-         <button mat-button (click)="increaseFont()">+</button><br>
-         <span>{{ fontSize }}</span><br>
-         <button mat-button (click)="decreaseFont()">-</button><br> -->
+    <span>{{ fontSizeSlider.value }}</span>
 </div>
-<div #ScrabbleBoard class="boardContainer">
-    <mat-grid-list cols="16" gutterSize="1.5px" rowHeight="1:1">
-        <mat-grid-tile></mat-grid-tile>
-        <mat-grid-tile *ngFor="let column of board.grid; let i = index">{{ i + 1 }}</mat-grid-tile>
-        <div *ngFor="let row of board.grid; let i = index">
-            <mat-grid-tile>{{ convertASCIIToChar(i) }}</mat-grid-tile>
-            <mat-grid-tile *ngFor="let item of row" class="grid" [style]="getFont()">
-                <app-tile [tile]="item"></app-tile>
-            </mat-grid-tile>
-        </div>
-    </mat-grid-list>
-</div>
-<!-- </div> -->
