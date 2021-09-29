@@ -14,8 +14,9 @@
     </mat-form-field>
     <br />
     <mat-label>Temps par tour </mat-label> <br />
-    <mat-slider [min]="minTimePerTurn" [max]="maxTimePerTurn" [step]="stepTimePerTurn" [formControlName]="'timePerTurn'"></mat-slider><br />
-    {{ soloGameSettingsForm.value.timePerTurn | date: 'mm:ss' }} min
+    <mat-slider #timer [min]="minTimePerTurn" [max]="maxTimePerTurn" [step]="stepTimePerTurn" [formControlName]="'timePerTurn'"></mat-slider><br />
+    {{ timer.value | date: 'mm:ss' }}
+    <!-- {{ soloGameSettingsForm.value.timePerTurn | date: 'mm:ss' }} min -->
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>
