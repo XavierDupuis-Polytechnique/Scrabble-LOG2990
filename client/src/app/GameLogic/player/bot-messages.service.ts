@@ -6,7 +6,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
-import { BOARD_MAX_POSITION, BOARD_MIN_POSITION, DEBUG_ALTERNATIVE_WORDS_COUNT } from '@app/GameLogic/constants';
+import { BINGO_MESSAGE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, DEBUG_ALTERNATIVE_WORDS_COUNT, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -68,15 +68,13 @@ export class BotMessagesService {
     sendAlternativeWords(action: Action) {
         const bot = action.player as Bot;
         const validWordList = bot.validWordList;
-        // console.log(validWordList.length);
+        let content = '\\n';
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
-            let content = '';
             let posLetters = '';
             const formedWords: string[] = [];
             const word = validWordList[bot.getRandomInt(validWordList.length)];
             let x = word.startingTileX;
             let y = word.startingTileY;
-            // console.log(word);
             for (const adjacentWord of word.adjacentWords) {
                 let formedWord = '';
                 const formedWordIndexes = new Set<number>(adjacentWord.index);
@@ -100,13 +98,18 @@ export class BotMessagesService {
             }
             content = content.concat(posLetters);
             content = content.concat(' (' + word.value + ') ');
+            content = content.concat('\\n');
             for (const formedWord of formedWords) {
                 content = content.concat(formedWord);
-                content = content.concat('\n');
+                content = content.concat('\\n');
             }
-            this.messagesService.receiveSystemMessage(content);
-            this.messagesService.receiveSystemMessage(' ');
+            if (word.numberOfLettersPlaced === RACK_LETTER_COUNT) {
+                content = content.concat(BINGO_MESSAGE);
+                content = content.concat('\\n');
+            }
+            content = content.concat('\\n');
         }
+        this.messagesService.receiveSystemMessage(content);
     }
 
     sendPlaceLetterMessage(pickedWord: string, placementSetting: PlacementSetting, name: string) {
