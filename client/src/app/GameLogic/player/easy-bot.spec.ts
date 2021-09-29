@@ -57,6 +57,8 @@ describe('EasyBot', () => {
         easyBot.letterRack = letters;
 
         boardService.board.grid = board.grid;
+        spyExchange.and.callThrough();
+        spyPlay.and.callThrough();
         const result: Action = easyBot.setActive();
         expect(result).toBeTruthy();
     });
