@@ -11,16 +11,7 @@
     <mat-divider inset></mat-divider>
     <form>
         <mat-form-field appearance="fill">
-            <input
-                matInput
-                matTextareaAutosize
-                #enter
-                type="text"
-                [formControl]="messageForm"
-                autocomplete="off"
-                (keyup.enter)="sendMessage()"
-                placeholder="Aa"
-            />
+            <input matInput #enter type="text" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" placeholder="Aa" />
             <mat-hint>{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
         </mat-form-field>
     </form>
