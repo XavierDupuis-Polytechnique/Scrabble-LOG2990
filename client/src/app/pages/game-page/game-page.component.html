@@ -5,4 +5,8 @@
     <app-chat-box></app-chat-box>
     <app-board></app-board>
     <app-horse></app-horse>
+    <div class="button">
+        <button class="passer" mat-raised-button color="accent" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
+    </div>
+    <button class="abandonner" mat-raised-button [routerLink]="['/home']" (click)="abandonner()">Abandonner la partie</button><br />
 </div>

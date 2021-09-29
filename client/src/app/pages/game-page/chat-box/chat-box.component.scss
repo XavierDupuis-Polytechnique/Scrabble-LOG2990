@@ -1,32 +1,24 @@
-mat-hint {
-    display: flex;
-    align-self: flex-end;
-}
 mat-form-field {
-    width: 100%;
     margin: 2%;
-}
-input {
+    margin-top: 4%;
     color: whitesmoke;
-    margin: 2%;
+    width: 95%;
+    // Todo: padding
 }
-// .chat {
-//     // width: 100%;
-//     // resize: none;
-//     // size: 25%;
-//     // box-sizing: border-box;
-//     border : 1px solid var(--darkgray);
-//     background-color: var(--lightgray);
-// }
 
+.chatContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
 .sharedChat {
-    // height: 15vh;
     height: 25vh;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
+    word-break: normal;
     background-color: var(--lightgray);
-    // margin-right: 3%;
+    margin: 1%;
 }
 
 #message {

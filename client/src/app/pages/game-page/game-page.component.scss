@@ -1,17 +1,18 @@
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 0.8fr 1fr 1fr 0.8fr;
     grid-template-rows: 0.25fr 1.5fr 1.75fr 0.5fr;
     gap: 0px 0px;
     grid-template-areas:
         'Img Img Img Img'
         'Player Board Board Info'
-        'Player Board Board Chat'
-        'Player Horse Horse Chat';
+        'Actions Board Board Chat'
+        'Quitter Horse Horse Chat';
     // height: auto;
-    background: url(/assets/img/Still_Image2.jpg) no-repeat center top;
-    background-size: 125vw 125vh;
-    height: 94vmin;
+    background: url(/assets/img/Pink_ish.jpg) no-repeat center top;
+    background-size: 100vw 130vh;
+    height: 100vh;
+    width: 100vw;
 }
 img {
     grid-area: Img;
@@ -23,16 +24,12 @@ app-info-box {
 
 app-chat-box {
     grid-area: Chat;
-    width: 100%;
-    overflow-wrap: anywhere;
-    word-break: normal;
     padding: 1%;
 }
 app-board {
     grid-area: Board;
     height: fit-content;
     min-width: 50vw;
-    padding: 1%;
 }
 
 app-horse {
@@ -44,5 +41,26 @@ app-horse {
 }
 app-player-info {
     grid-area: Player;
+    padding: 1%;
+}
+
+button {
+    margin: 2%;
+}
+.button {
+    grid-area: Actions;
+    display: flex;
+    justify-content: flex-start;
+    align-self: center;
+}
+
+.abandonner {
+    grid-area: Quitter;
+    background-color: var(--error);
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    align-items: center;
     padding: 1%;
 }
