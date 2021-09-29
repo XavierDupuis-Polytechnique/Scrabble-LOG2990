@@ -26,8 +26,8 @@ describe('ActionCompilerService', () => {
         });
         service = TestBed.inject(ActionCompilerService);
         gameInfo = TestBed.inject(GameInfoService);
-
         gameInfo.user = new User('p1');
+        gameInfo.players = [gameInfo.user];
     });
 
     it('should be created', () => {
@@ -35,7 +35,10 @@ describe('ActionCompilerService', () => {
     });
 
     it('should throw error when given not action command', () => {
-        const notActionCommands: Command[] = [{ type: CommandType.Debug }, { type: CommandType.Help }];
+        const notActionCommands: Command[] = [
+            { type: CommandType.Debug, from: ' ' },
+            { type: CommandType.Help, from: ' ' },
+        ];
         for (const notActionCommand of notActionCommands) {
             expect(() => {
                 service.translate(notActionCommand);
@@ -46,6 +49,7 @@ describe('ActionCompilerService', () => {
     it('should create PassTurn object', () => {
         const command: Command = {
             type: CommandType.Pass,
+            from: 'p1',
         };
         expect(service.translate(command)).toBeInstanceOf(PassTurn);
     });
@@ -54,6 +58,7 @@ describe('ActionCompilerService', () => {
         const command: Command = {
             type: CommandType.Exchange,
             args: ['A', 'B', 'C'],
+            from: 'p1',
         };
         expect(service.translate(command)).toBeInstanceOf(ExchangeLetter);
     });
@@ -62,6 +67,7 @@ describe('ActionCompilerService', () => {
         const command: Command = {
             type: CommandType.Place,
             args: ['a', '1', 'h', 'abc'],
+            from: 'p1',
         };
         expect(service.translate(command)).toBeInstanceOf(PlaceLetter);
     });
@@ -70,6 +76,7 @@ describe('ActionCompilerService', () => {
         const invalidCommand: Command = {
             type: CommandType.Place,
             args: ['a', '1', 'h'],
+            from: ' ',
         };
         expect(() => {
             service.translate(invalidCommand);
@@ -79,6 +86,7 @@ describe('ActionCompilerService', () => {
     it('should throw error when invalid command exchange', () => {
         const invalidCommand: Command = {
             type: CommandType.Exchange,
+            from: ' ',
         };
         expect(() => {
             service.translate(invalidCommand);
@@ -88,6 +96,7 @@ describe('ActionCompilerService', () => {
     it('should throw error when invalid command place', () => {
         const invalidCommand: Command = {
             type: CommandType.Place,
+            from: ' ',
         };
         expect(() => {
             service.translate(invalidCommand);

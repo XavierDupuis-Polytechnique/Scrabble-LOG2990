@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
@@ -39,10 +40,10 @@ describe('ActionValidatorService', () => {
         constructor(readonly player: Player) {
             super(player);
         }
-        execute(game: Game): void {
+        execute(/* game: Game*/): void {
             throw new Error('Method not implemented.');
         }
-        protected perform(game: Game): void {
+        protected perform(/* game: Game*/): void {
             throw new Error('Method not implemented.');
         }
     }
