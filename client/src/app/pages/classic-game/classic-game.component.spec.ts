@@ -4,6 +4,7 @@ import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { ClassicGameComponent } from './classic-game.component';
 
@@ -11,10 +12,12 @@ describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
     let fixture: ComponentFixture<ClassicGameComponent>;
     let matDialog: jasmine.SpyObj<MatDialog>;
-    // let router: Router;
+    const gameManager = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        createGame: () => {},
+    };
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
-
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent],
             imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule, CommonModule],
@@ -26,6 +29,10 @@ describe('ClassicGameComponent', () => {
                 {
                     provide: MatDialog,
                     useValue: matDialog,
+                },
+                {
+                    provide: GameManagerService,
+                    useValue: gameManager,
                 },
             ],
         }).compileComponents();
@@ -68,5 +75,11 @@ describe('ClassicGameComponent', () => {
         const button = el.querySelector('button');
         button?.click();
         expect(component.openSoloGameForm).toHaveBeenCalled();
+    });
+
+    it('start solo game should create a game', () => {
+        spyOn(gameManager, 'createGame');
+        component.startSoloGame();
+        expect(gameManager.createGame).toHaveBeenCalled();
     });
 });
