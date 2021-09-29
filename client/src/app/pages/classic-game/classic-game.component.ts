@@ -22,13 +22,9 @@ export class ClassicGameComponent {
 
         const dialogRef = this.dialog.open(NewSoloGameFormComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result) => {
-            try {
-                this.gameSettings = result;
-                this.startSoloGame();
-                dialogRef.close();
-            } catch (e) {
-                dialogRef.close();
-            }
+            this.gameSettings = result;
+            this.startSoloGame();
+            dialogRef.close();
         });
     }
 

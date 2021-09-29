@@ -1,7 +1,8 @@
+import { EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Letter } from './letter.interface';
 
 export class Tile {
-    letterObject: Letter = { char: ' ', value: 0 };
+    letterObject: Letter = { char: EMPTY_CHAR, value: 0 };
     letterMultiplicator: number = 1;
     wordMultiplicator: number = 1;
 

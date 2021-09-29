@@ -14,9 +14,14 @@ export class MessagesService {
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
     constructor(private commandParser: CommandParserService) {}
 
-    receiveMessage(message: Message) {
+    receiveMessage(forwarder: string, content: string) {
+        const message: Message = {
+            content,
+            from: forwarder,
+            type: MessageType.Player1,
+        };
         try {
-            this.commandParser.parse(message);
+            this.commandParser.parse(content, forwarder);
             this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {
@@ -24,7 +29,6 @@ export class MessagesService {
                 this.receiveError(e as Error);
             }
         }
-        // TODO put command parser here
     }
 
     receiveSystemMessage(content: string) {

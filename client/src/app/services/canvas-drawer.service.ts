@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+import { BOARD_DIMENSION } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board';
-const NUM_TILE_FAKE = 16;
-const NUM_TILE = 15;
+const BOARD_DIMENSION_FAKE = BOARD_DIMENSION + 1;
+
 const paddingValue = 0.004;
 const asciiStartPos = 65;
 // const pourcentageOffset = 0.5;
@@ -42,8 +43,8 @@ export class CanvasDrawerService {
         this.fitToContainer();
         this.drawLetters(this.padding, this.tileWidth);
 
-        for (let i = 0; i < NUM_TILE; i++) {
-            for (let j = 0; j < NUM_TILE; j++) {
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
+            for (let j = 0; j < BOARD_DIMENSION; j++) {
                 this.fillColor(i, j);
                 this.drawBoxs(i, j);
             }
@@ -58,7 +59,7 @@ export class CanvasDrawerService {
         this.gridContext.canvas.width = this.gridContext.canvas.offsetWidth;
         this.gridContext.canvas.height = this.gridContext.canvas.offsetHeight;
 
-        this.tempWidth = this.gridContext.canvas.width / NUM_TILE_FAKE;
+        this.tempWidth = this.gridContext.canvas.width / BOARD_DIMENSION_FAKE;
         this.padding = paddingValue * this.gridContext.canvas.width;
         this.tileWidth = this.tempWidth - 2 * this.padding;
         this.canvasPadding = this.tileWidth + 2 * this.padding;
@@ -84,12 +85,12 @@ export class CanvasDrawerService {
 
     private drawLetters(padding: number, tileWidth: number): void {
         this.gridContext.font = `${this.fontSize}px Verdana`;
-        for (let i = 0; i < NUM_TILE; i++) {
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
             const value = (i + 1).toString();
             this.gridContext.fillText(value, this.canvasPadding + 2 * i * padding + i * tileWidth + padding, this.canvasPadding);
         }
 
-        for (let i = 0; i < NUM_TILE; i++) {
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
             this.gridContext.fillText(
                 String.fromCharCode(asciiStartPos + i),
                 padding,

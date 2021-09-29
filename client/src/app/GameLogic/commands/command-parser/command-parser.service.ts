@@ -1,13 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
-import { Message } from '@app/GameLogic/messages/message.interface';
-import { Subject } from 'rxjs';
-
-const CHARACTER_V = 'v'.charCodeAt(0);
-const CHARACTER_H = 'h'.charCodeAt(0);
-const MAX_COL = 15;
-const MIN_PLACE_LETTER_ARG_SIZE = 3;
-const MAX_PLACE_LETTER_ARG_SIZE = 4;
+import { BOARD_DIMENSION, CHARACTER_H, CHARACTER_V, MAX_PLACE_LETTER_ARG_SIZE, MIN_PLACE_LETTER_ARG_SIZE } from '@app/GameLogic/constants';
+import { Observable, Subject } from 'rxjs';
 @Injectable({
     providedIn: 'root',
 })
@@ -15,12 +9,12 @@ export class CommandParserService {
     private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
 
-    get parsedCommand$() {
+    get parsedCommand$(): Observable<Command> {
         return this.command$;
     }
 
-    createCommand(args: string[], commandType: CommandType): Command {
-        const command = { type: commandType, args } as Command;
+    createCommand(from: string, args: string[], commandType: CommandType): Command {
+        const command = { from, type: commandType, args } as Command;
         return command;
     }
 
@@ -28,8 +22,8 @@ export class CommandParserService {
         this.command$.next(command);
     }
 
-    parse(message: Message): boolean {
-        const toVerify = message.content.split(' ').filter(Boolean);
+    parse(message: string, from: string): boolean {
+        const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
             const commandType = commandCondition as CommandType;
@@ -41,7 +35,7 @@ export class CommandParserService {
                     }
                     args = this.placeLetterFormatter(args);
                 }
-                const command = this.createCommand(args, commandCondition as CommandType);
+                const command = this.createCommand(from, args, commandCondition as CommandType);
                 this.sendCommand(command);
                 return true;
             }
@@ -56,30 +50,30 @@ export class CommandParserService {
             const row = args[0].charCodeAt(0);
             const col = this.colArgVerifier(args[0]);
             const direction = args[0].charCodeAt(args[0].length - 1);
-            const word = args[1];
+            const word = args[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
             this.placeLetterArgVerifier(row, col, direction, word);
 
             args = [];
             args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
         } else {
-            throw Error(this.errorSyntax + ': les paramètres sont invalide'); /// a tester
+            throw Error(this.errorSyntax + ': les paramètres sont invalides');
         }
         return args;
     }
 
     placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
-        const whiteSpace = new RegExp('\\s+');
+        const letters = new RegExp('^(?=.*?[A-Za-z])[A-Za-z+]+$');
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             throw Error(this.errorSyntax + ': ligne hors champ');
         }
-        if (col > MAX_COL) {
+        if (col > BOARD_DIMENSION) {
             throw Error(this.errorSyntax + ': colonne hors champ');
         }
         if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
             throw Error(this.errorSyntax + ': direction invalide');
         }
-        if (word.length < 2 || word.length > MAX_COL || whiteSpace.test(word)) {
+        if (word.length < 2 || word.length > BOARD_DIMENSION || !letters.test(word)) {
             throw Error(this.errorSyntax + ': mot invalide');
         }
     }

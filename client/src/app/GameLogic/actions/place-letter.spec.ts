@@ -1,13 +1,13 @@
-/* eslint-disable max-classes-per-file */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { DEFAULT_TIME_PER_TURN } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { isCharUpperCase, PlaceLetter, PlacementSetting } from '@app/GameLogic/actions/place-letter';
+import { isCharUpperCase, PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { Game } from '@app/GameLogic/game/games/game';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -19,7 +19,6 @@ import { BoardService } from '@app/services/board.service';
 
 class MockWordSearcher extends WordSearcher {
     validity = true;
-    // eslint-disable-next-line no-unused-vars
     listOfValidWord(action: PlaceLetter): Word[] {
         if (this.validity) {
             return [{ letters: [new Tile()], index: [0] }];
@@ -28,20 +27,9 @@ class MockWordSearcher extends WordSearcher {
     }
 }
 
-class MockPointCalculator extends PointCalculatorService {
-    placeLetterCalculation(action: PlaceLetter, listOfWord: Tile[][]) {
-        const points = action.word.length + listOfWord.length;
-        const player = action.player;
-        player.points = points;
-        return points;
-    }
-}
-
 describe('PlaceLetter', () => {
     let timer: TimerService;
-
     const lettersToPlace = 'bateau';
-
     const placement: PlacementSetting = {
         x: 0,
         y: 0,
@@ -50,27 +38,33 @@ describe('PlaceLetter', () => {
     let game: Game;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
-    let pointCalculatorService: MockPointCalculator;
     let wordSearcher: WordSearcher;
     let placeLetter: PlaceLetter;
     let activePlayer: Player;
     let letterCreator: LetterCreator;
+    let pointCalculatorSpy: PointCalculatorService;
     beforeEach(() => {
         timer = new TimerService();
+        pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['placeLetterCalculation']);
+        pointCalculatorSpy.placeLetterCalculation = jasmine.createSpy().and.callFake((action, listOfWord) => {
+            const points = action.word.length + listOfWord.length;
+            const player = action.player;
+            player.points = points;
+            return points;
+        });
         TestBed.configureTestingModule({
             providers: [
                 BoardService,
                 DictionaryService,
-                { provide: PointCalculatorService, useClass: MockPointCalculator },
+                { provide: PointCalculatorService, useValue: pointCalculatorSpy },
                 { provide: WordSearcher, useClass: MockWordSearcher },
             ],
         });
         const boardService = TestBed.inject(BoardService);
-        pointCalculatorService = new MockPointCalculator(boardService);
+        // pointCalculatorService = new MockPointCalculator(boardService);
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
-
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorService, boardService, new MessagesService(new CommandParserService()));
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, new MessagesService(new CommandParserService()));
         game.players.push(player1);
         game.players.push(player2);
         game.start();
@@ -80,12 +74,12 @@ describe('PlaceLetter', () => {
         for (let i = 0; i < letterObjects.length; i++) {
             activePlayer.letterRack[i] = letterObjects[i];
         }
-        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorService, wordSearcher);
+        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorSpy, wordSearcher);
     });
 
     it('should create an instance', () => {
         activePlayer = game.getActivePlayer();
-        expect(new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorService, wordSearcher)).toBeTruthy();
+        expect(new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorSpy, wordSearcher)).toBeTruthy();
     });
 
     it('should place letter at right place', () => {
@@ -123,7 +117,7 @@ describe('PlaceLetter', () => {
     it('should place letters in vertical', () => {
         const newPlacement = { ...placement };
         newPlacement.direction = Direction.Vertical;
-        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, newPlacement, pointCalculatorService, wordSearcher);
+        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, newPlacement, pointCalculatorSpy, wordSearcher);
         placeLetter.execute(game);
 
         const word = placeLetter.word;
@@ -135,7 +129,7 @@ describe('PlaceLetter', () => {
     it('should place blank letter', () => {
         activePlayer.letterRack[0] = letterCreator.createLetter('*');
         const wordToPlace = 'Bateau';
-        placeLetter = new PlaceLetter(activePlayer, wordToPlace, placement, pointCalculatorService, wordSearcher);
+        placeLetter = new PlaceLetter(activePlayer, wordToPlace, placement, pointCalculatorSpy, wordSearcher);
         placeLetter.execute(game);
 
         const word = placeLetter.word;

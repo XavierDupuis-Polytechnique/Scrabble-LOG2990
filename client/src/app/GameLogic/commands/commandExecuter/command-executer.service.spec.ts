@@ -29,6 +29,7 @@ describe('CommandExecuterService', () => {
     it('should activate debug', () => {
         const command = {
             type: CommandType.Debug,
+            from: ' ',
         };
         service.execute(command);
         expect(service.isDebugModeActivated).toBe(true);
@@ -37,6 +38,7 @@ describe('CommandExecuterService', () => {
     it('should deactivate debug', () => {
         const command = {
             type: CommandType.Debug,
+            from: ' ',
         };
         service.execute(command);
         service.execute(command);
@@ -44,7 +46,11 @@ describe('CommandExecuterService', () => {
     });
 
     it('should call #translate from action compiler', () => {
-        const actionCommands: Command[] = [{ type: CommandType.Exchange }, { type: CommandType.Pass }, { type: CommandType.Place }];
+        const actionCommands: Command[] = [
+            { type: CommandType.Exchange, from: ' ' },
+            { type: CommandType.Pass, from: ' ' },
+            { type: CommandType.Place, from: ' ' },
+        ];
         for (const actionCommand of actionCommands) {
             service.execute(actionCommand);
         }
@@ -52,7 +58,10 @@ describe('CommandExecuterService', () => {
     });
 
     it('should not call #translate from action compiler', () => {
-        const notActionCommands: Command[] = [{ type: CommandType.Debug }, { type: CommandType.Help }];
+        const notActionCommands: Command[] = [
+            { type: CommandType.Debug, from: ' ' },
+            { type: CommandType.Help, from: ' ' },
+        ];
         for (const actionCommand of notActionCommands) {
             service.execute(actionCommand);
         }
@@ -60,17 +69,17 @@ describe('CommandExecuterService', () => {
     });
 
     it('should call #receiveSystemMessage from messageService', () => {
-        const debugCommand = { type: CommandType.Debug };
+        const debugCommand = { type: CommandType.Debug, from: ' ' };
         service.execute(debugCommand);
         expect(messageServiceSpy.receiveSystemMessage.calls.count()).toBe(1);
     });
 
     it('should not call #receiveSystemMessage from messageService', () => {
         const notDebugCommands: Command[] = [
-            { type: CommandType.Exchange },
-            { type: CommandType.Pass },
-            { type: CommandType.Place },
-            { type: CommandType.Help },
+            { type: CommandType.Exchange, from: ' ' },
+            { type: CommandType.Pass, from: ' ' },
+            { type: CommandType.Place, from: ' ' },
+            { type: CommandType.Help, from: ' ' },
         ];
         for (const notDebugCommand of notDebugCommands) {
             service.execute(notDebugCommand);

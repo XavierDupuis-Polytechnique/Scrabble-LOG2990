@@ -1,6 +1,7 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { MAX_CONSECUTIVE_PASS } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -10,10 +11,6 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
-// import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
-
-const MAX_CONSECUTIVE_PASS = 6;
-
 export class Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
@@ -110,6 +107,8 @@ export class Game {
     private startTurn() {
         this.turnNumber++;
         const activePlayer = this.players[this.activePlayerIndex];
+        activePlayer.setActive();
+        // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));

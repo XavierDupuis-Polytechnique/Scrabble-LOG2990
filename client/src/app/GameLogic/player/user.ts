@@ -1,3 +1,7 @@
 import { Player } from './player';
 
-export class User extends Player {}
+export class User extends Player {
+    setActive() {
+        return;
+    }
+}
