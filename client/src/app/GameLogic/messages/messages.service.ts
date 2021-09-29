@@ -21,7 +21,7 @@ export class MessagesService {
             type: MessageType.Player1,
         };
         try {
-            this.commandParser.parse(content);
+            this.commandParser.parse(content, forwarder);
             this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {

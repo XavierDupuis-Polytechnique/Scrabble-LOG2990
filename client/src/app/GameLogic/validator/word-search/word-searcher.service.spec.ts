@@ -58,6 +58,7 @@ describe('WordSearcher', () => {
     let dictionaryService: MockDictionaryService;
     let boardService: BoardService;
     let pointCalculator: PointCalculatorService;
+
     let player: Player;
 
     beforeEach(() => {
@@ -67,6 +68,7 @@ describe('WordSearcher', () => {
         player = new User('Max');
         boardService = TestBed.inject(BoardService);
         dictionaryService = TestBed.inject(MockDictionaryService);
+        pointCalculator = TestBed.inject(PointCalculatorService);
         mockBoard = new MockBoard();
         boardService.board = mockBoard;
         pointCalculator = TestBed.inject(PointCalculatorService);

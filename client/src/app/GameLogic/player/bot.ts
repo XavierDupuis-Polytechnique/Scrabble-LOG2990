@@ -1,189 +1,88 @@
-import { Tile } from '@app/GameLogic/game/tile';
+import { Action } from '@app/GameLogic/actions/action';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { LetterCreator } from '@app/GameLogic/game/letter-creator';
+import { BotCrawler } from '@app/GameLogic/player/bot-crawler';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
+import { BehaviorSubject, timer } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Player } from './player';
-import { ValidWord } from './valid-word';
+import { HORIZONTAL, ValidWord } from './valid-word';
+
+const TIME_BEFORE_PICKING_ACTION = 3000;
+const TIME_BEFORE_PASS = 20000;
+const MIDDLE_OF_BOARD = 7;
 
 export abstract class Bot extends Player {
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
+    letterCreator = new LetterCreator();
+    validWordList: ValidWord[];
+    botCrawler: BotCrawler;
+    private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
 
-    // Bot constructor takes opponent name as argument to prevent same name
-    constructor(name: string, private boardService: BoardService, private dictionaryService: DictionaryService) {
+    constructor(
+        name: string,
+        private boardService: BoardService,
+        private dictionaryService: DictionaryService,
+        protected pointCalculatorService: PointCalculatorService,
+        protected wordValidator: WordSearcher,
+        protected botMessage: BotMessagesService,
+    ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
+        this.validWordList = [];
+        this.botCrawler = new BotCrawler(this, this.dictionaryService, this.pointCalculatorService, this.wordValidator);
+    }
+
+    chooseAction(action: Action) {
+        this.chosenAction$.next(action);
+        this.chosenAction$.complete();
+    }
+
+    startTimerAction() {
+        const timerPass = timer(TIME_BEFORE_PASS);
+        timerPass.pipe(takeUntil(this.action$)).subscribe(() => {
+            this.botMessage.sendAction(new PassTurn(this));
+        });
+        timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
+            const action = this.chosenAction$.value;
+            if (action !== undefined) {
+                this.botMessage.sendAction(action);
+            } else {
+                this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+                    if (chosenAction !== undefined) {
+                        this.botMessage.sendAction(chosenAction);
+                    }
+                });
+            }
+        });
     }
 
     getRandomInt(max: number, min: number = 0) {
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    // Will probably need to be moved to a UI component to show the name
     generateBotName(opponentName: string): string {
         const generatedName = Bot.botNames[this.getRandomInt(Bot.botNames.length)];
         return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
     }
 
-    // TODO add the board and dictionary services to the bot creator
     bruteForceStart(): ValidWord[] {
         const grid = this.boardService.board.grid;
-        const validWordList: ValidWord[] = [];
         const startingX = 0;
         const startingY = 0;
-        const startingDirection = false;
-        // let isTimesUp = false;
+        const startingDirection = HORIZONTAL;
+        this.validWordList = [];
+        const letterInMiddleBox = grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char;
 
-        this.boardCrawler(startingX, startingY, grid, validWordList, startingDirection);
-
-        // grid[1][1].letterObject;
-
-        return validWordList;
-    }
-
-    // TODO
-    private boardCrawler(startingX: number, startingY: number, grid: Tile[][], validWordList: ValidWord[], isVerticalFlag: boolean) {
-        let x = startingX;
-        let y = startingY;
-        const endOfBoard = 14;
-        const nextBox = 1;
-        const startOfBoard = 0;
-        let isVertical = isVerticalFlag;
-
-        this.hookUtil(x, y, grid, validWordList);
-
-        // HookUtil
-        const letterInBox = grid[x][y].letterObject.char;
-        if (letterInBox !== ' ') {
-            while (letterInBox !== ' ') {}
-        }
-
-        if (x < endOfBoard) {
-            x += nextBox;
-            this.boardCrawler(x, y, grid, validWordList, isVertical);
-        } else if (y < endOfBoard && x === endOfBoard) {
-            x = startOfBoard;
-            y += nextBox;
-            this.boardCrawler(x, y, grid, validWordList, isVertical);
-        } else if (y === endOfBoard && x === endOfBoard && !isVertical) {
-            x = startOfBoard;
-            y = startOfBoard;
-            isVertical = true;
-        }
-        return;
-
-        // this.boardCrawler(newX, newY, grid, validWordList);
-    }
-
-    // TODO Might not be necessary
-    private hookUtil(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {
-        this.dictionaryService.wordGen('test');
-    }
-
-    // TODO And make private
-    wordValidator(x: number, y: number, grid: Tile[][], validWordList: ValidWord[]) {}
-
-    // TODO Remove commented console.log/code and make private
-    // TODO Edge case board is empty
-    // TODO Edge case forming words with multiple sets of placed letters
-    // Check if it's possible to form the word with the currently available letters
-    regexCheck(dictWord: string, placedWord: string): boolean {
-        // let testBot = new EasyBot('Jimmy');
-        // console.log(testBot.regexCheck('keyboard', 'oa'));
-        // let letterRack = 'keybrd';
-
-        const letterRack = this.letterRack;
-        const mapRack = new Map();
-        const notFound = -1;
-        const firstLetterIndex = 1;
-        const wordLength = dictWord.length;
-
-        for (const letter of letterRack) {
-            const letterCount = mapRack.get(letter);
-            if (mapRack.has(letter)) {
-                mapRack.set(letter, letterCount + 1);
-            } else {
-                mapRack.set(letter, 1);
-            }
-        }
-        let regex = new RegExp(placedWord.toLowerCase());
-        let INDEX = dictWord.search(regex);
-        if (INDEX === notFound) {
-            return false;
-        }
-        while (INDEX !== firstLetterIndex) {
-            const lettersLeft = this.tmpLetterLeft(mapRack);
-            regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
-            INDEX = dictWord.search(regex);
-
-            if (INDEX === notFound) {
-                if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
-                    INDEX = dictWord.search(regex);
-                    this.deleteTmpLetter('*', mapRack);
-                    placedWord = dictWord[INDEX - 1].toUpperCase() + placedWord;
-                } else break;
-            } else {
-                this.deleteTmpLetter(dictWord[INDEX - 1], mapRack);
-                placedWord = dictWord[INDEX - 1] + placedWord;
-            }
-        }
-        while (placedWord.length !== wordLength) {
-            const lettersLeft = this.tmpLetterLeft(mapRack);
-            regex = new RegExp(placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
-            INDEX = dictWord.search(regex);
-            if (INDEX === notFound) {
-                if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
-                    INDEX = dictWord.search(regex);
-                    this.deleteTmpLetter('*', mapRack);
-                    placedWord = placedWord + dictWord[placedWord.length].toUpperCase();
-                } else break;
-            } else {
-                this.deleteTmpLetter(dictWord[placedWord.length], mapRack);
-                placedWord = placedWord + dictWord[placedWord.length];
-            }
-        }
-        // if(dictWord.search(regex) !== notFound)
-        if (dictWord === placedWord.toLowerCase()) {
-            // console.log('Found_Word: ' + placedWord);
-            return true;
+        if (letterInMiddleBox === ' ') {
+            this.botCrawler.botFirstTurn();
         } else {
-            // console.log('Not_Found');
-            return false;
+            this.botCrawler.boardCrawler(startingX, startingY, grid, startingDirection);
         }
-    }
-
-    private deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {
-        if (!mapRack) return;
-        const letterCount = mapRack.get(placedLetter);
-        if (!letterCount) return;
-        if (letterCount > 1) {
-            mapRack.set(placedLetter, letterCount - 1);
-        } else {
-            mapRack.delete(placedLetter);
-        }
-    }
-
-    private tmpLetterLeft(mapRack: Map<string, number>): string {
-        let lettersLeft = '';
-        if (!mapRack) return lettersLeft;
-        for (const key of mapRack.keys()) {
-            if (key !== '*') {
-                const letterCount = mapRack.get(key);
-                if (!letterCount) return lettersLeft;
-                for (let i = 0; i < letterCount; i++) {
-                    lettersLeft += key;
-                }
-            }
-        }
-        return lettersLeft;
-    }
-    generateWordList(/* board, availableLetter*/): ValidWord[] {
-        // TO DO : a LOT of stuff goes here
-        this.letterRack;
-        return [];
-    }
-
-    hello(): void {
-        console.log('hello from bot ' + this.name);
+        return this.validWordList;
     }
 }
