@@ -92,11 +92,11 @@ $my-theme: mat.define-dark-theme(
     --brown: rgb(129, 82, 63);
     --white: rgb(255, 255, 255);
 
-    --blue-munsell: rgb(27, 62, 158);
-    --melon: rgb(247, 179, 190);
-    --salmon: rgb(151, 27, 54);
-    --powder-blue: rgb(124, 195, 236);
-    --hookers-green: rgb(80, 62, 57);
+    --blue-munsell: rgb(10, 57, 185);
+    --melon: rgb(238, 68, 96);
+    --salmon: rgb(209, 0, 45);
+    --powder-blue: rgb(53, 163, 226);
+    --borwn-choco: rgb(80, 62, 57);
     --black-chocolate: rgba(20, 16, 9, 1);
     --bone: rgb(240, 231, 216, 1);
     --error: rgb(175, 0, 0);
@@ -109,7 +109,7 @@ body {
 body {
     margin: 0;
     font-family: Roboto, 'Helvetica Neue', sans-serif;
-    background: #e5e7e9;
+    background: #20262c;
 }
 h1 {
     display: flex;

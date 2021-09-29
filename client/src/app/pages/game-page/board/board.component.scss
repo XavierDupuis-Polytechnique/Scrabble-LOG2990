@@ -10,9 +10,9 @@ app-tile {
 mat-grid-list {
     display: flex;
     justify-content: space-evenly;
-    border: 10px solid rgb(32, 32, 32);
+    border: 10px solid var(--borwn-choco);
     border-radius: 0.4rem; //TODO
-    // background-color: whitesmoke;
+    background-color: whitesmoke;
 }
 
 mat-slider {
