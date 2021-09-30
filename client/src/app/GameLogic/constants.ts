@@ -25,4 +25,5 @@ export const MIDDLE_OF_BOARD = 7;
 export const DEBUG_ALTERNATIVE_WORDS_COUNT = 3;
 export const BINGO_MESSAGE = 'Bingo! (50)';
 export const BINGO_VALUE = 50;
-export const ENDLINE = '\\n';
+export const END_LINE = '\\n';
+export const TIME_BUFFER_BEFORE_ACTION = 25;
