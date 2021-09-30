@@ -54,11 +54,17 @@ export class EasyBot extends Bot {
         const wordP13To18: ValidWord[] = [];
         // Create subs arrays for valid word base on point
         validWordList.forEach((word) => {
-            if (word.value <= EasyBot.botPointSetting.sixOrLess.value) {
+            if (word.value.totalPoints <= EasyBot.botPointSetting.sixOrLess.value) {
                 wordP6.push(word);
-            } else if (word.value > EasyBot.botPointSetting.sixOrLess.value && word.value <= EasyBot.botPointSetting.sevenToTwelve.value) {
+            } else if (
+                word.value.totalPoints > EasyBot.botPointSetting.sixOrLess.value &&
+                word.value.totalPoints <= EasyBot.botPointSetting.sevenToTwelve.value
+            ) {
                 wordP7to12.push(word);
-            } else if (word.value > EasyBot.botPointSetting.sevenToTwelve.value && word.value <= EasyBot.botPointSetting.other.value) {
+            } else if (
+                word.value.totalPoints > EasyBot.botPointSetting.sevenToTwelve.value &&
+                word.value.totalPoints <= EasyBot.botPointSetting.other.value
+            ) {
                 wordP13To18.push(word);
             }
         });

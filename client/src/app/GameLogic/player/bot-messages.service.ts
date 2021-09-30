@@ -6,14 +6,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
-import {
-    BINGO_MESSAGE,
-    BOARD_MAX_POSITION,
-    BOARD_MIN_POSITION,
-    DEBUG_ALTERNATIVE_WORDS_COUNT,
-    ENDLINE,
-    RACK_LETTER_COUNT
-} from '@app/GameLogic/constants';
+import { BINGO_MESSAGE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, DEBUG_ALTERNATIVE_WORDS_COUNT, ENDLINE } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -76,7 +69,8 @@ export class BotMessagesService {
     formatAlternativeWord(word: ValidWord): string {
         let posLetters = '';
         const formedWords: string[] = [];
-        for (const adjacentWord of word.adjacentWords) {
+        for (let wordIndex = 0; wordIndex < word.adjacentWords.length; wordIndex++) {
+            const adjacentWord = word.adjacentWords[wordIndex];
             let formedWord = '';
             const formedWordIndexes = new Set<number>(adjacentWord.index);
             for (let index = 0; index < adjacentWord.letters.length; index++) {
@@ -86,8 +80,8 @@ export class BotMessagesService {
                 }
                 formedWord = formedWord.concat(currentChar);
             }
+            formedWord = formedWord.concat(' (' + word.value.wordsPoints[wordIndex].points + ') ');
             formedWords.push(formedWord);
-            // TODO : formedWords.push(' (' + VALEUR DU SOUS-MOT + ') ')
         }
         let x = word.startingTileX;
         let y = word.startingTileY;
@@ -101,13 +95,13 @@ export class BotMessagesService {
             posLetters = posLetters.concat(String.fromCharCode(y + 'A'.charCodeAt(0)) + (x + 1) + ':' + placedChar + ' ');
         }
         let out = posLetters;
-        out = out.concat('(' + word.value + ') ');
+        out = out.concat('(' + word.value.totalPoints + ') ');
         out = out.concat(ENDLINE);
         for (const formedWord of formedWords) {
             out = out.concat(formedWord);
             out = out.concat(ENDLINE);
         }
-        if (word.numberOfLettersPlaced === RACK_LETTER_COUNT) {
+        if (word.value.isBingo) {
             out = out.concat(BINGO_MESSAGE);
             out = out.concat(ENDLINE);
         }

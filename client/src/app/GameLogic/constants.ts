@@ -15,4 +15,5 @@ export const MIN_NAME_LENGTH = 3;
 export const MAX_CONSECUTIVE_PASS = 6;
 export const DEBUG_ALTERNATIVE_WORDS_COUNT = 3;
 export const BINGO_MESSAGE = 'Bingo! (50)';
+export const BINGO_VALUE = 50;
 export const ENDLINE = '\\n';
