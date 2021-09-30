@@ -2,13 +2,14 @@ import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { Bot } from './bot';
 
 export class EasyBot extends Bot {
-    static actionProbabibility = { play: 0.8, exchange: 0.1, pass: 0.1 };
+    static actionProbability = { play: 0.8, exchange: 0.1, pass: 0.1 };
     static placementProbability = { sixOrLess: 0.4, sevenToTwelve: 0.3, other: 0.3 };
     static botPointSetting = {
         sixOrLess: {
@@ -31,15 +32,19 @@ export class EasyBot extends Bot {
         this.chooseAction(action);
         return action;
     }
+
     randomActionPicker(): Action {
         const randomValue = Math.random();
-        if (randomValue <= EasyBot.actionProbabibility.play) {
+        if (randomValue <= EasyBot.actionProbability.play) {
             let action = this.playAction();
             if (action === undefined) {
                 action = this.passAction();
             }
             return action;
-        } else if (randomValue <= EasyBot.actionProbabibility.play + EasyBot.actionProbabibility.exchange) {
+        } else if (
+            randomValue <= EasyBot.actionProbability.play + EasyBot.actionProbability.exchange &&
+            this.gameInfo.numberOfLettersRemaining > RACK_LETTER_COUNT
+        ) {
             return this.exchangeAction();
         } else {
             return this.passAction();

@@ -1,5 +1,7 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { MIDDLE_OF_BOARD, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { BotCrawler } from '@app/GameLogic/player/bot-crawler';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
@@ -11,10 +13,6 @@ import { BehaviorSubject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Player } from './player';
 import { HORIZONTAL, ValidWord } from './valid-word';
-
-const TIME_BEFORE_PICKING_ACTION = 3000;
-const TIME_BEFORE_PASS = 20000;
-const MIDDLE_OF_BOARD = 7;
 
 export abstract class Bot extends Player {
     static botNames = ['Jimmy', 'Sasha', 'Beep'];
@@ -30,6 +28,7 @@ export abstract class Bot extends Player {
         protected pointCalculatorService: PointCalculatorService,
         protected wordValidator: WordSearcher,
         protected botMessage: BotMessagesService,
+        protected gameInfo: GameInfoService,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);

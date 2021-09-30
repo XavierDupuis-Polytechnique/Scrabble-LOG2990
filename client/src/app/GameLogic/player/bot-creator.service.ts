@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Bot } from '@app/GameLogic/player/bot';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -11,7 +12,6 @@ import { HardBot } from './hard-bot';
 @Injectable({
     providedIn: 'root',
 })
-// TODO: Change name to botCreator
 export class BotCreatorService {
     constructor(
         private boardService: BoardService,
@@ -19,6 +19,7 @@ export class BotCreatorService {
         private pointCalculatorService: PointCalculatorService,
         private wordSearcher: WordSearcher,
         private botMessage: BotMessagesService,
+        private gameInfo: GameInfoService,
     ) {}
     createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
@@ -29,6 +30,7 @@ export class BotCreatorService {
                 this.pointCalculatorService,
                 this.wordSearcher,
                 this.botMessage,
+                this.gameInfo,
             );
         } else {
             return new EasyBot(
@@ -38,6 +40,7 @@ export class BotCreatorService {
                 this.pointCalculatorService,
                 this.wordSearcher,
                 this.botMessage,
+                this.gameInfo,
             );
         }
     }

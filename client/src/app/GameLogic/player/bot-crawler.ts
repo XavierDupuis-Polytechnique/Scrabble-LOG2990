@@ -1,5 +1,4 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Bot } from '@app/GameLogic/player/bot';
@@ -272,12 +271,7 @@ export class BotCrawler {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
 
             for (const word of tmpWordList) {
-                const tmpLetterRack: Letter[] = [];
-
-                for (const letter of this.bot.letterRack) {
-                    tmpLetterRack.push(this.bot.letterCreator.createLetter(letter.char));
-                }
-                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, tmpLetterRack);
+                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, this.bot.letterRack);
                 if (wordToValidate !== 'false') {
                     possiblyValidWords.push(
                         new ValidWord(

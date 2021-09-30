@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 /* eslint-disable max-classes-per-file*/
 import { TestBed } from '@angular/core/testing';
-import { Board } from '@app/GameLogic/game/board';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
@@ -11,36 +10,32 @@ import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardService } from '@app/services/board.service';
 
-export class TestBoard extends Board {
-    letterCreator = new LetterCreator();
-    placeWord(x: number, y: number, isVertical: boolean, word: string) {
-        for (const letter of word) {
-            this.grid[y][x].letterObject = this.letterCreator.createLetter(letter);
-            if (isVertical) {
-                y++;
-            } else {
-                x++;
-            }
+const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
+    const letterCreator = new LetterCreator();
+    for (const letter of word) {
+        boardService.board.grid[y][x].letterObject = letterCreator.createLetter(letter);
+        if (isVertical) {
+            y++;
+        } else {
+            x++;
         }
     }
-}
+};
 
 describe('Bot', () => {
     TestBed.configureTestingModule({
         providers: [BoardService, BotCreatorService, BotMessagesService, BoardService, DictionaryService],
     });
     let bot: EasyBot;
-    let board: TestBoard;
     let boardService: BoardService;
     let botCreator: BotCreatorService;
 
     beforeEach(() => {
         botCreator = TestBed.inject(BotCreatorService);
         boardService = TestBed.inject(BoardService);
-
         bot = botCreator.createBot('testBot', 'easy') as EasyBot;
-        board = new TestBoard();
     });
+
     it('should create an instance', () => {
         expect(bot).toBeTruthy();
     });
@@ -105,11 +100,11 @@ describe('Bot', () => {
             { char: 'L', value: 1 },
         ];
         bot.letterRack = letters;
-        board.placeWord(6, 7, false, 'bateaux');
-        board.placeWord(9, 7, true, 'elle');
-        boardService.board.grid = board.grid;
+        placeTestWords(6, 7, false, 'bateaux', boardService);
+        placeTestWords(9, 7, true, 'elle', boardService);
+
         let result: ValidWord[] = [];
-        const expected = 174; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 243; // It would take too long to list all the possibilities with any more details in this test.
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
@@ -126,22 +121,21 @@ describe('Bot', () => {
         ];
         bot.letterRack = letters;
 
-        board.placeWord(5, 7, false, 'vitrat');
-        board.placeWord(0, 3, true, 'bateaux');
-        board.placeWord(11, 3, true, 'elle');
-        board.placeWord(0, 3, false, 'bondonneraient');
-        board.placeWord(5, 3, true, 'nativement');
-        board.placeWord(4, 10, false, 'retarderons');
-        board.placeWord(9, 3, true, 'abacas');
-        board.placeWord(2, 3, true, 'nageait');
-        board.placeWord(4, 1, true, 'oxo');
-        board.placeWord(13, 3, true, 'tabac');
-        board.placeWord(4, 1, false, 'occlusion');
-        board.placeWord(0, 12, false, 'romantismes');
+        placeTestWords(5, 7, false, 'vitrat', boardService);
+        placeTestWords(0, 3, true, 'bateaux', boardService);
+        placeTestWords(11, 3, true, 'elle', boardService);
+        placeTestWords(0, 3, false, 'bondonneraient', boardService);
+        placeTestWords(5, 3, true, 'nativement', boardService);
+        placeTestWords(4, 10, false, 'retarderons', boardService);
+        placeTestWords(9, 3, true, 'abacas', boardService);
+        placeTestWords(2, 3, true, 'nageait', boardService);
+        placeTestWords(4, 1, true, 'oxo', boardService);
+        placeTestWords(13, 3, true, 'tabac', boardService);
+        placeTestWords(4, 1, false, 'occlusion', boardService);
+        placeTestWords(0, 12, false, 'romantismes', boardService);
 
-        boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        const expected = 975; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 1743; // It would take too long to list all the possibilities with any more details in this test.
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
@@ -159,9 +153,8 @@ describe('Bot', () => {
         ];
         bot.letterRack = letters;
 
-        boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        const expected = 1349; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 1959; // It would take too long to list all the possibilities with any more details in this test.
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
@@ -178,11 +171,10 @@ describe('Bot', () => {
         ];
         bot.letterRack = letters;
 
-        board.placeWord(5, 7, false, 'etre');
+        placeTestWords(5, 7, false, 'etre', boardService);
 
-        boardService.board.grid = board.grid;
         let result: ValidWord[] = [];
-        const expected = 315; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 388; // It would take too long to list all the possibilities with any more details in this test.
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
