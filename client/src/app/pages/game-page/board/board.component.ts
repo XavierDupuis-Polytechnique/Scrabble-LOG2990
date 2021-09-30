@@ -3,8 +3,8 @@ import { MatSliderChange } from '@angular/material/slider';
 import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
 import { BoardService } from '@app/services/board.service';
 
-const MAX_FONT_SIZE = 16;
-const MIN_FONT_SIZE = 8;
+const MAX_FONT_SIZE = 14;
+const MIN_FONT_SIZE = 7;
 
 @Component({
     selector: 'app-board',
@@ -25,20 +25,6 @@ export class BoardComponent implements AfterViewInit {
     ngAfterViewInit() {
         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
     }
-
-    // increaseFont(): void {
-    //     if (this.fontSize < this.maxFontSize) {
-    //         this.fontSize++;
-    //         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
-    //     }
-    // }
-
-    // decreaseFont(): void {
-    //     if (this.fontSize > this.minFontSize) {
-    //         this.fontSize--;
-    //         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
-    //     }
-    // }
 
     getFont(): string {
         return `font-size: ${this.fontSize}px;`;

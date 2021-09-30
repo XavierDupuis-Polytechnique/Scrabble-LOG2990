@@ -23,7 +23,6 @@ export class ChatBoxComponent implements AfterViewInit {
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
     readonly maxMessageLength = MAX_MESSAGE_LENGTH;
-    hintColor: string = '#ffffff';
     private boldPipe = new BoldPipe();
 
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef, private gameInfo: GameInfoService) {}
