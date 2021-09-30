@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
-import { BOARD_DIMENSION, CHARACTER_H, CHARACTER_V, MAX_PLACE_LETTER_ARG_SIZE, MIN_PLACE_LETTER_ARG_SIZE } from '@app/GameLogic/constants';
+import {
+    BOARD_DIMENSION,
+    CHARACTER_H,
+    CHARACTER_V,
+    MAX_PLACE_LETTER_ARG_SIZE,
+    MIN_PLACE_LETTER_ARG_SIZE,
+    RACK_LETTER_COUNT
+} from '@app/GameLogic/constants';
 import { Observable, Subject } from 'rxjs';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -94,6 +102,9 @@ export class CommandParserService {
     }
 
     exchangeLetterArgVerifier(arg: string) {
+        if (arg.length > RACK_LETTER_COUNT) {
+            throw Error("Commande impossible à réaliser: une des lettres demandée n'est pas dans le rack");
+        }
         for (let i = 0; i < arg.length - 1; i++) {
             if (arg[i] === arg[i].toUpperCase()) {
                 throw Error('les paramètres sont invalides');

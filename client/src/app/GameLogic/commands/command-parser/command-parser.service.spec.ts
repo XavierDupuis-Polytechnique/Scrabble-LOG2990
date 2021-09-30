@@ -23,7 +23,7 @@ describe('CommandParser', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should be Subject<Command>', () => {
+    it('should be equal to the test command as it is the one pushed', () => {
         const from = message.from;
         const testCommand: Command = { from, type: CommandType.Debug, args: [] };
         service.parsedCommand$.subscribe((command) => {
