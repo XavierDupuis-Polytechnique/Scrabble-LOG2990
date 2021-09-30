@@ -15,7 +15,7 @@ const MAX_MESSAGE_LENGTH = 512;
 })
 export class ChatBoxComponent implements AfterViewInit {
     // Avoir une autre fonction linker/binder aver le placement etc...
-    @ViewChild('chat') chat: ElementRef;
+    @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
 
     messageForm: FormControl = new FormControl('', [
         Validators.required,

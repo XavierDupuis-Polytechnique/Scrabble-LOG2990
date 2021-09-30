@@ -1,6 +1,6 @@
 <h1>Chat</h1>
-<div #chat class="chatContainer">
-    <mat-card class="sharedChat">
+<div class="chatContainer">
+    <mat-card #chat class="sharedChat">
         <div
             *ngFor="let message of messages$ | async"
             [ngClass]="{ System: message.type === 'System', Player1: message.type === 'Player1', Player2: message.type === 'Player2' }"
