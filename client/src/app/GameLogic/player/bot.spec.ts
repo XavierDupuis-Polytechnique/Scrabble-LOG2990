@@ -1,38 +1,24 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
-/* eslint-disable max-classes-per-file*/
-import { TestBed } from '@angular/core/testing';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
-import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { BoardService } from '@app/services/board.service';
-
-const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
-    const letterCreator = new LetterCreator();
-    for (const letter of word) {
-        boardService.board.grid[y][x].letterObject = letterCreator.createLetter(letter);
-        if (isVertical) {
-            y++;
-        } else {
-            x++;
-        }
-    }
-};
 
 describe('Bot', () => {
     TestBed.configureTestingModule({
-        providers: [BoardService, BotCreatorService, BotMessagesService, BoardService, DictionaryService],
+        providers: [BotCreatorService, BotMessagesService],
     });
     let bot: EasyBot;
-    let boardService: BoardService;
     let botCreator: BotCreatorService;
+    let botMessage: BotMessagesService;
+    let spySendAction: jasmine.Spy;
 
     beforeEach(() => {
         botCreator = TestBed.inject(BotCreatorService);
-        boardService = TestBed.inject(BoardService);
+        botMessage = TestBed.inject(BotMessagesService);
+        spySendAction = spyOn(botMessage, 'sendAction');
         bot = botCreator.createBot('testBot', 'easy') as EasyBot;
     });
 
@@ -40,143 +26,36 @@ describe('Bot', () => {
         expect(bot).toBeTruthy();
     });
 
-    it('should split a given line in all possible combination hello', () => {
-        const testLine = new ValidWord('hello');
-        let result: ValidWord[] = [];
-        const expected: ValidWord[] = [];
-
-        expected.push(new ValidWord('hello'));
-
-        result = bot.botCrawler.lineSplitter(testLine);
-        expect(result).toEqual(expected);
+    it('should generate a different name', () => {
+        const numberOfTime = 1000;
+        const opponentName = 'Jimmy';
+        for (let i = 0; i < numberOfTime; i++) {
+            const botName = bot.generateBotName(opponentName);
+            const sameName: boolean = botName === opponentName;
+            expect(sameName).toBeFalsy();
+        }
     });
 
-    it('should split a given line in all possible combination hel-o', () => {
-        const testLine = new ValidWord('hel-o');
-        let result: ValidWord[] = [];
-        const expected: ValidWord[] = [];
+    it('should play before 3 seconds', fakeAsync(() => {
+        bot.startTimerAction();
+        bot.chooseAction(new PassTurn(bot));
+        tick(TIME_BEFORE_PICKING_ACTION);
+        expect(spySendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
+        tick(TIME_BEFORE_PASS);
+    }));
 
-        expected.push(new ValidWord('hel', 0, 0, 0, 0, false));
-        expected.push(new ValidWord('o', 0, 0, 0, 0, false, 4));
-        expected.push(new ValidWord('hel-o', 0, 0, 0, 0));
+    it('should play after 3 seconds', fakeAsync(() => {
+        bot.startTimerAction();
+        tick(TIME_BEFORE_PICKING_ACTION);
+        bot.chooseAction(new PassTurn(bot));
+        expect(spySendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
+        tick(TIME_BEFORE_PASS);
+    }));
 
-        result = bot.botCrawler.lineSplitter(testLine);
-        expect(result).toEqual(expected);
-    });
-
-    it('should split a given line in all possible combination test-ng---hello', () => {
-        const testLine = new ValidWord('test-ng---hello', 0, 0, 8, 4);
-        let result: ValidWord[] = [];
-        const expected: ValidWord[] = [];
-
-        expected.push(new ValidWord('test', 0, 0, 8, 0, false));
-        expected.push(new ValidWord('ng', 0, 0, 0, 2, false, 5));
-        expected.push(new ValidWord('hello', 0, 0, 2, 4, false, 10));
-        expected.push(new ValidWord('test-ng', 0, 0, 8, 2, false));
-        expected.push(new ValidWord('ng---hello', 0, 0, 0, 4, false, 5));
-        expected.push(new ValidWord('test-ng---hello', 0, 0, 8, 4, false));
-
-        result = bot.botCrawler.lineSplitter(testLine);
-        expect(result).toEqual(expected);
-    });
-
-    it('should split a given line in all possible combination supercalifrafilisticexpialidocious', () => {
-        const testLine = new ValidWord('super-cali--fragi---listic----expiali-----docious');
-        let result: ValidWord[] = [];
-        const expected = 21; // It would take too long to list all the possibilities with any more details in this test.
-
-        result = bot.botCrawler.lineSplitter(testLine);
-        expect(result.length).toEqual(expected);
-    });
-
-    it('should return a list of all validWord the bot can play (simple board))', () => {
-        const letters: Letter[] = [
-            { char: 'E', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'I', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'J', value: 1 },
-            { char: 'L', value: 1 },
-        ];
-        bot.letterRack = letters;
-        placeTestWords(6, 7, false, 'bateaux', boardService);
-        placeTestWords(9, 7, true, 'elle', boardService);
-
-        let result: ValidWord[] = [];
-        const expected = 243; // It would take too long to list all the possibilities with any more details in this test.
-        result = bot.bruteForceStart();
-        expect(result.length).toEqual(expected);
-    });
-
-    it('should return a list of all validWord the bot can play (complex board))', () => {
-        const letters: Letter[] = [
-            { char: '*', value: 1 },
-            { char: 'K', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'I', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'J', value: 1 },
-            { char: 'L', value: 1 },
-        ];
-        bot.letterRack = letters;
-
-        placeTestWords(5, 7, false, 'vitrat', boardService);
-        placeTestWords(0, 3, true, 'bateaux', boardService);
-        placeTestWords(11, 3, true, 'elle', boardService);
-        placeTestWords(0, 3, false, 'bondonneraient', boardService);
-        placeTestWords(5, 3, true, 'nativement', boardService);
-        placeTestWords(4, 10, false, 'retarderons', boardService);
-        placeTestWords(9, 3, true, 'abacas', boardService);
-        placeTestWords(2, 3, true, 'nageait', boardService);
-        placeTestWords(4, 1, true, 'oxo', boardService);
-        placeTestWords(13, 3, true, 'tabac', boardService);
-        placeTestWords(4, 1, false, 'occlusion', boardService);
-        placeTestWords(0, 12, false, 'romantismes', boardService);
-
-        let result: ValidWord[] = [];
-        const expected = 1743; // It would take too long to list all the possibilities with any more details in this test.
-
-        result = bot.bruteForceStart();
-        expect(result.length).toEqual(expected);
-    });
-
-    it('should return a list of all validWord the bot can play (empty board))', () => {
-        const letters: Letter[] = [
-            { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
-            { char: 'C', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
-        ];
-        bot.letterRack = letters;
-
-        let result: ValidWord[] = [];
-        const expected = 1959; // It would take too long to list all the possibilities with any more details in this test.
-        result = bot.bruteForceStart();
-        expect(result.length).toEqual(expected);
-    });
-
-    it('should return a list of all validWord the bot can play (edge case bug fixing test))', () => {
-        const letters: Letter[] = [
-            { char: 'L', value: 1 },
-            { char: 'J', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'I', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'S', value: 1 },
-        ];
-        bot.letterRack = letters;
-
-        placeTestWords(5, 7, false, 'etre', boardService);
-
-        let result: ValidWord[] = [];
-        const expected = 388; // It would take too long to list all the possibilities with any more details in this test.
-
-        result = bot.bruteForceStart();
-        expect(result.length).toEqual(expected);
-    });
+    it('should pass turn after 20 seconds', fakeAsync(() => {
+        bot.startTimerAction();
+        tick(TIME_BEFORE_PICKING_ACTION);
+        tick(TIME_BEFORE_PASS);
+        expect(spySendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
+    }));
 });

@@ -78,13 +78,12 @@ export class BotCrawler {
             return;
         } else if (isVertical && x === END_OF_BOARD) {
             return;
-        }
-        if (!isVertical && y < END_OF_BOARD) {
+        } else if (!isVertical && y < END_OF_BOARD) {
             x = START_OF_BOARD;
             y++;
             this.boardCrawler(x, y, grid, isVertical);
             return;
-        } else if (!isVertical && y === END_OF_BOARD) {
+        } else {
             x = START_OF_BOARD;
             y = START_OF_BOARD;
             isVertical = true;
