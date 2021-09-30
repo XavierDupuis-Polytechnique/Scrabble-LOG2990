@@ -13,3 +13,4 @@ export const DEFAULT_TIME_PER_TURN = 60000;
 export const MAX_NAME_LENGTH = 50;
 export const MIN_NAME_LENGTH = 3;
 export const MAX_CONSECUTIVE_PASS = 6;
+export const TIME_BUFFER_BEFORE_ACTION = 25;

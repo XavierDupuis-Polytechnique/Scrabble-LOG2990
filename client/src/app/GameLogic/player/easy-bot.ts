@@ -2,9 +2,11 @@ import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
 import { LetterBag } from '@app/GameLogic/game/letter-bag';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { timer } from 'rxjs';
 import { Bot } from './bot';
 
 export class EasyBot extends Bot {
@@ -25,11 +27,13 @@ export class EasyBot extends Bot {
         },
     };
 
-    setActive(): Action {
+    setActive() {
         this.startTimerAction();
-        const action = this.randomActionPicker();
-        this.chooseAction(action);
-        return action;
+        timer(TIME_BUFFER_BEFORE_ACTION).subscribe(() => {
+            const action = this.randomActionPicker();
+            this.chooseAction(action);
+        });
+        // return action;
     }
     randomActionPicker(): Action {
         const randomValue = Math.random();
