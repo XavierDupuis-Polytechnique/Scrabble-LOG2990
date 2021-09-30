@@ -1,28 +1,24 @@
-@import '~@angular/material/core/theming/all-theme';
-
 mat-form-field {
     margin: 2%;
     margin-top: 4%;
     color: whitesmoke;
     width: 95%;
 }
-.mat-hint {
-    &.error {
-        color: mat-color($mat-red);
-    }
-}
+
 .chatContainer {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
+
 .sharedChat {
     height: 30vh;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
     word-break: normal;
-    background-color: var(--lightgray);
+    background-color: var(--white);
+    opacity: 0.9;
     margin: 1%;
 }
 

@@ -13,21 +13,24 @@
 .wordX3 {
     background-color: var(--salmon);
 }
+
 .multiplicator {
     font-size: 0.4rem;
     padding-top: 14%;
+    color: var(--black-chocolate);
     display: block;
 }
+
 .letter {
     font-family: inherit;
     font-weight: 700;
     size: inherit;
     border-radius: 10%;
-    border: 1px solid rgb(134, 114, 98);
+    box-shadow: 0.6px 0.6px rgba(0, 0, 0, 0.651);
     background-color: rgb(240, 231, 216);
-    background-image: url(/assets/img/woodCrop.png);
-    background-size: contain;
-    box-shadow: 2px 2px 2px 0.5;
-    width: 90%;
-    height: 90%;
+    background-image: url(/assets/img/tuile.png);
+    background-size: 125% 125%;
+    background-position: right;
+    width: 95%;
+    height: 95%;
 }

@@ -1,6 +1,6 @@
 <h1>Chat</h1>
-<div class="chatContainer">
-    <mat-card #chat class="sharedChat">
+<div #chat class="chatContainer">
+    <mat-card class="sharedChat">
         <div
             *ngFor="let message of messages$ | async"
             [ngClass]="{ System: message.type === 'System', Player1: message.type === 'Player1', Player2: message.type === 'Player2' }"
@@ -8,10 +8,11 @@
             {{ message.from }} : {{ message.content }}
         </div>
     </mat-card>
-    <form>
-        <mat-form-field appearance="fill">
-            <input matInput #enter type="text" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" placeholder="Aa" />
-            <mat-hint>{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
-        </mat-form-field>
-    </form>
+    <!-- <form> -->
+    <mat-form-field appearance="fill">
+        <input matInput #enter type="text" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" placeholder="Aa" />
+        <mat-hint *ngIf="isError(enter.value.length)" style="color: #e53935">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
+        <mat-hint *ngIf="!isError(enter.value.length)" style="color: #ffffff">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
+    </mat-form-field>
+    <!-- </form> -->
 </div>

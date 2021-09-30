@@ -1,18 +1,21 @@
 mat-card {
     margin: 5%;
 }
+
 .playerInfo {
-    // border: solid black 1.5px; en blanc?
+    background-color: var(--lightgray);
     justify-self: center;
 }
+
 .name {
     justify-self: center;
     font-size: 150%;
     font-weight: 900;
     color: var(--black-chocolate);
 }
+
 .score {
     justify-self: end;
     font-size: 85%;
-    color: var(--black-chocolate);
+    color: var(--white);
 }

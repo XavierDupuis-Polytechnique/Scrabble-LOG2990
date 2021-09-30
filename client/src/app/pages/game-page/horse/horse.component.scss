@@ -1,5 +1,12 @@
+mat-grid-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 100%;
+    margin: 1%;
+}
+
 mat-grid-tile {
-    // border: 2px solid rgb(0, 0, 0);
     font-weight: 700;
     border-radius: 10%;
     background-color: rgb(240, 231, 216);
@@ -7,22 +14,15 @@ mat-grid-tile {
     box-shadow: 2px 2px 2px 0.2;
 }
 
-mat-grid-list {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    height: 100%;
-    margin: 1%;
-    // width: 90%;
-}
 sub {
     padding-top: 15%;
     padding-left: 5%;
 }
+
 .rackContainer {
+    width: 50%;
+    min-height: 50%;
     background-color: var(--brown-choco);
     border: 3px solid rgb(37, 37, 37);
     border-radius: 2%;
-    width: 50%;
-    min-height: 50%;
 }

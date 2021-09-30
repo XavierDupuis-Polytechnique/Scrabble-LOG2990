@@ -1,27 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-homepage',
     templateUrl: './homepage.component.html',
     styleUrls: ['./homepage.component.scss'],
 })
-export class HomepageComponent implements OnInit {
-    constructor(/* private gms: GameManagerService*/) {}
-
-    ngOnInit(): void {
-        // const settings = {
-        //     playerName: 'Xavier',
-        //     botDifficulty: 'easy',
-        //     timePerTurn: 3000,
-        // };
-        // this.gms.createGame(settings);
-        // this.gms.startGame();
-        // const player = this.gms.game.getActivePlayer();
-        // const lettersToExchange = [...player.letterRack]
-        // player.action$.next(new ExchangeLetter(player, lettersToExchange));
-        // player.exchange();
-        // console.log(this.gms.game);
-
-        return;
-    }
-}
+export class HomepageComponent {}

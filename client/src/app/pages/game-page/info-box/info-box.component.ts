@@ -27,6 +27,7 @@ export class InfoBoxComponent implements OnInit {
             }),
         );
     }
+
     timerIsLessOneMinute(timeLeft: number | null | undefined): boolean {
         if (timeLeft === null || timeLeft === undefined) {
             return true;

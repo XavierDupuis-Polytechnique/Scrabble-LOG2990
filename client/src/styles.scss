@@ -88,19 +88,23 @@ $my-theme: mat.define-dark-theme(
 
 :root {
     --lightblue: rgb(152, 222, 255);
-    --lightgray: rgb(209, 209, 209);
     --darkgray: rgb(119, 119, 119);
     --brown: rgb(129, 82, 63);
-    --white: rgb(255, 255, 255);
 
-    --blue-munsell: rgb(33, 58, 128);
-    --melon: rgb(255, 133, 229);
+    // Board color:
+    --blue-munsell: rgb(50, 87, 187);
+    --melon: rgb(248, 142, 142);
     --salmon: rgb(209, 0, 45);
     --powder-blue: rgb(120, 209, 221);
-    --brown-choco: rgb(80, 62, 57);
-    --black-chocolate: rgba(20, 16, 9, 1);
+    --brown-choco: rgb(66, 56, 52);
     --bone: rgb(240, 231, 216, 1);
-    --error: rgb(175, 0, 0);
+
+    // Page
+    --black-chocolate: rgba(20, 16, 9, 1);
+    --lightgray: rgb(209, 209, 209, 0.9);
+    --white: rgb(255, 255, 255);
+    --red: rgb(153, 1, 1);
+    --active: rgba(0, 217, 255, 0.76);
 }
 
 html,
@@ -115,7 +119,7 @@ body {
 h1 {
     display: flex;
     justify-content: center;
-    background-color: rgb(16, 0, 41);
+    background-color: rgb(43, 0, 112, 0.9);
     color: rgb(233, 231, 231);
     border-radius: 0.6rem;
 }

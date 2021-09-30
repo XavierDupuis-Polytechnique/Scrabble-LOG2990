@@ -12,6 +12,7 @@ export class TileComponent implements OnInit {
     class: string = '';
     multiplicatorType: string = '';
     numberMultiplicator: string = '';
+
     ngOnInit() {
         if (this.tile.letterMultiplicator !== 1) {
             this.class = `letterX${this.tile.letterMultiplicator}`;

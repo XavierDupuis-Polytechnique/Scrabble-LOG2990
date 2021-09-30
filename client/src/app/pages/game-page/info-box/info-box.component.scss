@@ -1,23 +1,18 @@
-#game-info {
-    font-size: 125%;
-}
 mat-card {
     margin: 5%;
-    background-color: var(--lightgray);
+    background-color: var(--white);
+    opacity: 0.8;
     color: var(--black-chocolate);
 }
-// .playerInfo {
-//     margin: 2%;
-//     padding: 2%;
-//     border: solid black 2px;
-//     justify-self: center;
-// }
+
+.game-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size: 125%;
+}
 
 .name {
     font-size: 100%;
     font-weight: 700;
 }
-// .score {
-//     justify-self: end;
-//     font-size: 85%;
-// }

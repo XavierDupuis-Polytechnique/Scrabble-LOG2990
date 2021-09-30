@@ -3,7 +3,7 @@
     <mat-card
         class="playerInfo"
         id="{{ i }}"
-        [ngStyle]="{ 'background-color': player.name === info.activePlayer.name ? 'indigo' : 'var(--lightgray)' }"
+        [ngStyle]="{ 'box-shadow': player.name === info.activePlayer.name ? '1px 1px 5px 5px var(--active)' : '0px 0px 0px 0px' }"
     >
         <mat-card-header>
             <span class="name">{{ player.name }} </span>
