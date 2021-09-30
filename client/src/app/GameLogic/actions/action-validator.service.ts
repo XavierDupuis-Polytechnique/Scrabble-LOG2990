@@ -125,7 +125,7 @@ export class ActionValidatorService {
             return false;
         }
 
-        this.sendSystemMessage(action.player.name + ' PLACE des lettres');
+        this.sendSystemMessage(this.gameInfo.activePlayer.name, action.player.name + ' PLACE des lettres');
         return true;
     }
 
@@ -153,7 +153,7 @@ export class ActionValidatorService {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
-        this.sendSystemMessage(action.player.name + ' ÉCHANGE des lettres');
+        this.sendSystemMessage(this.gameInfo.activePlayer.name, action.player.name + ' ÉCHANGE des lettres');
         return true;
     }
 
@@ -210,7 +210,7 @@ export class ActionValidatorService {
         this.messageService.receiveErrorMessage(content);
     }
 
-    private sendSystemMessage(content: string) {
-        this.messageService.receiveSystemMessage(content);
+    private sendSystemMessage(player: string, content: string) {
+        this.messageService.receiveMessage(player, content);
     }
 }

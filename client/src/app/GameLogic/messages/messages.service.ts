@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
+import { GameInfoService } from '@app/GameLogic//game/game-info/game-info.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-// import { verify } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
 @Injectable({
@@ -12,14 +12,28 @@ export class MessagesService {
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
-    constructor(private commandParser: CommandParserService) {}
+    constructor(private commandParser: CommandParserService, private gameInfo: GameInfoService) {}
 
     receiveMessage(forwarder: string, content: string) {
-        const message: Message = {
+        const player1 = this.gameInfo.players[0].name;
+        const player2 = this.gameInfo.players[1].name;
+        let messageType: MessageType;
+
+        if (forwarder === player1) {
+            messageType = MessageType.Player1;
+        } else if (forwarder === player2) {
+            messageType = MessageType.Player2;
+        } else {
+            this.receiveSystemMessage('Message envoyé par un joueur inconnu');
+            return;
+        }
+
+        const message = {
             content,
             from: forwarder,
-            type: MessageType.Player1,
+            type: messageType,
         };
+
         try {
             this.commandParser.parse(content, forwarder);
             this.addMessageToLog(message);

@@ -39,7 +39,7 @@ export class CommandParserService {
                 this.sendCommand(command);
                 return true;
             }
-            const errorContent = commandCondition + ' est une commande invalide';
+            const errorContent = commandCondition + ' est une entrée invalide';
             throw Error(errorContent);
         }
         return false;
