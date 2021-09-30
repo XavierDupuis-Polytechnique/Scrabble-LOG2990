@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
@@ -62,7 +62,7 @@ describe('EasyBot', () => {
         expect(value).toBeCloseTo(EasyBot.actionProbability.play);
     });
 
-    it('should return a valid first turn action (empty board))', () => {
+    it('should return a valid first turn action (empty board))', fakeAsync(() => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
             { char: 'P', value: 1 },
@@ -73,10 +73,16 @@ describe('EasyBot', () => {
             { char: 'V', value: 1 },
         ];
         easyBot.letterRack = letters;
+        const test = spyOn(easyBot, 'randomActionPicker').and.callThrough();
 
-        const result: Action = easyBot.setActive();
+        easyBot.setActive();
+        tick(TIME_BUFFER_BEFORE_ACTION);
+
+        const result: Action = test.calls.first().returnValue;
         expect(result).toBeTruthy();
-    });
+        tick(TIME_BEFORE_PICKING_ACTION);
+        tick(TIME_BEFORE_PASS);
+    }));
 
     it('should return a valid word 2-6 points', () => {
         const letters: Letter[] = [
