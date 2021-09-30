@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
@@ -16,5 +17,20 @@ describe('GameManagerService', () => {
         expect(() => {
             service.startGame();
         }).toThrow(Error('No game created yet'));
+    });
+
+    it('should emit void on start game', (done) => {
+        service.newGame$.subscribe((v: void) => {
+            expect(v).toBeFalsy();
+            done();
+        });
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+        };
+        service.createGame(gameSettings);
+        service.startGame();
+        service.stopGame();
     });
 });
