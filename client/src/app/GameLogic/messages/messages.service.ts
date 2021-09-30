@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-// import { verify } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -20,12 +20,11 @@ export class MessagesService {
             from: forwarder,
             type: MessageType.Player1,
         };
+        this.addMessageToLog(message);
         try {
             this.commandParser.parse(content, forwarder);
-            this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {
-                this.addMessageToLog(message);
                 this.receiveError(e as Error);
             }
         }
