@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -14,13 +15,18 @@ class MockGameManagerService {
     };
 }
 
+const testSpy: jasmine.SpyObj<GameInfoService> = jasmine.createSpyObj('GameInfoService', ['getPlayer'], { user: { letterRack: 3 } });
+
 describe('HorseComponent', () => {
     let component: HorseComponent;
     let fixture: ComponentFixture<HorseComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [HorseComponent],
-            providers: [{ provide: GameManagerService, useClass: MockGameManagerService }],
+            providers: [
+                { provide: GameManagerService, useClass: MockGameManagerService },
+                { provide: GameInfoService, useValue: testSpy },
+            ],
         }).compileComponents();
     });
 
@@ -32,5 +38,10 @@ describe('HorseComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should initialise player rack', () => {
+        component.ngAfterContentInit();
+        expect(component.playerRack).toBeDefined();
     });
 });

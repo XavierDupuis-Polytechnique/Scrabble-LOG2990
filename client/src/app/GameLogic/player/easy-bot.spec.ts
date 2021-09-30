@@ -22,7 +22,6 @@ describe('EasyBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
-
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [BoardService, BotCreatorService, BotMessagesService, TimerService, PointCalculatorService, MessagesService, GameInfoService],
@@ -32,8 +31,8 @@ describe('EasyBot', () => {
         timer = TestBed.inject(TimerService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
-
         gameInfo = TestBed.inject(GameInfoService);
+
         easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
         spyPlay = spyOn(easyBot, 'playAction');
         spyExchange = spyOn(easyBot, 'exchangeAction');
@@ -69,6 +68,8 @@ describe('EasyBot', () => {
         ];
         easyBot.letterRack = letters;
 
+        spyExchange.and.callThrough();
+        spyPlay.and.callThrough();
         const result: Action = easyBot.setActive();
         expect(result).toBeTruthy();
     });

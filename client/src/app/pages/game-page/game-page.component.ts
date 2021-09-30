@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 
@@ -7,14 +7,11 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent implements OnInit {
-    constructor(private gameManager: GameManagerService, private router: Router) {}
-
-    ngOnInit() {
+export class GamePageComponent {
+    constructor(private gameManager: GameManagerService, private router: Router) {
         try {
             this.gameManager.startGame();
         } catch (e) {
-            // alert("Pas de partie crée pour l'instant");
             this.router.navigate(['/']);
         }
     }
