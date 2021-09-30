@@ -22,3 +22,7 @@ export const MAX_WORD_LENGTH = 15;
 export const TIME_BEFORE_PICKING_ACTION = 3000;
 export const TIME_BEFORE_PASS = 20000;
 export const MIDDLE_OF_BOARD = 7;
+export const DEBUG_ALTERNATIVE_WORDS_COUNT = 3;
+export const BINGO_MESSAGE = 'Bingo! (50)';
+export const BINGO_VALUE = 50;
+export const ENDLINE = '\\n';

@@ -305,7 +305,7 @@ export class BotCrawler {
             if (wordIsValid) {
                 const words = validWords.map((validWord) => validWord.letters);
                 const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(word.numberOfLettersPlaced, words);
-                word.value = pointEstimation.totalPoints;
+                word.value = pointEstimation;
                 word.adjacentWords = validWords;
                 this.bot.validWordList.push(word);
             }
