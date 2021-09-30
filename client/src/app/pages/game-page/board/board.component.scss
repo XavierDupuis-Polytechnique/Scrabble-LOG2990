@@ -11,7 +11,7 @@ mat-grid-list {
     display: flex;
     justify-content: space-evenly;
     border: 10px solid var(--brown-choco);
-    border-radius: 0.4rem; //TODO
+    border-radius: 0.3rem;
     background-color: whitesmoke;
 }
 
@@ -20,7 +20,6 @@ mat-slider {
 }
 
 .boardContainer {
-    // height: max-content;
     padding-left: 15%;
     padding-right: 15%;
     max-width: 66vmin;
@@ -31,5 +30,6 @@ mat-slider {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    color: var(--black-chocolate);
+    padding-left: 15%;
+    color: whitesmoke;
 }

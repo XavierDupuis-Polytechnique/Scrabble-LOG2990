@@ -8,7 +8,6 @@
             {{ message.from }} : {{ message.content }}
         </div>
     </mat-card>
-    <mat-divider inset></mat-divider>
     <form>
         <mat-form-field appearance="fill">
             <input matInput #enter type="text" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" placeholder="Aa" />

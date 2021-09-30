@@ -5,7 +5,6 @@ mat-form-field {
     margin-top: 4%;
     color: whitesmoke;
     width: 95%;
-    // Todo: padding
 }
 .mat-hint {
     &.error {
@@ -15,10 +14,10 @@ mat-form-field {
 .chatContainer {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
 }
 .sharedChat {
-    height: 25vh;
+    height: 30vh;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;

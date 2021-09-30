@@ -1,3 +1,8 @@
+.bg-img {
+    background: url(/assets/img/Pink_ish.jpg) no-repeat center top;
+    background-size: 100vw 100vh;
+}
+
 .container {
     display: grid;
     grid-template-columns: 0.8fr 1fr 1fr 0.8fr;
@@ -8,11 +13,9 @@
         'Player Board Board Info'
         'Actions Board Board Chat'
         'Quitter Horse Horse Chat';
-    // height: auto;
-    background: url(/assets/img/Pink_ish.jpg) no-repeat center top;
-    background-size: 100vw 130vh;
-    height: 100vh;
-    width: 100vw;
+    // height: 100vh;
+    // width: 100vw;
+    // padding: 1%;
 }
 img {
     grid-area: Img;
@@ -20,15 +23,18 @@ img {
 app-info-box {
     grid-area: Info;
     padding: 1%;
+    padding-right: 2%;
 }
 
 app-chat-box {
     grid-area: Chat;
     padding: 1%;
+    padding-right: 2%;
 }
 app-board {
     grid-area: Board;
     height: fit-content;
+    padding-top: 3%;
     min-width: 50vw;
 }
 
@@ -42,25 +48,33 @@ app-horse {
 app-player-info {
     grid-area: Player;
     padding: 1%;
+    padding-left: 2%;
 }
 
 button {
-    margin: 2%;
+    padding: 2%;
 }
-.button {
+.actions {
     grid-area: Actions;
     display: flex;
     justify-content: flex-start;
     align-self: center;
+    padding-left: 2%;
+    button {
+        margin-left: 5%;
+    }
 }
 
 .abandonner {
     grid-area: Quitter;
-    background-color: var(--error);
-    width: 60%;
     display: flex;
     justify-content: center;
     align-self: center;
     align-items: center;
-    padding: 1%;
+    padding-left: 2%;
+
+    button {
+        width: 60%;
+        background-color: var(--error);
+    }
 }
