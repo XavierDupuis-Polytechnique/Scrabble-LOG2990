@@ -61,7 +61,7 @@ export class BotMessagesService {
             const pickedWord = action.word;
             this.sendPlaceLetterMessage(pickedWord, placement, name);
             if (this.commandExecuter.isDebugModeActivated) {
-                this.sendAlternativeWords(action);
+                this.sendAlternativeWords((action.player as Bot).validWordList);
             }
         }
     }
@@ -109,17 +109,18 @@ export class BotMessagesService {
         return out;
     }
 
-    sendAlternativeWords(action: Action) {
-        const bot = action.player as Bot;
-        const validWordList = bot.validWordList;
+    getRandomInt(max: number, min: number = 0) {
+        return Math.floor(Math.random() * (max - min) + min);
+    }
+
+    sendAlternativeWords(validWordList: ValidWord[]) {
         let content = ENDLINE;
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
-            if (i > validWordList.length) {
+            if (i === validWordList.length) {
                 break;
             }
-            const subMax = validWordList.length / DEBUG_ALTERNATIVE_WORDS_COUNT;
-            const randomIndex = Math.floor(bot.getRandomInt(subMax) + subMax * i);
-            const word = validWordList[randomIndex];
+            const subMax = Math.ceil((validWordList.length * i) / DEBUG_ALTERNATIVE_WORDS_COUNT);
+            const word = validWordList[subMax];
             content = content.concat(this.formatAlternativeWord(word));
         }
         this.messagesService.receiveSystemMessage(content);
