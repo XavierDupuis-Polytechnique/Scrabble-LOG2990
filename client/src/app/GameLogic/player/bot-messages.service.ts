@@ -114,7 +114,7 @@ export class BotMessagesService {
         const validWordList = bot.validWordList;
         let content = ENDLINE;
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
-            if (i > bot.validWordList.length) {
+            if (i > validWordList.length) {
                 break;
             }
             const subMax = validWordList.length / DEBUG_ALTERNATIVE_WORDS_COUNT;
