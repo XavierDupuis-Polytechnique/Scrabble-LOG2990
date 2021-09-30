@@ -41,7 +41,7 @@ describe('CommandParser', () => {
         message.content = '!manger duGateau';
         expect(() => {
             service.parse(message.content, message.from);
-        }).toThrowError('!manger est une commande invalide');
+        }).toThrowError('!manger est une entrée invalide');
     });
 
     it('should be return true', () => {
@@ -57,7 +57,7 @@ describe('CommandParser', () => {
         message.content = '!PLACER a1v bob';
         expect(() => {
             service.parse(message.content, message.from);
-        }).toThrowError('!PLACER est une commande invalide');
+        }).toThrowError('!PLACER est une entrée invalide');
     });
 
     it('should throw ' + syntaxError1, () => {
