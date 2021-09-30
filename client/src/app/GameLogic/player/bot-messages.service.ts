@@ -113,14 +113,12 @@ export class BotMessagesService {
         const bot = action.player as Bot;
         const validWordList = bot.validWordList;
         let content = ENDLINE;
-        console.log(validWordList.length);
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
             if (i > bot.validWordList.length) {
                 break;
             }
             const subMax = validWordList.length / DEBUG_ALTERNATIVE_WORDS_COUNT;
             const randomIndex = Math.floor(bot.getRandomInt(subMax) + subMax * i);
-            console.log(randomIndex);
             const word = validWordList[randomIndex];
             content = content.concat(this.formatAlternativeWord(word));
         }
