@@ -19,10 +19,9 @@ describe('GameManagerService', () => {
         }).toThrow(Error('No game created yet'));
     });
 
-    it('should emit void on start game', (done) => {
+    it('should emit void on start game', () => {
         service.newGame$.subscribe((v: void) => {
             expect(v).toBeFalsy();
-            done();
         });
         const gameSettings: GameSettings = {
             timePerTurn: 10,
