@@ -4,6 +4,7 @@ import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 
 const DEBUG_MESSAGE_ACTIVATED = 'affichages de débogage activés';
@@ -22,9 +23,14 @@ export class CommandExecuterService {
         private actionCompilerService: ActionCompilerService,
         private actionValidator: ActionValidatorService,
         private messageService: MessagesService,
+        private gameManager: GameManagerService,
     ) {
         this.commandParser.parsedCommand$.subscribe((command) => {
             this.execute(command);
+        });
+
+        this.gameManager.newGame$.subscribe(() => {
+            this.debugMode = false;
         });
     }
 

@@ -7,6 +7,7 @@ import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { BoardService } from '@app/services/board.service';
+import { Observable, Subject } from 'rxjs';
 import { Game } from './game';
 import { GameSettings } from './game-settings.interface';
 
@@ -15,6 +16,11 @@ import { GameSettings } from './game-settings.interface';
 })
 export class GameManagerService {
     private game: Game;
+    private newGameSubject = new Subject<void>();
+    get newGame$(): Observable<void> {
+        return this.newGameSubject;
+    }
+
     constructor(
         private botService: BotCreatorService,
         private timer: TimerService,
@@ -40,7 +46,7 @@ export class GameManagerService {
         if (!this.game) {
             throw Error('No game created yet');
         }
-        // console.log('GAME STARTED');
+        this.newGameSubject.next();
         this.game.start();
     }
 
