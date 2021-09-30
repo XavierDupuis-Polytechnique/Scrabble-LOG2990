@@ -76,21 +76,14 @@ export class EasyBot extends Bot {
         let wordPicked: ValidWord;
         if (randomValue <= EasyBot.botPointSetting.sixOrLess.prob) {
             wordPicked = this.wordPicker(wordP6);
-            if (wordPicked !== undefined) {
-                return wordPicked;
-            }
+            return wordPicked;
         } else if (randomValue <= EasyBot.botPointSetting.sevenToTwelve.prob + EasyBot.botPointSetting.other.prob) {
             wordPicked = this.wordPicker(wordP7to12);
-            if (wordPicked !== undefined) {
-                return wordPicked;
-            }
+            return wordPicked;
         } else {
             wordPicked = this.wordPicker(wordP13To18);
-            if (wordPicked !== undefined) {
-                return wordPicked;
-            }
+            return wordPicked;
         }
-        return wordPicked;
     }
 
     playAction(): Action {
