@@ -35,6 +35,9 @@ export class CommandParserService {
                     }
                     args = this.placeLetterFormatter(args);
                 }
+                if (commandType === CommandType.Exchange) {
+                    this.exchangeLetterArgVerifier(args[0]);
+                }
                 const command = this.createCommand(from, args, commandCondition as CommandType);
                 this.sendCommand(command);
                 return true;
@@ -88,6 +91,14 @@ export class CommandParserService {
             return col;
         }
         throw Error(this.errorSyntax + ': colonne invalide');
+    }
+
+    exchangeLetterArgVerifier(arg: string) {
+        for (let i = 0; i < arg.length - 1; i++) {
+            if (arg[i] === arg[i].toUpperCase()) {
+                throw Error('les paramètres sont invalides');
+            }
+        }
     }
 
     private isNumeric(value: string) {
