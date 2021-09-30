@@ -3,15 +3,13 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-const MILLISECONDS_IN_A_SECOND = 1000;
-
+const MILISECONDS_IN_MINUTE = 60000;
 @Component({
     selector: 'app-info-box',
     templateUrl: './info-box.component.html',
     styleUrls: ['./info-box.component.scss'],
 })
 export class InfoBoxComponent implements OnInit {
-    static millisecondsInASecond = MILLISECONDS_IN_A_SECOND;
     timeLeft$: Observable<number | undefined>;
     info: GameInfoService;
 
@@ -25,9 +23,18 @@ export class InfoBoxComponent implements OnInit {
                 if (value === undefined) {
                     return;
                 }
-                return value / InfoBoxComponent.millisecondsInASecond;
+                return value;
             }),
         );
+    }
+    timerIsLessOneMinute(timeLeft: number | null | undefined): boolean {
+        if (timeLeft === null || timeLeft === undefined) {
+            return true;
+        }
+        if (timeLeft < MILISECONDS_IN_MINUTE) {
+            return true;
+        }
+        return false;
     }
 
     showWinner(): string {
