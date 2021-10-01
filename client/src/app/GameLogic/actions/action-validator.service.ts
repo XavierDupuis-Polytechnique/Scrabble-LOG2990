@@ -15,6 +15,51 @@ import { placementSettingsToString } from '@app/GameLogic/utils';
 })
 export class ActionValidatorService {
     constructor(private board: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
+
+    sendActionArgsMessage(action: Action) {
+        if (action instanceof PlaceLetter) {
+            this.sendPlaceLetterMessage(action);
+        }
+
+        if (action instanceof ExchangeLetter) {
+            this.sendExchangeLetterMessage(action);
+        }
+
+        if (action instanceof PassTurn) {
+            this.sendPassTurnMessage(action);
+        }
+    }
+
+    sendPlaceLetterMessage(action: PlaceLetter) {
+        const playerName = action.player.name;
+        const placementSettings = action.placement;
+        const placementString = placementSettingsToString(placementSettings);
+        const word = action.word;
+        const content = `${playerName} place le mot ${word} en ${placementString}`;
+        this.sendSystemMessage(content);
+    }
+
+    sendExchangeLetterMessage(action: ExchangeLetter) {
+        const letters = action.lettersToExchange;
+        const playerName = action.player.name;
+        const userName = this.gameInfo.user.name;
+        if (playerName !== userName) {
+            const nLetters = letters.length;
+            const playerMessageContent = `${playerName} échange ${nLetters} lettres`;
+            this.sendSystemMessage(playerMessageContent);
+            return;
+        }
+        const chars = letters.map((letter) => letter.char);
+        const userMessageContent = `${userName} échange les lettres ${chars}`;
+        this.sendSystemMessage(userMessageContent);
+    }
+
+    sendPassTurnMessage(action: PassTurn) {
+        const playerName = action.player.name;
+        const content = `${playerName} passe son tour`;
+        this.sendSystemMessage(content);
+    }
+
     sendAction(action: Action) {
         const actionValid = this.validateAction(action);
         if (actionValid) {
@@ -80,10 +125,10 @@ export class ActionValidatorService {
                 if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                            wordCurrentChar +
-                            '" ne peut être placé en ' +
-                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                            ++x,
+                        wordCurrentChar +
+                        '" ne peut être placé en ' +
+                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                        ++x,
                     );
                     return false;
                 }
@@ -199,50 +244,6 @@ export class ActionValidatorService {
             }
         }
         return false;
-    }
-
-    private sendActionArgsMessage(action: Action) {
-        if (action instanceof PlaceLetter) {
-            this.sendPlaceLetterMessage(action);
-        }
-
-        if (action instanceof ExchangeLetter) {
-            this.sendExchangeLetterMessage(action);
-        }
-
-        if (action instanceof PassTurn) {
-            this.sendPassTurnMessage(action);
-        }
-    }
-
-    private sendPlaceLetterMessage(action: PlaceLetter) {
-        const playerName = action.player.name;
-        const placementSettings = action.placement;
-        const placementString = placementSettingsToString(placementSettings);
-        const word = action.word;
-        const content = `${playerName} place le mot ${word} en ${placementString}`;
-        this.sendSystemMessage(content);
-    }
-
-    private sendExchangeLetterMessage(action: ExchangeLetter) {
-        const letters = action.lettersToExchange;
-        const playerName = action.player.name;
-        const userName = this.gameInfo.user.name;
-        if (playerName !== userName) {
-            const nLetters = letters.length;
-            const playerMessageContent = `${playerName} échange ${nLetters} lettres`;
-            this.sendSystemMessage(playerMessageContent);
-            return;
-        }
-        const chars = letters.map((letter) => letter.char);
-        const userMessageContent = `${userName} échange les lettres ${chars}`;
-        this.sendSystemMessage(userMessageContent);
-    }
-
-    private sendPassTurnMessage(action: PassTurn) {
-        const playerName = action.player.name;
-        const content = `${playerName} passe son tour`;
-        this.sendSystemMessage(content);
     }
 
     private sendErrorMessage(content: string) {
