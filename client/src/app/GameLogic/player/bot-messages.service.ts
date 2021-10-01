@@ -99,7 +99,7 @@ export class BotMessagesService {
     sendPlaceLetterMessage(pickedWord: string, placementSetting: PlacementSetting, name: string) {
         const placement = placementSettingsToString(placementSetting);
         const content = `${CommandType.Place} ${placement} ${pickedWord}`;
-        this.messagesService.receiveMessage(name, content);
+        this.messagesService.receiveMessageOpponent(name, content);
     }
 
     sendExchangeLettersMessage(letters: Letter[], name: string) {
@@ -109,11 +109,11 @@ export class BotMessagesService {
             lettersString = lettersString.concat(charToExchange);
         });
         const content = `${CommandType.Exchange} ${lettersString}`;
-        this.messagesService.receiveMessage(name, content);
+        this.messagesService.receiveMessageOpponent(name, content);
     }
 
     sendPassTurnMessage(name: string) {
         const content: string = CommandType.Pass;
-        this.messagesService.receiveMessage(name, content);
+        this.messagesService.receiveMessageOpponent(name, content);
     }
 }

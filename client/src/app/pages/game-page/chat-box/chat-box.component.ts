@@ -43,7 +43,7 @@ export class ChatBoxComponent implements AfterViewInit {
 
         const content = this.messageForm.value;
         const playerName = this.gameInfo.user.name;
-        this.messageService.receiveMessage(playerName, content);
+        this.messageService.receiveMessagePlayer(playerName, content);
 
         this.messageForm.reset();
         this.cdRef.detectChanges();

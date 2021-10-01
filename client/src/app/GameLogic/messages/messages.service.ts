@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
 
@@ -13,20 +14,6 @@ export class MessagesService {
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
     constructor(private commandParser: CommandParserService) {}
-
-    receiveMessage(forwarder: string, content: string) {
-        const message: Message = {
-            content,
-            from: forwarder,
-            type: MessageType.Player1,
-        };
-        this.addMessageToLog(message);
-        try {
-            this.commandParser.parse(content, forwarder);
-        } catch (e) {
-            this.receiveError(e as Error);
-        }
-    }
 
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
@@ -46,6 +33,45 @@ export class MessagesService {
         this.addMessageToLog(errorMessage);
     }
 
+    receiveMessagePlayer(forwarder: string, content: string) {
+        const message = {
+            content,
+            from: forwarder,
+            type: MessageType.Player1,
+        };
+
+        this.addMessageToLog(message);
+        try {
+            this.commandParser.parse(content, forwarder);
+        } catch (e) {
+            if (e instanceof Error) {
+                this.receiveError(e as Error);
+            }
+        }
+    }
+    receiveMessageOpponent(forwarder: string, content: string) {
+        console.log('asafdasdf');
+        const message = {
+            content,
+            from: forwarder,
+            type: MessageType.Player2,
+        };
+        this.addMessageToLog(message);
+        try {
+            const command = this.commandParser.parse(content, forwarder);
+            if (command === CommandType.Exchange) {
+                const hiddenLetters = content.split(' ');
+                const numberOfLetters = String(hiddenLetters[1].length);
+                message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
+                if (hiddenLetters.length > 1) {
+                    message.content += 's';
+                }
+            }
+        } catch (e) {
+            this.receiveError(e as Error);
+        }
+    }
+
     receiveError(error: Error) {
         const errorMessage = {
             content: error.message,
@@ -61,8 +87,8 @@ export class MessagesService {
     }
 
     private addMessageToLog(message: Message) {
-        const messageCopy = { ...message };
-        this.messagesLog.push(messageCopy);
+        // const messageCopy = { ...message };
+        this.messagesLog.push(message);
         this.messages$.next(this.messagesLog);
     }
 }

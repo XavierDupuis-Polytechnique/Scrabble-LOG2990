@@ -365,7 +365,7 @@ describe('BotMessagesService', () => {
         ];
         const action: Action = new ExchangeLetter(easyBot, letters);
         const spySendExchangeLettersMessage = spyOn(botMessage, 'sendExchangeLettersMessage').and.callThrough();
-        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
         botMessage.sendAction(action);
         const expected1 = [];
         expected1.push(letters);
@@ -376,7 +376,7 @@ describe('BotMessagesService', () => {
         expected2.push(`${CommandType.Exchange} ap*cuev`);
 
         const result1 = spySendExchangeLettersMessage.calls.first().args;
-        const result2 = spyReceiveMessage.calls.first().args;
+        const result2 = spyReceiveMessageOpponent.calls.first().args;
 
         expect(result1).toEqual(expected1);
         expect(result2).toEqual(expected2);
@@ -386,7 +386,7 @@ describe('BotMessagesService', () => {
         const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
         const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
-        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
 
         botMessage.sendAction(action);
 
@@ -400,7 +400,7 @@ describe('BotMessagesService', () => {
         expected2.push(`${CommandType.Place} ${'f6h'} ${'hello'}`);
 
         const result = spySendPlaceLetterMessage.calls.first().args;
-        const result2 = spyReceiveMessage.calls.first().args;
+        const result2 = spyReceiveMessageOpponent.calls.first().args;
 
         expect(result).toEqual(expected1);
         expect(result2).toEqual(expected2);
@@ -410,7 +410,7 @@ describe('BotMessagesService', () => {
         const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
         const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
-        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
         const spySendAlternativeWords = spyOn(botMessage, 'sendAlternativeWords');
         const command = {
             type: CommandType.Debug,
@@ -432,7 +432,7 @@ describe('BotMessagesService', () => {
         expected3.push(easyBot.validWordList);
 
         const result = spySendPlaceLetterMessage.calls.first().args;
-        const result2 = spyReceiveMessage.calls.first().args;
+        const result2 = spyReceiveMessageOpponent.calls.first().args;
         const result3 = spySendAlternativeWords.calls.first().args;
 
         expect(result).toEqual(expected1);
