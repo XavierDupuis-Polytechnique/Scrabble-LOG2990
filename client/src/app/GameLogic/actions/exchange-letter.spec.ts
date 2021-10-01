@@ -1,7 +1,6 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -21,7 +20,7 @@ describe('ExchangeLetter', () => {
             new TimerService(),
             new PointCalculatorService(boardService),
             boardService,
-            new MessagesService(new CommandParserService(), new GameInfoService(new TimerService())),
+            new MessagesService(new CommandParserService()),
         );
         game.players[0] = player;
         game.start();

@@ -214,7 +214,7 @@ export class ActionValidatorService {
         const players = this.gameInfo.players;
         if (player === players[0].name) {
             this.messageService.receiveMessagePlayer(player, content);
-        } else {
+        } else if (player === players[1].name) {
             this.messageService.receiveMessageOpponent(player, content);
         }
     }
