@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { Bot } from '@app/GameLogic/player/bot';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -19,6 +20,7 @@ export class BotCreatorService {
         private pointCalculatorService: PointCalculatorService,
         private wordSearcher: WordSearcher,
         private botMessage: BotMessagesService,
+        private commandeExecuter: CommandExecuterService,
     ) {}
     createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
@@ -29,6 +31,7 @@ export class BotCreatorService {
                 this.pointCalculatorService,
                 this.wordSearcher,
                 this.botMessage,
+                this.commandeExecuter,
             );
         } else {
             return new EasyBot(
@@ -38,6 +41,7 @@ export class BotCreatorService {
                 this.pointCalculatorService,
                 this.wordSearcher,
                 this.botMessage,
+                this.commandeExecuter,
             );
         }
     }

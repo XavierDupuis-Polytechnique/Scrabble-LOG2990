@@ -1,6 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
+import { NewlinePipe } from '@app/components/newline-pipe/newline.pipe';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -24,6 +25,7 @@ export class ChatBoxComponent implements AfterViewInit {
     ]);
 
     private boldPipe = new BoldPipe();
+    private newlinePipe = new NewlinePipe();
 
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef, private gameInfo: GameInfoService) {}
 
@@ -62,7 +64,10 @@ export class ChatBoxComponent implements AfterViewInit {
     }
 
     generateMessageHTML(message: Message) {
-        const transformedContent = this.boldPipe.transform(message.content);
+        let transformedContent = message.content;
+        transformedContent = this.boldPipe.transform(transformedContent);
+        transformedContent = this.newlinePipe.transform(transformedContent);
+
         return message.from + ': ' + transformedContent;
     }
 }

@@ -1,20 +1,30 @@
 import { TestBed } from '@angular/core/testing';
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { Observable, Subject } from 'rxjs';
 import { CommandExecuterService } from './command-executer.service';
 
 describe('CommandExecuterService', () => {
     let service: CommandExecuterService;
     let messageServiceSpy: jasmine.SpyObj<MessagesService>;
     let actionCompilerServiceSpy: jasmine.SpyObj<ActionCompilerService>;
+    let gameManager: jasmine.SpyObj<GameManagerService>;
+    // let gameManager: GameManagerService;
+
+    let mockNewGame$: Subject<void>;
 
     beforeEach(() => {
-        messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'receiveMessage']);
+        messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'receiveMessage', 'clearLog']);
         actionCompilerServiceSpy = jasmine.createSpyObj('ActionCompilerService', ['translate']);
+        gameManager = jasmine.createSpyObj('GameManagerService', ['startGame', 'stopGame'], ['newGame$']);
+        mockNewGame$ = new Subject<void>();
+        (Object.getOwnPropertyDescriptor(gameManager, 'newGame$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockNewGame$);
         TestBed.configureTestingModule({
             providers: [
                 CommandExecuterService,
+                { provide: GameManagerService, useValue: gameManager },
                 { provide: MessagesService, useValue: messageServiceSpy },
                 { provide: ActionCompilerService, useValue: actionCompilerServiceSpy },
             ],
@@ -85,5 +95,16 @@ describe('CommandExecuterService', () => {
             service.execute(notDebugCommand);
         }
         expect(messageServiceSpy.receiveSystemMessage.calls.count()).toBe(0);
+    });
+
+    it('should reset debug on newGame', () => {
+        const command: Command = {
+            from: 'asdfg',
+            type: CommandType.Debug,
+        };
+        service.execute(command);
+        service.resetDebug();
+        expect(service.isDebugModeActivated).toBeFalsy();
+        gameManager.stopGame();
     });
 });
