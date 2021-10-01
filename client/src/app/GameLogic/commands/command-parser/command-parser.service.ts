@@ -16,7 +16,6 @@ import { Observable, Subject } from 'rxjs';
 export class CommandParserService {
     private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
-
     get parsedCommand$(): Observable<Command> {
         return this.command$;
     }
@@ -30,7 +29,7 @@ export class CommandParserService {
         this.command$.next(command);
     }
 
-    parse(message: string, from: string): boolean {
+    parse(message: string, from: string): CommandType | boolean {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
@@ -48,7 +47,7 @@ export class CommandParserService {
                 }
                 const command = this.createCommand(from, args, commandCondition as CommandType);
                 this.sendCommand(command);
-                return true;
+                return commandCondition as CommandType;
             }
             const errorContent = commandCondition + ' est une entrée invalide';
             throw Error(errorContent);
@@ -102,8 +101,14 @@ export class CommandParserService {
     }
 
     exchangeLetterArgVerifier(arg: string) {
-        if (arg.length > RACK_LETTER_COUNT) {
-            throw Error("Commande impossible à réaliser: une des lettres demandée n'est pas dans le rack");
+        let rackLetters = arg;
+        while (rackLetters.length !== 0) {
+            const letter = rackLetters[0];
+            if (rackLetters.split(letter).length - 1 > RACK_LETTER_COUNT) {
+                throw Error("Commande impossible à réaliser: une lettre a le droit d'être échanger un maximum de 7 fois par tour");
+            }
+            const re = new RegExp(letter, 'g');
+            rackLetters = rackLetters.replace(re, '');
         }
         for (let i = 0; i < arg.length - 1; i++) {
             if (arg[i] === arg[i].toUpperCase()) {

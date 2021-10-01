@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic//game/game-info/game-info.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { BehaviorSubject } from 'rxjs';
+import { CommandType } from '../commands/command.interface';
 import { Message, MessageType } from './message.interface';
 @Injectable({
     providedIn: 'root',
@@ -27,7 +28,6 @@ export class MessagesService {
             this.receiveSystemMessage('Message envoyé par un joueur inconnu');
             return;
         }
-
         const message = {
             content,
             from: forwarder,
@@ -35,7 +35,15 @@ export class MessagesService {
         };
 
         try {
-            this.commandParser.parse(content, forwarder);
+            const command = this.commandParser.parse(content, forwarder);
+            if (command === CommandType.Exchange && messageType === MessageType.Player2) {
+                const hiddenLetters = content.split(' ');
+                const numberOfLetters = String(hiddenLetters[1].length);
+                message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
+                if (hiddenLetters.length > 1) {
+                    message.content += 's';
+                }
+            }
             this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {

@@ -14,11 +14,13 @@ describe('CommandParser', () => {
     const syntaxError5 = 'erreur de syntax: direction invalide';
     const syntaxError6 = 'erreur de syntax: les paramètres sont invalides';
     const syntaxError7 = 'erreur de syntax: colonne invalide';
+
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(commandParserService.CommandParserService);
         message = { content: '!placer a1v allo', from: 'player', type: MessageType.Player1 };
     });
+
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
@@ -172,5 +174,40 @@ describe('CommandParser', () => {
     it('should be return true', () => {
         message.content = '!placer a1v allo';
         expect(service.parse(message.content, message.from)).toBeTruthy();
+    });
+
+    it('should be return true as the args are valid ', () => {
+        message.content = '!échanger abc';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toEqual(true);
+    });
+
+    it("should throw error 'les parametre sont invalide as' upperCases are not accepted", () => {
+        message.content = '!échanger aBc';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toThrowError('les paramètres sont invalides');
+    });
+
+    it('should be true as 7 letters is the maximum', () => {
+        message.content = '!échanger aaaaaaaa';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toEqual(true);
+    });
+
+    it('should throw error as 7 letters is the maximum', () => {
+        message.content = '!échanger aaaaaaaaa';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toThrowError("Commande impossible à réaliser: une lettre a le droit d'être échanger un maximum de 7 fois par tour");
+    });
+
+    it('should throw error as 7 letters is the maximum', () => {
+        message.content = '!échanger baaaaaaaaac';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toThrowError("Commande impossible à réaliser: une lettre a le droit d'être échanger un maximum de 7 fois par tour");
     });
 });
