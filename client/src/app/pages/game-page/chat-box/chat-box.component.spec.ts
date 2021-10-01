@@ -1,11 +1,11 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { MessageType, Message } from '@app/GameLogic/messages/message.interface';
+import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';
 import { BehaviorSubject } from 'rxjs';
-
 import { ChatBoxComponent } from './chat-box.component';
 
 describe('ChatBoxComponent', () => {
@@ -55,5 +55,13 @@ describe('ChatBoxComponent', () => {
     it('should not send a message if message is not valid', () => {
         component.sendMessage();
         expect(messageServiceSpy.receiveMessage.calls.count()).toBe(0);
+    });
+
+    it('should change color of number of character if it exceeds limit', () => {
+        const maxCharPlusOne = 514;
+        expect(fixture.debugElement.query(By.css('#red'))).toBeNull();
+        component.isError(maxCharPlusOne);
+        fixture.detectChanges();
+        expect(fixture.debugElement.query(By.css('#red'))).toBeDefined();
     });
 });
