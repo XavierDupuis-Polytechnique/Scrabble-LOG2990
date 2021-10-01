@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -28,6 +29,7 @@ export class GameManagerService {
         private info: GameInfoService,
         private messageService: MessagesService,
         private boardService: BoardService,
+        private commandExecuter: CommandExecuterService,
     ) {}
 
     createGame(gameSettings: GameSettings): void {
@@ -46,7 +48,6 @@ export class GameManagerService {
         if (!this.game) {
             throw Error('No game created yet');
         }
-        this.newGameSubject.next();
         this.game.start();
     }
 
@@ -54,6 +55,7 @@ export class GameManagerService {
         this.timer.stop();
         this.game = {} as Game;
         this.messageService.clearLog();
+        this.commandExecuter.resetDebug();
     }
     // Change botDifficulty
     private createPlayers(playerName: string, botDifficulty: string): Player[] {

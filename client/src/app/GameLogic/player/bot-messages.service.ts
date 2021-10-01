@@ -38,7 +38,6 @@ export const placementSettingsToString = (placement: PlacementSetting): string =
     const directionString = direction.toLowerCase();
     return `${row}${col}${directionString}`;
 };
-
 @Injectable({
     providedIn: 'root',
 })
