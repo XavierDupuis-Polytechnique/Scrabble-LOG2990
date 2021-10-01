@@ -381,6 +381,30 @@ describe('BotMessagesService', () => {
         expect(result2).toEqual(expected2);
     });
 
+    it('should sendAction of type PlaceLetter', () => {
+        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
+        const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
+        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+
+        botMessage.sendAction(action);
+
+        const expected1: (string | PlacementSetting)[] = [];
+        expected1.push('hello');
+        expected1.push(placement);
+        expected1.push(easyBot.name);
+
+        const expected2: string[] = [];
+        expected2.push(easyBot.name);
+        expected2.push(`${CommandType.Place} ${'f6h'} ${'hello'}`);
+
+        const result = spySendPlaceLetterMessage.calls.first().args;
+        const result2 = spyReceiveMessage.calls.first().args;
+
+        expect(result).toEqual(expected1);
+        expect(result2).toEqual(expected2);
+    });
+
     it('should sendAction of type PlaceLetter with debug active', () => {
         const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
