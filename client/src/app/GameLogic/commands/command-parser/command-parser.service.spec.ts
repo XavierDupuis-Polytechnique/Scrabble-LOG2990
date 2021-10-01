@@ -46,11 +46,11 @@ describe('CommandParser', () => {
         }).toThrowError('!manger est une entrée invalide');
     });
 
-    it('should be return true', () => {
+    it('should be true', () => {
         expect(service.parse(message.content, message.from)).toBeTruthy();
     });
 
-    it('should be return true', () => {
+    it('should return !debug', () => {
         message.content = '!debug';
         expect(service.parse(message.content, message.from)).toBe(CommandType.Debug);
     });
@@ -81,7 +81,7 @@ describe('CommandParser', () => {
         }).toThrowError(syntaxError3);
     });
 
-    it('should be return true', () => {
+    it('testArg should be equal to expectedArg', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
         expect(service.placeLetterFormatter(testArg)).toEqual(expectedArg);
