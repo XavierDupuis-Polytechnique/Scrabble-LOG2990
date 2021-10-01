@@ -9,9 +9,12 @@
 
 mat-toolbar {
     display: flex;
-    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: transparent;
 }
 
-#title {
-    margin: 2%;
+.title {
+    padding-left: 2%;
+    color: white;
 }

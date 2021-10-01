@@ -103,8 +103,7 @@ describe('CommandExecuterService', () => {
             type: CommandType.Debug,
         };
         service.execute(command);
-        expect(service.isDebugModeActivated).toBeTruthy();
-        mockNewGame$.next();
+        service.resetDebug();
         expect(service.isDebugModeActivated).toBeFalsy();
         gameManager.stopGame();
     });

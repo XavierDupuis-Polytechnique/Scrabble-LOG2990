@@ -16,14 +16,14 @@ const MAX_MESSAGE_LENGTH = 512;
 })
 export class ChatBoxComponent implements AfterViewInit {
     // Avoir une autre fonction linker/binder aver le placement etc...
-    @ViewChild('chat') chat: ElementRef;
+    @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
 
     messageForm: FormControl = new FormControl('', [
         Validators.required,
         Validators.maxLength(MAX_MESSAGE_LENGTH),
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
-
+    readonly maxMessageLength = MAX_MESSAGE_LENGTH;
     private boldPipe = new BoldPipe();
     private newlinePipe = new NewlinePipe();
 
@@ -56,6 +56,13 @@ export class ChatBoxComponent implements AfterViewInit {
 
     get messageValid(): boolean {
         return this.messageForm.valid;
+    }
+
+    isError(length: number) {
+        if (length > this.maxMessageLength) {
+            return true;
+        }
+        return false;
     }
 
     scrollDownChat() {
