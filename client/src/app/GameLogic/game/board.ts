@@ -1,5 +1,5 @@
+import { BOARD_DIMENSION, EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Tile } from './tile';
-export const NUM_TILES = 15;
 export const ASCII_CODE = 65;
 interface BoardSettingPosition {
     x: number;
@@ -99,10 +99,11 @@ export class Board {
     grid: Tile[][];
     constructor() {
         this.grid = [];
-        for (let i = 0; i < NUM_TILES; i++) {
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
             this.grid[i] = [];
-            for (let j = 0; j < NUM_TILES; j++) {
+            for (let j = 0; j < BOARD_DIMENSION; j++) {
                 this.grid[i][j] = new Tile();
+                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
             }
         }
 
@@ -113,5 +114,12 @@ export class Board {
         letterMultiplicator.forEach((elem) => {
             this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
         });
+    }
+    desactivateLetterMultiplicator(x: number, y: number) {
+        this.grid[y][x].letterMultiplicator = 1;
+    }
+
+    desactivateWordMultiplicator(x: number, y: number) {
+        this.grid[y][x].wordMultiplicator = 1;
     }
 }

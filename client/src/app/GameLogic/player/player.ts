@@ -18,14 +18,8 @@ export abstract class Player {
             this.name = name;
         }
     }
-
     play(action: Action) {
         this.action$.next(action);
-    }
-
-    // TODO: log into message service
-    displayGameLetters(): void {
-        console.log(this.letterRack);
     }
 
     getLettersFromRack(mockLetters: Letter[]): Letter[] {
@@ -87,6 +81,14 @@ export abstract class Player {
         }
     }
 
+    printLetterRack(): string {
+        let letterRackString = '';
+        for (const letter of this.letterRack) {
+            letterRackString += letter.char + ',';
+        }
+        return letterRackString.slice(0, letterRackString.length - 1);
+    }
+
     get isLetterRackEmpty(): boolean {
         return this.letterRack.length === 0;
     }
@@ -94,4 +96,6 @@ export abstract class Player {
     get isLetterRackFull(): boolean {
         return this.letterRack.length === LetterBag.playerLetterCount;
     }
+
+    abstract setActive(): void;
 }

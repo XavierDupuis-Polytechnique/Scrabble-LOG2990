@@ -1,10 +1,9 @@
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { LetterCreator } from './letter-creator';
 import { Letter } from './letter.interface';
 
-const PLAYER_LETTER_COUNT = 7;
-
 export class LetterBag {
-    static readonly playerLetterCount = PLAYER_LETTER_COUNT;
+    static readonly playerLetterCount = RACK_LETTER_COUNT;
 
     gameLetters: Letter[] = [];
     private letterCreator: LetterCreator = new LetterCreator();
@@ -26,13 +25,11 @@ export class LetterBag {
         return this.drawGameLetters(LetterBag.playerLetterCount);
     }
 
-    drawGameLetters(count: number = 1): Letter[] {
-        if (count > this.gameLetters.length) {
-            throw new Error('Not enough GameLetters in bag (' + this.gameLetters.length + ') to draw ' + count + ' GameLetters.');
-        }
+    drawGameLetters(numberOfLetterDesired: number = 1): Letter[] {
+        const numberOfLetterToDraw = Math.min(numberOfLetterDesired, this.gameLetters.length);
         const drawedGameLetters: Letter[] = [];
         let drawedGameLetterIndex = -1;
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < numberOfLetterToDraw; i++) {
             drawedGameLetterIndex = this.getRandomInt(this.gameLetters.length);
             drawedGameLetters.push(this.gameLetters.splice(drawedGameLetterIndex, 1)[0]);
         }

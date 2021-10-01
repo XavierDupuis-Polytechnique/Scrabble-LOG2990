@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { Bot } from '@app/GameLogic/player/bot';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BoardService } from '@app/services/board.service';
-import { Bot } from './bot';
 import { EasyBot } from './easy-bot';
 import { HardBot } from './hard-bot';
 
@@ -10,12 +14,35 @@ import { HardBot } from './hard-bot';
 })
 // TODO: Change name to botCreator
 export class BotCreatorService {
-    constructor(private boardService: BoardService, private dictionaryService: DictionaryService) {}
+    constructor(
+        private boardService: BoardService,
+        private dictionaryService: DictionaryService,
+        private pointCalculatorService: PointCalculatorService,
+        private wordSearcher: WordSearcher,
+        private botMessage: BotMessagesService,
+        private commandeExecuter: CommandExecuterService,
+    ) {}
     createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
-            return new HardBot(playerName, this.boardService, this.dictionaryService);
+            return new HardBot(
+                playerName,
+                this.boardService,
+                this.dictionaryService,
+                this.pointCalculatorService,
+                this.wordSearcher,
+                this.botMessage,
+                this.commandeExecuter,
+            );
         } else {
-            return new EasyBot(playerName, this.boardService, this.dictionaryService);
+            return new EasyBot(
+                playerName,
+                this.boardService,
+                this.dictionaryService,
+                this.pointCalculatorService,
+                this.wordSearcher,
+                this.botMessage,
+                this.commandeExecuter,
+            );
         }
     }
 }

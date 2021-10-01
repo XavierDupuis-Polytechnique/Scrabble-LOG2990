@@ -1,12 +1,9 @@
-import { Component, Inject } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DEFAULT_TIME_PER_TURN, MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 
-const MAX_NAME_LENGTH = 50;
-const MIN_NAME_LENGTH = 3;
-
-export const DEFAULT_TIME_PER_TURN = 60000;
 const MIN_TIME_PER_TURN = 30000;
 const MAX_TIME_PER_TURN = 300000;
 const STEP_TIME_PER_TURN = 30000;
@@ -17,7 +14,7 @@ const NO_WHITE_SPACE_RGX = /^\S*$/;
     templateUrl: './new-solo-game-form.component.html',
     styleUrls: ['./new-solo-game-form.component.scss'],
 })
-export class NewSoloGameFormComponent {
+export class NewSoloGameFormComponent implements AfterContentChecked {
     soloGameSettingsForm = new FormGroup({
         playerName: new FormControl('', [
             Validators.required,
@@ -37,8 +34,15 @@ export class NewSoloGameFormComponent {
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
 
-    constructor(@Inject(MAT_DIALOG_DATA) public data: GameSettings, private dialogRef: MatDialogRef<NewSoloGameFormComponent>) {}
+    constructor(
+        @Inject(MAT_DIALOG_DATA) public data: GameSettings,
+        private dialogRef: MatDialogRef<NewSoloGameFormComponent>,
+        private cdref: ChangeDetectorRef,
+    ) {}
 
+    ngAfterContentChecked() {
+        this.cdref.detectChanges();
+    }
     playGame(): void {
         this.dialogRef.close(this.soloGameSettingsForm.value);
     }

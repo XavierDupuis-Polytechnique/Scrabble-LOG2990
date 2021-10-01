@@ -3,6 +3,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
@@ -52,6 +53,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         LeaderboardComponent,
         HeaderBarComponent,
         TileComponent,
+        BoldPipe,
     ],
     imports: [
         AppMaterialModule,

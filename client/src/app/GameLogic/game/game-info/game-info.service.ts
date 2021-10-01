@@ -56,7 +56,7 @@ export class GameInfoService {
         }
     }
 
-    get timeLeftForTurn(): Observable<number> {
+    get timeLeftForTurn(): Observable<number | undefined> {
         return this.timer.timeLeft$;
     }
 
@@ -66,5 +66,16 @@ export class GameInfoService {
         } else {
             throw new Error('No Game in GameInfo');
         }
+    }
+
+    get isEndOfGame(): boolean {
+        if (this.game.isEndOfGame()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    get winner(): Player[] {
+        return this.game.getWinner();
     }
 }

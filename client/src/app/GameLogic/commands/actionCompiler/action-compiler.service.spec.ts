@@ -4,6 +4,8 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { User } from '@app/GameLogic/player/user';
 
 // TODO: implement MockGameService
 // class MockGameInfoService {
@@ -15,15 +17,17 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 // {provide: GameInfoService, useClass: MockGameService}
 describe('ActionCompilerService', () => {
     let service: ActionCompilerService;
+    let gameInfo: GameInfoService;
     // let gameInfoService: GameInfoService;
     // let user: User;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [ActionCompilerService],
+            providers: [ActionCompilerService, GameInfoService],
         });
         service = TestBed.inject(ActionCompilerService);
-
-        // user = new User('Hello World!');
+        gameInfo = TestBed.inject(GameInfoService);
+        gameInfo.user = new User('p1');
+        gameInfo.players = [gameInfo.user];
     });
 
     it('should be created', () => {
@@ -31,7 +35,10 @@ describe('ActionCompilerService', () => {
     });
 
     it('should throw error when given not action command', () => {
-        const notActionCommands: Command[] = [{ type: CommandType.Debug }, { type: CommandType.Help }];
+        const notActionCommands: Command[] = [
+            { type: CommandType.Debug, from: ' ' },
+            { type: CommandType.Help, from: ' ' },
+        ];
         for (const notActionCommand of notActionCommands) {
             expect(() => {
                 service.translate(notActionCommand);
@@ -42,6 +49,7 @@ describe('ActionCompilerService', () => {
     it('should create PassTurn object', () => {
         const command: Command = {
             type: CommandType.Pass,
+            from: 'p1',
         };
         expect(service.translate(command)).toBeInstanceOf(PassTurn);
     });
@@ -50,6 +58,7 @@ describe('ActionCompilerService', () => {
         const command: Command = {
             type: CommandType.Exchange,
             args: ['A', 'B', 'C'],
+            from: 'p1',
         };
         expect(service.translate(command)).toBeInstanceOf(ExchangeLetter);
     });
@@ -57,23 +66,37 @@ describe('ActionCompilerService', () => {
     it('should create PlaceLetter object', () => {
         const command: Command = {
             type: CommandType.Place,
-            args: ['A', 'B', 'C'],
+            args: ['a', '1', 'h', 'abc'],
+            from: 'p1',
         };
         expect(service.translate(command)).toBeInstanceOf(PlaceLetter);
     });
 
-    it('#createExchangeLetter should throw error when invalid command exchange', () => {
+    it('should throw error when invalid number of args for PlaceLetter object', () => {
         const invalidCommand: Command = {
-            type: CommandType.Exchange,
+            type: CommandType.Place,
+            args: ['a', '1', 'h'],
+            from: ' ',
         };
         expect(() => {
             service.translate(invalidCommand);
         }).toThrowError();
     });
 
-    it('#createExchangeLetter should throw error when invalid command place', () => {
+    it('should throw error when invalid command exchange', () => {
+        const invalidCommand: Command = {
+            type: CommandType.Exchange,
+            from: ' ',
+        };
+        expect(() => {
+            service.translate(invalidCommand);
+        }).toThrowError();
+    });
+
+    it('should throw error when invalid command place', () => {
         const invalidCommand: Command = {
             type: CommandType.Place,
+            from: ' ',
         };
         expect(() => {
             service.translate(invalidCommand);

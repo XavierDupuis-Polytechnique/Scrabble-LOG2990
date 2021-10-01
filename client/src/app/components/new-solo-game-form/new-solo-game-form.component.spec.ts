@@ -1,12 +1,17 @@
 /* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { NewSoloGameFormComponent } from './new-solo-game-form.component';
 
 describe('NewSoloGameFormComponent', () => {
     let component: NewSoloGameFormComponent;
     let fixture: ComponentFixture<NewSoloGameFormComponent>;
 
+    const mockDialog = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        close: () => {},
+    };
     beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [MatDialogModule],
@@ -15,7 +20,7 @@ describe('NewSoloGameFormComponent', () => {
                     provide: MAT_DIALOG_DATA,
                     useValue: {},
                 },
-                { provide: MatDialogRef, useValue: {} },
+                { provide: MatDialogRef, useValue: mockDialog },
             ],
             declarations: [NewSoloGameFormComponent],
         }).compileComponents();
@@ -29,5 +34,70 @@ describe('NewSoloGameFormComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('cancel', () => {
+        const dom = fixture.nativeElement as HTMLElement;
+        const buttons = dom.querySelectorAll('button');
+        spyOn(component, 'cancel');
+        buttons[0].click();
+        expect(component.cancel).toHaveBeenCalled();
+    });
+
+    it('play not responsive when form not complete', () => {
+        const dom = fixture.nativeElement as HTMLElement;
+        const buttons = dom.querySelectorAll('button');
+        const spy = spyOn(component, 'playGame');
+        buttons[1].click();
+        expect(spy.calls.count()).toBe(0);
+    });
+
+    it('play should call playGame when form complete', () => {
+        const dom = fixture.nativeElement as HTMLElement;
+        const buttons = dom.querySelectorAll('button');
+
+        component.soloGameSettingsForm.setValue({
+            playerName: 'samuel',
+            adversaryDifficulty: 'easy',
+            timePerTurn: 60000,
+        });
+        component.soloGameSettingsForm.updateValueAndValidity();
+        fixture.detectChanges();
+        spyOn(component, 'playGame');
+        buttons[1].click();
+        fixture.detectChanges();
+        expect(component.playGame).toHaveBeenCalled();
+    });
+
+    it('setting should return group form value', () => {
+        const setting = {
+            playerName: 'samuel',
+            adversaryDifficulty: 'easy',
+            timePerTurn: 60000,
+        };
+        component.soloGameSettingsForm.setValue(setting);
+        expect(component.settings).toEqual(setting);
+    });
+
+    it('playGame should close the dialog', () => {
+        spyOn(mockDialog, 'close');
+        component.playGame();
+        expect(mockDialog.close).toHaveBeenCalled();
+    });
+    it('cancel should close the dialog and reset form', () => {
+        const setting = {
+            playerName: 'samuel',
+            adversaryDifficulty: 'easy',
+            timePerTurn: 60000,
+        };
+        component.soloGameSettingsForm.setValue(setting);
+        spyOn(mockDialog, 'close');
+        component.cancel();
+        expect(mockDialog.close).toHaveBeenCalled();
+        expect(component.settings).toEqual({
+            playerName: '',
+            adversaryDifficulty: '',
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+        });
     });
 });

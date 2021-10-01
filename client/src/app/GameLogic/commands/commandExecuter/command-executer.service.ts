@@ -23,11 +23,13 @@ export class CommandExecuterService {
         private actionValidator: ActionValidatorService,
         private messageService: MessagesService,
     ) {
-        console.log('command executer is created');
         this.commandParser.parsedCommand$.subscribe((command) => {
-            console.log('received command', command);
             this.execute(command);
         });
+    }
+
+    resetDebug() {
+        this.debugMode = false;
     }
 
     execute(command: Command) {
@@ -63,8 +65,9 @@ export class CommandExecuterService {
     }
 
     private sendAction(action: Action) {
+        // TODO : REMOVE TRY CATCH - Olivier
         try {
-            this.actionValidator.validateAction(action);
+            this.actionValidator.sendAction(action);
         } catch (e) {
             this.messageService.receiveError(e as Error);
         }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-// import { verify } from 'crypto';
 import { BehaviorSubject } from 'rxjs';
-import { Message } from './message.interface';
+import { Message, MessageType } from './message.interface';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -14,23 +14,27 @@ export class MessagesService {
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
     constructor(private commandParser: CommandParserService) {}
 
-    receiveMessage(message: Message) {
+    receiveMessage(forwarder: string, content: string) {
+        const message: Message = {
+            content,
+            from: forwarder,
+            type: MessageType.Player1,
+        };
+        this.addMessageToLog(message);
         try {
-            this.commandParser.parse(message);
-            this.addMessageToLog(message);
+            this.commandParser.parse(content, forwarder);
         } catch (e) {
             if (e instanceof Error) {
-                this.addMessageToLog(message);
                 this.receiveError(e as Error);
             }
         }
-        // TODO put command parser here
     }
 
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
             content,
             from: MessagesService.sysName,
+            type: MessageType.System,
         };
         this.addMessageToLog(systemMessage);
     }
@@ -39,6 +43,7 @@ export class MessagesService {
         const errorMessage = {
             content,
             from: MessagesService.sysErrorName,
+            type: MessageType.System,
         };
         this.addMessageToLog(errorMessage);
     }
@@ -47,6 +52,7 @@ export class MessagesService {
         const errorMessage = {
             content: error.message,
             from: MessagesService.sysErrorName,
+            type: MessageType.System,
         };
         this.addMessageToLog(errorMessage);
     }

@@ -1,41 +1,84 @@
+.bg-img {
+    background: url(/assets/img/game-bg.jpg) no-repeat center top;
+    background-size: 100vw 100vh;
+}
+
 .container {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 3fr 2fr 1fr;
+    grid-template-columns: 0.8fr 1fr 1fr 0.8fr;
+    grid-template-rows: 0.25fr 1.5fr 1.75fr 0.5fr;
     gap: 0px 0px;
     grid-template-areas:
-        'Player Board Board Board Board Info'
-        'Player Board Board Board Board Chat'
-        'Player Horse Horse Horse Horse Chat';
-    height: 100vmin;
+        'Img Img Img Img'
+        'Player Board Board Info'
+        'Actions Board Board Chat'
+        'Quitter Horse Horse Chat';
+}
+
+img {
+    grid-area: Img;
+}
+
+button {
+    padding: 2%;
 }
 
 app-info-box {
     grid-area: Info;
     padding: 1%;
+    padding-right: 2%;
 }
 
 app-chat-box {
     grid-area: Chat;
-    border-style: solid;
-    width: 100%;
-    overflow-wrap: anywhere;
-    word-break: normal;
+    padding: 1%;
+    padding-right: 2%;
 }
+
 app-board {
     grid-area: Board;
-    padding: 1%;
-    border: 2px solid black;
+    height: fit-content;
+    padding-top: 3%;
     min-width: 50vw;
 }
 
 app-horse {
     grid-area: Horse;
-    border: 1px solid grey;
-    margin: 1%;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
+
 app-player-info {
     grid-area: Player;
     padding: 1%;
-    border: 1px solid grey;
+    padding-left: 2%;
+}
+
+.actions {
+    grid-area: Actions;
+    display: flex;
+    justify-content: flex-start;
+    align-self: center;
+    padding: 1%;
+    button {
+        padding-left: 1%;
+        padding-right: 1%;
+        margin-left: 5%;
+    }
+}
+
+.abandonner {
+    grid-area: Quitter;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    align-items: center;
+    padding-left: 2%;
+
+    button {
+        width: 60%;
+        background-color: var(--red);
+    }
 }

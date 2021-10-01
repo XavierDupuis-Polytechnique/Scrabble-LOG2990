@@ -1,2 +1,17 @@
-<p>player-info works!</p>
-<button mat-raised-button color="primary" [routerLink]="['/home']" (click)="abandonner()">Abandonner la partie</button>
+<h1>Joueurs</h1>
+<div *ngFor="let player of info.players; index as i">
+    <mat-card
+        class="playerInfo"
+        id="{{ i }}"
+        [ngStyle]="{ 'box-shadow': player.name === info.activePlayer.name ? '1px 1px 5px 5px var(--active)' : '0px 0px 0px 0px' }"
+    >
+        <mat-card-header>
+            <span class="name">{{ player.name }} </span>
+        </mat-card-header>
+        <mat-divider inset></mat-divider>
+        <mat-card-content class="grid-container">
+            <span class="score"> {{ player.points }} points </span><br />
+            <span class="score" *ngIf="!player.isLetterRackFull"> {{ player.letterRack.length }} lettres restantes dans le chevalet </span>
+        </mat-card-content>
+    </mat-card>
+</div>
