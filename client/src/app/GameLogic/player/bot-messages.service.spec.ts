@@ -12,10 +12,11 @@ import { Letter } from '@app/GameLogic/game/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
-import { BotMessagesService, placementSettingsToString } from '@app/GameLogic/player/bot-messages.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { placementSettingsToString } from '@app/GameLogic/utils';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('BotMessagesService', () => {
