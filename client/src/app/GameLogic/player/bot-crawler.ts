@@ -1,5 +1,4 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Tile } from '@app/GameLogic/game/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Bot } from '@app/GameLogic/player/bot';
@@ -23,6 +22,7 @@ export class BotCrawler {
 
     botFirstTurn() {
         for (let rackIndex = 0; rackIndex < this.bot.letterRack.length; rackIndex++) {
+            if (this.bot.timesUp) break;
             const startingLetter = this.bot.letterRack[rackIndex].char.toLowerCase();
             if (startingLetter !== '*') {
                 const placedLetter: ValidWord[] = [];
@@ -47,6 +47,7 @@ export class BotCrawler {
     }
 
     boardCrawler(startingX: number, startingY: number, grid: Tile[][], isVerticalFlag: boolean) {
+        if (this.bot.timesUp) return;
         let x = startingX;
         let y = startingY;
         let isVertical = isVerticalFlag;
@@ -79,13 +80,12 @@ export class BotCrawler {
             return;
         } else if (isVertical && x === END_OF_BOARD) {
             return;
-        }
-        if (!isVertical && y < END_OF_BOARD) {
+        } else if (!isVertical && y < END_OF_BOARD) {
             x = START_OF_BOARD;
             y++;
             this.boardCrawler(x, y, grid, isVertical);
             return;
-        } else if (!isVertical && y === END_OF_BOARD) {
+        } else {
             x = START_OF_BOARD;
             y = START_OF_BOARD;
             isVertical = true;
@@ -272,12 +272,7 @@ export class BotCrawler {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
 
             for (const word of tmpWordList) {
-                const tmpLetterRack: Letter[] = [];
-
-                for (const letter of this.bot.letterRack) {
-                    tmpLetterRack.push(this.bot.letterCreator.createLetter(letter.char));
-                }
-                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, tmpLetterRack);
+                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, this.bot.letterRack);
                 if (wordToValidate !== 'false') {
                     possiblyValidWords.push(
                         new ValidWord(

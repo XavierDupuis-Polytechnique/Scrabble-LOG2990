@@ -1,23 +1,40 @@
-// import { Game } from '@app/GameLogic/game/games/game';
-// import { TimerService } from '@app/GameLogic/game/timer/timer.service';
-// import { HardBot } from '@app/GameLogic/player/hard-bot';
-// import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-// import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-// import { BoardService } from '@app/services/board.service';
+import { TestBed } from '@angular/core/testing';
+import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { HardBot } from '@app/GameLogic/player/hard-bot';
 
-// describe('HardBot', () => {
-//     let bot: HardBot;
-//     beforeEach(() => {
-//         const boardService = new BoardService();
-//         const dictionaryService = new DictionaryService();
-//         const pointCalculator = new PointCalculatorService(boardService);
-//         const timer = new TimerService();
-//         const TIME_PER_TURN = 10;
-//         const game = new Game(TIME_PER_TURN, timer, pointCalculator, boardService);
-//         bot = new HardBot('Tim', boardService, dictionaryService, game);
-//     });
+describe('HardBot', () => {
+    let hardBot: HardBot;
+    let botCreatorService: BotCreatorService;
 
-//     it('should create an instance', () => {
-//         expect(bot).toBeTruthy();
-//     });
-// });
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [BotCreatorService],
+        });
+        botCreatorService = TestBed.inject(BotCreatorService);
+        hardBot = botCreatorService.createBot('Jimmy', 'hard') as HardBot;
+    });
+
+    it('should create an instance', () => {
+        expect(hardBot).toBeTruthy();
+    });
+
+    it('setActive', () => {
+        hardBot.setActive();
+        expect().nothing();
+    });
+
+    it('playAction', () => {
+        hardBot.playAction();
+        expect().nothing();
+    });
+
+    it('exchangeAction', () => {
+        hardBot.exchangeAction();
+        expect().nothing();
+    });
+
+    it('passAction', () => {
+        hardBot.passAction();
+        expect().nothing();
+    });
+});
