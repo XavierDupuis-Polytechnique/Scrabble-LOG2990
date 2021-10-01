@@ -8,7 +8,6 @@ import { Tile } from '@app/GameLogic/game/tile';
 })
 export class TileComponent implements OnInit {
     @Input() tile: Tile = new Tile();
-
     class: string = '';
     multiplicatorType: string = '';
     numberMultiplicator: string = '';
