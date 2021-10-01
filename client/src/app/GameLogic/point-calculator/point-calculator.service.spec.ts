@@ -369,6 +369,7 @@ describe('PointCalculatorService', () => {
         ];
         game.activePlayer = player1;
         game.otherPlayer = player2;
+        game.players = [game.activePlayer, game.otherPlayer];
         expect(pointCalculator.placeLetterCalculation(action, listOfWord)).toBe(totalPointsOfWord);
         expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
         const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + pointCalculator.calculatePointsOfRack(game.otherPlayer);
