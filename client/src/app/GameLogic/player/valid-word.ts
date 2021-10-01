@@ -1,3 +1,4 @@
+import { PlaceLetterPointsEstimation } from '@app/GameLogic/point-calculator/calculation-estimation';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 
 export const VERTICAL = true;
@@ -16,6 +17,6 @@ export class ValidWord {
         public startingTileY: number = 0,
         public numberOfLettersPlaced: number = 0,
         public adjacentWords: Word[] = [],
-        public value: number = 0,
+        public value: PlaceLetterPointsEstimation = { isBingo: false, totalPoints: 0, wordsPoints: [] },
     ) {}
 }
