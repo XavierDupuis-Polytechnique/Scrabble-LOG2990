@@ -28,6 +28,10 @@ export class CommandExecuterService {
         });
     }
 
+    resetDebug() {
+        this.debugMode = false;
+    }
+
     execute(command: Command) {
         const type = command.type;
         if (type === CommandType.Debug) {

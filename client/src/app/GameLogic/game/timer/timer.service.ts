@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 const TIMER_STEP = 1000; // one second
 @Injectable({
@@ -8,7 +8,6 @@ const TIMER_STEP = 1000; // one second
 })
 export class TimerService {
     source: Observable<number>;
-    timeLeft: Observable<number>;
     readonly timePerStep: number = TIMER_STEP;
     private end$$: Subscription;
     private timeLeftSubject = new BehaviorSubject<number | undefined>(undefined);
@@ -19,7 +18,6 @@ export class TimerService {
 
         this.timeLeftSubject.next(interval);
         this.source = timer(TIMER_STEP, TIMER_STEP);
-        this.timeLeft = this.source.pipe(map((step) => interval - (step + 1) * this.timePerStep));
         this.end$$ = this.source.pipe(takeUntil(end$)).subscribe((step) => {
             const timeLeft = interval - (step + 1) * this.timePerStep;
             this.timeLeftSubject.next(timeLeft);

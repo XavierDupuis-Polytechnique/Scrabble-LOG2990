@@ -4,6 +4,7 @@ import { CommandParserService } from '@app/GameLogic/commands/command-parser/com
 import { BehaviorSubject } from 'rxjs';
 import { CommandType } from '../commands/command.interface';
 import { Message, MessageType } from './message.interface';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -47,7 +48,6 @@ export class MessagesService {
             this.addMessageToLog(message);
         } catch (e) {
             if (e instanceof Error) {
-                this.addMessageToLog(message);
                 this.receiveError(e as Error);
             }
         }

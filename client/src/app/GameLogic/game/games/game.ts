@@ -131,8 +131,10 @@ export class Game {
     }
 
     private displayLettersLeft() {
+        let message = 'Fin de partie - lettres restantes';
+        this.messagesService.receiveSystemMessage(message);
         for (const player of this.players) {
-            const message = `${player.name}: ${player.printLetterRack()}`;
+            message = `${player.name}: ${player.printLetterRack()}`;
             this.messagesService.receiveSystemMessage(message);
         }
     }
