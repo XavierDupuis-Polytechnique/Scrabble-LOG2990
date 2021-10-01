@@ -1,2 +1,4 @@
-<app-header-bar></app-header-bar>
 <router-outlet></router-outlet>
+<div class="preLoad" *ngFor="let image of images">
+    <img [src]="image" />
+</div>
