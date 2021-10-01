@@ -4,6 +4,7 @@
         <div
             *ngFor="let message of messages$ | async"
             [ngClass]="{ System: message.type === 'System', Player1: message.type === 'Player1', Player2: message.type === 'Player2' }"
+            [innerHTML]="generateMessageHTML(message)"
         >
             {{ message.from }} : {{ message.content }}
         </div>
