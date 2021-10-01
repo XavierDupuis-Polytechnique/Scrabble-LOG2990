@@ -57,6 +57,13 @@ describe('Game', () => {
         expect(game.isEndOfGame()).toBe(true);
     });
 
+    it('should not end game when letter bag is empty and one player rack not empty', () => {
+        game.start();
+        game.letterBag.gameLetters = [];
+        user1.letterRack = [{ char: 'J', value: 1 }];
+        expect(game.isEndOfGame()).toBe(false);
+    });
+
     it('on game end send message to system', () => {
         game.start();
         game.letterBag.gameLetters = [];
