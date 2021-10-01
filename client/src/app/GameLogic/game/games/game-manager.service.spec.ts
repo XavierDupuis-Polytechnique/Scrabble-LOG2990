@@ -31,6 +31,7 @@ describe('GameManagerService', () => {
         service.createGame(gameSettings);
         service.startGame();
         service.stopGame();
+        expect().nothing();
     });
 
     it('should not start new game if game exists', () => {

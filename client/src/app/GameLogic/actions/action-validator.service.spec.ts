@@ -7,7 +7,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, FIVE, RACK_LETTER_COUNT, TEN } from '@app/GameLogic/constants';
+import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, FIVE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT, TEN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -30,7 +30,7 @@ describe('ActionValidatorService', () => {
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let info: GameInfoService;
-    let messageService: MessagesService;
+    let messagesSpy: MessagesService;
     let wordSearcher: WordSearcher;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 
@@ -39,18 +39,19 @@ describe('ActionValidatorService', () => {
         constructor(readonly player: Player) {
             super(player);
         }
-        execute(/* game: Game*/): void {
+        execute(): void {
             throw new Error('Method not implemented.');
         }
-        protected perform(/* game: Game*/): void {
+        protected perform(): void {
             throw new Error('Method not implemented.');
         }
     }
 
     beforeEach(() => {
+        messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
         TestBed.configureTestingModule({
             providers: [
-                MessagesService,
+                { provide: MessagesService, useValue: messagesSpy },
                 CommandParserService,
                 PointCalculatorService,
                 BoardService,
@@ -66,7 +67,7 @@ describe('ActionValidatorService', () => {
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messageService);
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
         p1 = new User('p1');
         p2 = new User('p2');
         game.players.push(p1);
@@ -423,6 +424,44 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).not.toBeTruthy();
 
         expect(game.board.grid[0][beginPos + 3].letterObject.char).toBe(EMPTY_CHAR);
+    });
+    /// ////////////////// ///
+
+    /// ACTIONS SYSTEM/ERROR MESSAGES ///
+    it('should send correct message format for PassTurn action', () => {
+        const action = new PassTurn(currentPlayer);
+        service.sendActionArgsMessage(action);
+        const expected = currentPlayer.name + ' passe son tour';
+        expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
+    });
+
+    it('should send correct message format for ExchangeLetter action when the User plays', () => {
+        const self = currentPlayer;
+        info.receiveUser(self);
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
+        const chars = currentPlayer.letterRack.map((letter) => letter.char);
+        service.sendActionArgsMessage(action);
+        const expected = currentPlayer.name + ' échange les lettres ' + chars;
+        expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
+    });
+
+    it('should send correct message format for ExchangeLetter action when the opponent plays', () => {
+        const self = game.players[0] === currentPlayer ? game.players[1] : game.players[0];
+        info.receiveUser(self);
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
+        const chars = currentPlayer.letterRack.map((letter) => letter.char);
+        service.sendActionArgsMessage(action);
+        const expected = currentPlayer.name + ' échange ' + chars.length + ' lettres';
+        expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
+    });
+
+    it('should send correct message format for PlaceLetter action', () => {
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD };
+        const word = 'avion';
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
+        service.sendActionArgsMessage(action);
+        const expected = currentPlayer.name + ' place le mot ' + word + ' en h8v';
+        expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
     /// ////////////////// ///
 });

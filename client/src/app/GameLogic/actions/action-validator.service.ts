@@ -15,6 +15,21 @@ import { placementSettingsToString } from '@app/GameLogic/utils';
 })
 export class ActionValidatorService {
     constructor(private board: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
+
+    sendActionArgsMessage(action: Action) {
+        if (action instanceof PlaceLetter) {
+            this.sendPlaceLetterMessage(action);
+        }
+
+        if (action instanceof ExchangeLetter) {
+            this.sendExchangeLetterMessage(action);
+        }
+
+        if (action instanceof PassTurn) {
+            this.sendPassTurnMessage(action);
+        }
+    }
+
     sendAction(action: Action) {
         const actionValid = this.validateAction(action);
         if (actionValid) {
@@ -25,10 +40,6 @@ export class ActionValidatorService {
     }
 
     validateAction(action: Action): boolean {
-        if (!this.board.board.grid) {
-            return false;
-        }
-
         if (this.validateTurn(action)) {
             if (action instanceof PlaceLetter) {
                 return this.validatePlaceLetter(action as PlaceLetter);
@@ -80,10 +91,10 @@ export class ActionValidatorService {
                 if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                            wordCurrentChar +
-                            '" ne peut être placé en ' +
-                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                            ++x,
+                        wordCurrentChar +
+                        '" ne peut être placé en ' +
+                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                        ++x,
                     );
                     return false;
                 }
@@ -129,14 +140,7 @@ export class ActionValidatorService {
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
             this.sendErrorMessage(
-                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de' + RACK_LETTER_COUNT,
-            );
-            return false;
-        }
-
-        if (action.lettersToExchange.length > this.gameInfo.numberOfLettersRemaining) {
-            this.sendErrorMessage(
-                'Commande impossible à réaliser : La réserve ne contient pas assez de lettres pour en échanger ' + action.lettersToExchange.length,
+                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de ' + RACK_LETTER_COUNT,
             );
             return false;
         }
@@ -199,20 +203,6 @@ export class ActionValidatorService {
             }
         }
         return false;
-    }
-
-    private sendActionArgsMessage(action: Action) {
-        if (action instanceof PlaceLetter) {
-            this.sendPlaceLetterMessage(action);
-        }
-
-        if (action instanceof ExchangeLetter) {
-            this.sendExchangeLetterMessage(action);
-        }
-
-        if (action instanceof PassTurn) {
-            this.sendPassTurnMessage(action);
-        }
     }
 
     private sendPlaceLetterMessage(action: PlaceLetter) {
