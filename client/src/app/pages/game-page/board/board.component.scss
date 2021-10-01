@@ -1,47 +1,35 @@
-mat-grid-tile {
-    // background-color: rgb(224, 236, 245);
-    background-color: rgb(240, 231, 216);
-    // max-width: 1%; //TODO:fonctionne
-    max-height: 1%;
+mat-grid-list {
+    display: flex;
+    justify-content: space-evenly;
+    border: 10px solid var(--brown-choco);
+    border-radius: 0.3rem;
+    background-color: whitesmoke;
 }
+
+mat-grid-tile {
+    background-color: var(--bone);
+}
+
 app-tile {
     height: 100%;
     width: 100%;
 }
-mat-grid-list {
-    display: flex;
-    justify-content: center;
-    // border: 2px solid black;
+
+mat-slider {
+    width: 3%;
 }
-.Column {
-    // height: 70%;
-    display: grid;
-    grid-template-columns: 90% 10%;
-    grid-template-areas: 'Grid Zoom';
-}
+
 .boardContainer {
-    display: inherit;
-    // height: max-content;
-    //padding: 1%;
-    margin-left: 20%;
-    //margin-right: 15%;
     max-width: 66vmin;
-    // border: 10px solid rgb(56, 47, 36);
-    border: 10px solid var(--brown);
-    // background-color: rgb(95, 69, 44);
-    background-color: var(--white);
-    grid-area: Grid;
+    padding-left: 15%;
+    padding-right: 15%;
+    background-color: transparent;
 }
 .zoomPolice {
-    grid-area: Zoom;
-    justify-content: center;
-    text-align: center;
-    // font-size: 80%;
-    // margin-left: 75%;
-    // margin-top: 1%;
-    // width: 25%;
-    // height: 5%;
-    // border-radius: 3%;
-    // background-color: rgb(235, 235, 235);
-    // TODO : ajuster zoom
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 15%;
+    color: whitesmoke;
 }

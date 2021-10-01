@@ -1,6 +1,16 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: url(/assets/img/home-bg.jpg) no-repeat center top;
+    background-size: 100vw 100vh;
+}
 .justified {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    padding-top: 30vh;
     align-items: center;
+}
+button {
+    margin: 0.5%;
 }

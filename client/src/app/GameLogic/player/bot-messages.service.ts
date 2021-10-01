@@ -1,43 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
-import { BINGO_MESSAGE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, DEBUG_ALTERNATIVE_WORDS_COUNT, END_LINE } from '@app/GameLogic/constants';
+import { BINGO_MESSAGE, DEBUG_ALTERNATIVE_WORDS_COUNT, END_LINE } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Bot } from '@app/GameLogic/player/bot';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
-
-export const placementSettingsToString = (placement: PlacementSetting): string => {
-    const x = placement.x;
-    const y = placement.y;
-    const direction = placement.direction;
-    if (x < BOARD_MIN_POSITION || x > BOARD_MAX_POSITION) {
-        throw Error('X value not between 0-14');
-    }
-
-    if (y < BOARD_MIN_POSITION || y > BOARD_MAX_POSITION) {
-        throw Error('Y value not between 0-14');
-    }
-
-    if (!Object.values(Direction).includes(direction as Direction)) {
-        throw Error('Invalid direction');
-    }
-
-    const rowCode = 'a'.charCodeAt(0) + y;
-    const row = String.fromCharCode(rowCode);
-
-    const colNumber = x + 1;
-    const col = colNumber.toString();
-
-    const directionString = direction.toLowerCase();
-    return `${row}${col}${directionString}`;
-};
+import { placementSettingsToString } from '@app/GameLogic/utils';
 
 @Injectable({
     providedIn: 'root',

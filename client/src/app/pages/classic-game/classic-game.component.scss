@@ -1,20 +1,27 @@
-.justified {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.hidden {
-    display: none;
-}
-
 app-new-solo-game-form {
     z-index: 1;
     left: 35%;
     top: 15%;
-    width: 30%;
+    min-width: 40%;
     height: 55%;
     position: absolute;
     overflow: auto;
+}
+
+button {
+    margin: 0.5%;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: url(/assets/img/classic-bg.jpg) no-repeat center top;
+    background-size: 100vw 100vh;
+}
+.justified {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 30vh;
+    align-items: center;
 }

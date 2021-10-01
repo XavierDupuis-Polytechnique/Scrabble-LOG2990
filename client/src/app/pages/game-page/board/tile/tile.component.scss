@@ -1,15 +1,36 @@
 .letterX2 {
-    background-color: blue;
+    background-color: var(--powder-blue);
 }
 
 .letterX3 {
-    background-color: rgb(86, 140, 211);
+    background-color: var(--blue-munsell);
 }
 
 .wordX2 {
-    background-color: red;
+    background-color: var(--melon);
 }
 
 .wordX3 {
-    background-color: rgb(248, 104, 104);
+    background-color: var(--salmon);
+}
+
+.multiplicator {
+    font-size: 0.4rem;
+    padding-top: 14%;
+    color: var(--black-chocolate);
+    display: block;
+}
+
+.letter {
+    font-family: inherit;
+    font-weight: 700;
+    size: inherit;
+    border-radius: 10%;
+    box-shadow: 0.6px 0.6px rgba(0, 0, 0, 0.651);
+    background-color: rgb(240, 231, 216);
+    background-image: url(/assets/img/tuile.png);
+    background-size: 125% 125%;
+    background-position: right;
+    width: 95%;
+    height: 95%;
 }
