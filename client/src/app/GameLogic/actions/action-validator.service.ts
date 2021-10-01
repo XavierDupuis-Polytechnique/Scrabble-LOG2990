@@ -30,36 +30,6 @@ export class ActionValidatorService {
         }
     }
 
-    sendPlaceLetterMessage(action: PlaceLetter) {
-        const playerName = action.player.name;
-        const placementSettings = action.placement;
-        const placementString = placementSettingsToString(placementSettings);
-        const word = action.word;
-        const content = `${playerName} place le mot ${word} en ${placementString}`;
-        this.sendSystemMessage(content);
-    }
-
-    sendExchangeLetterMessage(action: ExchangeLetter) {
-        const letters = action.lettersToExchange;
-        const playerName = action.player.name;
-        const userName = this.gameInfo.user.name;
-        if (playerName !== userName) {
-            const nLetters = letters.length;
-            const playerMessageContent = `${playerName} échange ${nLetters} lettres`;
-            this.sendSystemMessage(playerMessageContent);
-            return;
-        }
-        const chars = letters.map((letter) => letter.char);
-        const userMessageContent = `${userName} échange les lettres ${chars}`;
-        this.sendSystemMessage(userMessageContent);
-    }
-
-    sendPassTurnMessage(action: PassTurn) {
-        const playerName = action.player.name;
-        const content = `${playerName} passe son tour`;
-        this.sendSystemMessage(content);
-    }
-
     sendAction(action: Action) {
         const actionValid = this.validateAction(action);
         if (actionValid) {
@@ -70,10 +40,6 @@ export class ActionValidatorService {
     }
 
     validateAction(action: Action): boolean {
-        if (!this.board.board.grid) {
-            return false;
-        }
-
         if (this.validateTurn(action)) {
             if (action instanceof PlaceLetter) {
                 return this.validatePlaceLetter(action as PlaceLetter);
@@ -174,14 +140,7 @@ export class ActionValidatorService {
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
             this.sendErrorMessage(
-                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de' + RACK_LETTER_COUNT,
-            );
-            return false;
-        }
-
-        if (action.lettersToExchange.length > this.gameInfo.numberOfLettersRemaining) {
-            this.sendErrorMessage(
-                'Commande impossible à réaliser : La réserve ne contient pas assez de lettres pour en échanger ' + action.lettersToExchange.length,
+                'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de ' + RACK_LETTER_COUNT,
             );
             return false;
         }
@@ -244,6 +203,36 @@ export class ActionValidatorService {
             }
         }
         return false;
+    }
+
+    private sendPlaceLetterMessage(action: PlaceLetter) {
+        const playerName = action.player.name;
+        const placementSettings = action.placement;
+        const placementString = placementSettingsToString(placementSettings);
+        const word = action.word;
+        const content = `${playerName} place le mot ${word} en ${placementString}`;
+        this.sendSystemMessage(content);
+    }
+
+    private sendExchangeLetterMessage(action: ExchangeLetter) {
+        const letters = action.lettersToExchange;
+        const playerName = action.player.name;
+        const userName = this.gameInfo.user.name;
+        if (playerName !== userName) {
+            const nLetters = letters.length;
+            const playerMessageContent = `${playerName} échange ${nLetters} lettres`;
+            this.sendSystemMessage(playerMessageContent);
+            return;
+        }
+        const chars = letters.map((letter) => letter.char);
+        const userMessageContent = `${userName} échange les lettres ${chars}`;
+        this.sendSystemMessage(userMessageContent);
+    }
+
+    private sendPassTurnMessage(action: PassTurn) {
+        const playerName = action.player.name;
+        const content = `${playerName} passe son tour`;
+        this.sendSystemMessage(content);
     }
 
     private sendErrorMessage(content: string) {

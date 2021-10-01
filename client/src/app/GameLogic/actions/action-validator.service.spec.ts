@@ -430,7 +430,7 @@ describe('ActionValidatorService', () => {
     /// ACTIONS SYSTEM/ERROR MESSAGES ///
     it('should send correct message format for PassTurn action', () => {
         const action = new PassTurn(currentPlayer);
-        service.sendPassTurnMessage(action);
+        service.sendActionArgsMessage(action);
         const expected = currentPlayer.name + ' passe son tour';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
@@ -440,17 +440,17 @@ describe('ActionValidatorService', () => {
         info.receiveUser(self);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         const chars = currentPlayer.letterRack.map((letter) => letter.char);
-        service.sendExchangeLetterMessage(action);
+        service.sendActionArgsMessage(action);
         const expected = currentPlayer.name + ' échange les lettres ' + chars;
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
 
     it('should send correct message format for ExchangeLetter action when the opponent plays', () => {
-        const self = game.players[0] === currentPlayer ? game.players[1] : game.players[0];
+        const self = p1 === currentPlayer ? p2 : p1;
         info.receiveUser(self);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         const chars = currentPlayer.letterRack.map((letter) => letter.char);
-        service.sendExchangeLetterMessage(action);
+        service.sendActionArgsMessage(action);
         const expected = currentPlayer.name + ' échange ' + chars.length + ' lettres';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
@@ -459,7 +459,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD };
         const word = 'avion';
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        service.sendPlaceLetterMessage(action);
+        service.sendActionArgsMessage(action);
         const expected = currentPlayer.name + ' place le mot ' + word + ' en h8v';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
