@@ -153,7 +153,6 @@ export class ActionValidatorService {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
-        this.sendSystemMessage(action.player.name + ' ÉCHANGE des lettres');
         return true;
     }
 
