@@ -8,7 +8,7 @@ import { BOARD_DIMENSION, EMPTY_CHAR, JOKER_CHAR, RACK_LETTER_COUNT } from '@app
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { placementSettingsToString } from '@app/GameLogic/player/bot-messages.service';
+import { placementSettingsToString } from '@app/GameLogic/utils';
 import { BoardService } from '@app/services/board.service';
 @Injectable({
     providedIn: 'root',
