@@ -24,9 +24,7 @@ export class MessagesService {
         try {
             this.commandParser.parse(content, forwarder);
         } catch (e) {
-            if (e instanceof Error) {
-                this.receiveError(e as Error);
-            }
+            this.receiveError(e as Error);
         }
     }
 
