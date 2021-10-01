@@ -29,7 +29,7 @@ export class CommandParserService {
         this.command$.next(command);
     }
 
-    parse(message: string, from: string): CommandType | boolean {
+    parse(message: string, from: string): CommandType | undefined {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
@@ -52,7 +52,7 @@ export class CommandParserService {
             const errorContent = commandCondition + ' est une entrée invalide';
             throw Error(errorContent);
         }
-        return false;
+        return undefined;
     }
 
     placeLetterFormatter(args: string[]): string[] {
