@@ -2,6 +2,7 @@
 
 import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from './messages.service';
 
@@ -112,5 +113,38 @@ describe('Service: Messages', () => {
         service.clearLog();
         const nLogs = service.messagesLog.length;
         expect(nLogs).toBe(0);
+    });
+
+    it('should catch a thrown error because the message is invalid', () => {
+        const errorContent = 'mot ou emplacement manquant';
+        const message = '?!?@#?!@#?';
+        commandParserSpy.parse.and.throwError(errorContent);
+        const spyReceiveError = spyOn(service, 'receiveError');
+
+        service.receiveMessageOpponent('Tim', message);
+
+        expect(spyReceiveError).toHaveBeenCalled();
+    });
+
+    it('should not throw error when message is valid', () => {
+        const message = 'l l';
+
+        commandParserSpy.parse.and.returnValue(CommandType.Exchange);
+        const spyReceiveError = spyOn(service, 'receiveError');
+
+        service.receiveMessageOpponent('Tim', message);
+
+        expect(spyReceiveError).not.toHaveBeenCalled();
+    });
+
+    it('should not throw error when message is valid', () => {
+        const message = 'l lasd';
+
+        commandParserSpy.parse.and.returnValue(CommandType.Exchange);
+        const spyReceiveError = spyOn(service, 'receiveError');
+
+        service.receiveMessageOpponent('Tim', message);
+
+        expect(spyReceiveError).not.toHaveBeenCalled();
     });
 });

@@ -44,9 +44,7 @@ export class MessagesService {
         try {
             this.commandParser.parse(content, forwarder);
         } catch (e) {
-            if (e instanceof Error) {
-                this.receiveError(e as Error);
-            }
+            this.receiveError(e as Error);
         }
     }
     receiveMessageOpponent(forwarder: string, content: string) {
@@ -60,9 +58,9 @@ export class MessagesService {
             const command = this.commandParser.parse(content, forwarder);
             if (command === CommandType.Exchange) {
                 const hiddenLetters = content.split(' ');
-                const numberOfLetters = String(hiddenLetters[1].length);
+                const numberOfLetters = hiddenLetters[1].length;
                 message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
-                if (hiddenLetters.length > 1) {
+                if (numberOfLetters > 1) {
                     message.content += 's';
                 }
             }
