@@ -8,6 +8,7 @@ import { BOARD_DIMENSION, EMPTY_CHAR, JOKER_CHAR, RACK_LETTER_COUNT } from '@app
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { placementSettingsToString } from '@app/GameLogic/utils';
 import { BoardService } from '@app/services/board.service';
 @Injectable({
     providedIn: 'root',
@@ -17,6 +18,7 @@ export class ActionValidatorService {
     sendAction(action: Action) {
         const actionValid = this.validateAction(action);
         if (actionValid) {
+            this.sendActionArgsMessage(action);
             const player = action.player;
             player.play(action);
         }
@@ -37,7 +39,7 @@ export class ActionValidatorService {
             }
 
             if (action instanceof PassTurn) {
-                return this.validatePassTurn(action as PassTurn);
+                return this.validatePassTurn();
             }
 
             throw Error("Action couldn't be validated");
@@ -124,8 +126,6 @@ export class ActionValidatorService {
             this.sendErrorMessage(message);
             return false;
         }
-
-        this.sendSystemMessage(this.gameInfo.activePlayer.name, action.player.name + ' PLACE des lettres');
         return true;
     }
 
@@ -153,7 +153,11 @@ export class ActionValidatorService {
             this.sendErrorMessage('Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées');
             return false;
         }
-        this.sendSystemMessage(this.gameInfo.activePlayer.name, action.player.name + ' ÉCHANGE des lettres');
+        this.sendSystemMessage(action.player.name + ' ÉCHANGE des lettres');
+        return true;
+    }
+
+    private validatePassTurn() {
         return true;
     }
 
@@ -201,21 +205,55 @@ export class ActionValidatorService {
         return false;
     }
 
-    private validatePassTurn(action: PassTurn) {
-        this.messageService.receiveSystemMessage(action.player.name + ' PASSE son tour');
-        return true;
+    private sendActionArgsMessage(action: Action) {
+        if (action instanceof PlaceLetter) {
+            this.sendPlaceLetterMessage(action);
+        }
+
+        if (action instanceof ExchangeLetter) {
+            this.sendExchangeLetterMessage(action);
+        }
+
+        if (action instanceof PassTurn) {
+            this.sendPassTurnMessage(action);
+        }
+    }
+
+    private sendPlaceLetterMessage(action: PlaceLetter) {
+        const playerName = action.player.name;
+        const placementSettings = action.placement;
+        const placementString = placementSettingsToString(placementSettings);
+        const word = action.word;
+        const content = `${playerName} place le mot ${word} en ${placementString}`;
+        this.sendSystemMessage(content);
+    }
+
+    private sendExchangeLetterMessage(action: ExchangeLetter) {
+        const letters = action.lettersToExchange;
+        const playerName = action.player.name;
+        const userName = this.gameInfo.user.name;
+        if (playerName !== userName) {
+            const nLetters = letters.length;
+            const playerMessageContent = `${playerName} échange ${nLetters} lettres`;
+            this.sendSystemMessage(playerMessageContent);
+            return;
+        }
+        const chars = letters.map((letter) => letter.char);
+        const userMessageContent = `${userName} échange les lettres ${chars}`;
+        this.sendSystemMessage(userMessageContent);
+    }
+
+    private sendPassTurnMessage(action: PassTurn) {
+        const playerName = action.player.name;
+        const content = `${playerName} passe son tour`;
+        this.sendSystemMessage(content);
     }
 
     private sendErrorMessage(content: string) {
         this.messageService.receiveErrorMessage(content);
     }
 
-    private sendSystemMessage(player: string, content: string) {
-        const players = this.gameInfo.players;
-        if (player === players[0].name) {
-            this.messageService.receiveMessagePlayer(player, content);
-        } else if (player === players[1].name) {
-            this.messageService.receiveMessageOpponent(player, content);
-        }
+    private sendSystemMessage(content: string) {
+        this.messageService.receiveSystemMessage(content);
     }
 }

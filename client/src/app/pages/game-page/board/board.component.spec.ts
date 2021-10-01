@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { TileComponent } from '@app/pages/game-page/board/tile/tile.component';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
@@ -7,7 +10,7 @@ describe('BoardComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [BoardComponent],
+            declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile, TileComponent],
         }).compileComponents();
     });
 
@@ -21,33 +24,19 @@ describe('BoardComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('should increase font size', () => {
-        const currentFontSize = component.fontSize;
-        component.increaseFont();
-        const newFontSize = component.fontSize;
-        expect(currentFontSize < newFontSize).toBeTrue();
+    it('should call our method that changes the font of the board', () => {
+        const increasedFontSize = 13;
+        const event = new MatSliderChange();
+        event.value = increasedFontSize;
+        component.updateSetting(event);
+        expect(component.fontSize).toBe(increasedFontSize);
     });
 
-    it('should decrease font size', () => {
-        const currentFontSize = component.fontSize;
-        component.decreaseFont();
-        const newFontSize = component.fontSize;
-        expect(currentFontSize > newFontSize).toBeTrue();
-    });
-
-    it('should stop increase when value is hit', () => {
-        component.fontSize = component.maxFontSize;
-        const currentFontSize = component.fontSize;
-        component.increaseFont();
-        const newFontSize = component.fontSize;
-        expect(currentFontSize === newFontSize).toBeTrue();
-    });
-
-    it('should stop decrease when value is hit', () => {
-        component.fontSize = component.minFontSize;
-        const currentFontSize = component.fontSize;
-        component.decreaseFont();
-        const newFontSize = component.fontSize;
-        expect(currentFontSize === newFontSize).toBeTrue();
+    it('should not change font size if value of slider(event) is undefined', () => {
+        const defaultValue = 10.5;
+        const event = new MatSliderChange();
+        event.value = null;
+        component.updateSetting(event);
+        expect(component.fontSize).toBe(defaultValue);
     });
 });

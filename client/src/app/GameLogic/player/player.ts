@@ -84,7 +84,7 @@ export abstract class Player {
     printLetterRack(): string {
         let letterRackString = '';
         for (const letter of this.letterRack) {
-            letterRackString += letter.char + ', ';
+            letterRackString += letter.char + ',';
         }
         return letterRackString.slice(0, letterRackString.length - 1);
     }

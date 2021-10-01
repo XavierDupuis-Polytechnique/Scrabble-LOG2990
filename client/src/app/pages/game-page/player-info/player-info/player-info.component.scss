@@ -1,10 +1,21 @@
-.body {
-    display: flex;
+mat-card {
+    margin: 5%;
 }
-h1 {
-    display: flex;
-    justify-content: center;
-    background-color: navy;
-    color: rgb(233, 231, 231);
-    border-radius: 5%;
+
+.playerInfo {
+    background-color: var(--lightgray);
+    justify-self: center;
+}
+
+.name {
+    justify-self: center;
+    font-size: 150%;
+    font-weight: 900;
+    color: var(--black-chocolate);
+}
+
+.score {
+    justify-self: end;
+    font-size: 85%;
+    color: var(--white);
 }
