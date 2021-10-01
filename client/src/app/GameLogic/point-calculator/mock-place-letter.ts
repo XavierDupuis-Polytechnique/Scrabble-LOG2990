@@ -4,7 +4,7 @@ import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.int
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-// commentaires
+
 export class MockPlaceLetter extends PlaceLetter {
     constructor(
         player: Player,
