@@ -1,7 +1,7 @@
 <h2 mat-dialog-title>Nouvelle Partie Solo</h2>
 <mat-dialog-content [formGroup]="soloGameSettingsForm">
     <mat-form-field>
-        <input matInput placeholder="Nom de joueur" formControlName="playerName" />
+        <input matInput autocomplete="off" placeholder="Nom de joueur" formControlName="playerName" />
         <mat-hint>Min 3 charactères Max 50 charactères</mat-hint>
     </mat-form-field>
     <br />
@@ -13,9 +13,17 @@
         </mat-select>
     </mat-form-field>
     <br />
-    <mat-label>Temps par tour </mat-label> <br />
-    <mat-slider [min]="minTimePerTurn" [max]="maxTimePerTurn" [step]="stepTimePerTurn" [formControlName]="'timePerTurn'"></mat-slider><br />
-    {{ soloGameSettingsForm.value.timePerTurn | date: 'mm:ss' }} min
+    <mat-label>Temps par tour</mat-label> <br />
+    <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
+    <mat-slider
+        #timer
+        color="primary"
+        [min]="minTimePerTurn"
+        [max]="maxTimePerTurn"
+        [step]="stepTimePerTurn"
+        [formControlName]="'timePerTurn'"
+    ></mat-slider
+    ><br />
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>

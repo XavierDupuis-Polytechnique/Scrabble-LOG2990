@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { GameInfoService } from '@app/GameLogic//game/game-info/game-info.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { BehaviorSubject } from 'rxjs';
-import { CommandType } from '../commands/command.interface';
 import { Message, MessageType } from './message.interface';
 
 @Injectable({
@@ -14,44 +13,7 @@ export class MessagesService {
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
-    constructor(private commandParser: CommandParserService, private gameInfo: GameInfoService) {}
-
-    receiveMessage(forwarder: string, content: string) {
-        const player1 = this.gameInfo.players[0].name;
-        const player2 = this.gameInfo.players[1].name;
-        let messageType: MessageType;
-
-        if (forwarder === player1) {
-            messageType = MessageType.Player1;
-        } else if (forwarder === player2) {
-            messageType = MessageType.Player2;
-        } else {
-            this.receiveSystemMessage('Message envoyé par un joueur inconnu');
-            return;
-        }
-        const message = {
-            content,
-            from: forwarder,
-            type: messageType,
-        };
-
-        try {
-            const command = this.commandParser.parse(content, forwarder);
-            if (command === CommandType.Exchange && messageType === MessageType.Player2) {
-                const hiddenLetters = content.split(' ');
-                const numberOfLetters = String(hiddenLetters[1].length);
-                message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
-                if (hiddenLetters.length > 1) {
-                    message.content += 's';
-                }
-            }
-            this.addMessageToLog(message);
-        } catch (e) {
-            if (e instanceof Error) {
-                this.receiveError(e as Error);
-            }
-        }
-    }
+    constructor(private commandParser: CommandParserService) {}
 
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
@@ -71,6 +33,45 @@ export class MessagesService {
         this.addMessageToLog(errorMessage);
     }
 
+    receiveMessagePlayer(forwarder: string, content: string) {
+        const message = {
+            content,
+            from: forwarder,
+            type: MessageType.Player1,
+        };
+
+        this.addMessageToLog(message);
+        try {
+            this.commandParser.parse(content, forwarder);
+        } catch (e) {
+            if (e instanceof Error) {
+                this.receiveError(e as Error);
+            }
+        }
+    }
+    receiveMessageOpponent(forwarder: string, content: string) {
+        console.log('asafdasdf');
+        const message = {
+            content,
+            from: forwarder,
+            type: MessageType.Player2,
+        };
+        this.addMessageToLog(message);
+        try {
+            const command = this.commandParser.parse(content, forwarder);
+            if (command === CommandType.Exchange) {
+                const hiddenLetters = content.split(' ');
+                const numberOfLetters = String(hiddenLetters[1].length);
+                message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
+                if (hiddenLetters.length > 1) {
+                    message.content += 's';
+                }
+            }
+        } catch (e) {
+            this.receiveError(e as Error);
+        }
+    }
+
     receiveError(error: Error) {
         const errorMessage = {
             content: error.message,
@@ -86,8 +87,8 @@ export class MessagesService {
     }
 
     private addMessageToLog(message: Message) {
-        const messageCopy = { ...message };
-        this.messagesLog.push(messageCopy);
+        // const messageCopy = { ...message };
+        this.messagesLog.push(message);
         this.messages$.next(this.messagesLog);
     }
 }

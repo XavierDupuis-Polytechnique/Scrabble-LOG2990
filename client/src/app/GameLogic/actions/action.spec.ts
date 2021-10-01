@@ -1,5 +1,4 @@
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -27,7 +26,7 @@ describe('Action', () => {
             new TimerService(),
             new PointCalculatorService(boardService),
             boardService,
-            new MessagesService(new CommandParserService(), new GameInfoService(new TimerService())),
+            new MessagesService(new CommandParserService()),
         );
         gameSpy = spyOn(game, 'doAction');
         user = new User('Paul');

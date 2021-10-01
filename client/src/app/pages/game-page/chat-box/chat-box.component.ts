@@ -16,14 +16,14 @@ const MAX_MESSAGE_LENGTH = 512;
 })
 export class ChatBoxComponent implements AfterViewInit {
     // Avoir une autre fonction linker/binder aver le placement etc...
-    @ViewChild('chat') chat: ElementRef;
+    @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
 
     messageForm: FormControl = new FormControl('', [
         Validators.required,
         Validators.maxLength(MAX_MESSAGE_LENGTH),
         Validators.pattern(NOT_ONLY_SPACE_RGX),
     ]);
-
+    readonly maxMessageLength = MAX_MESSAGE_LENGTH;
     private boldPipe = new BoldPipe();
     private newlinePipe = new NewlinePipe();
 
@@ -43,7 +43,7 @@ export class ChatBoxComponent implements AfterViewInit {
 
         const content = this.messageForm.value;
         const playerName = this.gameInfo.user.name;
-        this.messageService.receiveMessage(playerName, content);
+        this.messageService.receiveMessagePlayer(playerName, content);
 
         this.messageForm.reset();
         this.cdRef.detectChanges();
@@ -56,6 +56,13 @@ export class ChatBoxComponent implements AfterViewInit {
 
     get messageValid(): boolean {
         return this.messageForm.valid;
+    }
+
+    isError(length: number) {
+        if (length > this.maxMessageLength) {
+            return true;
+        }
+        return false;
     }
 
     scrollDownChat() {
