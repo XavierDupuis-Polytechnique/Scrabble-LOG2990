@@ -1,3 +1,4 @@
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { LetterBag } from './letter-bag';
 
 describe('LetterBag', () => {
@@ -23,7 +24,7 @@ describe('LetterBag', () => {
 
     it('should draw the number correct GameLetters when drawing during the game', () => {
         const initialNumberOfGameLetters = letterBag.gameLetters.length;
-        const numberOfGameLettersDrawn = letterBag.drawGameLetters(letterBag.getRandomInt(initialNumberOfGameLetters)).length;
+        const numberOfGameLettersDrawn = letterBag.drawGameLetters(RACK_LETTER_COUNT).length;
         expect(letterBag.gameLetters.length).toBe(initialNumberOfGameLetters - numberOfGameLettersDrawn);
     });
 
