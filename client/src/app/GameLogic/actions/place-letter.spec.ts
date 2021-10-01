@@ -1,25 +1,26 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { isCharUpperCase, PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
+import { Tile } from '@app/GameLogic/game/board/tile';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { isCharUpperCase } from '@app/GameLogic/utils';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
 
 class MockWordSearcher extends WordSearcher {
     validity = true;
-    listOfValidWord(action: PlaceLetter): Word[] {
+    listOfValidWord(): Word[] {
         if (this.validity) {
             return [{ letters: [new Tile()], index: [0] }];
         }
@@ -58,13 +59,15 @@ describe('PlaceLetter', () => {
                 DictionaryService,
                 { provide: PointCalculatorService, useValue: pointCalculatorSpy },
                 { provide: WordSearcher, useClass: MockWordSearcher },
+                GameInfoService,
+                MessagesService,
             ],
         });
         const boardService = TestBed.inject(BoardService);
-        // pointCalculatorService = new MockPointCalculator(boardService);
+        const messages = TestBed.inject(MessagesService);
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, new MessagesService(new CommandParserService()));
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
         game.players.push(player1);
         game.players.push(player2);
         game.start();

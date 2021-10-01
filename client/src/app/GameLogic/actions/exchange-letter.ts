@@ -1,10 +1,9 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
 
 export class ExchangeLetter extends Action {
-    // On assume que l'action a ete validee (la reserve contient au moins 7 lettres)
     constructor(player: Player, readonly lettersToExchange: Letter[]) {
         super(player);
     }

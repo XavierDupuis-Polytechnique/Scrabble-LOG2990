@@ -3,7 +3,6 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
-
 import { HorseComponent } from './horse.component';
 
 const mockPlayers: Player[] = [new User('Tim'), new User('George')];
@@ -33,7 +32,6 @@ describe('HorseComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(HorseComponent);
         component = fixture.componentInstance;
-        // fixture.detectChanges();
     });
 
     it('should create', () => {

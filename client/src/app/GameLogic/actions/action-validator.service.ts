@@ -5,11 +5,11 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { BOARD_DIMENSION, EMPTY_CHAR, JOKER_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { placementSettingsToString } from '@app/GameLogic/utils';
-import { BoardService } from '@app/services/board.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -80,10 +80,10 @@ export class ActionValidatorService {
                 if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                        wordCurrentChar +
-                        '" ne peut être placé en ' +
-                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                        ++x,
+                            wordCurrentChar +
+                            '" ne peut être placé en ' +
+                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                            ++x,
                     );
                     return false;
                 }
@@ -93,9 +93,6 @@ export class ActionValidatorService {
                 if (x === centerTilePosition && y === centerTilePosition) {
                     hasCenterTile = true;
                     hasNeighbour = true;
-                    // Si on vient de "hasCenterTile = true;", on sait que la vérification des voisins n'est pas nécessaire
-                    // -- CAS #1 : Premier mot placé == il n'y aura aucun voisin == vérification de voisions futile
-                    // -- CAS #2 : Nième mot placé == on passe par la tuile centrale qui est déjà occupé == voisin en tuile centrale
                 }
             } else {
                 if (!hasNeighbour) {

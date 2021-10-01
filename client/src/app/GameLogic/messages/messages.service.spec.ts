@@ -23,7 +23,7 @@ describe('Service: Messages', () => {
     it('should receive message', () => {
         const from = 'paul';
         const content = 'allo';
-        service.receiveMessage(from, content);
+        service.receiveMessagePlayer(from, content);
         const logs = service.messagesLog;
         const lastMessage = logs[logs.length - 1];
         const expectedMesssage: Message = {
@@ -66,7 +66,7 @@ describe('Service: Messages', () => {
         commandParserSpy.parse.and.throwError(errorContent);
         const content = '!notACommand';
         const from = 'tom';
-        service.receiveMessage(from, content);
+        service.receiveMessagePlayer(from, content);
         const log = service.messagesLog;
         const lastMessage = log[log.length - 1];
         const errorMessage: Message = {
@@ -104,9 +104,9 @@ describe('Service: Messages', () => {
     });
 
     it('should clear log', () => {
-        service.receiveMessage('tim', 'to be');
-        service.receiveMessage('cook', 'or');
-        service.receiveMessage('apple', 'not to be');
+        service.receiveMessagePlayer('tim', 'to be');
+        service.receiveMessagePlayer('cook', 'or');
+        service.receiveMessagePlayer('apple', 'not to be');
         const prevNLogs = service.messagesLog.length;
         expect(prevNLogs).toBe(3);
         service.clearLog();

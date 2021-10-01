@@ -1,56 +1,15 @@
-/* eslint max-classes-per-file: ["error", 2] */
-import { Injectable } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { EMPTY_CHAR } from '@app/GameLogic/constants';
-import { Board } from '@app/GameLogic/game/board';
-import { Tile } from '@app/GameLogic/game/tile';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { Dictionary } from '@app/GameLogic/validator/dictionary';
-import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { MockBoard } from '@app/GameLogic/validator/word-search/mock-board';
+import { MockDictionaryService } from '@app/GameLogic/validator/word-search/mock-dictionary-service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
-
-const BOARD_LENGTH = 10;
-const BOARD_WIDTH = 10;
-class MockDictionaryService extends DictionaryService {
-    @Injectable()
-    mockDictionary: Dictionary = {
-        title: 'dictionnaire',
-        description: 'mots',
-        words: ['bateau', 'butte', 'allo', 'ou', 'oui', 'nil', 'ni', 'on', 'bon', 'rat', 'bu'],
-    };
-
-    isWordInDict(word: string): boolean {
-        const dict = new Set(this.mockDictionary.words);
-        return dict.has(word);
-    }
-}
-
-class MockBoard extends Board {
-    grid: Tile[][];
-    constructor() {
-        super();
-        this.grid = [];
-        for (let i = 0; i < BOARD_WIDTH; i++) {
-            this.grid[i] = [];
-            for (let j = 0; j < BOARD_LENGTH; j++) {
-                this.grid[i][j] = new Tile();
-                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
-            }
-        }
-        this.grid[0][4].letterObject = { char: 'O', value: 1 };
-        this.grid[0][5].letterObject = { char: 'N', value: 1 };
-        this.grid[1][3].letterObject = { char: 'O', value: 1 };
-        this.grid[0][6].letterObject = { char: 'N', value: 1 };
-        // this.grid[2][3].letterObject = { char: 'N', value: 1 };
-    }
-}
 
 describe('WordSearcher', () => {
     let wordSearcher: WordSearcher;

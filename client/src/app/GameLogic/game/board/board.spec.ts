@@ -1,7 +1,5 @@
-// import { TestBed } from '@angular/core/testing';
-
-import { BOARD_DIMENSION } from '@app/GameLogic/constants';
-import { ASCII_CODE, Board, letterMultiplicator, wordMultiplicator } from './board';
+import { ASCII_CODE, BOARD_DIMENSION } from '@app/GameLogic/constants';
+import { Board, letterMultiplicator, wordMultiplicator } from './board';
 
 describe('Board test', () => {
     let board: Board;

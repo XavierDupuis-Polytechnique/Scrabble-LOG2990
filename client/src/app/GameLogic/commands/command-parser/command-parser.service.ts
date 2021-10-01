@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
-import { BOARD_DIMENSION, CHARACTER_H, CHARACTER_V, MAX_PLACE_LETTER_ARG_SIZE, MIN_PLACE_LETTER_ARG_SIZE } from '@app/GameLogic/constants';
+import {
+    BOARD_DIMENSION,
+    CHARACTER_H,
+    CHARACTER_V,
+    MAX_PLACE_LETTER_ARG_SIZE,
+    MIN_PLACE_LETTER_ARG_SIZE,
+    RACK_LETTER_COUNT,
+} from '@app/GameLogic/constants';
 import { Observable, Subject } from 'rxjs';
+
 @Injectable({
     providedIn: 'root',
 })
 export class CommandParserService {
     private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
-
     get parsedCommand$(): Observable<Command> {
         return this.command$;
     }
@@ -22,7 +29,7 @@ export class CommandParserService {
         this.command$.next(command);
     }
 
-    parse(message: string, from: string): boolean {
+    parse(message: string, from: string): CommandType | undefined {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
@@ -35,14 +42,17 @@ export class CommandParserService {
                     }
                     args = this.placeLetterFormatter(args);
                 }
+                if (commandType === CommandType.Exchange) {
+                    this.exchangeLetterArgVerifier(args[0]);
+                }
                 const command = this.createCommand(from, args, commandCondition as CommandType);
                 this.sendCommand(command);
-                return true;
+                return commandCondition as CommandType;
             }
-            const errorContent = commandCondition + ' est une commande invalide';
+            const errorContent = commandCondition + ' est une entrée invalide';
             throw Error(errorContent);
         }
-        return false;
+        return undefined;
     }
 
     placeLetterFormatter(args: string[]): string[] {
@@ -88,6 +98,23 @@ export class CommandParserService {
             return col;
         }
         throw Error(this.errorSyntax + ': colonne invalide');
+    }
+
+    exchangeLetterArgVerifier(arg: string) {
+        let rackLetters = arg;
+        while (rackLetters.length !== 0) {
+            const letter = rackLetters[0];
+            if (rackLetters.split(letter).length - 1 > RACK_LETTER_COUNT) {
+                throw Error("Commande impossible à réaliser: une lettre a le droit d'être échanger un maximum de 7 fois par tour");
+            }
+            const re = new RegExp(letter, 'g');
+            rackLetters = rackLetters.replace(re, '');
+        }
+        for (let i = 0; i < arg.length - 1; i++) {
+            if (arg[i] === arg[i].toUpperCase()) {
+                throw Error('les paramètres sont invalides');
+            }
+        }
     }
 
     private isNumeric(value: string) {

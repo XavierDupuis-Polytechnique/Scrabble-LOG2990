@@ -4,14 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
-import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
@@ -22,7 +20,7 @@ import { TileComponent } from './pages/game-page/board/tile/tile.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
 import { HorseComponent } from './pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
-import { PlayerInfoComponent } from './pages/game-page/player-info/player-info/player-info.component';
+import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
@@ -37,9 +35,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
     declarations: [
         AppComponent,
         GamePageComponent,
-        MainPageComponent,
         MaterialPageComponent,
-        PlayAreaComponent,
         SidebarComponent,
         PlayerInfoComponent,
         InfoBoxComponent,

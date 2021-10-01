@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
@@ -7,8 +6,8 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
-import { BINGO_VALUE, BOARD_DIMENSION } from '@app/GameLogic/constants';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { BINGO_VALUE, BOARD_DIMENSION, FIVE, FOUR, SIX } from '@app/GameLogic/constants';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
@@ -86,7 +85,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordAvion.length,
-            [{ letters: wordLettersAvion, index: [0, 1, 2, 3, 4] }],
+            [{ letters: wordLettersAvion, index: [0, 1, 2, 3, FOUR] }],
             { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
         );
         const expected = 'H8:A H9:V H10:I H11:O H12:N (25) \\n#A##V##I##O##N# (25) \\n\\n';
@@ -104,7 +103,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordAvion.length,
-            [{ letters: wordLettersAvion, index: [0, 1, 2, 3, 4] }],
+            [{ letters: wordLettersAvion, index: [0, 1, 2, 3, FOUR] }],
             { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
         );
         const expected = 'H8:A I8:V J8:I K8:O L8:N (25) \\n#A##V##I##O##N# (25) \\n\\n';
@@ -122,7 +121,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordLongmot.length,
-            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, 4, 5, 6] }],
+            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, FOUR, FIVE, SIX] }],
             { wordsPoints: [{ word: stringWordLongmot, points: pointsWordLongmot }], totalPoints: pointsWordLongmot + BINGO_VALUE, isBingo: true },
         );
         const expected = 'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n';
@@ -141,8 +140,8 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             stringWordLongmot.length,
             [
-                { letters: wordLettersVolant, index: [0, 1, 2, 3, 4, 5] },
-                { letters: wordLettersAvion, index: [0, 1, 2, 3, 4] },
+                { letters: wordLettersVolant, index: [0, 1, 2, 3, FOUR, FIVE] },
+                { letters: wordLettersAvion, index: [0, 1, 2, 3, FOUR] },
             ],
             {
                 wordsPoints: [
@@ -168,7 +167,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordAvion.length,
-            [{ letters: wordLettersAvion, index: [0, 1, 3, 4] }],
+            [{ letters: wordLettersAvion, index: [0, 1, 3, FOUR] }],
             { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
         );
         const expected = 'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n';
@@ -186,7 +185,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordAvion.length,
-            [{ letters: wordLettersAvion, index: [0, 1, 3, 4] }],
+            [{ letters: wordLettersAvion, index: [0, 1, 3, FOUR] }],
             { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
         );
         const validWordLongmot = new ValidWord(
@@ -199,7 +198,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordLongmot.length,
-            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, 4, 5, 6] }],
+            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, FOUR, FIVE, SIX] }],
             { wordsPoints: [{ word: stringWordLongmot, points: pointsWordLongmot }], totalPoints: pointsWordLongmot + BINGO_VALUE, isBingo: true },
         );
         const validWordVolant = new ValidWord(
@@ -212,7 +211,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordVolant.length,
-            [{ letters: wordLettersVolant, index: [0, 1, 2, 4, 5] }],
+            [{ letters: wordLettersVolant, index: [0, 1, 2, FOUR, FIVE] }],
             { wordsPoints: [{ word: stringWordVolant, points: pointsWordVolant }], totalPoints: pointsWordVolant, isBingo: false },
         );
         const fakeWordList = [validWordAvion, validWordLongmot, validWordVolant];
@@ -221,9 +220,9 @@ describe('BotMessagesService', () => {
         const expected: string[] = [];
         expected.push(
             '\\n' +
-            'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
-            'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+                'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
+                'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
+                'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
         );
         expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
@@ -239,7 +238,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordLongmot.length,
-            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, 4, 5, 6] }],
+            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, FOUR, FIVE, SIX] }],
             { wordsPoints: [{ word: stringWordLongmot, points: pointsWordLongmot }], totalPoints: pointsWordLongmot + BINGO_VALUE, isBingo: true },
         );
         const validWordVolant = new ValidWord(
@@ -252,7 +251,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordVolant.length,
-            [{ letters: wordLettersVolant, index: [0, 1, 2, 4, 5] }],
+            [{ letters: wordLettersVolant, index: [0, 1, 2, FOUR, FIVE] }],
             { wordsPoints: [{ word: stringWordVolant, points: pointsWordVolant }], totalPoints: pointsWordVolant, isBingo: false },
         );
         const fakeWordList = [validWordLongmot, validWordVolant];
@@ -261,8 +260,8 @@ describe('BotMessagesService', () => {
         const expected: string[] = [];
         expected.push(
             '\\n' +
-            'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+                'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
+                'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
         );
         expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
@@ -278,7 +277,7 @@ describe('BotMessagesService', () => {
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordLongmot.length,
-            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, 4, 5, 6] }],
+            [{ letters: wordLettersLongmot, index: [0, 1, 2, 3, FOUR, FIVE, SIX] }],
             { wordsPoints: [{ word: stringWordLongmot, points: pointsWordLongmot }], totalPoints: pointsWordLongmot + BINGO_VALUE, isBingo: true },
         );
         const fakeWordList = [validWordLongmot];
@@ -365,7 +364,7 @@ describe('BotMessagesService', () => {
         ];
         const action: Action = new ExchangeLetter(easyBot, letters);
         const spySendExchangeLettersMessage = spyOn(botMessage, 'sendExchangeLettersMessage').and.callThrough();
-        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
         botMessage.sendAction(action);
         const expected1 = [];
         expected1.push(letters);
@@ -376,7 +375,7 @@ describe('BotMessagesService', () => {
         expected2.push(`${CommandType.Exchange} ap*cuev`);
 
         const result1 = spySendExchangeLettersMessage.calls.first().args;
-        const result2 = spyReceiveMessage.calls.first().args;
+        const result2 = spyReceiveMessageOpponent.calls.first().args;
 
         expect(result1).toEqual(expected1);
         expect(result2).toEqual(expected2);
@@ -386,7 +385,7 @@ describe('BotMessagesService', () => {
         const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
         const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
-        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
 
         botMessage.sendAction(action);
 
@@ -400,7 +399,7 @@ describe('BotMessagesService', () => {
         expected2.push(`${CommandType.Place} ${'f6h'} ${'hello'}`);
 
         const result = spySendPlaceLetterMessage.calls.first().args;
-        const result2 = spyReceiveMessage.calls.first().args;
+        const result2 = spyReceiveMessageOpponent.calls.first().args;
 
         expect(result).toEqual(expected1);
         expect(result2).toEqual(expected2);
@@ -410,7 +409,7 @@ describe('BotMessagesService', () => {
         const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
         const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
-        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
         const spySendAlternativeWords = spyOn(botMessage, 'sendAlternativeWords');
         const command = {
             type: CommandType.Debug,
@@ -432,7 +431,7 @@ describe('BotMessagesService', () => {
         expected3.push(easyBot.validWordList);
 
         const result = spySendPlaceLetterMessage.calls.first().args;
-        const result2 = spyReceiveMessage.calls.first().args;
+        const result2 = spyReceiveMessageOpponent.calls.first().args;
         const result3 = spySendAlternativeWords.calls.first().args;
 
         expect(result).toEqual(expected1);

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
+import { TIMER_STEP } from '@app/GameLogic/constants';
 import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-const TIMER_STEP = 1000; // one second
 @Injectable({
     providedIn: 'root',
 })

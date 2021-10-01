@@ -1,62 +1,20 @@
 /* eslint-disable max-lines */
-/* eslint-disable max-classes-per-file */
+
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
-import { Board } from '@app/GameLogic/game/board';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
-import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
+import { MockGame } from '@app/GameLogic/point-calculator/mock-game';
+import { MockPlaceLetter } from '@app/GameLogic/point-calculator/mock-place-letter';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
-import { PointCalculatorService } from './point-calculator.service';
-
-const MAX_CONSECUTIVE_PASS = 6;
-class MockGame extends Game {
-    static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
-    activePlayer: Player = new User('ActivePlayer');
-    otherPlayer: Player = new User('otherPlayer');
-    players: Player[];
-    consecutivePass: number = MAX_CONSECUTIVE_PASS;
-    board: Board;
-
-    constructor(
-        time: number,
-        timerService: TimerService,
-        pointCalculatorService: PointCalculatorService,
-        boardService: BoardService,
-        messageService: MessagesService,
-    ) {
-        super(time, timerService, pointCalculatorService, boardService, messageService);
-        this.players = [this.activePlayer, this.otherPlayer];
-        this.board = boardService.board;
-    }
-    getActivePlayer() {
-        return this.activePlayer;
-    }
-}
-
-class MockPlaceLetter extends PlaceLetter {
-    constructor(
-        player: Player,
-        public word: string,
-        public placement: PlacementSetting,
-        pointCalculator: PointCalculatorService,
-        wordSearcher: WordSearcher,
-    ) {
-        super(player, word, placement, pointCalculator, wordSearcher);
-    }
-
-    execute(game: Game) {
-        return game;
-    }
-}
 
 describe('PointCalculatorService', () => {
     let pointCalculator: PointCalculatorService;

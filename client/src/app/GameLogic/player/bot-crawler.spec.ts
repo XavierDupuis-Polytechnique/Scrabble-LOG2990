@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 import { TestBed } from '@angular/core/testing';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
-import { BoardService } from '@app/services/board.service';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
     const letterCreator = new LetterCreator();

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers*/
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';

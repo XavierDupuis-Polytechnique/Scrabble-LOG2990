@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Tile } from '@app/GameLogic/game/tile';
 import { Player } from '@app/GameLogic/player/player';
 import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/GameLogic/point-calculator/calculation-estimation';
-import { BoardService } from '@app/services/board.service';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;

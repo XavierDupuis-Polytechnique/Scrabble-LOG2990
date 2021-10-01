@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BOARD_DIMENSION, EMPTY_CHAR } from '@app/GameLogic/constants';
-import { Board } from '@app/GameLogic/game/board';
+import { Board } from '@app/GameLogic/game/board/board';
 
 @Injectable({
     providedIn: 'root',

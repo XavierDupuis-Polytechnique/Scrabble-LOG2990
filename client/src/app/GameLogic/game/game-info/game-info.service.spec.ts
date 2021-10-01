@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { THOUSAND } from '@app/GameLogic/constants';
 import { User } from '@app/GameLogic/player/user';
 import { GameInfoService } from './game-info.service';
 
@@ -79,9 +80,9 @@ describe('GameInfoService', () => {
 
     it('should return the player points with provided index', () => {
         const user0 = new User('p1');
-        user0.points = Math.floor(Math.random() * 1000);
+        user0.points = Math.floor(Math.random() * THOUSAND);
         const user1 = new User('p2');
-        user1.points = Math.floor(Math.random() * 1000);
+        user1.points = Math.floor(Math.random() * THOUSAND);
         service.players = [user0, user1];
         expect(service.getPlayerScore(0)).toBe(user0.points);
         expect(service.getPlayerScore(1)).toBe(user1.points);

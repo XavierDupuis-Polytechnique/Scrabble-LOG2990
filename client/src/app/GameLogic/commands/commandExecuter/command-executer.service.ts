@@ -4,10 +4,9 @@ import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { DEBUG_MESSAGE_ACTIVATED, DEBUG_MESSAGE_DEACTIVATED } from '@app/GameLogic/constants';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 
-const DEBUG_MESSAGE_ACTIVATED = 'affichages de débogage activés';
-const DEBUG_MESSAGE_DEACTIVATED = 'affichages de débogage déactivés';
 @Injectable({
     providedIn: 'root',
 })
@@ -47,11 +46,7 @@ export class CommandExecuterService {
             try {
                 const action = this.actionCompilerService.translate(command);
                 this.sendAction(action);
-            } catch (e) {
-                // TODO: message service error
-            }
-            // TODO: Compile action with action compiler
-            // send action to action validator
+            } catch (e) {}
         }
     }
 
@@ -65,7 +60,6 @@ export class CommandExecuterService {
     }
 
     private sendAction(action: Action) {
-        // TODO : REMOVE TRY CATCH - Olivier
         try {
             this.actionValidator.sendAction(action);
         } catch (e) {

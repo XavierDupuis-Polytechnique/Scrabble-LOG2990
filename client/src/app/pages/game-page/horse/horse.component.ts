@@ -1,6 +1,6 @@
 import { AfterContentInit, Component } from '@angular/core';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 
 @Component({
     selector: 'app-horse',

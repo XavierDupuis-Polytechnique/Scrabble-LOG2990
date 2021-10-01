@@ -7,19 +7,9 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { User } from '@app/GameLogic/player/user';
 
-// TODO: implement MockGameService
-// class MockGameInfoService {
-//     user: User;
-//     injectUser(user: User) {
-//         this.user = user;
-//     }
-// }
-// {provide: GameInfoService, useClass: MockGameService}
 describe('ActionCompilerService', () => {
     let service: ActionCompilerService;
     let gameInfo: GameInfoService;
-    // let gameInfoService: GameInfoService;
-    // let user: User;
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [ActionCompilerService, GameInfoService],
@@ -102,5 +92,4 @@ describe('ActionCompilerService', () => {
             service.translate(invalidCommand);
         }).toThrowError();
     });
-    // TODO: action compiler exhaustive test
 });

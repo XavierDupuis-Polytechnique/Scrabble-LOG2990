@@ -3,7 +3,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
-import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { LetterBag } from '@app/GameLogic/game/board/letter-bag';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { timer } from 'rxjs';
@@ -60,7 +60,6 @@ export class EasyBot extends Bot {
         const wordP6: ValidWord[] = [];
         const wordP7to12: ValidWord[] = [];
         const wordP13To18: ValidWord[] = [];
-        // Create subs arrays for valid word base on point
         validWordList.forEach((word) => {
             if (word.value.totalPoints <= EasyBot.botPointSetting.sixOrLess.value) {
                 wordP6.push(word);

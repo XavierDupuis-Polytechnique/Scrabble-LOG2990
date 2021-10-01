@@ -4,9 +4,9 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -21,9 +21,7 @@ export class ActionCompilerService {
 
     constructor(private gameInfo: GameInfoService, private pointCalculator: PointCalculatorService, private wordSearcher: WordSearcher) {}
 
-    // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
-        // TODO: get user from player service
         const user = this.findPlayer(command.from);
         const args = command.args;
         switch (command.type) {
@@ -45,7 +43,6 @@ export class ActionCompilerService {
     }
 
     private createExchangeLetter(user: User, args: string[] | undefined): ExchangeLetter {
-        // TODO: user.getLettersFromRack(letters);
         if (!args) {
             throw new Error('No argument was given for exchange letter creation');
         }

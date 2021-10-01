@@ -1,6 +1,5 @@
-import { BOARD_DIMENSION, EMPTY_CHAR } from '@app/GameLogic/constants';
+import { ASCII_CODE, BOARD_DIMENSION, EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Tile } from './tile';
-export const ASCII_CODE = 65;
 interface BoardSettingPosition {
     x: number;
     y: string;
