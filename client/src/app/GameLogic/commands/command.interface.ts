@@ -1,9 +1,9 @@
 export interface Command {
     from: string;
     type: CommandType;
-    args?: string[]; // dans le cas de debug, le args est optionnel
+    args?: string[];
 }
-// Peut etre ajouter un type 'undefined' pour pouvoir creer une commande qui n'est pas defini
+
 export enum CommandType {
     Debug = '!debug',
     Help = '!aide',

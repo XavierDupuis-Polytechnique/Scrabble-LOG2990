@@ -57,9 +57,8 @@ export class GameManagerService {
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
     }
-    // Change botDifficulty
+
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
-        // TODO CREATE PLAYER
         const user = new User(playerName);
         const bot = this.botService.createBot(playerName, botDifficulty);
         this.info.receiveUser(user);

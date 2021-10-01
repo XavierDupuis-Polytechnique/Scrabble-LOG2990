@@ -3,8 +3,6 @@ import { Word } from '@app/GameLogic/validator/word-search/word';
 
 export const VERTICAL = true;
 export const HORIZONTAL = false;
-
-// TODO Change isVertical to direction ??
 export class ValidWord {
     constructor(
         public word: string,

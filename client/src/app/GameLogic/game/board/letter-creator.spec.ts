@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 
-import { ASCII_CODE } from '@app/GameLogic/game/board/board';
+import { ASCII_CODE } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { LetterCreator } from './letter-creator';
 

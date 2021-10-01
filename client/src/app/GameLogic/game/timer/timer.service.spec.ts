@@ -1,4 +1,5 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { THOUSAND, THREE, TWO } from '@app/GameLogic/constants';
 import { TimerService } from './timer.service';
 
 describe('TimerService', () => {
@@ -14,7 +15,7 @@ describe('TimerService', () => {
     });
 
     it('should time the interval', fakeAsync(() => {
-        const time = 1000;
+        const time = THOUSAND;
         let timerDone = false;
         const time$ = service.start(time);
         time$.subscribe(() => {
@@ -34,11 +35,11 @@ describe('TimerService', () => {
         });
         service.start(time);
         expect(timeLeft).toBe(time);
-        tick(1000);
-        expect(timeLeft).toBe(2000);
-        tick(1000);
-        expect(timeLeft).toBe(1000);
-        tick(1000);
+        tick(THOUSAND);
+        expect(timeLeft).toBe(TWO * THOUSAND);
+        tick(THOUSAND);
+        expect(timeLeft).toBe(THOUSAND);
+        tick(THOUSAND);
         expect(timeLeft).toBe(0);
     }));
 
@@ -50,10 +51,10 @@ describe('TimerService', () => {
         });
         service.start(time);
         expect(timeLeft).toBe(time);
-        tick(1000);
-        expect(timeLeft).toBe(3000);
+        tick(THOUSAND);
+        expect(timeLeft).toBe(THREE * THOUSAND);
         service.stop();
-        tick(1000);
-        expect(timeLeft).toBe(3000);
+        tick(THOUSAND);
+        expect(timeLeft).toBe(THREE * THOUSAND);
     }));
 });

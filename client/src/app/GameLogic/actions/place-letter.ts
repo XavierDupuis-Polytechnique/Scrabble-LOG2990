@@ -8,17 +8,9 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { isCharUpperCase } from '@app/GameLogic/utils';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { timer } from 'rxjs';
-
-export const isCharUpperCase = (char: string) => {
-    if (char.length !== 1) {
-        throw Error('the string given is not a char');
-    }
-    const charCode = char.charCodeAt(0);
-    return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
-};
-
 export class PlaceLetter extends Action {
     lettersToRemoveInRack: Letter[];
     affectedCoords: Vec2[];
@@ -102,7 +94,6 @@ export class PlaceLetter extends Action {
                 const charToCreate = this.word[wordIndex];
                 const letterToRemove = this.letterToRemove(charToCreate);
                 this.lettersToRemoveInRack.push(letterToRemove);
-                // TODO: put * letter value 0
                 const newLetter = this.createNewLetter(charToCreate);
                 grid[y][x].letterObject = newLetter;
                 this.affectedCoords.push({ x, y });

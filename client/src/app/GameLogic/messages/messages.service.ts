@@ -50,7 +50,6 @@ export class MessagesService {
         }
     }
     receiveMessageOpponent(forwarder: string, content: string) {
-        console.log('asafdasdf');
         const message = {
             content,
             from: forwarder,
@@ -87,7 +86,6 @@ export class MessagesService {
     }
 
     private addMessageToLog(message: Message) {
-        // const messageCopy = { ...message };
         this.messagesLog.push(message);
         this.messages$.next(this.messagesLog);
     }

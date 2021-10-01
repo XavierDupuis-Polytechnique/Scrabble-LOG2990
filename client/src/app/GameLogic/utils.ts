@@ -27,3 +27,11 @@ export const placementSettingsToString = (placement: PlacementSetting): string =
     const directionString = direction.toLowerCase();
     return `${row}${col}${directionString}`;
 };
+
+export const isCharUpperCase = (char: string) => {
+    if (char.length !== 1) {
+        throw Error('the string given is not a char');
+    }
+    const charCode = char.charCodeAt(0);
+    return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
+};

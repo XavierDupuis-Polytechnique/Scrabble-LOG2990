@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
@@ -8,7 +7,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, FIVE, RACK_LETTER_COUNT, TEN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -48,7 +47,6 @@ describe('ActionValidatorService', () => {
         }
     }
 
-    // FIX les tests, car ils sont trop dépendants des autres services
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -144,7 +142,7 @@ describe('ActionValidatorService', () => {
     });
 
     it('should validate a valid ExchangeLetter because the game letterBag has enough letters', () => {
-        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 10);
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - TEN);
         const lettersToExchange = [...currentPlayer.letterRack].splice(0, 1);
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
         expect(service.validateAction(action)).toBeTruthy();
@@ -157,14 +155,14 @@ describe('ActionValidatorService', () => {
     });
 
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have enough letters', () => {
-        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 2); // 102 - 100 = 2 letters remaining
-        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 5)); // 5 letters to exchange
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 2);
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, FIVE));
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because the LetterBag has less than 7 letters', () => {
-        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - (RACK_LETTER_COUNT - 1)); // 102 - 96 = 6 letters remaining
-        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 1)); // 5 letters to exchange
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - (RACK_LETTER_COUNT - 1));
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 1));
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 

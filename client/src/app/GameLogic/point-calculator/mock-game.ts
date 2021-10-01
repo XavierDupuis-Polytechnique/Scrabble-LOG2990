@@ -1,3 +1,4 @@
+import { MAX_CONSECUTIVE_PASS } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -6,8 +7,6 @@ import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-
-const MAX_CONSECUTIVE_PASS = 6;
 
 export class MockGame extends Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;

@@ -21,9 +21,7 @@ export class ActionCompilerService {
 
     constructor(private gameInfo: GameInfoService, private pointCalculator: PointCalculatorService, private wordSearcher: WordSearcher) {}
 
-    // TODO: use player service to feed new action and get user
     translate(command: Command): Action {
-        // TODO: get user from player service
         const user = this.findPlayer(command.from);
         const args = command.args;
         switch (command.type) {
@@ -45,7 +43,6 @@ export class ActionCompilerService {
     }
 
     private createExchangeLetter(user: User, args: string[] | undefined): ExchangeLetter {
-        // TODO: user.getLettersFromRack(letters);
         if (!args) {
             throw new Error('No argument was given for exchange letter creation');
         }

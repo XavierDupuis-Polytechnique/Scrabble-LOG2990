@@ -4,7 +4,6 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { Player } from '@app/GameLogic/player/player';
 
 export class ExchangeLetter extends Action {
-    // On assume que l'action a ete validee (la reserve contient au moins 7 lettres)
     constructor(player: Player, readonly lettersToExchange: Letter[]) {
         super(player);
     }

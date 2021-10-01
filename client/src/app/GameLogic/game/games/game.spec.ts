@@ -56,8 +56,7 @@ describe('Game', () => {
         user1.letterRack = [];
         expect(game.isEndOfGame()).toBe(true);
     });
-    // TODO changer la function de messageSpy pour qu'il retourne les arguments...
-    // On pourra voir ce que game.onEndOfGame() envoie comme message
+
     it('on game end send message to system', () => {
         game.start();
         game.letterBag.gameLetters = [];
@@ -129,5 +128,4 @@ describe('Game', () => {
         const isSamePlayer = currentPlayer.name === nextPlayer.name;
         expect(isSamePlayer).toBeFalse();
     });
-    // it('should call #endOfGamePointDeduction from pointCalculator', () => {});
 });

@@ -60,7 +60,6 @@ export class EasyBot extends Bot {
         const wordP6: ValidWord[] = [];
         const wordP7to12: ValidWord[] = [];
         const wordP13To18: ValidWord[] = [];
-        // Create subs arrays for valid word base on point
         validWordList.forEach((word) => {
             if (word.value.totalPoints <= EasyBot.botPointSetting.sixOrLess.value) {
                 wordP6.push(word);

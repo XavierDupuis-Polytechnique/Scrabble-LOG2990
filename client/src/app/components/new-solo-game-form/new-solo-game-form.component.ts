@@ -1,12 +1,16 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DEFAULT_TIME_PER_TURN, MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '@app/GameLogic/constants';
+import {
+    DEFAULT_TIME_PER_TURN,
+    MAX_NAME_LENGTH,
+    MAX_TIME_PER_TURN,
+    MIN_NAME_LENGTH,
+    MIN_TIME_PER_TURN,
+    STEP_TIME_PER_TURN,
+} from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 
-const MIN_TIME_PER_TURN = 30000;
-const MAX_TIME_PER_TURN = 300000;
-const STEP_TIME_PER_TURN = 30000;
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 
 @Component({

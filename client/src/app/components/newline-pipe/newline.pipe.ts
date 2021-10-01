@@ -7,7 +7,6 @@ const NEWLINE_REGEX = /\\n/;
 })
 export class NewlinePipe implements PipeTransform {
     transform(value: string): string {
-        // const sanitized = this.sanitize(value);
         const replace = this.replace(value);
         return replace;
     }
@@ -15,8 +14,4 @@ export class NewlinePipe implements PipeTransform {
     private replace(str: string): string {
         return str.replace(new RegExp(NEWLINE_REGEX, 'gm'), '<br>');
     }
-
-    // private sanitize(str: string): string {
-    //     return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    // }
 }

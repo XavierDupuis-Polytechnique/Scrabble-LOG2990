@@ -14,11 +14,6 @@ export class LetterBag {
                 this.gameLetters.push(this.letterCreator.createLetter(letter));
             }
         }
-        this.displayNumberGameLettersLeft();
-    }
-
-    displayNumberGameLettersLeft() {
-        // console.log('There are ' + this.gameLetters.length + ' GameLetters left');
     }
 
     drawEmptyRackLetters(): Letter[] {
