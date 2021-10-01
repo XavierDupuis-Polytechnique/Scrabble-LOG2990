@@ -20,34 +20,4 @@ describe('BoardComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-
-    // it('should increase font size', () => {
-    //     const currentFontSize = component.fontSize;
-    //     component.increaseFont();
-    //     const newFontSize = component.fontSize;
-    //     expect(currentFontSize < newFontSize).toBeTrue();
-    // });
-
-    // it('should decrease font size', () => {
-    //     const currentFontSize = component.fontSize;
-    //     component.decreaseFont();
-    //     const newFontSize = component.fontSize;
-    //     expect(currentFontSize > newFontSize).toBeTrue();
-    // });
-
-    // it('should stop increase when value is hit', () => {
-    //     component.fontSize = component.maxFontSize;
-    //     const currentFontSize = component.fontSize;
-    //     component.increaseFont();
-    //     const newFontSize = component.fontSize;
-    //     expect(currentFontSize === newFontSize).toBeTrue();
-    // });
-
-    // it('should stop decrease when value is hit', () => {
-    //     component.fontSize = component.minFontSize;
-    //     const currentFontSize = component.fontSize;
-    //     component.decreaseFont();
-    //     const newFontSize = component.fontSize;
-    //     expect(currentFontSize === newFontSize).toBeTrue();
-    // });
 });
