@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-/* eslint-disable max-classes-per-file */
+
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';

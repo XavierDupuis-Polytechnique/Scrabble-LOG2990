@@ -11,8 +11,8 @@ const MAX_CONSECUTIVE_PASS = 6;
 
 export class MockGame extends Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
-    activePlayer: Player = new User('ActivePlayer');
     otherPlayer: Player = new User('otherPlayer');
+    activePlayer: Player = new User('ActivePlayer');
     players: Player[];
     consecutivePass: number = MAX_CONSECUTIVE_PASS;
     board: Board;
