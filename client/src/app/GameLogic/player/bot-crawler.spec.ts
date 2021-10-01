@@ -216,4 +216,44 @@ describe('BotCrawler', () => {
 
         expect(result[0].isVertical).toEqual(expected);
     });
+
+    it('should stop the first turn algo when timesUp', () => {
+        const letters: Letter[] = [
+            { char: 'L', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'R', value: 1 },
+            { char: '*', value: 1 },
+            { char: 'I', value: 1 },
+            { char: '*', value: 1 },
+            { char: 'S', value: 1 },
+        ];
+        bot.letterRack = letters;
+
+        let result: ValidWord[] = [];
+        const expected = 0;
+        bot.timesUp = true;
+        result = bot.bruteForceStart();
+        expect(result.length).toEqual(expected);
+    });
+
+    it('should stop the algo when timesUp', () => {
+        const letters: Letter[] = [
+            { char: 'L', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'R', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'I', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'S', value: 1 },
+        ];
+        bot.letterRack = letters;
+
+        placeTestWords(5, 7, false, 'etre', boardService);
+
+        let result: ValidWord[] = [];
+        const expected = 0;
+        bot.timesUp = true;
+        result = bot.bruteForceStart();
+        expect(result.length).toEqual(expected);
+    });
 });

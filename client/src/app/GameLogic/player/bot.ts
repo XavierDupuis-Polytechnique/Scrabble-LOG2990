@@ -20,6 +20,7 @@ export abstract class Bot extends Player {
     letterCreator = new LetterCreator();
     validWordList: ValidWord[];
     botCrawler: BotCrawler;
+    timesUp: boolean;
     private chosenAction$ = new BehaviorSubject<Action | undefined>(undefined);
 
     constructor(
@@ -46,6 +47,7 @@ export abstract class Bot extends Player {
     startTimerAction() {
         const timerPass = timer(TIME_BEFORE_PASS);
         timerPass.pipe(takeUntil(this.action$)).subscribe(() => {
+            this.timesUp = true;
             this.botMessage.sendAction(new PassTurn(this));
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {

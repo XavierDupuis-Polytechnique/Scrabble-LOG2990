@@ -29,6 +29,7 @@ export class EasyBot extends Bot {
 
     setActive() {
         this.startTimerAction();
+        this.timesUp = false;
         timer(TIME_BUFFER_BEFORE_ACTION).subscribe(() => {
             const action = this.randomActionPicker();
             this.chooseAction(action);

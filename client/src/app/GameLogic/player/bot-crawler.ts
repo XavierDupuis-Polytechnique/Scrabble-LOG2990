@@ -22,6 +22,7 @@ export class BotCrawler {
 
     botFirstTurn() {
         for (let rackIndex = 0; rackIndex < this.bot.letterRack.length; rackIndex++) {
+            if (this.bot.timesUp) break;
             const startingLetter = this.bot.letterRack[rackIndex].char.toLowerCase();
             if (startingLetter !== '*') {
                 const placedLetter: ValidWord[] = [];
@@ -46,6 +47,7 @@ export class BotCrawler {
     }
 
     boardCrawler(startingX: number, startingY: number, grid: Tile[][], isVerticalFlag: boolean) {
+        if (this.bot.timesUp) return;
         let x = startingX;
         let y = startingY;
         let isVertical = isVerticalFlag;
