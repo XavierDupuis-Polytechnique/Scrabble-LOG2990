@@ -211,6 +211,11 @@ export class ActionValidatorService {
     }
 
     private sendSystemMessage(player: string, content: string) {
-        this.messageService.receiveMessage(player, content);
+        const players = this.gameInfo.players;
+        if (player === players[0].name) {
+            this.messageService.receiveMessagePlayer(player, content);
+        } else {
+            this.messageService.receiveMessageOpponent(player, content);
+        }
     }
 }
