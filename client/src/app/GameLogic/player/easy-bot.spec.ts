@@ -163,6 +163,7 @@ describe('EasyBot', () => {
         easyBot.letterRack = letters;
         const getRandomInt = spyOn(easyBot, 'getRandomInt');
         getRandomInt.withArgs(1).and.returnValue(1);
+        getRandomInt.and.callThrough();
 
         spyOn(Math, 'random').and.returnValue(0.5);
         const result = easyBot.randomActionPicker();
@@ -182,6 +183,7 @@ describe('EasyBot', () => {
         easyBot.letterRack = letters;
         const getRandomInt = spyOn(easyBot, 'getRandomInt');
         getRandomInt.withArgs(1).and.returnValue(0);
+        getRandomInt.and.callThrough();
 
         spyOn(Math, 'random').and.returnValue(0.5);
         const result = easyBot.randomActionPicker();

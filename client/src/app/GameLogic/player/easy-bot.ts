@@ -129,12 +129,8 @@ export class EasyBot extends Bot {
         return action;
     }
 
-    private randomInInterval(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
     private wordPicker(list: ValidWord[]): ValidWord {
-        const randomPicker = this.randomInInterval(0, list.length);
+        const randomPicker = this.getRandomInt(list.length);
         return list[randomPicker];
     }
 }

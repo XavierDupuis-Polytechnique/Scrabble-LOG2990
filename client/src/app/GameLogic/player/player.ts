@@ -6,7 +6,6 @@ import { Subject } from 'rxjs';
 export abstract class Player {
     static defaultName = 'QWERTY';
     action$: Subject<Action> = new Subject();
-    // nextAction: Action;
 
     points: number = 0;
     name: string = Player.defaultName;
@@ -22,7 +21,7 @@ export abstract class Player {
         this.action$.next(action);
     }
 
-    getLettersFromRack(mockLetters: Letter[]): Letter[] {
+    getLettersFromRack(lettersToFind: Letter[]): Letter[] {
         const lettersInRack: Map<string, Letter[]> = new Map();
         for (const letter of this.letterRack) {
             const char: string = letter.char;
@@ -35,11 +34,11 @@ export abstract class Player {
         }
 
         const lettersFromRack = [];
-        for (const mockLetter of mockLetters) {
-            const mockChar = mockLetter.char;
-            const lettersLeft = lettersInRack.get(mockChar);
+        for (const letterToFind of lettersToFind) {
+            const charToFind = letterToFind.char;
+            const lettersLeft = lettersInRack.get(charToFind);
             if (lettersLeft) {
-                const letterToAdd = lettersLeft.pop();
+                const letterToAdd = lettersLeft.shift();
                 if (!letterToAdd) {
                     throw Error('Some letters are invalid');
                 }

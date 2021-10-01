@@ -109,10 +109,6 @@ export class BotMessagesService {
         return out;
     }
 
-    getRandomInt(max: number, min: number = 0) {
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-
     sendAlternativeWords(validWordList: ValidWord[]) {
         let content = END_LINE;
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
