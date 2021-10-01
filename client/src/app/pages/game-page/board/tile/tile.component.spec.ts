@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { Tile } from '@app/GameLogic/game/tile';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { TileComponent } from './tile.component';
 
 describe('TileComponent', () => {

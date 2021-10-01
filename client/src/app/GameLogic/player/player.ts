@@ -1,6 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { LetterBag } from '@app/GameLogic/game/letter-bag';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { LetterBag } from '@app/GameLogic/game/board/letter-bag';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { Subject } from 'rxjs';
 
 export abstract class Player {

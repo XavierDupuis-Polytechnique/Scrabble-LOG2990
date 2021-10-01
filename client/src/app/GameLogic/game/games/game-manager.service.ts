@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -7,7 +8,6 @@ import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { BoardService } from '@app/services/board.service';
 import { Observable, Subject } from 'rxjs';
 import { Game } from './game';
 import { GameSettings } from './game-settings.interface';

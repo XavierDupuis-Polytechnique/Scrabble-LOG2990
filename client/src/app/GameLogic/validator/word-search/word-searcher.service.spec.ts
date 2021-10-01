@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -9,7 +10,6 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { MockBoard } from '@app/GameLogic/validator/word-search/mock-board';
 import { MockDictionaryService } from '@app/GameLogic/validator/word-search/mock-dictionary-service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
 
 describe('WordSearcher', () => {
     let wordSearcher: WordSearcher;

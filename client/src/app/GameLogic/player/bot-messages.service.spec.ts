@@ -8,7 +8,7 @@ import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { BINGO_VALUE, BOARD_DIMENSION } from '@app/GameLogic/constants';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';

@@ -1,6 +1,6 @@
 import { EMPTY_CHAR } from '@app/GameLogic/constants';
-import { Board } from '@app/GameLogic/game/board';
-import { Tile } from '@app/GameLogic/game/tile';
+import { Board } from '@app/GameLogic/game/board/board';
+import { Tile } from '@app/GameLogic/game/board/tile';
 
 const BOARD_LENGTH = 10;
 const BOARD_WIDTH = 10;

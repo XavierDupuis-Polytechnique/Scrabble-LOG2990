@@ -1,4 +1,4 @@
-import { Tile } from '@app/GameLogic/game/tile';
+import { Tile } from '@app/GameLogic/game/board/tile';
 
 export interface Word {
     letters: Tile[];

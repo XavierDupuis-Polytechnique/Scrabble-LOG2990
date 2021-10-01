@@ -9,6 +9,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -19,7 +20,6 @@ import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;

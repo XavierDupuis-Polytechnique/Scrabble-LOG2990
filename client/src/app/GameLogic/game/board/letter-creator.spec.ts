@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 
-import { ASCII_CODE } from '@app/GameLogic/game/board';
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { ASCII_CODE } from '@app/GameLogic/game/board/board';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { LetterCreator } from './letter-creator';
 
 describe('Service: LetterCreator', () => {

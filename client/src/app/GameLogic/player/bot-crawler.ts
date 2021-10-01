@@ -1,5 +1,5 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { Tile } from '@app/GameLogic/game/tile';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Bot } from '@app/GameLogic/player/bot';
 import { ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';

@@ -3,12 +3,12 @@ import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR } from '@app/GameLogic/constants';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Tile } from '@app/GameLogic/game/tile';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
-import { BoardService } from '@app/services/board.service';
 @Injectable({
     providedIn: 'root',
 })

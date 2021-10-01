@@ -5,16 +5,16 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { BoardService } from '@app/services/board.service';
 import { EasyBot } from './easy-bot';
 
 describe('EasyBot', () => {

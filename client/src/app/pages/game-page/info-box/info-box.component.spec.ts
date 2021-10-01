@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { Observable } from 'rxjs';

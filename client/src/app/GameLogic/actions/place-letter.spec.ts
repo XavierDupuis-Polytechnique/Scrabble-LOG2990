@@ -2,10 +2,11 @@ import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { isCharUpperCase, PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -15,7 +16,6 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
 
 class MockWordSearcher extends WordSearcher {
     validity = true;

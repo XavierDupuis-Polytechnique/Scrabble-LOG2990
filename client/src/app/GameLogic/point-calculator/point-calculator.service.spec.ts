@@ -3,9 +3,10 @@
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
+import { Tile } from '@app/GameLogic/game/board/tile';
 import { Game } from '@app/GameLogic/game/games/game';
-import { Letter } from '@app/GameLogic/game/letter.interface';
-import { Tile } from '@app/GameLogic/game/tile';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
@@ -14,7 +15,6 @@ import { MockGame } from '@app/GameLogic/point-calculator/mock-game';
 import { MockPlaceLetter } from '@app/GameLogic/point-calculator/mock-place-letter';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-import { BoardService } from '@app/services/board.service';
 
 describe('PointCalculatorService', () => {
     let pointCalculator: PointCalculatorService;
