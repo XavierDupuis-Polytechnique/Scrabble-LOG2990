@@ -1,12 +1,26 @@
+/* eslint-disable max-lines */
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TestBed } from '@angular/core/testing';
+import { Action } from '@app/GameLogic/actions/action';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { BINGO_VALUE, BOARD_DIMENSION } from '@app/GameLogic/constants';
+import { Letter } from '@app/GameLogic/game/letter.interface';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
-import { BotMessagesService } from './bot-messages.service';
+import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
+import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { placementSettingsToString } from '@app/GameLogic/utils';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('BotMessagesService', () => {
-    let service: BotMessagesService;
+    let botMessage: BotMessagesService;
     const stringWordAvion = 'avion';
     const pointsWordAvion = 25;
     const wordLettersAvion = [
@@ -37,26 +51,38 @@ describe('BotMessagesService', () => {
         { letterObject: { char: 'N', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
         { letterObject: { char: 'T', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
     ];
-    let spyMessageService: MessagesService;
+    let messageService: MessagesService;
+    let botCreatorService: BotCreatorService;
+    let pointCalculatorService: PointCalculatorService;
+    let wordSearcher: WordSearcher;
+    let commandExecuter: CommandExecuterService;
+    let easyBot: EasyBot;
 
     beforeEach(() => {
-        spyMessageService = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage']);
-        TestBed.configureTestingModule({ providers: [{ provide: MessagesService, useValue: spyMessageService }, CommandExecuterService] });
-        service = TestBed.inject(BotMessagesService);
+        TestBed.configureTestingModule({
+            providers: [MessagesService, CommandExecuterService, BotCreatorService, PointCalculatorService, WordSearcher, CommandExecuterService],
+        });
+        messageService = TestBed.inject(MessagesService);
+        botMessage = TestBed.inject(BotMessagesService);
+        botCreatorService = TestBed.inject(BotCreatorService);
+        pointCalculatorService = TestBed.inject(PointCalculatorService);
+        wordSearcher = TestBed.inject(WordSearcher);
+        commandExecuter = TestBed.inject(CommandExecuterService);
+        easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
     });
 
     it('should be created', () => {
-        expect(service).toBeTruthy();
+        expect(botMessage).toBeTruthy();
     });
 
-    it('should correctly format a valid word alternative for a first turn word', () => {
+    it('should correctly format a valid word alternative for a first turn word (horizontal)', () => {
         const validWordAvion = new ValidWord(
             stringWordAvion,
             0,
             stringWordAvion.length,
             0,
             0,
-            false,
+            HORIZONTAL,
             Math.floor(BOARD_DIMENSION / 2),
             Math.floor(BOARD_DIMENSION / 2),
             stringWordAvion.length,
@@ -64,7 +90,25 @@ describe('BotMessagesService', () => {
             { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
         );
         const expected = 'H8:A H9:V H10:I H11:O H12:N (25) \\n#A##V##I##O##N# (25) \\n\\n';
-        expect(service.formatAlternativeWord(validWordAvion)).toBe(expected);
+        expect(botMessage.formatAlternativeWord(validWordAvion)).toBe(expected);
+    });
+
+    it('should correctly format a valid word alternative for a first turn word (vertical)', () => {
+        const validWordAvion = new ValidWord(
+            stringWordAvion,
+            0,
+            stringWordAvion.length,
+            0,
+            0,
+            VERTICAL,
+            Math.floor(BOARD_DIMENSION / 2),
+            Math.floor(BOARD_DIMENSION / 2),
+            stringWordAvion.length,
+            [{ letters: wordLettersAvion, index: [0, 1, 2, 3, 4] }],
+            { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
+        );
+        const expected = 'H8:A I8:V J8:I K8:O L8:N (25) \\n#A##V##I##O##N# (25) \\n\\n';
+        expect(botMessage.formatAlternativeWord(validWordAvion)).toBe(expected);
     });
 
     it('should correctly format a valid word alternative for a first turn word with bingo', () => {
@@ -82,7 +126,7 @@ describe('BotMessagesService', () => {
             { wordsPoints: [{ word: stringWordLongmot, points: pointsWordLongmot }], totalPoints: pointsWordLongmot + BINGO_VALUE, isBingo: true },
         );
         const expected = 'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n';
-        expect(service.formatAlternativeWord(validWord)).toBe(expected);
+        expect(botMessage.formatAlternativeWord(validWord)).toBe(expected);
     });
 
     it('should correctly format a valid placement that generates multiple sub words', () => {
@@ -110,7 +154,7 @@ describe('BotMessagesService', () => {
             },
         );
         const expected = 'H8:V H9:O H10:L H11:A H12:N H13:T (70) \\n' + '#V##O##L##A##N##T# (45) ' + '\\n' + '#A##V##I##O##N# (25) \\n\\n';
-        expect(service.formatAlternativeWord(validWordWithMultipleSubWords)).toBe(expected);
+        expect(botMessage.formatAlternativeWord(validWordWithMultipleSubWords)).toBe(expected);
     });
 
     it('should correctly format a valid word alternative for an added word on previously placed letters', () => {
@@ -128,7 +172,7 @@ describe('BotMessagesService', () => {
             { wordsPoints: [{ word: stringWordAvion, points: pointsWordAvion }], totalPoints: pointsWordAvion, isBingo: false },
         );
         const expected = 'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n';
-        expect(service.formatAlternativeWord(validWordAvion)).toBe(expected);
+        expect(botMessage.formatAlternativeWord(validWordAvion)).toBe(expected);
     });
 
     it('should correctly provide 3 word alternatives with correct format', () => {
@@ -172,13 +216,16 @@ describe('BotMessagesService', () => {
             { wordsPoints: [{ word: stringWordVolant, points: pointsWordVolant }], totalPoints: pointsWordVolant, isBingo: false },
         );
         const fakeWordList = [validWordAvion, validWordLongmot, validWordVolant];
-        service.sendAlternativeWords(fakeWordList);
-        const expected =
+        const spyReceiveSystemMessage = spyOn(messageService, 'receiveSystemMessage');
+        botMessage.sendAlternativeWords(fakeWordList);
+        const expected: string[] = [];
+        expected.push(
             '\\n' +
             'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
             'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n';
-        expect(spyMessageService.receiveSystemMessage).toHaveBeenCalledWith(expected);
+            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+        );
+        expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
 
     it('should correctly provide 2 word alternatives when there are only 2 alternatives', () => {
@@ -209,12 +256,15 @@ describe('BotMessagesService', () => {
             { wordsPoints: [{ word: stringWordVolant, points: pointsWordVolant }], totalPoints: pointsWordVolant, isBingo: false },
         );
         const fakeWordList = [validWordLongmot, validWordVolant];
-        service.sendAlternativeWords(fakeWordList);
-        const expected =
+        const spyReceiveSystemMessage = spyOn(messageService, 'receiveSystemMessage');
+        botMessage.sendAlternativeWords(fakeWordList);
+        const expected: string[] = [];
+        expected.push(
             '\\n' +
             'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n';
-        expect(spyMessageService.receiveSystemMessage).toHaveBeenCalledWith(expected);
+            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+        );
+        expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
 
     it('should correctly provide 1 word alternative when there is only 1 alternative', () => {
@@ -232,8 +282,161 @@ describe('BotMessagesService', () => {
             { wordsPoints: [{ word: stringWordLongmot, points: pointsWordLongmot }], totalPoints: pointsWordLongmot + BINGO_VALUE, isBingo: true },
         );
         const fakeWordList = [validWordLongmot];
-        service.sendAlternativeWords(fakeWordList);
-        const expected = '\\n' + 'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n';
-        expect(spyMessageService.receiveSystemMessage).toHaveBeenCalledWith(expected);
+        const spyReceiveSystemMessage = spyOn(messageService, 'receiveSystemMessage');
+        botMessage.sendAlternativeWords(fakeWordList);
+        const expected: string[] = [];
+        expected.push('\\n' + 'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n');
+        expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
+    });
+
+    it('should return the placement settings in a string', () => {
+        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const result = placementSettingsToString(placement);
+        const expected = 'f6h';
+
+        expect(result).toEqual(expected);
+    });
+
+    it('should throw when the position is invalid x < BOARD_MIN_POSITION', () => {
+        const placement: PlacementSetting = { x: -1, y: 5, direction: 'H' };
+        const result = () => {
+            placementSettingsToString(placement);
+        };
+
+        expect(result).toThrowError('X value not between 0-14');
+    });
+
+    it('should throw when the position is invalid x > BOARD_MAX_POSITION', () => {
+        const placement: PlacementSetting = { x: 18, y: 5, direction: 'H' };
+        const result = () => {
+            placementSettingsToString(placement);
+        };
+
+        expect(result).toThrowError('X value not between 0-14');
+    });
+
+    it('should throw when the position is invalid y < BOARD_MIN_POSITION', () => {
+        const placement: PlacementSetting = { x: 5, y: -1, direction: 'H' };
+        const result = () => {
+            placementSettingsToString(placement);
+        };
+
+        expect(result).toThrowError('Y value not between 0-14');
+    });
+
+    it('should throw when the position is invalid y > BOARD_MAX_POSITION', () => {
+        const placement: PlacementSetting = { x: 5, y: 18, direction: 'H' };
+        const result = () => {
+            placementSettingsToString(placement);
+        };
+
+        expect(result).toThrowError('Y value not between 0-14');
+    });
+
+    it('should throw when the direction is invalid (!= H || V)', () => {
+        const placement: PlacementSetting = { x: 5, y: 5, direction: 'K' };
+        const result = () => {
+            placementSettingsToString(placement);
+        };
+
+        expect(result).toThrowError('Invalid direction');
+    });
+
+    it('should sendAction of type PassTurn', () => {
+        const action: Action = new PassTurn(easyBot);
+        const spySendPassTurnMessage = spyOn(botMessage, 'sendPassTurnMessage');
+
+        botMessage.sendAction(action);
+
+        const expected = 1;
+
+        expect(spySendPassTurnMessage.calls.count()).toEqual(expected);
+    });
+
+    it('should sendAction of type ExchangeLetter', () => {
+        const letters: Letter[] = [
+            { char: 'A', value: 1 },
+            { char: 'P', value: 1 },
+            { char: '*', value: 1 },
+            { char: 'C', value: 1 },
+            { char: 'U', value: 1 },
+            { char: 'E', value: 1 },
+            { char: 'V', value: 1 },
+        ];
+        const action: Action = new ExchangeLetter(easyBot, letters);
+        const spySendExchangeLettersMessage = spyOn(botMessage, 'sendExchangeLettersMessage').and.callThrough();
+        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        botMessage.sendAction(action);
+        const expected1 = [];
+        expected1.push(letters);
+        expected1.push(easyBot.name);
+
+        const expected2: string[] = [];
+        expected2.push(easyBot.name);
+        expected2.push(`${CommandType.Exchange} ap*cuev`);
+
+        const result1 = spySendExchangeLettersMessage.calls.first().args;
+        const result2 = spyReceiveMessage.calls.first().args;
+
+        expect(result1).toEqual(expected1);
+        expect(result2).toEqual(expected2);
+    });
+
+    it('should sendAction of type PlaceLetter', () => {
+        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
+        const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
+        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+
+        botMessage.sendAction(action);
+
+        const expected1: (string | PlacementSetting)[] = [];
+        expected1.push('hello');
+        expected1.push(placement);
+        expected1.push(easyBot.name);
+
+        const expected2: string[] = [];
+        expected2.push(easyBot.name);
+        expected2.push(`${CommandType.Place} ${'f6h'} ${'hello'}`);
+
+        const result = spySendPlaceLetterMessage.calls.first().args;
+        const result2 = spyReceiveMessage.calls.first().args;
+
+        expect(result).toEqual(expected1);
+        expect(result2).toEqual(expected2);
+    });
+
+    it('should sendAction of type PlaceLetter with debug active', () => {
+        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
+        const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
+        const spyReceiveMessage = spyOn(messageService, 'receiveMessage');
+        const spySendAlternativeWords = spyOn(botMessage, 'sendAlternativeWords');
+        const command = {
+            type: CommandType.Debug,
+            from: ' ',
+        };
+        commandExecuter.execute(command);
+        botMessage.sendAction(action);
+
+        const expected1: (string | PlacementSetting)[] = [];
+        expected1.push('hello');
+        expected1.push(placement);
+        expected1.push(easyBot.name);
+
+        const expected2: string[] = [];
+        expected2.push(easyBot.name);
+        expected2.push(`${CommandType.Place} ${'f6h'} ${'hello'}`);
+
+        const expected3: ValidWord[][] = [];
+        expected3.push(easyBot.validWordList);
+
+        const result = spySendPlaceLetterMessage.calls.first().args;
+        const result2 = spyReceiveMessage.calls.first().args;
+        const result3 = spySendAlternativeWords.calls.first().args;
+
+        expect(result).toEqual(expected1);
+        expect(result2).toEqual(expected2);
+        expect(result3).toEqual(expected3);
     });
 });

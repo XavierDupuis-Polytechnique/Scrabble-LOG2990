@@ -5,7 +5,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
-import { BINGO_MESSAGE, DEBUG_ALTERNATIVE_WORDS_COUNT, ENDLINE } from '@app/GameLogic/constants';
+import { BINGO_MESSAGE, DEBUG_ALTERNATIVE_WORDS_COUNT, END_LINE } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -70,25 +70,21 @@ export class BotMessagesService {
         }
         let out = posLetters;
         out = out.concat('(' + word.value.totalPoints + ') ');
-        out = out.concat(ENDLINE);
+        out = out.concat(END_LINE);
         for (const formedWord of formedWords) {
             out = out.concat(formedWord);
-            out = out.concat(ENDLINE);
+            out = out.concat(END_LINE);
         }
         if (word.value.isBingo) {
             out = out.concat(BINGO_MESSAGE);
-            out = out.concat(ENDLINE);
+            out = out.concat(END_LINE);
         }
-        out = out.concat(ENDLINE);
+        out = out.concat(END_LINE);
         return out;
     }
 
-    getRandomInt(max: number, min: number = 0) {
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-
     sendAlternativeWords(validWordList: ValidWord[]) {
-        let content = ENDLINE;
+        let content = END_LINE;
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
             if (i === validWordList.length) {
                 break;

@@ -30,7 +30,7 @@ export class LetterBag {
         const drawedGameLetters: Letter[] = [];
         let drawedGameLetterIndex = -1;
         for (let i = 0; i < numberOfLetterToDraw; i++) {
-            drawedGameLetterIndex = this.getRandomInt(this.gameLetters.length);
+            drawedGameLetterIndex = Math.floor(Math.random() * this.gameLetters.length);
             drawedGameLetters.push(this.gameLetters.splice(drawedGameLetterIndex, 1)[0]);
         }
         return drawedGameLetters;
@@ -38,10 +38,6 @@ export class LetterBag {
 
     addLetter(letter: Letter) {
         this.gameLetters.push(letter);
-    }
-
-    getRandomInt(max: number) {
-        return Math.floor(Math.random() * max);
     }
 
     get lettersLeft(): number {
