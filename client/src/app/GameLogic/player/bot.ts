@@ -1,5 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { LetterCreator } from '@app/GameLogic/game/letter-creator';
 import { BotCrawler } from '@app/GameLogic/player/bot-crawler';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
@@ -30,6 +31,7 @@ export abstract class Bot extends Player {
         protected pointCalculatorService: PointCalculatorService,
         protected wordValidator: WordSearcher,
         protected botMessage: BotMessagesService,
+        protected commandeExecuter: CommandExecuterService,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);

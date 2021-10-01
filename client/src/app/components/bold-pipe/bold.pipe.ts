@@ -7,8 +7,8 @@ const BOLD_REGEX = /#(.+?)#/;
 })
 export class BoldPipe implements PipeTransform {
     transform(value: string): string {
-        const sanitezed = this.sanitize(value);
-        const replace = this.replace(sanitezed);
+        const sanitized = this.sanitize(value);
+        const replace = this.replace(sanitized);
         return replace;
     }
 
