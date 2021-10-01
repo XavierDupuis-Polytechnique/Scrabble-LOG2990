@@ -446,7 +446,7 @@ describe('ActionValidatorService', () => {
     });
 
     it('should send correct message format for ExchangeLetter action when the opponent plays', () => {
-        const self = game.players[0] === currentPlayer ? game.players[1] : game.players[0];
+        const self = p1 === currentPlayer ? p2 : p1;
         info.receiveUser(self);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         const chars = currentPlayer.letterRack.map((letter) => letter.char);
