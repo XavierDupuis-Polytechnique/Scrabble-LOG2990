@@ -6,10 +6,12 @@ import {
     CHARACTER_V,
     MAX_PLACE_LETTER_ARG_SIZE,
     MIN_PLACE_LETTER_ARG_SIZE,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/GameLogic/constants';
 import { Observable, Subject } from 'rxjs';
 
+const INVALID_PLACE_LETTER = new RegExp('[^a-zA-Z]');
+const INVALID_EXCHANGE_LETTER = new RegExp('[^a-z*]');
 @Injectable({
     providedIn: 'root',
 })
@@ -73,7 +75,6 @@ export class CommandParserService {
     }
 
     placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
-        const letters = new RegExp('^(?=.*?[A-Za-z])[A-Za-z+]+$');
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             throw Error(this.errorSyntax + ': ligne hors champ');
         }
@@ -83,7 +84,7 @@ export class CommandParserService {
         if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
             throw Error(this.errorSyntax + ': direction invalide');
         }
-        if (word.length < 2 || word.length > BOARD_DIMENSION || !letters.test(word)) {
+        if (word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
             throw Error(this.errorSyntax + ': mot invalide');
         }
     }
@@ -100,20 +101,13 @@ export class CommandParserService {
         throw Error(this.errorSyntax + ': colonne invalide');
     }
 
-    exchangeLetterArgVerifier(arg: string) {
-        let rackLetters = arg;
-        while (rackLetters.length !== 0) {
-            const letter = rackLetters[0];
-            if (rackLetters.split(letter).length - 1 > RACK_LETTER_COUNT) {
-                throw Error("Commande impossible à réaliser: une lettre a le droit d'être échanger un maximum de 7 fois par tour");
-            }
-            const re = new RegExp(letter, 'g');
-            rackLetters = rackLetters.replace(re, '');
+    exchangeLetterArgVerifier(word: string) {
+        if (word.length > RACK_LETTER_COUNT) {
+            throw Error('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
         }
-        for (let i = 0; i < arg.length - 1; i++) {
-            if (arg[i] === arg[i].toUpperCase()) {
-                throw Error('les paramètres sont invalides');
-            }
+
+        if (INVALID_EXCHANGE_LETTER.test(word)) {
+            throw Error('les paramètres sont invalides');
         }
     }
 
