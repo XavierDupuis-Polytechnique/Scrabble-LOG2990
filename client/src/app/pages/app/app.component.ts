@@ -6,7 +6,7 @@ import imagesData from 'src/assets/preload-images.json';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-    path: string = '/assets/img/';
+    path: string = 'assets/img/';
     images: string[];
     constructor() {
         this.images = imagesData.map((img) => this.path + img);
