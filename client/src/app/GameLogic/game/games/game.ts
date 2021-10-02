@@ -1,14 +1,13 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { MAX_CONSECUTIVE_PASS } from '@app/GameLogic/constants';
-import { Board } from '@app/GameLogic/game/board';
-import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { Board } from '@app/GameLogic/game/board/board';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterBag } from '@app/GameLogic/game/board/letter-bag';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { BoardService } from '@app/services/board.service';
 import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
 export class Game {
@@ -72,9 +71,6 @@ export class Game {
         } else {
             this.consecutivePass = 0;
         }
-        if (action instanceof PlaceLetter) {
-            // calculer points du active player
-        }
     }
 
     getWinner(): Player[] {
@@ -108,13 +104,11 @@ export class Game {
         this.turnNumber++;
         const activePlayer = this.players[this.activePlayerIndex];
         activePlayer.setActive();
-        // console.log('its', activePlayer, 'turns');
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
     }
 
-    // TODO implement action execute
     private endOfTurn(action: Action) {
         this.timer.stop();
 

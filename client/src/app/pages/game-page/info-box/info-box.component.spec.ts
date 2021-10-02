@@ -1,42 +1,41 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { THOUSAND, TWO } from '@app/GameLogic/constants';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { Game } from '@app/GameLogic/game/games/game';
-import { LetterCreator } from '@app/GameLogic/game/letter-creator';
-import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
-import { Observable } from 'rxjs';
-import { InfoBoxComponent } from './info-box.component';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { InfoBoxComponent, MILISECONDS_IN_MINUTE } from './info-box.component';
 
 class MockGameInfoService {
     user: User;
+    timeLeft$: number;
     players = [
-        { name: 'P1', points: 0, letterRack: [{ char: 'A', value: 1 }] },
+        { name: 'P1', points: 120, letterRack: [{ char: 'A', value: 1 }] },
         { name: 'P2', points: 0, letterRack: [{ char: 'A', value: 1 }] },
     ];
+    // eslint-disable-next-line no-invalid-this
     activePlayer = this.players[0];
-    receiveGame(game: Game): void {
-        throw new Error('Method not implemented.');
-    }
-    receiveUser(user: User): void {
-        throw new Error('Method not implemented.');
-    }
-    getPlayer(index: number): Player {
-        throw new Error('Method not implemented.');
-    }
     getPlayerScore(index: number): number {
         return this.players[index].points;
     }
     get numberOfPlayers(): number {
         return this.players.length;
     }
-    get timeLeftForTurn(): Observable<number> {
-        return new Observable<number>();
+    get timeLeftForTurn(): Observable<number | undefined> {
+        const t = new BehaviorSubject<number | undefined>(undefined);
+        t.next(TWO * THOUSAND);
+        return t;
     }
     get numberOfLettersRemaining(): number {
         return LetterCreator.defaultNumberOfLetters;
     }
+
+    get winner() {
+        return [this.players[0]];
+    }
 }
 
+const testMock: MockGameInfoService = new MockGameInfoService();
 describe('InfoBoxComponent', () => {
     let component: InfoBoxComponent;
     let fixture: ComponentFixture<InfoBoxComponent>;
@@ -44,7 +43,7 @@ describe('InfoBoxComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [InfoBoxComponent],
-            providers: [{ provide: GameInfoService, useClass: MockGameInfoService }],
+            providers: [{ provide: GameInfoService, useValue: testMock }],
         }).compileComponents();
     });
 
@@ -56,5 +55,29 @@ describe('InfoBoxComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('timeLeft$ should be defined', () => {
+        component.ngOnInit();
+        expect(component.timeLeft$).toBeTruthy();
+    });
+
+    it('showWinner should return the right winner string', () => {
+        expect(component.showWinner()).toBe('P1');
+    });
+
+    it('showWinner should show multiple winner', () => {
+        spyOnProperty(testMock, 'winner').and.returnValue([{ name: 'sam' }, { name: 'test' }]);
+        expect(component.showWinner()).toBe('sam et test');
+    });
+
+    it('timerIsLessThenOneMinute should return true', () => {
+        testMock.timeLeft$ = MILISECONDS_IN_MINUTE / 2;
+        expect(component.timerIsLessOneMinute(testMock.timeLeft$)).toBeTruthy();
+    });
+
+    it('timerIsLessThenOneMinute should return false', () => {
+        testMock.timeLeft$ = 2 * MILISECONDS_IN_MINUTE;
+        expect(component.timerIsLessOneMinute(testMock.timeLeft$)).toBeFalse();
     });
 });

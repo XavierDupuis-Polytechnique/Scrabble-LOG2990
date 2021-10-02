@@ -1,21 +1,18 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
-import { Letter } from '@app/GameLogic/game/letter.interface';
+import { TestBed } from '@angular/core/testing';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('DictionaryService', () => {
-    let dictionaryService: DictionaryService; // = new DictionaryService();
-    // service = new DictionaryService();
+    let dictionaryService: DictionaryService;
 
     beforeEach(() => {
-        // TestBed.configureTestingModule({
-        //     providers: [DictionaryService]
-        // });
-        // dictionaryService = TestBed.inject(DictionaryService)
-        // TestBed.configureTestingModule({});
-        // service = TestBed.inject(DictionaryService);
-        dictionaryService = new DictionaryService();
+        TestBed.configureTestingModule({
+            providers: [DictionaryService],
+        });
+        dictionaryService = TestBed.inject(DictionaryService);
     });
 
     it('should be created', () => {
@@ -24,6 +21,15 @@ describe('DictionaryService', () => {
 
     it('should return true if word is in dictionary', () => {
         expect(dictionaryService.isWordInDict('Bateau')).toBeTrue();
+    });
+
+    it('should return all words containing the searched letters a with a 0-0 board constraints ', () => {
+        const searchedLetters = new ValidWord('a', 0, 0, 0, 0);
+        let result: ValidWord[] = [];
+        const expected: ValidWord[] = [];
+        result = dictionaryService.wordGen(searchedLetters);
+
+        expect(result).toEqual(expected);
     });
 
     it('should return all words containing the searched letters zyklon', () => {
@@ -141,11 +147,10 @@ describe('DictionaryService', () => {
     });
 
     it('should return all words containing the searched letters allochimi with the correct Y Offset', () => {
-        const searchedLetters = new ValidWord('allochimi', 0, 0, 8, 8, true, 5, 5);
+        const searchedLetters = new ValidWord('allochimi', 0, 0, 5, 5, true, 5, 5);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
             new ValidWord('cristallochimie', 0, 0, 0, 0, true, 5, 0),
-            new ValidWord('cristallochimies', 0, 0, 0, 0, true, 5, 0),
             new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 2),
             new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 2),
         ];
@@ -237,24 +242,25 @@ describe('DictionaryService', () => {
         expect(result).toEqual(expected);
     });
 
-    it('should check if its possible to form the word keyboards with the available letters (complex+ true)', () => {
-        const testLine = 'y--a--s';
-        const testWord = new ValidWord('keyboards');
+    it('should check if its possible to form the word attendant with the available letters (complex double letters true)', () => {
+        const testLine = 't--n--n';
+        const testWord = new ValidWord('attendant');
         const letters: Letter[] = [
-            { char: 'O', value: 1 },
-            { char: 'D', value: 1 },
+            { char: 'T', value: 1 },
+            { char: 'T', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
             { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'R', value: 1 },
-            { char: 'K', value: 1 },
+            { char: 'D', value: 1 },
+            { char: 'Z', value: 1 },
         ];
-        const expected = 'keyboards';
+        const expected = 'attendant';
 
         const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
-    it('should check if its possible to form the word keyboard with the available letters (complex+ false)', () => {
+    it('should check if its possible to form the word keyboard with the available letters (complex false)', () => {
         const testLine = 'y--a--s';
         const testWord = new ValidWord('keyboard');
         const letters: Letter[] = [
@@ -272,7 +278,6 @@ describe('DictionaryService', () => {
         expect(result).toEqual(expected);
     });
 
-    // TODO Change the test word
     it('should check if its possible to form the word keyboard with the available letters (double letters false)', () => {
         const testLine = 'y--a--s';
         const testWord = new ValidWord('keyboard');
@@ -290,20 +295,19 @@ describe('DictionaryService', () => {
         expect(result).toEqual(expected);
     });
 
-    // TODO Change the test word
-    it('should check if its possible to form the word keyboard with the available letters (double letter true)', () => {
-        const testLine = 'y--a--s';
-        const testWord = new ValidWord('keyboard');
+    it('should check if its possible to form the word houssiner with the available letters ("*" true)', () => {
+        const testLine = 'u-si--r';
+        const testWord = new ValidWord('houssiner');
         const letters: Letter[] = [
+            { char: 'S', value: 1 },
+            { char: '*', value: 1 },
             { char: 'O', value: 1 },
-            { char: 'D', value: 1 },
+            { char: 'N', value: 1 },
             { char: 'E', value: 1 },
-            { char: 'B', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'R', value: 1 },
             { char: 'K', value: 1 },
+            { char: 'R', value: 1 },
         ];
-        const expected = 'false';
+        const expected = 'houssiner';
 
         const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
         expect(result).toEqual(expected);
@@ -356,6 +360,24 @@ describe('DictionaryService', () => {
             { char: 'A', value: 1 },
             { char: '*', value: 1 },
             { char: 'V', value: 1 },
+        ];
+        const expected = 'false';
+
+        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        expect(result).toEqual(expected);
+    });
+
+    it('should check if its possible to form the word eteTa with the available letters (edge case 3 bug fixing test)', () => {
+        const testLine = 'x';
+        const testWord = new ValidWord('kleenex');
+        const letters: Letter[] = [
+            { char: 'E', value: 1 },
+            { char: 'K', value: 1 },
+            { char: 'O', value: 1 },
+            { char: 'I', value: 1 },
+            { char: 'N', value: 1 },
+            { char: 'J', value: 1 },
+            { char: 'L', value: 1 },
         ];
         const expected = 'false';
 

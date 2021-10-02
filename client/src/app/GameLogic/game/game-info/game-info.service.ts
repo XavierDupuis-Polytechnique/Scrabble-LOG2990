@@ -69,12 +69,9 @@ export class GameInfoService {
     }
 
     get isEndOfGame(): boolean {
-        if (this.game.isEndOfGame()) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.game.isEndOfGame();
     }
+
     get winner(): Player[] {
         return this.game.getWinner();
     }

@@ -3,7 +3,7 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-const MILISECONDS_IN_MINUTE = 60000;
+export const MILISECONDS_IN_MINUTE = 60000;
 @Component({
     selector: 'app-info-box',
     templateUrl: './info-box.component.html',

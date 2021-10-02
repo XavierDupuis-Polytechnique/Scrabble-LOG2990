@@ -1,33 +1,35 @@
 import { TestBed } from '@angular/core/testing';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
-// TODO: implement MockGameService
-// class MockGameInfoService {
-//     user: User;
-//     injectUser(user: User) {
-//         this.user = user;
-//     }
-// }
-// {provide: GameInfoService, useClass: MockGameService}
 describe('ActionCompilerService', () => {
     let service: ActionCompilerService;
     let gameInfo: GameInfoService;
-    // let gameInfoService: GameInfoService;
-    // let user: User;
+    let player: Player;
+    let pointCalculator: PointCalculatorService;
+    let wordSearcher: WordSearcher;
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [ActionCompilerService, GameInfoService],
+            providers: [ActionCompilerService, GameInfoService, PointCalculatorService, WordSearcher],
         });
         service = TestBed.inject(ActionCompilerService);
         gameInfo = TestBed.inject(GameInfoService);
-        gameInfo.user = new User('p1');
-        gameInfo.players = [gameInfo.user];
+        pointCalculator = TestBed.inject(PointCalculatorService);
+        wordSearcher = TestBed.inject(WordSearcher);
+        player = new User('p1');
+        gameInfo.user = player;
+        gameInfo.players = [player];
     });
 
     it('should be created', () => {
@@ -47,29 +49,46 @@ describe('ActionCompilerService', () => {
     });
 
     it('should create PassTurn object', () => {
+        const playerName = player.name;
         const command: Command = {
             type: CommandType.Pass,
-            from: 'p1',
+            from: playerName,
         };
-        expect(service.translate(command)).toBeInstanceOf(PassTurn);
+        const expectedAction = new PassTurn(player);
+        expect(service.translate(command)).toEqual(expectedAction);
     });
 
     it('should create ExchangeLetter object', () => {
+        const playerName = player.name;
         const command: Command = {
             type: CommandType.Exchange,
-            args: ['A', 'B', 'C'],
-            from: 'p1',
+            args: ['abc'],
+            from: playerName,
         };
-        expect(service.translate(command)).toBeInstanceOf(ExchangeLetter);
+        const letters: Letter[] = [
+            { char: 'A', value: 1 },
+            { char: 'B', value: 3 },
+            { char: 'C', value: 3 },
+        ];
+        const expectedAction = new ExchangeLetter(player, letters);
+        expect(service.translate(command)).toEqual(expectedAction);
     });
 
     it('should create PlaceLetter object', () => {
+        const playerName = player.name;
         const command: Command = {
             type: CommandType.Place,
             args: ['a', '1', 'h', 'abc'],
-            from: 'p1',
+            from: playerName,
         };
-        expect(service.translate(command)).toBeInstanceOf(PlaceLetter);
+        const placement: PlacementSetting = {
+            x: 0,
+            y: 0,
+            direction: Direction.Horizontal,
+        };
+
+        const expectedAction = new PlaceLetter(player, 'abc', placement, pointCalculator, wordSearcher);
+        expect(service.translate(command)).toEqual(expectedAction);
     });
 
     it('should throw error when invalid number of args for PlaceLetter object', () => {
@@ -102,5 +121,49 @@ describe('ActionCompilerService', () => {
             service.translate(invalidCommand);
         }).toThrowError();
     });
-    // TODO: action compiler exhaustive test
+
+    it('should command is not an action', () => {
+        const notActionCommand: Command = {
+            type: CommandType.Debug,
+            from: 'p1',
+        };
+
+        expect(() => {
+            service.translate(notActionCommand);
+        }).toThrowError('this command dont generate an action');
+    });
+
+    it('should throw when args undefined exchange', () => {
+        const command: Command = {
+            type: CommandType.Exchange,
+            from: 'p1',
+        };
+
+        expect(() => {
+            service.translate(command);
+        }).toThrowError();
+    });
+
+    it('should throw when args undefined placeletter', () => {
+        const command: Command = {
+            type: CommandType.Place,
+            from: 'p1',
+        };
+
+        expect(() => {
+            service.translate(command);
+        }).toThrowError();
+    });
+
+    it('should throw when number of args not valid in placeletter', () => {
+        const command: Command = {
+            type: CommandType.Place,
+            from: 'p1',
+            args: ['1', '2'],
+        };
+
+        expect(() => {
+            service.translate(command);
+        }).toThrowError();
+    });
 });

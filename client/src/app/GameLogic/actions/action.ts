@@ -3,17 +3,12 @@ import { Player } from '@app/GameLogic/player/player';
 import { Observable, Subject } from 'rxjs';
 
 export abstract class Action {
-    static id = 0;
-    id;
-
     private endSubject = new Subject<void>();
     get end$(): Observable<void> {
         return this.endSubject;
     }
 
-    constructor(readonly player: Player) {
-        this.id = Action.id++;
-    }
+    constructor(readonly player: Player) {}
 
     execute(game: Game): void {
         game.doAction(this);

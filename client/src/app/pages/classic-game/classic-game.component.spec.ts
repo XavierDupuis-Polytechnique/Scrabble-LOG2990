@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
@@ -12,6 +13,7 @@ describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
     let fixture: ComponentFixture<ClassicGameComponent>;
     let matDialog: jasmine.SpyObj<MatDialog>;
+    let router: Router;
     const gameManager = {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         createGame: () => {},
@@ -42,6 +44,7 @@ describe('ClassicGameComponent', () => {
         fixture = TestBed.createComponent(ClassicGameComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        router = TestBed.inject(Router);
     });
 
     it('should create', () => {
@@ -79,6 +82,7 @@ describe('ClassicGameComponent', () => {
 
     it('start solo game should create a game', () => {
         spyOn(gameManager, 'createGame');
+        spyOn(router, 'navigate');
         component.startSoloGame();
         expect(gameManager.createGame).toHaveBeenCalled();
     });

@@ -1,9 +1,9 @@
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { BoardService } from '@app/services/board.service';
 import { Log2990Game } from './log2990-game';
 
 describe('Log2990Game', () => {

@@ -11,7 +11,6 @@ describe('CommandExecuterService', () => {
     let messageServiceSpy: jasmine.SpyObj<MessagesService>;
     let actionCompilerServiceSpy: jasmine.SpyObj<ActionCompilerService>;
     let gameManager: jasmine.SpyObj<GameManagerService>;
-    // let gameManager: GameManagerService;
 
     let mockNewGame$: Subject<void>;
 

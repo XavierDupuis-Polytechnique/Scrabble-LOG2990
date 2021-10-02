@@ -2,13 +2,15 @@ import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { LetterBag } from '@app/GameLogic/game/letter-bag';
+import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
+import { LetterBag } from '@app/GameLogic/game/board/letter-bag';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { timer } from 'rxjs';
 import { Bot } from './bot';
 
 export class EasyBot extends Bot {
-    static actionProbabibility = { play: 0.8, exchange: 0.1, pass: 0.1 };
+    static actionProbability = { play: 0.8, exchange: 0.1, pass: 0.1 };
     static placementProbability = { sixOrLess: 0.4, sevenToTwelve: 0.3, other: 0.3 };
     static botPointSetting = {
         sixOrLess: {
@@ -25,21 +27,27 @@ export class EasyBot extends Bot {
         },
     };
 
-    setActive(): Action {
+    setActive() {
         this.startTimerAction();
-        const action = this.randomActionPicker();
-        this.chooseAction(action);
-        return action;
+        this.timesUp = false;
+        timer(TIME_BUFFER_BEFORE_ACTION).subscribe(() => {
+            const action = this.randomActionPicker();
+            this.chooseAction(action);
+        });
     }
+
     randomActionPicker(): Action {
         const randomValue = Math.random();
-        if (randomValue <= EasyBot.actionProbabibility.play) {
+        if (randomValue <= EasyBot.actionProbability.play) {
             let action = this.playAction();
             if (action === undefined) {
                 action = this.passAction();
             }
             return action;
-        } else if (randomValue <= EasyBot.actionProbabibility.play + EasyBot.actionProbabibility.exchange) {
+        } else if (
+            randomValue <= EasyBot.actionProbability.play + EasyBot.actionProbability.exchange &&
+            this.gameInfo.numberOfLettersRemaining > RACK_LETTER_COUNT
+        ) {
             return this.exchangeAction();
         } else {
             return this.passAction();
@@ -52,7 +60,6 @@ export class EasyBot extends Bot {
         const wordP6: ValidWord[] = [];
         const wordP7to12: ValidWord[] = [];
         const wordP13To18: ValidWord[] = [];
-        // Create subs arrays for valid word base on point
         validWordList.forEach((word) => {
             if (word.value.totalPoints <= EasyBot.botPointSetting.sixOrLess.value) {
                 wordP6.push(word);
@@ -71,21 +78,14 @@ export class EasyBot extends Bot {
         let wordPicked: ValidWord;
         if (randomValue <= EasyBot.botPointSetting.sixOrLess.prob) {
             wordPicked = this.wordPicker(wordP6);
-            if (wordPicked !== undefined) {
-                return wordPicked;
-            }
+            return wordPicked;
         } else if (randomValue <= EasyBot.botPointSetting.sevenToTwelve.prob + EasyBot.botPointSetting.other.prob) {
             wordPicked = this.wordPicker(wordP7to12);
-            if (wordPicked !== undefined) {
-                return wordPicked;
-            }
+            return wordPicked;
         } else {
             wordPicked = this.wordPicker(wordP13To18);
-            if (wordPicked !== undefined) {
-                return wordPicked;
-            }
+            return wordPicked;
         }
-        return wordPicked;
     }
 
     playAction(): Action {
@@ -129,12 +129,8 @@ export class EasyBot extends Bot {
         return action;
     }
 
-    private randomInInterval(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-
     private wordPicker(list: ValidWord[]): ValidWord {
-        const randomPicker = this.randomInInterval(0, list.length);
+        const randomPicker = this.getRandomInt(list.length);
         return list[randomPicker];
     }
 }

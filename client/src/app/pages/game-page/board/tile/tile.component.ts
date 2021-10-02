@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Tile } from '@app/GameLogic/game/tile';
+import { Tile } from '@app/GameLogic/game/board/tile';
 
 @Component({
     selector: 'app-tile',
@@ -8,7 +8,6 @@ import { Tile } from '@app/GameLogic/game/tile';
 })
 export class TileComponent implements OnInit {
     @Input() tile: Tile = new Tile();
-
     class: string = '';
     multiplicatorType: string = '';
     numberMultiplicator: string = '';

@@ -15,7 +15,6 @@ const MAX_MESSAGE_LENGTH = 512;
     styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements AfterViewInit {
-    // Avoir une autre fonction linker/binder aver le placement etc...
     @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
 
     messageForm: FormControl = new FormControl('', [
@@ -43,7 +42,7 @@ export class ChatBoxComponent implements AfterViewInit {
 
         const content = this.messageForm.value;
         const playerName = this.gameInfo.user.name;
-        this.messageService.receiveMessage(playerName, content);
+        this.messageService.receiveMessagePlayer(playerName, content);
 
         this.messageForm.reset();
         this.cdRef.detectChanges();

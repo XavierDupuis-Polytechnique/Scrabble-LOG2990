@@ -1,20 +1,43 @@
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_TIME_PER_TURN, THOUSAND } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Game } from '@app/GameLogic/game/games/game';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { GameInfoService } from './game-info.service';
 
 describe('GameInfoService', () => {
     let service: GameInfoService;
-    const players = [
-        { name: 'p1', points: 123 },
-        { name: 'p2', points: 456 },
-    ];
-    const letterBag = { length: 102 };
-    const activePlayerIndex = 0;
-    const game = { players, letterBag, activePlayerIndex };
+    let game: Game;
+    let timer: TimerService;
+    let pointCalculator: PointCalculatorService;
+    let board: BoardService;
+    let messages: MessagesService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [
+                MessagesService,
+                PointCalculatorService,
+                BoardService,
+                DictionaryService,
+                TimerService,
+                GameInfoService,
+                PointCalculatorService,
+            ],
+        });
         service = TestBed.inject(GameInfoService);
+        timer = TestBed.inject(TimerService);
+        board = TestBed.inject(BoardService);
+        pointCalculator = TestBed.inject(PointCalculatorService);
+        messages = TestBed.inject(MessagesService);
+
+        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
+        game.players = [new User('p1'), new User('p2')];
+        game.start();
     });
 
     it('should be created', () => {
@@ -70,25 +93,36 @@ describe('GameInfoService', () => {
     });
 
     it('should return the player with provided index', () => {
-        const user0 = new User('p1');
-        const user1 = new User('p2');
-        service.players = [user0, user1];
-        expect(service.getPlayer(0)).toEqual(user0);
-        expect(service.getPlayer(1)).toEqual(user1);
+        service.receiveGame(game);
+        expect(service.getPlayer(0)).toEqual(game.players[0]);
+        expect(service.getPlayer(1)).toEqual(game.players[1]);
     });
 
     it('should return the player points with provided index', () => {
-        const user0 = new User('p1');
-        user0.points = Math.floor(Math.random() * 1000);
-        const user1 = new User('p2');
-        user1.points = Math.floor(Math.random() * 1000);
-        service.players = [user0, user1];
-        expect(service.getPlayerScore(0)).toBe(user0.points);
-        expect(service.getPlayerScore(1)).toBe(user1.points);
+        service.receiveGame(game);
+        game.players[0].points = Math.floor(Math.random() * THOUSAND);
+        game.players[1].points = Math.floor(Math.random() * THOUSAND);
+        expect(service.getPlayerScore(0)).toBe(game.players[0].points);
+        expect(service.getPlayerScore(1)).toBe(game.players[1].points);
     });
 
     it('should return the number of players', () => {
         service.players = [new User('p1'), new User('p2')];
         expect(service.numberOfPlayers).toBe(service.players.length);
+    });
+
+    it('should return the end of the game flag', () => {
+        service.receiveGame(game);
+        expect(service.isEndOfGame).toBeFalsy();
+        game.letterBag.gameLetters = [];
+        service.players[0].letterRack = [];
+        expect(service.isEndOfGame).toBeTruthy();
+    });
+
+    it('should return the winner of the game', () => {
+        service.receiveGame(game);
+        game.players[1].points = Number.MAX_SAFE_INTEGER;
+        spyOn(game, 'getWinner').and.returnValue([game.players[1]]);
+        expect(service.winner).toEqual([game.players[1]]);
     });
 });

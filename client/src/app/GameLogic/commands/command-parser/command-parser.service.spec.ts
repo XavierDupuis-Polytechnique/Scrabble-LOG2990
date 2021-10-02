@@ -14,16 +14,18 @@ describe('CommandParser', () => {
     const syntaxError5 = 'erreur de syntax: direction invalide';
     const syntaxError6 = 'erreur de syntax: les paramètres sont invalides';
     const syntaxError7 = 'erreur de syntax: colonne invalide';
+
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(commandParserService.CommandParserService);
         message = { content: '!placer a1v allo', from: 'player', type: MessageType.Player1 };
     });
+
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should be Subject<Command>', () => {
+    it('should be equal to the test command as it is the one pushed', () => {
         const from = message.from;
         const testCommand: Command = { from, type: CommandType.Debug, args: [] };
         service.parsedCommand$.subscribe((command) => {
@@ -32,32 +34,32 @@ describe('CommandParser', () => {
         service.parse('!debug', message.from);
     });
 
-    it('should return false as it is not a command', () => {
+    it('should return undefined as it is not a command', () => {
         message.content = 'Hier fut une bien belle journée';
-        expect(service.parse(message.content, message.from)).toBe(false);
+        expect(service.parse(message.content, message.from)).toBe(undefined);
     });
 
     it('should throw !manger est une commande invalide', () => {
         message.content = '!manger duGateau';
         expect(() => {
             service.parse(message.content, message.from);
-        }).toThrowError('!manger est une commande invalide');
+        }).toThrowError('!manger est une entrée invalide');
     });
 
-    it('should be return true', () => {
+    it('should be true', () => {
         expect(service.parse(message.content, message.from)).toBeTruthy();
     });
 
-    it('should be return true', () => {
+    it('should return !debug', () => {
         message.content = '!debug';
-        expect(service.parse(message.content, message.from)).toBe(true);
+        expect(service.parse(message.content, message.from)).toBe(CommandType.Debug);
     });
 
     it('should throw !PLACER est une commande invalide', () => {
         message.content = '!PLACER a1v bob';
         expect(() => {
             service.parse(message.content, message.from);
-        }).toThrowError('!PLACER est une commande invalide');
+        }).toThrowError('!PLACER est une entrée invalide');
     });
 
     it('should throw ' + syntaxError1, () => {
@@ -79,7 +81,7 @@ describe('CommandParser', () => {
         }).toThrowError(syntaxError3);
     });
 
-    it('should be return true', () => {
+    it('testArg should be equal to expectedArg', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
         expect(service.placeLetterFormatter(testArg)).toEqual(expectedArg);
@@ -169,8 +171,45 @@ describe('CommandParser', () => {
         }).toThrowError(syntaxError7);
     });
 
-    it('should be return true', () => {
+    it('should return type !placer', () => {
         message.content = '!placer a1v allo';
         expect(service.parse(message.content, message.from)).toBeTruthy();
+    });
+
+    it('should be of type Exchange as the args are valid ', () => {
+        message.content = '!échanger abc';
+        const returnType: CommandType | undefined = service.parse(message.content, message.from);
+        if (returnType !== undefined) {
+            expect(returnType).toEqual(CommandType.Exchange);
+        }
+    });
+
+    it("should throw error 'les parametres sont invalide as' upperCases are not accepted", () => {
+        message.content = '!échanger aBc';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toThrowError('les paramètres sont invalides');
+    });
+
+    it('should be of type !échanger as 7 letters is the maximum', () => {
+        message.content = '!échanger aaaaaaa';
+        const returnType: CommandType | undefined = service.parse(message.content, message.from);
+        if (returnType !== undefined) {
+            expect(returnType).toEqual(CommandType.Exchange);
+        }
+    });
+
+    it('should throw error as 7 letters is the maximum', () => {
+        message.content = '!échanger aaaaaaaaa';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toThrowError('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+    });
+
+    it('should throw error as 7 letters is the maximum', () => {
+        message.content = '!échanger baaaaaaaaac';
+        expect(() => {
+            service.parse(message.content, message.from);
+        }).toThrowError('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
     });
 });

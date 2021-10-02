@@ -1,7 +1,9 @@
+/* eslint-disable deprecation/deprecation */
 import { Location } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { FIFTY, TEN } from '@app/GameLogic/constants';
 import { routes } from '@app/modules/app-routing.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
@@ -30,11 +32,11 @@ describe('Router: App', () => {
 
     it('fakeAsync works', fakeAsync(() => {
         const promise = new Promise((resolve) => {
-            setTimeout(resolve, 10);
+            setTimeout(resolve, TEN);
         });
         let done = false;
         promise.then(() => (done = true));
-        tick(50);
+        tick(FIFTY);
         expect(done).toBeTruthy();
     }));
 

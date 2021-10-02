@@ -1,6 +1,5 @@
-import { Letter } from 'src/app/GameLogic/game/letter.interface';
+import { Letter } from 'src/app/GameLogic/game/board/letter.interface';
 
-// TODO change
 const GAME_LETTERS = [
     'A',
     'B',

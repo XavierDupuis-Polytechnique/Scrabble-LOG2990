@@ -1,7 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
-import { ASCII_CODE, Board } from '@app/GameLogic/game/board';
-import { BoardService } from '@app/services/board.service';
+import { ASCII_CODE } from '@app/GameLogic/constants';
+import { Board } from '@app/GameLogic/game/board/board';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 
 const MAX_FONT_SIZE = 14;
 const MIN_FONT_SIZE = 7;

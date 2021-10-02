@@ -31,5 +31,20 @@ describe('GameManagerService', () => {
         service.createGame(gameSettings);
         service.startGame();
         service.stopGame();
+        expect().nothing();
+    });
+
+    it('should not start new game if game exists', () => {
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+        };
+        service.createGame(gameSettings);
+        const gameSpy = spyOn(service, 'stopGame').and.callFake(() => {
+            return false;
+        });
+        service.createGame(gameSettings);
+        expect(gameSpy).toHaveBeenCalled();
     });
 });
