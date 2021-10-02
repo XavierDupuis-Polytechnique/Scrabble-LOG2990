@@ -102,12 +102,11 @@ export class CommandParserService {
     }
 
     exchangeLetterArgVerifier(word: string) {
+        if (INVALID_EXCHANGE_LETTER.test(word) || word === undefined) {
+            throw Error('les paramètres sont invalides');
+        }
         if (word.length > RACK_LETTER_COUNT) {
             throw Error('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
-        }
-
-        if (INVALID_EXCHANGE_LETTER.test(word)) {
-            throw Error('les paramètres sont invalides');
         }
     }
 
