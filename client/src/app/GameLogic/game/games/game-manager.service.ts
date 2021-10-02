@@ -33,6 +33,10 @@ export class GameManagerService {
     ) {}
 
     createGame(gameSettings: GameSettings): void {
+        if (gameSettings === undefined) {
+            return;
+        }
+
         if (this.game) {
             this.stopGame();
         }
