@@ -203,13 +203,13 @@ describe('CommandParser', () => {
         message.content = '!échanger aaaaaaaaa';
         expect(() => {
             service.parse(message.content, message.from);
-        }).toThrowError("'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé");
+        }).toThrowError('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
     });
 
     it('should throw error as 7 letters is the maximum', () => {
         message.content = '!échanger baaaaaaaaac';
         expect(() => {
             service.parse(message.content, message.from);
-        }).toThrowError("'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé");
+        }).toThrowError('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
     });
 });
