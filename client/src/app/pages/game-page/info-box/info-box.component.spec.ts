@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { THOUSAND, TWO } from '@app/GameLogic/constants';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { User } from '@app/GameLogic/player/user';
@@ -12,6 +13,7 @@ class MockGameInfoService {
         { name: 'P1', points: 120, letterRack: [{ char: 'A', value: 1 }] },
         { name: 'P2', points: 0, letterRack: [{ char: 'A', value: 1 }] },
     ];
+    // eslint-disable-next-line no-invalid-this
     activePlayer = this.players[0];
     getPlayerScore(index: number): number {
         return this.players[index].points;
@@ -21,7 +23,7 @@ class MockGameInfoService {
     }
     get timeLeftForTurn(): Observable<number | undefined> {
         const t = new BehaviorSubject<number | undefined>(undefined);
-        t.next(2000);
+        t.next(TWO * THOUSAND);
         return t;
     }
     get numberOfLettersRemaining(): number {
@@ -65,7 +67,7 @@ describe('InfoBoxComponent', () => {
     });
 
     it('showWinner should show multiple winner', () => {
-        spyOnProperty(testMock, 'winner').and.returnValue([{ name: 'sam' }, { name: 'test'}]);
+        spyOnProperty(testMock, 'winner').and.returnValue([{ name: 'sam' }, { name: 'test' }]);
         expect(component.showWinner()).toBe('sam et test');
     });
 

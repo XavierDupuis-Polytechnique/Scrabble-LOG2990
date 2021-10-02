@@ -33,7 +33,7 @@ describe('GameInfoService', () => {
         timer = TestBed.inject(TimerService);
         board = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
-        messages = TestBed.inject(MessagesService)
+        messages = TestBed.inject(MessagesService);
 
         game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];
@@ -93,7 +93,7 @@ describe('GameInfoService', () => {
     });
 
     it('should return the player with provided index', () => {
-        service.receiveGame(game)
+        service.receiveGame(game);
         expect(service.getPlayer(0)).toEqual(game.players[0]);
         expect(service.getPlayer(1)).toEqual(game.players[1]);
     });

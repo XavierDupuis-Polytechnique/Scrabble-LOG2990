@@ -91,10 +91,10 @@ export class ActionValidatorService {
                 if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
                         'Commande impossible à réaliser : La lettre "' +
-                        wordCurrentChar +
-                        '" ne peut être placé en ' +
-                        String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                        ++x,
+                            wordCurrentChar +
+                            '" ne peut être placé en ' +
+                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
+                            ++x,
                     );
                     return false;
                 }

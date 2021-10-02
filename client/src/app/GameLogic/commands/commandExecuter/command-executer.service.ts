@@ -46,6 +46,7 @@ export class CommandExecuterService {
             try {
                 const action = this.actionCompilerService.translate(command);
                 this.sendAction(action);
+                // eslint-disable-next-line no-empty
             } catch (e) {}
         }
     }
