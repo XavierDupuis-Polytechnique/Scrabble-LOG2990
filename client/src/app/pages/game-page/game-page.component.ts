@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
-import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { UIInput } from '@app/GameLogic/interface/ui-input';
 
 @Component({
     selector: 'app-game-page',
@@ -52,8 +51,7 @@ export class GamePageComponent {
         }
     }
 
-    clickLetterRack(letter: Letter) {
-        const input: UIInput = { type: InputType.LeftClick, from: InputComponent.Horse, args: letter };
+    clickLetterRack(input: UIInput) {
         this.inputController.receive(input);
     }
 }
