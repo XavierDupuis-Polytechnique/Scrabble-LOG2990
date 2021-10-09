@@ -40,6 +40,10 @@ export class GameInfoService {
         }
     }
 
+    get letterOccurences(): Map<string, number> {
+        return this.game.letterBag.countLetters();
+    }
+
     get numberOfPlayers(): number {
         if (this.players) {
             return this.players.length;
