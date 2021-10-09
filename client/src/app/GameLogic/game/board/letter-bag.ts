@@ -42,17 +42,17 @@ export class LetterBag {
         for (let code = LETTER_A_CODE; code < LETTER_Z_CODE; code++) {
             letters.push([String.fromCharCode(code), 0]);
         }
-        const occurences = new Map<string, number>(letters);
+        const occurrences = new Map<string, number>(letters);
         for (const letter of this.gameLetters) {
             const char = letter.char;
-            const occurence = occurences.get(char);
-            if (occurence === undefined) {
-                occurences.set(char, 1);
+            const occurrence = occurrences.get(char);
+            if (occurrence === undefined) {
+                occurrences.set(char, 1);
             } else {
-                occurences.set(char, occurence + 1);
+                occurrences.set(char, occurrence + 1);
             }
         }
-        return occurences;
+        return occurrences;
     }
 
     get lettersLeft(): number {
