@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
-import { UIInput } from '@app/GameLogic/interface/ui-input';
+import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 
 @Component({
     selector: 'app-game-page',
@@ -25,6 +25,15 @@ export class GamePageComponent {
         } catch (e) {
             this.router.navigate(['/']);
         }
+    }
+
+    @HostListener('window:keyup', ['$event']) keypressEvent($event: KeyboardEvent) {
+        const input: UIInput = { type: InputType.KeyPress, args: $event.key };
+        this.inputController.receive(input);
+    }
+
+    clickLetterRack(input: UIInput) {
+        this.inputController.receive(input);
     }
 
     abandonner(): void {
@@ -61,10 +70,6 @@ export class GamePageComponent {
 
     get canCancel() {
         return this.canPass || this.canExchange;
-    }
-
-    clickLetterRack(input: UIInput) {
-        this.inputController.receive(input);
     }
 
     // TODO : REROUTE TO UIINPUTCONTROLLER -> REMOVE AVS -> MIGRATE TESTS
