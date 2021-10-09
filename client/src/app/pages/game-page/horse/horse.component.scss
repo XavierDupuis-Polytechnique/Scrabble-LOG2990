@@ -12,6 +12,13 @@ mat-grid-tile {
     background-color: rgb(240, 231, 216);
     border: 1px solid rgb(134, 114, 98);
     box-shadow: 2px 2px 2px 0.2;
+    background-image: url('^assets/img/tuile.png');
+    background-size: contain;
+}
+
+mat-grid-tile:hover {
+    border: 1px solid rgb(212, 0, 255);
+    cursor: pointer;
 }
 
 sub {

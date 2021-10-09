@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
 import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { InputComponent, UIInput } from '@app/GameLogic/interface/ui-input';
 
 @Injectable({
@@ -9,6 +10,7 @@ import { InputComponent, UIInput } from '@app/GameLogic/interface/ui-input';
 export class UIInputControllerService {
   activeComponent = InputComponent.Horse;
   activeAction: UIAction;
+  activeLetters: Letter[] = [];
 
   constructor() {}
 
@@ -30,5 +32,13 @@ export class UIInputControllerService {
         throw new Error("Unresolved input from component " + input.from);
     }
     this.activeComponent = input.from;
+  }
+
+  cancel() {
+    throw new Error('Method not implemented.');
+  }
+
+  confirm() {
+    throw new Error('Method not implemented.');
   }
 }

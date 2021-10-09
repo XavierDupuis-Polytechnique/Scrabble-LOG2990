@@ -31,10 +31,6 @@ export class GamePageComponent {
         this.gameManager.stopGame();
     }
 
-    passer() {
-        this.avs.sendAction(new PassTurn(this.info.user));
-    }
-
     get isItMyTurn() {
         try {
             return this.info.user === this.info.activePlayer;
@@ -51,7 +47,40 @@ export class GamePageComponent {
         }
     }
 
+    get canPlace() {
+        return this.isItMyTurn && this.inputController.activeLetters.length !== 0;
+    }
+
+    get canExchange() {
+        return this.isItMyTurn && this.inputController.activeLetters.length !== 0;
+    }
+
+    get canPass() {
+        return this.isItMyTurn;
+    }
+
+    get canCancel() {
+        return this.canPass || this.canExchange;
+    }
+
     clickLetterRack(input: UIInput) {
         this.inputController.receive(input);
+    }
+
+    // TODO : REROUTE TO UIINPUTCONTROLLER -> REMOVE AVS -> MIGRATE TESTS
+    pass() {
+        this.avs.sendAction(new PassTurn(this.info.user));
+    }
+
+    exchange() {
+        this.inputController.confirm();
+    }
+
+    place() {
+        this.inputController.confirm();
+    }
+
+    cancel() {
+        this.inputController.cancel();
     }
 }

@@ -7,7 +7,10 @@
         <app-board></app-board>
         <app-horse (clickLetter)="clickLetterRack($event)"></app-horse>
         <div class="actions">
-            <button mat-raised-button color="accent" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
+            <button mat-raised-button color="accent" [disabled]="!canPass" (click)="pass()">Passer</button>
+            <button mat-raised-button color="accent" [disabled]="!canExchange" (click)="exchange()">Échanger</button>
+            <button mat-raised-button color="accent" [disabled]="!canPlace" (click)="place()">Placer</button>
+            <button mat-raised-button color="accent" [disabled]="!canCancel" (click)="cancel()">Annuler</button>
         </div>
         <div class="abandonner">
             <button mat-raised-button [routerLink]="['/home']" (click)="abandonner()" *ngIf="!isEndOfGame">Abandonner la partie</button>

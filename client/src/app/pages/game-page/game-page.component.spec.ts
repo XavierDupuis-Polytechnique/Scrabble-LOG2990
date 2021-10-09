@@ -47,7 +47,7 @@ describe('GamePageComponent', () => {
     });
 
     it('should call function sendAction if button "Passer" is pressed', () => {
-        component.passer();
+        component.pass();
         expect(actionValidatorServiceSpy.sendAction).toHaveBeenCalled();
     });
 });
