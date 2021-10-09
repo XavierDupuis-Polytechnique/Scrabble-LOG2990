@@ -42,7 +42,7 @@ export class CommandExecuterService {
 
         if (type === CommandType.Reserve) {
             if (this.debugMode) {
-                this.showLetterBag();
+                this.executeReserve();
             } else {
                 this.messageService.receiveErrorMessage(RESERVE_NOT_ACCESSIBLE);
             }
@@ -59,6 +59,10 @@ export class CommandExecuterService {
                 // eslint-disable-next-line no-empty
             } catch (e) {}
         }
+    }
+
+    private executeReserve() {
+        this.showLetterBag();
     }
 
     private showLetterBag() {
