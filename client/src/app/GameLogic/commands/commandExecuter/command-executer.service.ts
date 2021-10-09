@@ -73,8 +73,7 @@ export class CommandExecuterService {
             const occurence = letterOccurence[1];
             stringOccurences = stringOccurences.concat(`${letter} : ${occurence}${END_LINE}`);
         }
-        stringOccurences = stringOccurences.slice(0, stringOccurences.length - 2);
-        this.messageService.receiveSystemMessage(`Reserve: ${END_LINE}${stringOccurences}`);
+        this.messageService.receiveSystemMessage(`Reserve:${END_LINE}${stringOccurences}`);
     }
 
     private executeDebug() {

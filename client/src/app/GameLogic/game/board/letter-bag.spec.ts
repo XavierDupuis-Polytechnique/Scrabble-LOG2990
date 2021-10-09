@@ -70,6 +70,7 @@ describe('LetterBag', () => {
             { char: 'C', value: 1 },
             { char: 'C', value: 1 },
             { char: '*', value: 1 },
+            { char: '-', value: 0 },
         ];
         letterBag.gameLetters = letters;
         const LETTER_A_CODE = 'A'.charCodeAt(0);
@@ -83,6 +84,7 @@ describe('LetterBag', () => {
         expectedMap.set('B', 1);
         expectedMap.set('C', 2);
         expectedMap.set('*', 1);
+        expectedMap.set('-', 1);
         expect(letterBag.countLetters()).toEqual(expectedMap);
     });
 });
