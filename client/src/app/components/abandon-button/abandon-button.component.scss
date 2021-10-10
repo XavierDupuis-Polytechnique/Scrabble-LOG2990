@@ -1,0 +1,16 @@
+#abandonGame-modal-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#abandonGame-modal-footer {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-basis: 100%;
+}
+
+.confirmButton {
+    margin: 10%;
+}
