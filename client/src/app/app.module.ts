@@ -25,6 +25,7 @@ import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
 import { PreventContextMenuDirective } from './directives/prevent-context-menu.directive';
+import { ClickAndClickoutDirective } from './directives/click-and-clickout.directive';
 
 /**
  * Main module that is used in main.ts.
@@ -52,6 +53,7 @@ import { PreventContextMenuDirective } from './directives/prevent-context-menu.d
         TileComponent,
         BoldPipe,
         PreventContextMenuDirective,
+        ClickAndClickoutDirective,
     ],
     imports: [
         AppMaterialModule,

@@ -1,9 +1,9 @@
-<div class="rackContainer">
+<div class="rackContainer" appClickAndClickout [inputComponent]="self">
     <mat-grid-list cols="7" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile
             *ngFor="let letter of playerRack; let index = index"
-            (click)="click(inputType.LeftClick, letter, index)"
-            (contextmenu)="click(inputType.RightClick, letter, index)"
+            (click)="click(inputType.LeftClick, index)"
+            (contextmenu)="click(inputType.RightClick, index)"
         >
             {{ letter.char }}
             <sub>{{ letter.value }}</sub>

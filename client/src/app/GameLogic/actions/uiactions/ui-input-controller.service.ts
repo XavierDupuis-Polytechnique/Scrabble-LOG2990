@@ -16,8 +16,10 @@ export class UIInputControllerService {
 
     receive(input: UIInput) {
         // TODO : REMOVE NEXT LINE
-        console.log('received', input);
+        console.log('BEFORE ACTIVE COMPONENT : ', this.activeComponent)
         this.dispatch(input);
+        console.log('received', input);
+        console.log('AFTER ACTIVE COMPONENT : ', this.activeComponent)
     }
 
     dispatch(input: UIInput) {

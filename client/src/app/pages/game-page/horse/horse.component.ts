@@ -10,6 +10,7 @@ import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-
 })
 export class HorseComponent implements AfterContentInit {
     @Output() clickLetter = new EventEmitter();
+    @Output() self = InputComponent.Horse
 
     inputType = InputType;
 
@@ -21,8 +22,8 @@ export class HorseComponent implements AfterContentInit {
         this.playerRack = this.info.user.letterRack;
     }
 
-    click(type: InputType, letter: Letter, index: number) {
-        const input: UIInput = { from: InputComponent.Horse, type, args: { letter, index } };
+    click(type: InputType, index: number) {
+        const input: UIInput = { from: InputComponent.Horse, type, args: this.playerRack[index] };
         this.clickLetter.emit(input);
     }
 }
