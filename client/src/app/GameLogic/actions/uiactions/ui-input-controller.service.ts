@@ -5,40 +5,42 @@ import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { InputComponent, UIInput } from '@app/GameLogic/interface/ui-input';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class UIInputControllerService {
-  activeComponent = InputComponent.Horse;
-  activeAction: UIAction;
-  activeLetters: Letter[] = [];
+    activeComponent = InputComponent.Horse;
+    activeAction: UIAction;
+    activeLetters: Letter[] = [];
 
-  constructor() {}
+    constructor() {}
 
-  receive(input: UIInput) {
-    // TODO : REMOVE NEXT LINE
-    console.log("received", input);
-    this.dispatch(input)
-  }
-
-  dispatch(input: UIInput) {
-    switch (input.from) {
-      case InputComponent.Board:
-        this.activeAction = new UIPlace();
-        break;
-      case InputComponent.Horse:
-        // 
-        break;
-      default:
-        throw new Error("Unresolved input from component " + input.from);
+    receive(input: UIInput) {
+        // TODO : REMOVE NEXT LINE
+        console.log('received', input);
+        this.dispatch(input);
     }
-    this.activeComponent = input.from;
-  }
 
-  cancel() {
-    throw new Error('Method not implemented.');
-  }
+    dispatch(input: UIInput) {
+        switch (input.from) {
+            case InputComponent.Board:
+                this.activeAction = new UIPlace();
+                break;
+            case InputComponent.Horse:
+                //
+                break;
+            default:
+                throw new Error('Unresolved input from component ' + input.from);
+        }
+        if (input.from !== undefined) {
+            this.activeComponent = input.from;
+        }
+    }
 
-  confirm() {
-    throw new Error('Method not implemented.');
-  }
+    cancel() {
+        throw new Error('Method not implemented.');
+    }
+
+    confirm() {
+        throw new Error('Method not implemented.');
+    }
 }

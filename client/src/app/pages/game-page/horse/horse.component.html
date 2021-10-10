@@ -1,10 +1,9 @@
 <div class="rackContainer">
     <mat-grid-list cols="7" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile
-            appPreventContextMenu
-            *ngFor="let letter of playerRack"
-            (click)="click(inputType.LeftClick, letter)"
-            (contextmenu)="click(inputType.RightClick, letter)"
+            *ngFor="let letter of playerRack; let index = index"
+            (click)="click(inputType.LeftClick, letter, index)"
+            (contextmenu)="click(inputType.RightClick, letter, index)"
         >
             {{ letter.char }}
             <sub>{{ letter.value }}</sub>

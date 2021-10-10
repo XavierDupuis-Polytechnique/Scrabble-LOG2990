@@ -21,8 +21,8 @@ export class HorseComponent implements AfterContentInit {
         this.playerRack = this.info.user.letterRack;
     }
 
-    click(type: InputType, letter: Letter) {
-        const input: UIInput = { from: InputComponent.Horse, type, args: letter };
+    click(type: InputType, letter: Letter, index: number) {
+        const input: UIInput = { from: InputComponent.Horse, type, args: { letter, index } };
         this.clickLetter.emit(input);
     }
 }

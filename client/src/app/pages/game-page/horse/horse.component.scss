@@ -17,8 +17,9 @@ mat-grid-tile {
 }
 
 mat-grid-tile:hover {
-    border: 1px solid rgb(212, 0, 255);
+    background: white;
     cursor: pointer;
+    border: 1px;
 }
 
 sub {

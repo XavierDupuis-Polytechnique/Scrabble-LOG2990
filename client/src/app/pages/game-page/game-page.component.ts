@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
@@ -27,12 +28,13 @@ export class GamePageComponent {
         }
     }
 
-    @HostListener('window:keyup', ['$event']) keypressEvent($event: KeyboardEvent) {
+    @HostListener('window:keyup', ['$event'])
+    keypressEvent($event: KeyboardEvent) {
         const input: UIInput = { type: InputType.KeyPress, args: $event.key };
         this.inputController.receive(input);
     }
 
-    clickLetterRack(input: UIInput) {
+    receiveInput(input: UIInput) {
         this.inputController.receive(input);
     }
 
@@ -61,7 +63,7 @@ export class GamePageComponent {
     }
 
     get canExchange() {
-        return this.isItMyTurn && this.inputController.activeLetters.length !== 0;
+        return this.isItMyTurn && this.inputController.activeLetters.length !== 0 && this.info.numberOfLettersRemaining > RACK_LETTER_COUNT;
     }
 
     get canPass() {
@@ -77,11 +79,7 @@ export class GamePageComponent {
         this.avs.sendAction(new PassTurn(this.info.user));
     }
 
-    exchange() {
-        this.inputController.confirm();
-    }
-
-    place() {
+    confirm() {
         this.inputController.confirm();
     }
 
