@@ -84,6 +84,13 @@ describe('GameInfoService', () => {
         }).toThrowError('No Game in GameInfo');
     });
 
+    it('should throw Error if no game was received on letterOcurrence call', () => {
+        expect(() => {
+            const n = service.letterOccurences;
+            n.toString();
+        }).toThrowError('No Game in GameInfo');
+    });
+
     it('should return the time left for a turn from the Timer', () => {
         expect(service.timeLeftForTurn).toBeTruthy();
     });
