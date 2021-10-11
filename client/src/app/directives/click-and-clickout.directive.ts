@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input } from '@angular/core';
 import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
-import { InputComponent } from '@app/GameLogic/interface/ui-input';
+import { InputComponent, InputType } from '@app/GameLogic/interface/ui-input';
 
 @Directive({
   selector: '[appClickAndClickout]'
@@ -23,7 +23,7 @@ export class ClickAndClickoutDirective {
   clickout() {
     if (!this.wasInside) {
       if (this.inputController.activeComponent === this.inputComponent) {
-        this.inputController.activeComponent = InputComponent.Outside
+        this.inputController.receive({ type: InputType.RightClick, from: InputComponent.Outside });
         // console.log("CURRENT WAS", this.inputComponent);
       }
     }
