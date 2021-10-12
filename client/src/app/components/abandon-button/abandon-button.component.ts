@@ -12,8 +12,6 @@ export class AbandonButtonComponent implements OnInit {
 
     ngOnInit() {}
 
-    // When the user clicks the action button a.k.a. the logout button in the\
-    // modal, show an alert and followed by the closing of the modal
     abandon() {
         this.gameManager.stopGame();
         alert('Vous avez abandonnez la partie');
