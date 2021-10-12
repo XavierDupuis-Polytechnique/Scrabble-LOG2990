@@ -59,7 +59,7 @@ describe('ChatBoxComponent', () => {
 
     it('should change color of number of character if it exceeds limit', () => {
         const maxCharPlusOne = 514;
-        
+
         expect(fixture.debugElement.query(By.css('#red'))).toBeNull();
         component.isError(maxCharPlusOne);
         fixture.detectChanges();
