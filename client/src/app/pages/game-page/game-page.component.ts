@@ -34,15 +34,6 @@ export class GamePageComponent {
         this.inputController.receive(input);
     }
 
-    // @HostListener('document:click')
-    // clickout() {
-    //     console.log("BEFORE : ", this.inputController.activeComponent)
-    //     if (this.inputController.activeComponent !== InputComponent.Outside) {
-    //         console.log("clicked outside");
-    //         this.inputController.activeComponent = InputComponent.Outside;
-    //     }
-    // }
-
     receiveInput(input: UIInput) {
         this.inputController.receive(input);
     }

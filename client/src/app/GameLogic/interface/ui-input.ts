@@ -1,3 +1,5 @@
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
+
 export enum InputType {
     LeftClick = 'LeftClick',
     RightClick = 'RightClick',
@@ -14,5 +16,5 @@ export enum InputComponent {
 export interface UIInput {
     type: InputType;
     from?: InputComponent;
-    args?: unknown;
+    args?: Letter | string;
 }
