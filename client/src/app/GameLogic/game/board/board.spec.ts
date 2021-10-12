@@ -55,6 +55,6 @@ describe('Board test', () => {
 
     it('position should have random tile multiplicator', () => {
         const randomBoard = new Board(true);
-        expect(randomBoard.listMultiplicator).not.toEqual(multiplicators);
+        expect(randomBoard).not.toEqual(board);
     });
 });

@@ -99,7 +99,7 @@ export const multiplicators: BoardSettingPosition[] = [
 ];
 export class Board {
     grid: Tile[][];
-    listMultiplicator: BoardSettingPosition[] = [];
+
     constructor(public randomBonus: boolean = false) {
         this.grid = [];
         for (let i = 0; i < BOARD_DIMENSION; i++) {
@@ -110,11 +110,11 @@ export class Board {
             }
         }
 
-        this.listMultiplicator = multiplicators;
+        let listMultiplicator = multiplicators;
         if (randomBonus) {
-            this.listMultiplicator = this.randomMultiplicator();
+            listMultiplicator = this.randomMultiplicator();
         }
-        for (const elem of this.listMultiplicator) {
+        for (const elem of listMultiplicator) {
             if (elem.type === MultiType.Letter) {
                 this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
             } else {
