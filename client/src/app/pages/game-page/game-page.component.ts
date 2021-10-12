@@ -59,11 +59,11 @@ export class GamePageComponent {
     }
 
     get canPlace() {
-        return this.isItMyTurn && this.inputController.activeLetters.length !== 0;
+        return this.isItMyTurn && this.inputController.canBeExecuted;
     }
 
     get canExchange() {
-        return this.isItMyTurn && this.inputController.activeLetters.length !== 0 && this.info.numberOfLettersRemaining > RACK_LETTER_COUNT;
+        return this.isItMyTurn && this.inputController.canBeExecuted && this.info.numberOfLettersRemaining > RACK_LETTER_COUNT;
     }
 
     get canPass() {

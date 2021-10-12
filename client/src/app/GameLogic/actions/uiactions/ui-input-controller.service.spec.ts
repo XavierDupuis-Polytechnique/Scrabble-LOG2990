@@ -172,7 +172,7 @@ describe('UIInputControllerService', () => {
             return;
         });
         service.confirm();
-        expect(sendActionSpy).toHaveBeenCalled;//With(action);
+        expect(sendActionSpy).toHaveBeenCalled();//With(action);
     });
     /// //////////////////////// ///
 });

@@ -6,7 +6,6 @@ import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/uiactions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
 import { ENTER, ESCAPE } from '@app/GameLogic/constants';
-import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 
@@ -17,7 +16,10 @@ export class UIInputControllerService {
     static defaultComponent = InputComponent.Horse;
     activeComponent = UIInputControllerService.defaultComponent;
     activeAction: UIAction | null = null;
-    activeLetters: Letter[] = [];
+
+    get canBeExecuted() {
+        return this.activeAction?.canBeCreated;
+    }
 
     constructor(private avs: ActionValidatorService, private info: GameInfoService) {}
 
@@ -75,10 +77,10 @@ export class UIInputControllerService {
     processInputType(input: UIInput) {
         switch (input.type) {
             case InputType.LeftClick:
-                this.processLeftCLick();
+                this.processLeftCLick(input.args);
                 break;
             case InputType.RightClick:
-                this.processRightCLick();
+                this.processRightCLick(input.args);
                 break;
             case InputType.KeyPress:
                 this.processKeyPress(input.args);
@@ -132,11 +134,17 @@ export class UIInputControllerService {
         }
     }
 
-    private processLeftCLick() {
-        throw new Error('Method not implemented.');
+    private processLeftCLick(args: unknown) {
+        if (this.activeAction !== null) {
+            this.activeAction.receiveLeftClick(args);
+            return;
+        }
     }
 
-    private processRightCLick() {
-        throw new Error('Method not implemented.');
+    private processRightCLick(args: unknown) {
+        if (this.activeAction !== null) {
+            this.activeAction.receiveRightClick(args);
+            return;
+        }
     }
 }
