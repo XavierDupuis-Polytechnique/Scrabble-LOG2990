@@ -18,11 +18,7 @@ export class ChatBoxComponent implements AfterViewInit {
     @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
 
     messageContent: string;
-    // messageForm: FormControl = new FormControl('', [
-    //     Validators.required,
-    //     Validators.maxLength(MAX_MESSAGE_LENGTH),
-    //     Validators.pattern(NOT_ONLY_SPACE_RGX),
-    // ]);
+
     readonly maxMessageLength = MAX_MESSAGE_LENGTH;
     private boldPipe = new BoldPipe();
     private newlinePipe = new NewlinePipe();
