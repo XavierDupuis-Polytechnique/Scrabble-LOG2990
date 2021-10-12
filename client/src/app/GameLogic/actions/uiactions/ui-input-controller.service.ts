@@ -36,21 +36,19 @@ export class UIInputControllerService {
         this.processInputComponent(input);
         // TODO : REMOVE NEXT LINE
         console.log('ACTIVE COMPONENT : ', this.activeComponent)
-        this.updateActiveAction(input)
+        this.updateActiveAction(input.type)
         this.processInputType(input);
     }
 
-    private processInputComponent(input: UIInput) {
+    processInputComponent(input: UIInput) {
         if (input.from === undefined) {
             this.activeComponent = UIInputControllerService.DEFAULT_COMPONENT;
-        } else {
-            if (input.from !== this.activeComponent) {
-                this.activeComponent = input.from;
-            }
+            return;
         }
+        this.activeComponent = input.from;
     }
 
-    private updateActiveAction(input: UIInput) {
+    updateActiveAction(inputType: InputType) {
         let actionName = "";
         switch (this.activeComponent) {
             case InputComponent.Board:
@@ -60,7 +58,7 @@ export class UIInputControllerService {
                 }
                 break;
             case InputComponent.Horse:
-                if (input.type === InputType.RightClick) {
+                if (inputType === InputType.RightClick) {
                     if (!(this.activeAction instanceof UIExchange)) {
                         this.activeAction = new UIExchange();
                         actionName = "UIExchange";
@@ -83,7 +81,7 @@ export class UIInputControllerService {
         console.log("UIAction now : '" + actionName + "' (same as last if empty)")
     }
 
-    private processInputType(input: UIInput) {
+    processInputType(input: UIInput) {
         switch (input.type) {
             case InputType.LeftClick:
                 this.processLeftCLick();
@@ -134,7 +132,7 @@ export class UIInputControllerService {
     }
 
     cancel() {
-        this.activeAction = null;
+        this.discardAction();
     }
 
     confirm() {
