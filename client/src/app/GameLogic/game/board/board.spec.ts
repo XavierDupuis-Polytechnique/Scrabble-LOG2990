@@ -5,8 +5,8 @@ import { Board, letterMultiplicator, wordMultiplicator } from './board';
 
 describe('Board test', () => {
     let board: Board;
-    const letterCreator = new LetterCreator();
     const randomBonus = false;
+    const letterCreator = new LetterCreator();
 
     beforeEach(() => {
         board = new Board(randomBonus);
@@ -50,5 +50,26 @@ describe('Board test', () => {
         board.grid[5][5].letterObject = letterCreator.createLetter('A');
         board.hasNeighbour(4, 6);
         expect(board.hasNeighbour(4, 5)).toBeTruthy();
+    });
+
+    it('position should have random tile multiplicator', () => {
+        let differentBoard = false;
+        const randomBoard = new Board(randomBonus);
+        for (const tile of board.grid[0]) {
+            const x = 0;
+            if (tile.letterMultiplicator > 1) {
+                const randomBoardLetterMult = randomBoard.grid[0][x].letterMultiplicator;
+                if (tile.letterMultiplicator !== randomBoardLetterMult) {
+                    differentBoard = true;
+                }
+            }
+            if (tile.wordMultiplicator > 1) {
+                const randomBoardWordMult = randomBoard.grid[0][x].wordMultiplicator;
+                if (tile.wordMultiplicator !== randomBoardWordMult) {
+                    differentBoard = true;
+                }
+            }
+        }
+        expect(differentBoard).toBe(true);
     });
 });

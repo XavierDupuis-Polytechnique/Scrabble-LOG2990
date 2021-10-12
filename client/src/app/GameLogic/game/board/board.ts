@@ -144,6 +144,7 @@ export class Board {
         for (const element of multiplicators) {
             const newValueIndex = Math.floor(Math.random() * values.length);
             element.v = values[newValueIndex];
+            values.splice(newValueIndex, 1);
         }
         return multiplicators;
     }
