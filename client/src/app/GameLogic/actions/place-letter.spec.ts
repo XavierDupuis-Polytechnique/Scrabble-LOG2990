@@ -44,6 +44,7 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
+    const randomBonus = false;
     beforeEach(() => {
         timer = new TimerService();
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['placeLetterCalculation']);
@@ -67,7 +68,7 @@ describe('PlaceLetter', () => {
         const messages = TestBed.inject(MessagesService);
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
+        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
         game.players.push(player1);
         game.players.push(player2);
         game.start();

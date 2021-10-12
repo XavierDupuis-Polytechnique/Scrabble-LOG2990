@@ -14,7 +14,7 @@ import { placementSettingsToString } from '@app/GameLogic/utils';
     providedIn: 'root',
 })
 export class ActionValidatorService {
-    constructor(private board: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
+    constructor(private boardService: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
 
     sendActionArgsMessage(action: Action) {
         if (action instanceof PlaceLetter) {
@@ -65,7 +65,7 @@ export class ActionValidatorService {
 
     private validatePlaceLetter(action: PlaceLetter): boolean {
         const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
-        let hasCenterTile = this.board.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
+        let hasCenterTile = this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
 
         let hasNeighbour = false;
 
@@ -82,7 +82,7 @@ export class ActionValidatorService {
                 return false;
             }
 
-            const currentTileChar = this.board.board.grid[y][x].letterObject.char.toLowerCase();
+            const currentTileChar = this.boardService.board.grid[y][x].letterObject.char.toLowerCase();
             const wordCurrentChar = action.word.charAt(letterIndex);
 
             if (currentTileChar === EMPTY_CHAR) {
@@ -90,11 +90,11 @@ export class ActionValidatorService {
             } else {
                 if (wordCurrentChar.toLowerCase() !== currentTileChar) {
                     this.sendErrorMessage(
-                        'Commande impossible à réaliser : La lettre "' +
-                            wordCurrentChar +
-                            '" ne peut être placé en ' +
-                            String.fromCharCode(y + 'A'.charCodeAt(0)) +
-                            ++x,
+                        `Commande impossible à réaliser : La lettre 
+                        ${wordCurrentChar} 
+                        ne peut être placé en
+                        ${String.fromCharCode(y + 'A'.charCodeAt(0))}
+                        ${++x}`,
                     );
                     return false;
                 }
@@ -107,7 +107,7 @@ export class ActionValidatorService {
                 }
             } else {
                 if (!hasNeighbour) {
-                    hasNeighbour = this.board.hasNeighbour(x, y);
+                    hasNeighbour = this.boardService.board.hasNeighbour(x, y);
                 }
             }
 

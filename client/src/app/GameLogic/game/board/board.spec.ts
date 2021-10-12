@@ -1,11 +1,15 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { ASCII_CODE, BOARD_DIMENSION } from '@app/GameLogic/constants';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Board, letterMultiplicator, wordMultiplicator } from './board';
 
 describe('Board test', () => {
     let board: Board;
+    const letterCreator = new LetterCreator();
+    const randomBonus = false;
 
     beforeEach(() => {
-        board = new Board();
+        board = new Board(randomBonus);
     });
     it('Board size', () => {
         expect(board.grid.length).toBe(BOARD_DIMENSION);
@@ -24,15 +28,27 @@ describe('Board test', () => {
         });
     });
 
-    it('Board desactivate letter multiplicator ', () => {
-        expect(board.grid[0][3].letterMultiplicator).toEqual(2);
-        board.desactivateLetterMultiplicator(3, 0);
-        expect(board.grid[0][3].letterMultiplicator).toEqual(1);
+    it('should x + 1 hasNeighbour', () => {
+        board.grid[5][5].letterObject = letterCreator.createLetter('A');
+        board.hasNeighbour(4, 5);
+        expect(board.hasNeighbour(4, 5)).toBeTruthy();
     });
 
-    it('Board desactivate word multiplicator ', () => {
-        expect(board.grid[0][0].wordMultiplicator).toEqual(3);
-        board.desactivateWordMultiplicator(0, 0);
-        expect(board.grid[0][0].wordMultiplicator).toEqual(1);
+    it('should x - 1 hasNeighbour', () => {
+        board.grid[5][5].letterObject = letterCreator.createLetter('A');
+        board.hasNeighbour(6, 5);
+        expect(board.hasNeighbour(4, 5)).toBeTruthy();
+    });
+
+    it('should y + 1 hasNeighbour', () => {
+        board.grid[5][5].letterObject = letterCreator.createLetter('A');
+        board.hasNeighbour(5, 4);
+        expect(board.hasNeighbour(4, 5)).toBeTruthy();
+    });
+
+    it('should y - 1 hasNeighbour', () => {
+        board.grid[5][5].letterObject = letterCreator.createLetter('A');
+        board.hasNeighbour(4, 6);
+        expect(board.hasNeighbour(4, 5)).toBeTruthy();
     });
 });

@@ -7,7 +7,7 @@ import {
     MAX_TIME_PER_TURN,
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
-    STEP_TIME_PER_TURN,
+    STEP_TIME_PER_TURN
 } from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 
@@ -32,6 +32,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             Validators.min(MIN_TIME_PER_TURN),
             Validators.max(MAX_TIME_PER_TURN),
         ]),
+        randomBonus: new FormControl(false, [Validators.required]),
     });
 
     minTimePerTurn = MIN_TIME_PER_TURN;
@@ -57,6 +58,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             playerName: '',
             adversaryDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
+            randomBonus: false,
         });
     }
 

@@ -18,7 +18,7 @@ export class ClassicGameComponent {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
         dialogConfig.disableClose = true;
-        dialogConfig.minWidth = 50;
+        dialogConfig.minWidth = 60;
 
         const dialogRef = this.dialog.open(NewSoloGameFormComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result) => {
