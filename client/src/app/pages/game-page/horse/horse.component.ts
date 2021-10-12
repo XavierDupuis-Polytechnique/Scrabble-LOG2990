@@ -23,7 +23,7 @@ export class HorseComponent implements AfterContentInit {
     }
 
     click(type: InputType, index: number) {
-        const input: UIInput = { from: InputComponent.Horse, type, args: this.playerRack[index] };
+        const input: UIInput = { from: InputComponent.Horse, type, args: index };
         this.clickLetter.emit(input);
     }
 }

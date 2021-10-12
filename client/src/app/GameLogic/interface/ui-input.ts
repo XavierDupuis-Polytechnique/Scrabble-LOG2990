@@ -19,5 +19,5 @@ export enum WheelRoll {
 export interface UIInput {
     type: InputType;
     from?: InputComponent;
-    args?: unknown;
+    args?: string | number | { x: number, y: number };
 }

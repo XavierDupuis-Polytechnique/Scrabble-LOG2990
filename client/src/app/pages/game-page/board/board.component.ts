@@ -46,7 +46,7 @@ export class BoardComponent implements AfterViewInit {
     }
 
     click(x: number, y: number) {
-        const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: String(x + y) };
+        const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: { x, y } };
         this.clickTile.emit(input);
     }
 }

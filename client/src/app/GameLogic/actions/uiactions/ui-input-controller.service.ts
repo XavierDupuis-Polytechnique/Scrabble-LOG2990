@@ -22,9 +22,16 @@ export class UIInputControllerService {
     constructor(private avs: ActionValidatorService, private info: GameInfoService) {}
 
     receive(input: UIInput) {
-        // TODO : REMOVE NEXT LINE
-        console.log('received', input);
-        this.dispatch(input);
+        console.log('received', input); // TODO : REMOVE THIS LINE
+        this.processInput(input);
+    }
+
+    processInput(input: UIInput) {
+        this.processInputComponent(input);
+        console.log('ACTIVE COMPONENT : ', this.activeComponent); // TODO : REMOVE THIS LINE
+        this.updateActiveAction(input.type);
+        console.log('ACTIVE ACTION : ', this.activeAction); // TODO : REMOVE THIS LINE
+        this.processInputType(input);
     }
 
     processInputComponent(input: UIInput) {
@@ -49,8 +56,7 @@ export class UIInputControllerService {
                         this.activeAction = new UIExchange();
                         return true;
                     }
-                } else {
-                    // LEFTCLICK or KEYPRESS
+                } else { // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
                         this.activeAction = new UIMove();
                         return true;
@@ -97,13 +103,6 @@ export class UIInputControllerService {
         this.avs.sendAction(newAction);
     }
 
-    private dispatch(input: UIInput) {
-        this.processInputComponent(input);
-        // TODO : REMOVE NEXT LINE
-        console.log('ACTIVE COMPONENT : ', this.activeComponent);
-        this.updateActiveAction(input.type);
-        this.processInputType(input);
-    }
 
     private discardAction() {
         this.activeAction = null;

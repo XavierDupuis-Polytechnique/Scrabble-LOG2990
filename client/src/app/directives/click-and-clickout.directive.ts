@@ -22,7 +22,7 @@ export class ClickAndClickoutDirective {
     clickout() {
         if (!this.wasInside) {
             if (this.inputController.activeComponent === this.inputComponent) {
-                this.inputController.receive({ type: InputType.RightClick, from: InputComponent.Outside });
+                this.inputController.receive({ type: InputType.LeftClick, from: InputComponent.Outside });
                 // console.log("CURRENT WAS", this.inputComponent);
             }
         }

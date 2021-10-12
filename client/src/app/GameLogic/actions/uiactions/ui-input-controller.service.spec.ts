@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/uiactions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
@@ -9,7 +10,6 @@ describe('UIInputControllerService', () => {
     let service: UIInputControllerService;
 
     beforeEach(() => {
-        // let cSpy = spyOn(UIPlace, 'create');
         TestBed.configureTestingModule({});
         service = TestBed.inject(UIInputControllerService);
     });
@@ -17,6 +17,17 @@ describe('UIInputControllerService', () => {
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
+
+    /// receive TESTS ///
+    it('should call processInputComponent upon receiving an input', () => {
+        const input: UIInput = { type: InputType.LeftClick };
+        const processInputSpy = spyOn(service, 'processInput').and.callFake(() => {
+            return;
+        });
+        service.receive(input);
+        expect(processInputSpy).toHaveBeenCalledWith(input);
+    });
+    /// //////////////////////// ///
 
     /// processInputComponent TESTS ///
     it('should update activeComponent with the correct default component when "from" is not provided', () => {
@@ -45,7 +56,7 @@ describe('UIInputControllerService', () => {
         service.processInputComponent(input);
         expect(service.activeComponent).toBe(component);
     });
-    /// ///////////////////////////
+    /// //////////////////////// ///
 
     /// updateActiveAction TESTS ///
     it('should create a new UIPlace action if the activeAction is null', () => {
@@ -131,5 +142,37 @@ describe('UIInputControllerService', () => {
         expect(wasActionCreated).toBeFalsy();
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
-    /// ///////////////////////////
+    /// //////////////////////// ///
+
+    /// processInputType TESTS ///
+
+
+    /// //////////////////////// ///
+
+    /// cancel TESTS ///
+    it('should call discard (remove the activeAction and set activeComponent to "Outside")', () => {
+        service.activeComponent = InputComponent.Horse;
+        service.cancel();
+        expect(service.activeComponent).toBe(InputComponent.Outside);
+        expect(service.activeAction).toBeNull();
+    });
+    /// //////////////////////// ///
+
+    /// confirm TESTS ///
+    it('should throw error if the activeAction is null', () => {
+        service.activeAction = null;
+        expect(() => {
+            service.confirm();
+        }).toThrowError('Action couldnt be created : no UIAction is active');
+    });
+
+    it('should send the correct action to the ActionValidatorService method', () => {
+        service.activeAction = new UIExchange();
+        const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
+            return;
+        });
+        service.confirm();
+        expect(sendActionSpy).toHaveBeenCalled;//With(action);
+    });
+    /// //////////////////////// ///
 });
