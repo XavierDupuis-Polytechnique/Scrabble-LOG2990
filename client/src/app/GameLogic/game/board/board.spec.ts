@@ -53,23 +53,7 @@ describe('Board test', () => {
     });
 
     it('position should have random tile multiplicator', () => {
-        let differentBoard = false;
-        const randomBoard = new Board(randomBonus);
-        for (const tile of board.grid[0]) {
-            const x = 0;
-            if (tile.letterMultiplicator > 1) {
-                const randomBoardLetterMult = randomBoard.grid[0][x].letterMultiplicator;
-                if (tile.letterMultiplicator !== randomBoardLetterMult) {
-                    differentBoard = true;
-                }
-            }
-            if (tile.wordMultiplicator > 1) {
-                const randomBoardWordMult = randomBoard.grid[0][x].wordMultiplicator;
-                if (tile.wordMultiplicator !== randomBoardWordMult) {
-                    differentBoard = true;
-                }
-            }
-        }
-        expect(differentBoard).toBe(true);
+        const randomBoard = new Board(true);
+        expect(board.grid).not.toEqual(randomBoard.grid);
     });
 });
