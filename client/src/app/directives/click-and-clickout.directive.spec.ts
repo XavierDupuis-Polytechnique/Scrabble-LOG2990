@@ -3,18 +3,16 @@ import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-in
 import { ClickAndClickoutDirective } from './click-and-clickout.directive';
 
 describe('ClickAndClickoutDirective', () => {
-  let uiInputController: UIInputControllerService;
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        UIInputControllerService
-      ],
+    let uiInputController: UIInputControllerService;
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [UIInputControllerService],
+        });
+        uiInputController = TestBed.inject(UIInputControllerService);
     });
-    uiInputController = TestBed.inject(UIInputControllerService);
-  });
 
-  it('should create an instance', () => {
-    const directive = new ClickAndClickoutDirective(uiInputController);
-    expect(directive).toBeTruthy();
-  });
+    it('should create an instance', () => {
+        const directive = new ClickAndClickoutDirective(uiInputController);
+        expect(directive).toBeTruthy();
+    });
 });

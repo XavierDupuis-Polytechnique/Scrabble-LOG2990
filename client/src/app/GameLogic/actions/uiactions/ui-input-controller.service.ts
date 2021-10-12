@@ -14,8 +14,8 @@ import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-
     providedIn: 'root',
 })
 export class UIInputControllerService {
-    static DEFAULT_COMPONENT = InputComponent.Horse;
-    activeComponent = UIInputControllerService.DEFAULT_COMPONENT;
+    static defaultComponent = InputComponent.Horse;
+    activeComponent = UIInputControllerService.defaultComponent;
     activeAction: UIAction | null = null;
     activeLetters: Letter[] = [];
 
@@ -27,58 +27,43 @@ export class UIInputControllerService {
         this.dispatch(input);
     }
 
-    private discardAction() {
-        this.activeAction = null;
-        this.activeComponent = InputComponent.Outside;
-    }
-
-    private dispatch(input: UIInput) {
-        this.processInputComponent(input);
-        // TODO : REMOVE NEXT LINE
-        console.log('ACTIVE COMPONENT : ', this.activeComponent)
-        this.updateActiveAction(input.type)
-        this.processInputType(input);
-    }
-
     processInputComponent(input: UIInput) {
         if (input.from === undefined) {
-            this.activeComponent = UIInputControllerService.DEFAULT_COMPONENT;
+            this.activeComponent = UIInputControllerService.defaultComponent;
             return;
         }
         this.activeComponent = input.from;
     }
 
-    updateActiveAction(inputType: InputType) {
-        let actionName = "";
+    updateActiveAction(inputType: InputType): boolean {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
                     this.activeAction = new UIPlace();
-                    actionName = "UIPlace";
+                    return true;
                 }
                 break;
             case InputComponent.Horse:
                 if (inputType === InputType.RightClick) {
                     if (!(this.activeAction instanceof UIExchange)) {
                         this.activeAction = new UIExchange();
-                        actionName = "UIExchange";
+                        return true;
                     }
-                } else { // LEFTCLICK or KEYPRESS    
+                } else {
+                    // LEFTCLICK or KEYPRESS
                     if (!(this.activeAction instanceof UIMove)) {
                         this.activeAction = new UIMove();
-                        actionName = "UIMove";
+                        return true;
                     }
                 }
                 break;
             case InputComponent.Outside:
                 if (this.activeAction) {
                     this.discardAction();
-                    actionName = "null";
-                };
-
+                    return true;
+                }
         }
-        // TODO : REMOVE NEXT LINE
-        console.log("UIAction now : '" + actionName + "' (same as last if empty)")
+        return false;
     }
 
     processInputType(input: UIInput) {
@@ -100,6 +85,31 @@ export class UIInputControllerService {
         }
     }
 
+    cancel() {
+        this.discardAction();
+    }
+
+    confirm() {
+        if (this.activeAction === null) {
+            throw new Error('Action couldnt be created : no UIAction is active');
+        }
+        const newAction: Action = this.activeAction.create(this.info.user);
+        this.avs.sendAction(newAction);
+    }
+
+    private dispatch(input: UIInput) {
+        this.processInputComponent(input);
+        // TODO : REMOVE NEXT LINE
+        console.log('ACTIVE COMPONENT : ', this.activeComponent);
+        this.updateActiveAction(input.type);
+        this.processInputType(input);
+    }
+
+    private discardAction() {
+        this.activeAction = null;
+        this.activeComponent = InputComponent.Outside;
+    }
+
     private processMouseRoll(args: unknown) {
         throw new Error('Method not implemented.');
     }
@@ -111,14 +121,14 @@ export class UIInputControllerService {
                 this.discardAction();
                 break;
             case ENTER:
-                this.confirm()
+                this.confirm();
                 break;
             default:
                 if (this.activeAction !== null) {
                     this.activeAction.receiveKey(keyPressed);
                     return;
                 } else {
-                    throw new Error('Action is null')
+                    throw new Error('Action is null');
                 }
         }
     }
@@ -129,17 +139,5 @@ export class UIInputControllerService {
 
     private processRightCLick() {
         throw new Error('Method not implemented.');
-    }
-
-    cancel() {
-        this.discardAction();
-    }
-
-    confirm() {
-        if (this.activeAction === null) {
-            throw new Error("Action couldnt be created : no UIAction is active")
-        }
-        const newAction: Action = this.activeAction.create(this.info.user);
-        this.avs.sendAction(newAction)
     }
 }

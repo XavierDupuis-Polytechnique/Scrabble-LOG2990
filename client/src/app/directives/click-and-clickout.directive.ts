@@ -3,31 +3,30 @@ import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-in
 import { InputComponent, InputType } from '@app/GameLogic/interface/ui-input';
 
 @Directive({
-  selector: '[appClickAndClickout]'
+    selector: '[appClickAndClickout]',
 })
 export class ClickAndClickoutDirective {
+    private wasInside = false;
 
-  constructor(private inputController: UIInputControllerService) {}
+    @Input() inputComponent: InputComponent;
 
-  private wasInside = false;
+    constructor(private inputController: UIInputControllerService) {}
 
-  @Input() inputComponent: InputComponent;
-
-  @HostListener('click')
-  clickInside() {
-    // console.log("clicked inside", this.inputComponent);
-    this.wasInside = true;
-  }
-
-  @HostListener('document:click')
-  clickout() {
-    if (!this.wasInside) {
-      if (this.inputController.activeComponent === this.inputComponent) {
-        this.inputController.receive({ type: InputType.RightClick, from: InputComponent.Outside });
-        // console.log("CURRENT WAS", this.inputComponent);
-      }
+    @HostListener('click')
+    clickInside() {
+        // console.log("clicked inside", this.inputComponent);
+        this.wasInside = true;
     }
-    this.wasInside = false;
-    // console.log("CURRENT : ", this.inputController.activeComponent);
-  }
+
+    @HostListener('document:click')
+    clickout() {
+        if (!this.wasInside) {
+            if (this.inputController.activeComponent === this.inputComponent) {
+                this.inputController.receive({ type: InputType.RightClick, from: InputComponent.Outside });
+                // console.log("CURRENT WAS", this.inputComponent);
+            }
+        }
+        this.wasInside = false;
+        // console.log("CURRENT : ", this.inputController.activeComponent);
+    }
 }
