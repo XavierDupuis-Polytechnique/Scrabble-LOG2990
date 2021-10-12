@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+// import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { ASCII_CODE, BOARD_DIMENSION } from '@app/GameLogic/constants';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
-import { Board, letterMultiplicator, wordMultiplicator } from './board';
+import { Board, multiplicators, MultiType } from './board';
 
 describe('Board test', () => {
     let board: Board;
@@ -19,12 +20,12 @@ describe('Board test', () => {
     });
 
     it('Board default value at right place', () => {
-        wordMultiplicator.forEach((elem) => {
-            expect(board.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].wordMultiplicator).toBe(elem.v);
-        });
-
-        letterMultiplicator.forEach((elem) => {
-            expect(board.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator).toBe(elem.v);
+        multiplicators.forEach((elem) => {
+            if (elem.type === MultiType.Letter) {
+                expect(board.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator).toBe(elem.v);
+            } else {
+                expect(board.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].wordMultiplicator).toBe(elem.v);
+            }
         });
     });
 
@@ -54,6 +55,6 @@ describe('Board test', () => {
 
     it('position should have random tile multiplicator', () => {
         const randomBoard = new Board(true);
-        expect(board.grid).not.toEqual(randomBoard.grid);
+        expect(randomBoard.listMultiplicator).not.toEqual(multiplicators);
     });
 });
