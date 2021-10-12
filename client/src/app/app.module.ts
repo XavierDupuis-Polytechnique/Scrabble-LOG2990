@@ -26,6 +26,7 @@ import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component'
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
 import { PreventContextMenuDirective } from './directives/prevent-context-menu.directive';
 import { ClickAndClickoutDirective } from './directives/click-and-clickout.directive';
+import { MouseRollDirective } from './directives/mouse-roll.directive';
 
 /**
  * Main module that is used in main.ts.
@@ -54,6 +55,7 @@ import { ClickAndClickoutDirective } from './directives/click-and-clickout.direc
         BoldPipe,
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
+        MouseRollDirective,
     ],
     imports: [
         AppMaterialModule,

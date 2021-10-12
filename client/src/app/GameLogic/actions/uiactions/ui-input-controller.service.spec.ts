@@ -95,5 +95,41 @@ describe('UIInputControllerService', () => {
         expect(wasActionCreated).toBeFalsy();
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
     });
+
+    it('should not create a new UIExchange action if the activeAction is already a UIExchange', () => {
+        service.activeComponent = InputComponent.Horse;
+        let wasActionCreated = service.updateActiveAction(InputType.RightClick);
+        expect(wasActionCreated).toBeTruthy();
+        expect(service.activeAction instanceof UIExchange).toBeTruthy();
+
+        service.activeComponent = InputComponent.Horse;
+        wasActionCreated = service.updateActiveAction(InputType.RightClick);
+        expect(wasActionCreated).toBeFalsy();
+        expect(service.activeAction instanceof UIExchange).toBeTruthy();
+    });
+
+    it('should not create a new UIMove action if the activeAction is already a UIMove (double LeftClick)', () => {
+        service.activeComponent = InputComponent.Horse;
+        let wasActionCreated = service.updateActiveAction(InputType.LeftClick);
+        expect(wasActionCreated).toBeTruthy();
+        expect(service.activeAction instanceof UIMove).toBeTruthy();
+
+        service.activeComponent = InputComponent.Horse;
+        wasActionCreated = service.updateActiveAction(InputType.LeftClick);
+        expect(wasActionCreated).toBeFalsy();
+        expect(service.activeAction instanceof UIMove).toBeTruthy();
+    });
+
+    it('should not create a new UIMove action if the activeAction is already a UIMove (LeftClick, then KeyPress)', () => {
+        service.activeComponent = InputComponent.Horse;
+        let wasActionCreated = service.updateActiveAction(InputType.LeftClick);
+        expect(wasActionCreated).toBeTruthy();
+        expect(service.activeAction instanceof UIMove).toBeTruthy();
+
+        service.activeComponent = InputComponent.Horse;
+        wasActionCreated = service.updateActiveAction(InputType.KeyPress);
+        expect(wasActionCreated).toBeFalsy();
+        expect(service.activeAction instanceof UIMove).toBeTruthy();
+    });
     /// ///////////////////////////
 });
