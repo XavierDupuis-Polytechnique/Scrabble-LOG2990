@@ -1,6 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
-import { ARROWLEFT, ARROWRIGHT, JOKER_CHAR, RACK_LETTER_COUNT, SHIFT } from '@app/GameLogic/constants';
+import { ARROWLEFT, ARROWRIGHT, JOKER_CHAR, NOT_FOUND, RACK_LETTER_COUNT, SHIFT } from '@app/GameLogic/constants';
 import { WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
 import { isStringALowerCaseLetter } from '@app/GameLogic/utils';
@@ -37,7 +37,7 @@ export class UIMove implements UIAction {
                 if (isStringALowerCaseLetter(key) || key === JOKER_CHAR) {
                     let currentIndex = this.getCurrentIndex();
                     if (isNaN(currentIndex)) {
-                        currentIndex = -1;
+                        currentIndex = NOT_FOUND;
                     }
                     const newIndex = this.findNextLetterIndex(currentIndex + 1, key);
                     if (newIndex !== undefined) {

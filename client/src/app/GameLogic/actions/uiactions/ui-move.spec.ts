@@ -1,4 +1,18 @@
-import { ARROWLEFT, ARROWRIGHT, BACKSPACE, ENTER, JOKER_CHAR, ONE, RACK_LETTER_COUNT, SIX, SPACE, THREE, TWO, ZERO } from '@app/GameLogic/constants';
+import {
+    ARROWLEFT,
+    ARROWRIGHT,
+    BACKSPACE,
+    ENTER,
+    JOKER_CHAR,
+    ONE,
+    RACK_LETTER_COUNT,
+    SIX,
+    SPACE,
+    TEN,
+    THREE,
+    TWO,
+    ZERO,
+} from '@app/GameLogic/constants';
 import { WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -53,7 +67,6 @@ describe('UIMove', () => {
         expect(action.concernedIndexes.has(secondIndex)).toBeTruthy();
         expect(action.concernedIndexes.size).toBe(ONE);
     });
-
 
     it('should properly select a letter from the player LetterRack', () => {
         const action = new UIMove(player);
@@ -114,9 +127,9 @@ describe('UIMove', () => {
         const index = 0;
         const char = player.letterRack[index].char;
 
-        const keysOutsideOfLetterRack = [SPACE, ENTER, BACKSPACE, '-', '#', '/', '.', '+', '!', '"']
+        const keysOutsideOfLetterRack = [SPACE, ENTER, BACKSPACE, '-', '#', '/', '.', '+', '!', '"'];
 
-        for (let outChar of keysOutsideOfLetterRack) {
+        for (const outChar of keysOutsideOfLetterRack) {
             action.receiveKey(char.toLowerCase());
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.has(index)).toBeTruthy();
@@ -125,7 +138,7 @@ describe('UIMove', () => {
             expect(action.concernedIndexes.size).toBe(ZERO);
         }
 
-        for (let num = 0; num < 10; num++) {
+        for (let num = 0; num < TEN; num++) {
             action.receiveKey(char.toLowerCase());
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.has(index)).toBeTruthy();
@@ -139,9 +152,9 @@ describe('UIMove', () => {
         const action = new UIMove(player);
         const index = 0;
         const char = player.letterRack[index].char;
-        const charOutsideOfLetterRack = ['h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        const charOutsideOfLetterRack = ['h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
-        for (let outChar of charOutsideOfLetterRack) {
+        for (const outChar of charOutsideOfLetterRack) {
             action.receiveKey(char.toLowerCase());
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.has(index)).toBeTruthy();
@@ -158,8 +171,8 @@ describe('UIMove', () => {
         action.receiveKey(concernedLetter.char.toLowerCase());
 
         for (let i = 0; i < TWO * RACK_LETTER_COUNT; i++) {
-            const currentIndex = action.concernedIndexes.values().next().value
-            const newIndex = (currentIndex + 1) % RACK_LETTER_COUNT
+            const currentIndex = action.concernedIndexes.values().next().value;
+            const newIndex = (currentIndex + 1) % RACK_LETTER_COUNT;
             action.receiveKey(ARROWRIGHT);
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.values().next().value).toBe(newIndex);
@@ -174,8 +187,8 @@ describe('UIMove', () => {
         action.receiveKey(concernedLetter.char.toLowerCase());
 
         for (let i = 0; i < TWO * RACK_LETTER_COUNT; i++) {
-            const currentIndex = action.concernedIndexes.values().next().value
-            const newIndex = (currentIndex + RACK_LETTER_COUNT - 1) % RACK_LETTER_COUNT
+            const currentIndex = action.concernedIndexes.values().next().value;
+            const newIndex = (currentIndex + RACK_LETTER_COUNT - 1) % RACK_LETTER_COUNT;
             action.receiveKey(ARROWLEFT);
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.values().next().value).toBe(newIndex);
@@ -190,8 +203,8 @@ describe('UIMove', () => {
         action.receiveKey(concernedLetter.char.toLowerCase());
 
         for (let i = 0; i < TWO * RACK_LETTER_COUNT; i++) {
-            const currentIndex = action.concernedIndexes.values().next().value
-            const newIndex = (currentIndex + 1) % RACK_LETTER_COUNT
+            const currentIndex = action.concernedIndexes.values().next().value;
+            const newIndex = (currentIndex + 1) % RACK_LETTER_COUNT;
             action.receiveRoll(WheelRoll.DOWN);
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.values().next().value).toBe(newIndex);
@@ -206,8 +219,8 @@ describe('UIMove', () => {
         action.receiveKey(concernedLetter.char.toLowerCase());
 
         for (let i = 0; i < TWO * RACK_LETTER_COUNT; i++) {
-            const currentIndex = action.concernedIndexes.values().next().value
-            const newIndex = (currentIndex + RACK_LETTER_COUNT - 1) % RACK_LETTER_COUNT
+            const currentIndex = action.concernedIndexes.values().next().value;
+            const newIndex = (currentIndex + RACK_LETTER_COUNT - 1) % RACK_LETTER_COUNT;
             action.receiveRoll(WheelRoll.UP);
             expect(action.concernedIndexes.size).toBe(ONE);
             expect(action.concernedIndexes.values().next().value).toBe(newIndex);
