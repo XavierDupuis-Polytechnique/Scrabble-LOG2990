@@ -43,9 +43,9 @@ export class UIMove implements UIAction {
                     if (newIndex !== undefined) {
                         this.storeLetterIndex(newIndex);
                     }
-                } else {
-                    throw new Error('Couldnt use ' + key + ' to select/move a Letter');
+                    return;
                 }
+                this.concernedIndexes.clear();
         }
     }
 
