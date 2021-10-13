@@ -2,6 +2,6 @@ import { UIPlace } from './ui-place';
 
 describe('UIPlace', () => {
     it('should create an instance', () => {
-        expect(new UIPlace()).toBeTruthy();
+        expect(new UIPlace(/*new User("p1")*/)).toBeTruthy();
     });
 });

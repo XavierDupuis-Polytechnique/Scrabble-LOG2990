@@ -48,20 +48,20 @@ export class UIInputControllerService {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
-                    this.activeAction = new UIPlace();
+                    this.activeAction = new UIPlace(/*this.info.user*/);
                     return true;
                 }
                 break;
             case InputComponent.Horse:
                 if (inputType === InputType.RightClick) {
                     if (!(this.activeAction instanceof UIExchange)) {
-                        this.activeAction = new UIExchange();
+                        this.activeAction = new UIExchange(this.info.user);
                         return true;
                     }
                 } else {
                     // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
-                        this.activeAction = new UIMove();
+                        this.activeAction = new UIMove(this.info.user);
                         return true;
                     }
                 }
@@ -103,7 +103,7 @@ export class UIInputControllerService {
         if (this.activeAction === null) {
             throw new Error('Action couldnt be created : no UIAction is active');
         }
-        const newAction: Action = this.activeAction.create(this.info.user);
+        const newAction: Action = this.activeAction.create();
         this.avs.sendAction(newAction);
         this.discardAction();
     }
@@ -114,7 +114,9 @@ export class UIInputControllerService {
     }
 
     private processMouseRoll(args: unknown) {
-        throw new Error('Method not implemented.');
+        if (this.activeAction) {
+            this.activeAction.receiveRoll(args);
+        }
     }
 
     private processKeyPress(args: unknown) {
@@ -127,7 +129,7 @@ export class UIInputControllerService {
                 this.confirm();
                 break;
             default:
-                if (this.activeAction !== null) {
+                if (this.activeAction) {
                     this.activeAction.receiveKey(keyPressed);
                     return;
                 } else {

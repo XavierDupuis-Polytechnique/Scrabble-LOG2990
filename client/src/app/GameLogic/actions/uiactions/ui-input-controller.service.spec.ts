@@ -4,6 +4,7 @@ import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/uiactions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { User } from '@app/GameLogic/player/user';
 import { UIInputControllerService } from './ui-input-controller.service';
 
 describe('UIInputControllerService', () => {
@@ -88,7 +89,8 @@ describe('UIInputControllerService', () => {
     });
 
     it('should set the activeAction null if the InputComponent was "Outside"', () => {
-        service.activeAction = new UIExchange();
+        const player = new User("p1")
+        service.activeAction = new UIExchange(player);
         service.activeComponent = InputComponent.Outside;
         const wasActionCreated = service.updateActiveAction(InputType.LeftClick);
         expect(wasActionCreated).toBeTruthy();
@@ -166,7 +168,8 @@ describe('UIInputControllerService', () => {
     });
 
     it('should send the correct action to the ActionValidatorService method', () => {
-        service.activeAction = new UIExchange();
+        const player = new User("p1")
+        service.activeAction = new UIExchange(player);
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
             return;
         });
