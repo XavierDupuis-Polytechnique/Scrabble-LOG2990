@@ -17,8 +17,11 @@ export class UIInputControllerService {
     activeComponent = UIInputControllerService.defaultComponent;
     activeAction: UIAction | null = null;
 
-    get canBeExecuted() {
-        return this.activeAction?.canBeCreated;
+    get canBeExecuted(): boolean {
+        if (this.activeAction) {
+            return this.activeAction.canBeCreated;
+        }
+        return false;
     }
 
     constructor(private avs: ActionValidatorService, private info: GameInfoService) {}
@@ -48,7 +51,7 @@ export class UIInputControllerService {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
-                    this.activeAction = new UIPlace(/*this.info.user*/);
+                    this.activeAction = new UIPlace(this.info.user);
                     return true;
                 }
                 break;
@@ -133,7 +136,7 @@ export class UIInputControllerService {
                     this.activeAction.receiveKey(keyPressed);
                     return;
                 } else {
-                    throw new Error('Action is null');
+                    throw new Error('Couldnt send ' + keyPressed + ' because activeAction is null');
                 }
         }
     }
