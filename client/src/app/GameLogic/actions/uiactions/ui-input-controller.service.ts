@@ -71,9 +71,16 @@ export class UIInputControllerService {
                     }
                 }
                 break;
+            case InputComponent.Chatbox:
+                if (this.activeAction) {
+                    this.discardAction();
+                    return true;
+                }
+                break;
             case InputComponent.Outside:
                 if (this.activeAction) {
                     this.discardAction();
+                    this.activeComponent = InputComponent.Outside;
                     return true;
                 }
         }
@@ -102,6 +109,7 @@ export class UIInputControllerService {
     cancel() {
         console.log('ACTIVE ACTION : ', this.activeAction, ' will be discarded'); // TODO : REMOVE THIS LINE
         this.discardAction();
+        this.activeComponent = InputComponent.Outside;
     }
 
     confirm() {
@@ -111,11 +119,11 @@ export class UIInputControllerService {
         const newAction: Action = this.activeAction.create();
         this.avs.sendAction(newAction);
         this.discardAction();
+        this.activeComponent = InputComponent.Outside;
     }
 
     private discardAction() {
         this.activeAction = null;
-        this.activeComponent = InputComponent.Outside;
     }
 
     private processMouseRoll(args: unknown) {
@@ -129,6 +137,7 @@ export class UIInputControllerService {
         switch (keyPressed) {
             case ESCAPE:
                 this.discardAction();
+                this.activeComponent = InputComponent.Outside;
                 break;
             case ENTER:
                 this.confirm();
@@ -137,8 +146,9 @@ export class UIInputControllerService {
                 if (this.activeAction) {
                     this.activeAction.receiveKey(keyPressed);
                     return;
-                } else {
-                    throw new Error('Couldnt send ' + keyPressed + ' because activeAction is null');
+                    // TODO : REMOVE NEXT 2 LINES
+                    // } else {
+                    //     throw new Error('Couldnt send ' + keyPressed + ' because activeAction is null');
                 }
         }
     }

@@ -8,6 +8,7 @@ export enum InputType {
 export enum InputComponent {
     Horse = 'Horse',
     Board = 'Board',
+    Chatbox = 'Chatbox',
     Outside = 'Outside',
 }
 

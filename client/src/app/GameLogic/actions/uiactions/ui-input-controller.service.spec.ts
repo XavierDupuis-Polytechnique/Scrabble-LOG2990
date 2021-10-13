@@ -61,6 +61,31 @@ describe('UIInputControllerService', () => {
     });
     /// //////////////////////// ///
 
+    /// processInput TESTS ///
+    it('should override Keypress/MouseRoll/LeftClick/RightClick when activeComponent is Chatbox', () => {
+        service.activeComponent = InputComponent.Outside;
+        service.activeAction = new UIMove(player);
+
+        let args = 'a';
+        const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
+        player.letterRack[letterIndex].char = args;
+        const firstInput: UIInput = { type: InputType.KeyPress, args };
+        service.processInput(firstInput);
+        expect(service.activeComponent).toBe(InputComponent.Horse);
+        expect(service.activeAction instanceof UIMove).toBeTruthy();
+        expect(service.activeAction.concernedIndexes.has(letterIndex)).toBeTruthy();
+
+        const secondInput: UIInput = { from: InputComponent.Chatbox, type: InputType.LeftClick };
+        service.processInput(secondInput);
+        expect(service.activeComponent).toBe(InputComponent.Chatbox)
+        expect(service.activeAction).toBeNull();
+
+        service.processInput(firstInput);
+        expect(service.activeComponent).toBe(InputComponent.Chatbox)
+        expect(service.activeAction).toBeNull();
+    });
+    /// //////////////////////// ///
+
     /// processInputComponent TESTS ///
     it('should update activeComponent with the correct default component when "from" is not provided', () => {
         const input: UIInput = { type: InputType.LeftClick };
@@ -206,22 +231,22 @@ describe('UIInputControllerService', () => {
         const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
         player.letterRack[letterIndex].char = args;
         const input: UIInput = { type: InputType.KeyPress, args };
-        const receiveRightClickSpy = spyOn(service.activeAction, 'receiveKey').and.callThrough();
+        const receiveKeySpy = spyOn(service.activeAction, 'receiveKey').and.callThrough();
         service.processInputType(input);
-        expect(receiveRightClickSpy).toHaveBeenCalledWith(args);
+        expect(receiveKeySpy).toHaveBeenCalledWith(args);
         expect(service.activeAction.concernedIndexes.has(letterIndex)).toBeTruthy();
     });
 
-    it('should throw an error for a Keypress while the activeAction is null', () => {
-        service.activeComponent = InputComponent.Horse;
-        const args = 'a';
-        const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
-        player.letterRack[letterIndex].char = args;
-        const input: UIInput = { type: InputType.KeyPress, args };
-        expect(() => {
-            service.processInputType(input);
-        }).toThrowError('Couldnt send ' + args + ' because activeAction is null');
-    });
+    // it('should throw an error for a Keypress while the activeAction is null', () => {
+    //     service.activeComponent = InputComponent.Horse;
+    //     const args = 'a';
+    //     const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
+    //     player.letterRack[letterIndex].char = args;
+    //     const input: UIInput = { type: InputType.KeyPress, args };
+    //     expect(() => {
+    //         service.processInputType(input);
+    //     }).toThrowError('Couldnt send ' + args + ' because activeAction is null');
+    // });
 
     it('should discard the activeAction following the "ESCAPE" Keypress', () => {
         service.activeAction = new UIMove(player);
