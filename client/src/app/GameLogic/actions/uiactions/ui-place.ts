@@ -26,6 +26,12 @@ export class UIPlace implements UIAction {
         throw new Error('Method not implemented.');
     }
     create(): Action {
-        return new PlaceLetter(this.player, "", { direction: 'h', x: 0, y: 0 }, new PointCalculatorService(new BoardService()), new WordSearcher(new BoardService(), new DictionaryService()));
+        return new PlaceLetter(
+            this.player,
+            '',
+            { direction: 'h', x: 0, y: 0 },
+            new PointCalculatorService(new BoardService()),
+            new WordSearcher(new BoardService(), new DictionaryService()),
+        );
     }
 }

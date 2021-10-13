@@ -17,7 +17,7 @@ describe('UIInputControllerService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(UIInputControllerService);
-        player = new User("p1")
+        player = new User('p1');
         player.letterRack = [
             { char: EMPTY_CHAR, value: 0 },
             { char: EMPTY_CHAR, value: 0 },
@@ -25,8 +25,8 @@ describe('UIInputControllerService', () => {
             { char: EMPTY_CHAR, value: 0 },
             { char: EMPTY_CHAR, value: 0 },
             { char: EMPTY_CHAR, value: 0 },
-            { char: EMPTY_CHAR, value: 0 }
-        ]
+            { char: EMPTY_CHAR, value: 0 },
+        ];
     });
 
     it('should be created', () => {
@@ -202,7 +202,7 @@ describe('UIInputControllerService', () => {
     it('should refer a Keypress to the processKeypress method', () => {
         service.activeAction = new UIMove(player);
         service.activeComponent = InputComponent.Horse;
-        const args = "a";
+        const args = 'a';
         const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
         player.letterRack[letterIndex].char = args;
         const input: UIInput = { type: InputType.KeyPress, args };
@@ -214,7 +214,7 @@ describe('UIInputControllerService', () => {
 
     it('should throw an error for a Keypress while the activeAction is null', () => {
         service.activeComponent = InputComponent.Horse;
-        const args = "a";
+        const args = 'a';
         const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
         player.letterRack[letterIndex].char = args;
         const input: UIInput = { type: InputType.KeyPress, args };

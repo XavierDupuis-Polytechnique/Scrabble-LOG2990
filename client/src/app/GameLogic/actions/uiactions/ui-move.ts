@@ -26,10 +26,10 @@ export class UIMove implements UIAction {
     receiveKey(key: string): void {
         switch (key) {
             case ARROWLEFT:
-                this.moveLeft()
+                this.moveLeft();
                 return;
             case ARROWRIGHT:
-                this.moveRight()
+                this.moveRight();
                 return;
             case SHIFT:
                 return;
@@ -39,12 +39,12 @@ export class UIMove implements UIAction {
                     if (isNaN(currentIndex)) {
                         currentIndex = -1;
                     }
-                    const newIndex = this.findNextLetterIndex(currentIndex + 1, key)
+                    const newIndex = this.findNextLetterIndex(currentIndex + 1, key);
                     if (newIndex !== undefined) {
                         this.storeLetterIndex(newIndex);
                     }
                 } else {
-                    throw new Error("Couldnt use " + key + " to select/move a Letter")
+                    throw new Error('Couldnt use ' + key + ' to select/move a Letter');
                 }
         }
     }
@@ -83,7 +83,7 @@ export class UIMove implements UIAction {
         const firstLetterCopy = { ...this.player.letterRack[oldIndex] };
         this.player.letterRack[oldIndex] = this.player.letterRack[newIndex];
         this.player.letterRack[newIndex] = firstLetterCopy;
-        this.storeLetterIndex(newIndex)
+        this.storeLetterIndex(newIndex);
     }
 
     private getCurrentIndex(): number {
