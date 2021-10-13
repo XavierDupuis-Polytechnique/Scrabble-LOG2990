@@ -15,6 +15,10 @@ export class MessagesService {
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
     constructor(private commandParser: CommandParserService) {}
 
+    connectToRoom(roomID: string) {
+        return roomID;
+    }
+
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
             content,
