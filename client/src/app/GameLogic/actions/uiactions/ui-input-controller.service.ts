@@ -41,7 +41,9 @@ export class UIInputControllerService {
 
     processInputComponent(input: UIInput) {
         if (input.from === undefined) {
-            this.activeComponent = UIInputControllerService.defaultComponent;
+            if (this.activeComponent === InputComponent.Outside) {
+                this.activeComponent = UIInputControllerService.defaultComponent;
+            }
             return;
         }
         this.activeComponent = input.from;
