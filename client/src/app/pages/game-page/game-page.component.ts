@@ -88,11 +88,9 @@ export class GamePageComponent {
 
     confirm() {
         this.inputController.confirm();
-        // TODO : remove visually selected Tiles
     }
 
     cancel() {
         this.inputController.cancel();
-        // TODO : remove visually selected Tiles
     }
 }

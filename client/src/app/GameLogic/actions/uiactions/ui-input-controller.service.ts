@@ -27,15 +27,12 @@ export class UIInputControllerService {
     constructor(private avs: ActionValidatorService, private info: GameInfoService) {}
 
     receive(input: UIInput) {
-        console.log('received', input); // TODO : REMOVE THIS LINE
         this.processInput(input);
     }
 
     processInput(input: UIInput) {
         this.processInputComponent(input);
-        console.log('ACTIVE COMPONENT : ', this.activeComponent); // TODO : REMOVE THIS LINE
         this.updateActiveAction(input.type);
-        console.log('ACTIVE ACTION : ', this.activeAction); // TODO : REMOVE THIS LINE
         this.processInputType(input);
     }
 
@@ -107,7 +104,6 @@ export class UIInputControllerService {
     }
 
     cancel() {
-        console.log('ACTIVE ACTION : ', this.activeAction, ' will be discarded'); // TODO : REMOVE THIS LINE
         this.discardAction();
         this.activeComponent = InputComponent.Outside;
     }
@@ -150,9 +146,6 @@ export class UIInputControllerService {
                 if (this.activeAction) {
                     this.activeAction.receiveKey(keyPressed);
                     return;
-                    // TODO : REMOVE NEXT 2 LINES
-                    // } else {
-                    //     throw new Error('Couldnt send ' + keyPressed + ' because activeAction is null');
                 }
         }
     }
