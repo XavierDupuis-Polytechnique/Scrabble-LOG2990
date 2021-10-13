@@ -14,7 +14,7 @@ export class UIMove implements UIAction {
         return this.concernedIndexes.size === 1;
     }
 
-    receiveRightClick(args: unknown): void {
+    receiveRightClick(): void {
         throw new Error('UIMove should not be able to receive a RightClick');
     }
 
@@ -42,8 +42,8 @@ export class UIMove implements UIAction {
                     const newIndex = this.findNextLetterIndex(currentIndex + 1, key);
                     if (newIndex !== undefined) {
                         this.storeLetterIndex(newIndex);
+                        return;
                     }
-                    return;
                 }
                 this.concernedIndexes.clear();
         }

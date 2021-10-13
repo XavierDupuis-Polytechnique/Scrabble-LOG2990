@@ -1,4 +1,5 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
 import { JOKER_CHAR, RACK_LETTER_COUNT, TWO } from '@app/GameLogic/constants';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -7,6 +8,7 @@ import { UIExchange } from './ui-exchange';
 
 describe('UIExchange', () => {
     let player: Player;
+    let action: UIAction;
     beforeEach(() => {
         player = new User('p1');
         player.letterRack = [
@@ -18,14 +20,14 @@ describe('UIExchange', () => {
             { char: 'F', value: 0 },
             { char: 'G', value: 0 },
         ];
+        action = new UIExchange(player);
     });
 
     it('should create an instance', () => {
-        expect(new UIExchange(player)).toBeTruthy();
+        expect(action).toBeTruthy();
     });
 
     it('should return the appropriate canBeCreated boolean', () => {
-        const action = new UIExchange(player);
         expect(action.canBeCreated).toBeFalsy();
         action.concernedIndexes.add(0);
         expect(action.canBeCreated).toBeTruthy();
@@ -34,7 +36,6 @@ describe('UIExchange', () => {
     });
 
     it('should update the concernedIndexes following a receiveRightClick call', () => {
-        const action = new UIExchange(player);
         const firstIndex = 0;
         const secondIndex = getRandomInt(RACK_LETTER_COUNT - 1, 1);
         action.receiveRightClick(firstIndex);
@@ -50,24 +51,23 @@ describe('UIExchange', () => {
 
     it('should throw error when receiving a LeftClick', () => {
         expect(() => {
-            new UIExchange(player).receiveLeftClick();
+            action.receiveLeftClick("");
         }).toThrowError('UIExchange should not be able to receive a LeftClick');
     });
 
     it('should throw error when receiving a KeyPress', () => {
         expect(() => {
-            new UIExchange(player).receiveKey();
+            action.receiveKey("");
         }).toThrowError('UIExchange should not be able to receive a KeyPress');
     });
 
     it('should throw error when receiving a MouseRoll', () => {
         expect(() => {
-            new UIExchange(player).receiveRoll();
+            action.receiveRoll("");
         }).toThrowError('UIExchange should not be able to receive a MouseRoll');
     });
 
     it('should create the corresponding ExchangeLetter action', () => {
-        const action = new UIExchange(player);
         const firstIndex = 0;
         const secondIndex = getRandomInt(RACK_LETTER_COUNT - 1, 1);
         action.receiveRightClick(firstIndex);
