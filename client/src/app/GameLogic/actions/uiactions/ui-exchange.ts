@@ -22,16 +22,16 @@ export class UIExchange implements UIAction {
         }
     }
 
-    receiveLeftClick(args: unknown): void {
+    receiveLeftClick(): void {
         throw new Error('UIExchange should not be able to receive a LeftClick');
     }
 
-    receiveKey(key: string): void {
+    receiveKey(): void {
         throw new Error('UIExchange should not be able to receive a KeyPress');
     }
 
-    receiveRoll(args: unknown): void {
-        throw new Error('Method not implemented.');
+    receiveRoll(): void {
+        throw new Error('UIExchange should not be able to receive a MouseRoll');
     }
 
     create(): Action {
