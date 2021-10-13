@@ -3,23 +3,22 @@ import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-in
 import { InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
 
 @Directive({
-  selector: '[appMouseRoll]'
+    selector: '[appMouseRoll]',
 })
 export class MouseRollDirective {
+    constructor(private inputController: UIInputControllerService) {}
 
-  constructor(private inputController: UIInputControllerService) {}
+    @HostListener('window:mousewheel', ['$event'])
+    mousewheelEventChrome($event: WheelEvent) {
+        const direction = $event.deltaY < 0 ? WheelRoll.UP : WheelRoll.DOWN;
+        const input: UIInput = { type: InputType.MouseRoll, args: direction };
+        this.inputController.receive(input);
+    }
 
-  @HostListener('window:mousewheel', ['$event'])
-  mousewheelEventChrome($event: WheelEvent) {
-    const direction = $event.deltaY < 0 ? WheelRoll.UP : WheelRoll.DOWN;
-    const input: UIInput = { type: InputType.MouseRoll, args: direction };
-    this.inputController.receive(input);
-  }
-
-  @HostListener('window:DOMMouseScroll', ['$event'])
-  mousewheelEventFirefox($event: WheelEvent) {
-    const direction = $event.detail < 0 ? WheelRoll.UP : WheelRoll.DOWN;
-    const input: UIInput = { type: InputType.MouseRoll, args: direction };
-    this.inputController.receive(input);
-  }
+    @HostListener('window:DOMMouseScroll', ['$event'])
+    mousewheelEventFirefox($event: WheelEvent) {
+        const direction = $event.detail < 0 ? WheelRoll.UP : WheelRoll.DOWN;
+        const input: UIInput = { type: InputType.MouseRoll, args: direction };
+        this.inputController.receive(input);
+    }
 }

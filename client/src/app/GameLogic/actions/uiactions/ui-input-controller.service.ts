@@ -58,7 +58,8 @@ export class UIInputControllerService {
                         this.activeAction = new UIExchange();
                         return true;
                     }
-                } else { // LEFTCLICK or KEYPRESS or MOUSEWHEEL
+                } else {
+                    // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
                         this.activeAction = new UIMove();
                         return true;
@@ -94,6 +95,7 @@ export class UIInputControllerService {
     }
 
     cancel() {
+        console.log('ACTIVE ACTION : ', this.activeAction, ' will be discarded'); // TODO : REMOVE THIS LINE
         this.discardAction();
     }
 
@@ -103,8 +105,8 @@ export class UIInputControllerService {
         }
         const newAction: Action = this.activeAction.create(this.info.user);
         this.avs.sendAction(newAction);
+        this.discardAction();
     }
-
 
     private discardAction() {
         this.activeAction = null;

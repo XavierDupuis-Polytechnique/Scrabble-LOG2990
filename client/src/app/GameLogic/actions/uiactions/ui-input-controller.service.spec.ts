@@ -146,7 +146,6 @@ describe('UIInputControllerService', () => {
 
     /// processInputType TESTS ///
 
-
     /// //////////////////////// ///
 
     /// cancel TESTS ///
@@ -172,7 +171,7 @@ describe('UIInputControllerService', () => {
             return;
         });
         service.confirm();
-        expect(sendActionSpy).toHaveBeenCalled();//With(action);
+        expect(sendActionSpy).toHaveBeenCalled();
     });
     /// //////////////////////// ///
 });

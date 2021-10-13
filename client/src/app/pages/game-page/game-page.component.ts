@@ -2,7 +2,9 @@ import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
 import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
+import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
@@ -59,11 +61,16 @@ export class GamePageComponent {
     }
 
     get canPlace() {
-        return this.isItMyTurn && this.inputController.canBeExecuted;
+        return this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
     }
 
     get canExchange() {
-        return this.isItMyTurn && this.inputController.canBeExecuted && this.info.numberOfLettersRemaining > RACK_LETTER_COUNT;
+        return (
+            this.isItMyTurn &&
+            this.inputController.activeAction instanceof UIExchange &&
+            this.inputController.canBeExecuted &&
+            this.info.numberOfLettersRemaining > RACK_LETTER_COUNT
+        );
     }
 
     get canPass() {
@@ -71,7 +78,7 @@ export class GamePageComponent {
     }
 
     get canCancel() {
-        return this.canPass || this.canExchange;
+        return this.canPlace || this.canExchange;
     }
 
     // TODO : REROUTE TO UIINPUTCONTROLLER -> REMOVE AVS -> MIGRATE TESTS
@@ -81,9 +88,11 @@ export class GamePageComponent {
 
     confirm() {
         this.inputController.confirm();
+        // TODO : remove visually selected Tiles
     }
 
     cancel() {
         this.inputController.cancel();
+        // TODO : remove visually selected Tiles
     }
 }

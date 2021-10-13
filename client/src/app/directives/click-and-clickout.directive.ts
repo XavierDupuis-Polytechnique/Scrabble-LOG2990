@@ -6,9 +6,9 @@ import { InputComponent, InputType } from '@app/GameLogic/interface/ui-input';
     selector: '[appClickAndClickout]',
 })
 export class ClickAndClickoutDirective {
-    private wasInside = false;
-
     @Input() inputComponent: InputComponent;
+
+    private wasInside = false;
 
     constructor(private inputController: UIInputControllerService) {}
 

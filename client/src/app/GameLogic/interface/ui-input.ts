@@ -1,4 +1,3 @@
-
 export enum InputType {
     LeftClick = 'LeftClick',
     RightClick = 'RightClick',
@@ -19,5 +18,5 @@ export enum WheelRoll {
 export interface UIInput {
     type: InputType;
     from?: InputComponent;
-    args?: string | number | { x: number, y: number };
+    args?: string | number | { x: number; y: number };
 }

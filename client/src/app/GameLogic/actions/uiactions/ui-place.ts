@@ -3,6 +3,7 @@ import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
 import { Player } from '@app/GameLogic/player/player';
 
 export class UIPlace implements UIAction {
+    concernedIndexes = new Set<number>();
     get canBeCreated(): boolean {
         throw new Error('Method not implemented.');
     }

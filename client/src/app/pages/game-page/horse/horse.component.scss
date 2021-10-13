@@ -34,3 +34,17 @@ sub {
     border: 3px solid rgb(37, 37, 37);
     border-radius: 2%;
 }
+
+.selectedForMove {
+    border: solid 2px darkred !important;
+    background: red;
+}
+
+.selectedForExchange {
+    border: solid 2px green !important;
+    background: chartreuse;
+}
+
+.selectedForPlace {
+    opacity: 0.3;
+}

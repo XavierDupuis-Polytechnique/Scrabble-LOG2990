@@ -3,17 +3,16 @@ import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-in
 import { MouseRollDirective } from './mouse-roll.directive';
 
 describe('MouseRollDirective', () => {
-  let uiInputController: UIInputControllerService;
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [UIInputControllerService],
+    let uiInputController: UIInputControllerService;
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [UIInputControllerService],
+        });
+        uiInputController = TestBed.inject(UIInputControllerService);
     });
-    uiInputController = TestBed.inject(UIInputControllerService);
-  });
 
-  it('should create an instance', () => {
-    const directive = new MouseRollDirective(uiInputController);
-    expect(directive).toBeTruthy();
-  });
-
+    it('should create an instance', () => {
+        const directive = new MouseRollDirective(uiInputController);
+        expect(directive).toBeTruthy();
+    });
 });

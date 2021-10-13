@@ -5,19 +5,18 @@ import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
 
 export class UIExchange implements UIAction {
-
-    letterIndexes = new Set<number>();
+    concernedIndexes = new Set<number>();
 
     get canBeCreated(): boolean {
-        return this.letterIndexes.size > 0;
+        return this.concernedIndexes.size > 0;
     }
 
     receiveRightClick(args: unknown): void {
         const letterIndex = args as number;
-        if (this.letterIndexes.has(letterIndex)) {
-            this.letterIndexes.delete(letterIndex);
+        if (this.concernedIndexes.has(letterIndex)) {
+            this.concernedIndexes.delete(letterIndex);
         } else {
-            this.letterIndexes.add(letterIndex);
+            this.concernedIndexes.add(letterIndex);
         }
     }
     receiveLeftClick(args: unknown): void {
@@ -27,8 +26,8 @@ export class UIExchange implements UIAction {
         throw new Error('UIExchange should not be able to receive a KeyPress');
     }
     create(player: Player): Action {
-        let lettersToExchange: Letter[] = []
-        this.letterIndexes.forEach(index => {
+        const lettersToExchange: Letter[] = [];
+        this.concernedIndexes.forEach((index) => {
             lettersToExchange.push(player.letterRack[index]);
         });
         return new ExchangeLetter(player, lettersToExchange);
