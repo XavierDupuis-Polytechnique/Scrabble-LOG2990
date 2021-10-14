@@ -26,7 +26,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             Validators.maxLength(MAX_NAME_LENGTH),
             Validators.pattern(NO_WHITE_SPACE_RGX),
         ]),
-        adversaryDifficulty: new FormControl('', [Validators.required]),
+        botDifficulty: new FormControl('', [Validators.required]),
         timePerTurn: new FormControl(DEFAULT_TIME_PER_TURN, [
             Validators.required,
             Validators.min(MIN_TIME_PER_TURN),
@@ -56,7 +56,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
         this.dialogRef.close();
         this.soloGameSettingsForm.reset({
             playerName: '',
-            adversaryDifficulty: '',
+            botDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
             randomBonus: false,
         });
