@@ -60,6 +60,7 @@ describe('NewSoloGameFormComponent', () => {
             playerName: 'samuel',
             botDifficulty: 'easy',
             timePerTurn: 60000,
+            randomBonus: false,
         });
         component.soloGameSettingsForm.updateValueAndValidity();
         fixture.detectChanges();
