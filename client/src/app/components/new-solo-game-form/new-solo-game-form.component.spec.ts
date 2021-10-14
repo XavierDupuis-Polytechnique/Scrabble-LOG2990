@@ -52,13 +52,30 @@ describe('NewSoloGameFormComponent', () => {
         expect(spy.calls.count()).toBe(0);
     });
 
-    it('play should call playGame when form complete', () => {
+    it('play should call playGame when form complete (easyBot)', () => {
         const dom = fixture.nativeElement as HTMLElement;
         const buttons = dom.querySelectorAll('button');
 
         component.soloGameSettingsForm.setValue({
             playerName: 'samuel',
-            adversaryDifficulty: 'easy',
+            botDifficulty: 'easy',
+            timePerTurn: 60000,
+        });
+        component.soloGameSettingsForm.updateValueAndValidity();
+        fixture.detectChanges();
+        spyOn(component, 'playGame');
+        buttons[1].click();
+        fixture.detectChanges();
+        expect(component.playGame).toHaveBeenCalled();
+    });
+
+    it('play should call playGame when form complete (hardBot)', () => {
+        const dom = fixture.nativeElement as HTMLElement;
+        const buttons = dom.querySelectorAll('button');
+
+        component.soloGameSettingsForm.setValue({
+            playerName: 'samuel',
+            botDifficulty: 'hard',
             timePerTurn: 60000,
             randomBonus: true,
         });
@@ -73,7 +90,7 @@ describe('NewSoloGameFormComponent', () => {
     it('setting should return group form value', () => {
         const setting = {
             playerName: 'samuel',
-            adversaryDifficulty: 'easy',
+            botDifficulty: 'easy',
             timePerTurn: 60000,
             randomBonus: true,
         };
@@ -89,7 +106,7 @@ describe('NewSoloGameFormComponent', () => {
     it('cancel should close the dialog and reset form', () => {
         const setting = {
             playerName: 'samuel',
-            adversaryDifficulty: 'easy',
+            botDifficulty: 'easy',
             timePerTurn: 60000,
             randomBonus: true,
         };
@@ -99,7 +116,7 @@ describe('NewSoloGameFormComponent', () => {
         expect(mockDialog.close).toHaveBeenCalled();
         expect(component.settings).toEqual({
             playerName: '',
-            adversaryDifficulty: '',
+            botDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
             randomBonus: false,
         });

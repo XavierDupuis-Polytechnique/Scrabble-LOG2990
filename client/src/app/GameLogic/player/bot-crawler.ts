@@ -39,6 +39,9 @@ export class BotCrawler {
                 initialWord.rightCount = MIDDLE_OF_BOARD;
                 placedLetter.push(initialWord);
                 const possiblyValidWords: ValidWord[] = this.wordCheck(placedLetter);
+                possiblyValidWords.forEach((word) => {
+                    word.numberOfLettersPlaced++;
+                });
                 this.bot.letterRack.push(tmpLetter[0]);
 
                 this.crossCheck(possiblyValidWords);
