@@ -13,16 +13,16 @@ export class UIPlace implements UIAction {
     get canBeCreated(): boolean {
         throw new Error('Method not implemented.');
     }
-    receiveRightClick(args: unknown): void {
+    receiveRightClick(/* args: unknown*/): void {
         throw new Error('Method not implemented.');
     }
-    receiveLeftClick(args: unknown): void {
+    receiveLeftClick(/* args: unknown*/): void {
         throw new Error('Method not implemented.');
     }
-    receiveKey(key: string): void {
+    receiveKey(/* key: string*/): void {
         throw new Error('Method not implemented.');
     }
-    receiveRoll(args: unknown): void {
+    receiveRoll(/* args: unknown*/): void {
         throw new Error('Method not implemented.');
     }
     create(): Action {
