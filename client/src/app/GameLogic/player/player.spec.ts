@@ -22,6 +22,7 @@ describe('Player', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
+    const randomBonus = false;
 
     beforeEach(() => {
         boardService = TestBed.inject(BoardService);
@@ -31,7 +32,7 @@ describe('Player', () => {
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
         bot = botCreator.createBot('testBot', 'easy') as EasyBot;
-        gameInfo.receiveGame(new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
     });
 
     it('should create an instance', () => {

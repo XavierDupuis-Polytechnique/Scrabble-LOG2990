@@ -27,6 +27,7 @@ describe('GameManagerService', () => {
             timePerTurn: 10,
             playerName: 'allo',
             botDifficulty: 'easy',
+            randomBonus: false,
         };
         service.createGame(gameSettings);
         service.startGame();
@@ -39,6 +40,7 @@ describe('GameManagerService', () => {
             timePerTurn: 10,
             playerName: 'allo',
             botDifficulty: 'easy',
+            randomBonus: false,
         };
         service.createGame(gameSettings);
         const gameSpy = spyOn(service, 'stopGame').and.callFake(() => {
