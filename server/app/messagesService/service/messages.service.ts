@@ -131,7 +131,6 @@ export class MessageHandler {
         if (room.userNames.size === 0) {
             this.deleteRoom(roomID);
         }
-        console.log(this);
     }
 
     private deleteRoom(roomID: string) {
