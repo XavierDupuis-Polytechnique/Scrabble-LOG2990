@@ -7,6 +7,7 @@ import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Tile } from '@app/GameLogic/game/board/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { isCharUpperCase } from '@app/GameLogic/utils';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 @Injectable({
@@ -215,7 +216,11 @@ export class WordSearcher {
         const letterMultiplicator = tile.letterMultiplicator;
         const wordMultiplicator = tile.wordMultiplicator;
         const newTile = new Tile(letterMultiplicator, wordMultiplicator);
-        newTile.letterObject = this.letterCreator.createLetter(char);
+        if (isCharUpperCase(char)) {
+            newTile.letterObject = this.letterCreator.createBlankLetter(char);
+        } else {
+            newTile.letterObject = this.letterCreator.createLetter(char);
+        }
         return newTile;
     }
 }
