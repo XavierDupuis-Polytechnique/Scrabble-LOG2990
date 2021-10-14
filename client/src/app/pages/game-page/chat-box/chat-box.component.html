@@ -10,7 +10,7 @@
         </div>
     </mat-card>
     <mat-form-field appearance="fill">
-        <input matInput #enter type="text" [formControl]="messageForm" autocomplete="off" (keyup.enter)="sendMessage()" placeholder="Aa" />
+        <input matInput #enter type="text" [(ngModel)]='messageContent' autocomplete="off" autofocus (keyup.enter)="sendMessage()" placeholder="Aa" />
         <mat-hint #red *ngIf="isError(enter.value.length)" style="color: #e53935">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
         <mat-hint *ngIf="!isError(enter.value.length)" style="color: #ffffff">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
     </mat-form-field>
