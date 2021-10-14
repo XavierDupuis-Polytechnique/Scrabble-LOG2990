@@ -10,4 +10,5 @@ export enum CommandType {
     Place = '!placer',
     Exchange = '!échanger',
     Pass = '!passer',
+    Reserve = '!réserve',
 }

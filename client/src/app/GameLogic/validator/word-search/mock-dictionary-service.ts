@@ -12,6 +12,6 @@ export class MockDictionaryService extends DictionaryService {
 
     isWordInDict(word: string): boolean {
         const dict = new Set(this.mockDictionary.words);
-        return dict.has(word);
+        return dict.has(word.toLowerCase());
     }
 }
