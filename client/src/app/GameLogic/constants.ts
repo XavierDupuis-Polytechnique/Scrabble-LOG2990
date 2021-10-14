@@ -43,6 +43,7 @@ export const MAX_TIME_PER_TURN = 300000;
 export const STEP_TIME_PER_TURN = 30000;
 export const DEBUG_MESSAGE_ACTIVATED = 'affichages de débogage activés';
 export const DEBUG_MESSAGE_DEACTIVATED = 'affichages de débogage désactivés';
+export const RESERVE_NOT_ACCESSIBLE = 'la commande de reserve est uniquement disponible en mode de débogage';
 export const ASCII_CODE = 65;
 export const TIMER_STEP = 1000;
 export const BACKSPACE = 'Backspace';

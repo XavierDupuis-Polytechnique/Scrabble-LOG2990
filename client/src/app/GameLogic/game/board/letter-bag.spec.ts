@@ -1,4 +1,5 @@
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { LetterBag } from './letter-bag';
 
 describe('LetterBag', () => {
@@ -58,5 +59,32 @@ describe('LetterBag', () => {
         letterBag.drawGameLetters();
         const newNumberLetter: number = letterBag.gameLetters.length;
         expect(previousNumberLetter - 1).toBe(newNumberLetter);
+    });
+
+    it('should return the correct letter counts', () => {
+        const letters: Letter[] = [
+            { char: 'A', value: 1 },
+            { char: 'B', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
+            { char: 'C', value: 1 },
+            { char: 'C', value: 1 },
+            { char: '*', value: 1 },
+            { char: '-', value: 0 },
+        ];
+        letterBag.gameLetters = letters;
+        const LETTER_A_CODE = 'A'.charCodeAt(0);
+        const LETTER_Z_CODE = 'Z'.charCodeAt(0);
+        const initialLetterCounts: [string, number][] = [['*', 0]];
+        for (let code = LETTER_A_CODE; code < LETTER_Z_CODE; code++) {
+            initialLetterCounts.push([String.fromCharCode(code), 0]);
+        }
+        const expectedMap = new Map(initialLetterCounts);
+        expectedMap.set('A', 3);
+        expectedMap.set('B', 1);
+        expectedMap.set('C', 2);
+        expectedMap.set('*', 1);
+        expectedMap.set('-', 1);
+        expect(letterBag.countLetters()).toEqual(expectedMap);
     });
 });
