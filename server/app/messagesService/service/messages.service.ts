@@ -4,6 +4,7 @@ import { Room } from '@app/messagesService/service/room';
 import { Message } from '@app/messagesService/service/message.interface';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { ChatUser } from '@app/messagesService/service/chat-user.interface';
+import { MAX_MESSAGE_LENGTH } from '@app/constants';
 
 export class MessageHandler {
     private sio: io.Server;
@@ -57,6 +58,10 @@ export class MessageHandler {
         const user = this.users.get(socketID);
         if (!user) {
             throw Error('You have not entered a name in our system');
+        }
+
+        if (content.length !== MAX_MESSAGE_LENGTH) {
+            throw Error('Le message doit être plus petit que 512 charactères');
         }
         const userName = user.name;
         const message: Message = {
