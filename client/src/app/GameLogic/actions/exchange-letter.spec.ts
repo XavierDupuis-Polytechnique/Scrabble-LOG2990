@@ -13,9 +13,11 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 describe('ExchangeLetter', () => {
     let game: Game;
     const player: Player = new User('Tim');
+    const randomBonus = false;
     beforeEach(() => {
         const boardService = new BoardService();
         game = new Game(
+            randomBonus,
             DEFAULT_TIME_PER_TURN,
             new TimerService(),
             new PointCalculatorService(boardService),

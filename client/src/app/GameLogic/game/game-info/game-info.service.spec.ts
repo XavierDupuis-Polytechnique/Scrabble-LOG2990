@@ -20,6 +20,8 @@ describe('GameInfoService', () => {
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let messages: MessagesService;
+    const randomBonus = false;
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -38,7 +40,7 @@ describe('GameInfoService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
+        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];
         game.start();
     });
