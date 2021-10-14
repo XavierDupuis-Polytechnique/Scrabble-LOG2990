@@ -20,6 +20,7 @@ describe('HardBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
+    const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -32,7 +33,7 @@ describe('HardBot', () => {
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
 
-        gameInfo.receiveGame(new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
         hardBot = botCreatorService.createBot('Tim', 'hard') as HardBot;
     });
 

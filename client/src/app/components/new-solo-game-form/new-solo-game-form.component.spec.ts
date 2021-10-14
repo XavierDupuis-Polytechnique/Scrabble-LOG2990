@@ -60,6 +60,7 @@ describe('NewSoloGameFormComponent', () => {
             playerName: 'samuel',
             botDifficulty: 'easy',
             timePerTurn: 60000,
+            randomBonus: false,
         });
         component.soloGameSettingsForm.updateValueAndValidity();
         fixture.detectChanges();
@@ -77,6 +78,7 @@ describe('NewSoloGameFormComponent', () => {
             playerName: 'samuel',
             botDifficulty: 'hard',
             timePerTurn: 60000,
+            randomBonus: true,
         });
         component.soloGameSettingsForm.updateValueAndValidity();
         fixture.detectChanges();
@@ -91,6 +93,7 @@ describe('NewSoloGameFormComponent', () => {
             playerName: 'samuel',
             botDifficulty: 'easy',
             timePerTurn: 60000,
+            randomBonus: true,
         };
         component.soloGameSettingsForm.setValue(setting);
         expect(component.settings).toEqual(setting);
@@ -106,6 +109,7 @@ describe('NewSoloGameFormComponent', () => {
             playerName: 'samuel',
             botDifficulty: 'easy',
             timePerTurn: 60000,
+            randomBonus: true,
         };
         component.soloGameSettingsForm.setValue(setting);
         spyOn(mockDialog, 'close');
@@ -115,6 +119,7 @@ describe('NewSoloGameFormComponent', () => {
             playerName: '',
             botDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
+            randomBonus: false,
         });
     });
 });

@@ -25,6 +25,7 @@ describe('EasyBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
+    const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -37,7 +38,7 @@ describe('EasyBot', () => {
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
 
-        gameInfo.receiveGame(new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
         easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
     });
 
@@ -52,7 +53,7 @@ describe('EasyBot', () => {
         const spyExchange = spyOn(easyBot, 'exchangeAction');
 
         for (let i = 0; i < numberOfTime; i++) {
-            gameInfo.receiveGame(new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+            gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
             easyBot.randomActionPicker();
         }
         let value;

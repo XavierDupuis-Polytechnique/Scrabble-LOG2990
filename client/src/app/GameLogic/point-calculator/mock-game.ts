@@ -17,13 +17,14 @@ export class MockGame extends Game {
     board: Board;
 
     constructor(
+        randomBonus: boolean,
         time: number,
         timerService: TimerService,
         pointCalculatorService: PointCalculatorService,
         boardService: BoardService,
         messageService: MessagesService,
     ) {
-        super(time, timerService, pointCalculatorService, boardService, messageService);
+        super(randomBonus, time, timerService, pointCalculatorService, boardService, messageService);
         this.players = [this.activePlayer, this.otherPlayer];
         this.board = boardService.board;
     }

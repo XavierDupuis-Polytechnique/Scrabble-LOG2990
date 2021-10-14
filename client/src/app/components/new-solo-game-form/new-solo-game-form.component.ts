@@ -32,6 +32,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             Validators.min(MIN_TIME_PER_TURN),
             Validators.max(MAX_TIME_PER_TURN),
         ]),
+        randomBonus: new FormControl(false, [Validators.required]),
     });
 
     minTimePerTurn = MIN_TIME_PER_TURN;
@@ -57,6 +58,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             playerName: '',
             botDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
+            randomBonus: false,
         });
     }
 
