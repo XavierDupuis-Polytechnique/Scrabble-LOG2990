@@ -21,49 +21,35 @@ export class MessageHandler {
         this.sio.on('connection', (socket) => {
             console.log(`new connection from ${socket.id}`);
             socket.on('userName', (userName: string) => {
-                const id = socket.id;
-                if (!this.users.has(id)) {
-                    const newUser: ChatUser = {
-                        name: userName
-                    }
-                    this.users.set(id, newUser);
-                } else {
-                    this.sendError(socket, 'userName already picked');
+                try {
+                    this.createUser(userName, socket.id);
+                } catch (e) {
+                    this.sendError(socket, e);
                 }
                 console.log('userName', this.users);
             });
 
             socket.on('roomMessages', (content: string) => {
-                const id = socket.id;
                 try {
-                    this.addMessageToRoom(id, content);
+                    this.addMessageToRoom(socket.id, content);
                 } catch (e) {
-                    this.sendError(socket, (e as Error).message);
+                    this.sendError(socket, e);
                 }
             });
 
             socket.on('joinRoom', (roomID: string) => {
-                if (!this.activeRooms.has(roomID)) {
-                    this.createRoom(roomID);
-                }
-                const id = socket.id;
-                const user = this.users.get(id);
-                if (user) {
-                    if (!user.currentRoom) {
-                        this.sendError(socket, 'You have already joined a room');
-                    } else {
-                        user.currentRoom = roomID;
-                        socket.join(roomID);
-                    }
+                try {
+                    this.addUserToRoom(socket, roomID);
+                } catch (e) {
+                    this.sendError(socket, e);
                 }
                 console.log('rooms', this.activeRooms);
             });
-            socket.emit('hello', 'test');
-        });
 
-        this.sio.on('deconnect', (socket) => {
-            console.log(`deconnect from ${socket.id}`);
-            this.deleteUser(socket.id);
+            socket.on('disconnect', () => {
+                console.log(`deconnect from ${socket.id}`);
+                this.deleteUser(socket.id);
+            });
         });
     }
 
@@ -91,15 +77,70 @@ export class MessageHandler {
         room.addMessage(message);
     }
 
-    private createRoom(roomID: string): void {
-        this.activeRooms.set(roomID, new Room());
+    private createUser(userName: string, socketID: string) {
+        if (this.users.has(socketID)) {
+            throw Error("Vous avez déjà choisi un nom d'utilisateur");
+        }
+        const newUser: ChatUser = {
+            name: userName,
+        };
+        this.users.set(socketID, newUser);
+    }
+
+    private addUserToRoom(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, roomID: string) {
+        const socketID = socket.id;
+        const user = this.users.get(socketID);
+        if (!user) {
+            throw Error("Vous n'avez pas encore choisi un nom");
+        }
+        const userRoom = user.currentRoom;
+        if (userRoom) {
+            throw Error('Vous êtes déjà dans une salle');
+        }
+
+        let activeRoom = this.activeRooms.get(roomID);
+        if (!activeRoom) {
+            activeRoom = this.createRoom(roomID);
+        }
+        activeRoom.addUser(user.name);
+        user.currentRoom = roomID;
+        socket.join(roomID);
+    }
+
+    private createRoom(roomID: string): Room {
+        const newRoom = new Room();
+        this.activeRooms.set(roomID, newRoom);
+        return newRoom;
     }
 
     private deleteUser(socketID: string): void {
+        const user = this.users.get(socketID);
+        if (!user) {
+            return;
+        }
         this.users.delete(socketID);
+        const roomID = user.currentRoom;
+        if (!roomID) {
+            return;
+        }
+        const room = this.activeRooms.get(roomID);
+        if (!room) {
+            return;
+        }
+        room.deleteUser(user.name);
+        if (room.userNames.size === 0) {
+            this.deleteRoom(roomID);
+        }
+        console.log(this);
     }
 
-    private sendError(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, errorMessage: string) {
+    private deleteRoom(roomID: string) {
+        console.log('deleting', roomID);
+        this.activeRooms.delete(roomID);
+    }
+
+    private sendError(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, error: Error) {
+        const errorMessage = error.message;
         socket.emit('error', errorMessage);
     }
 }

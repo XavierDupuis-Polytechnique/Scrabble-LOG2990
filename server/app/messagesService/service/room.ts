@@ -2,14 +2,16 @@ import { Message } from '@app/messagesService/service/message.interface';
 
 export class Room {
     messages: Message[] = [];
-    users: string[];
-
-    addMessage(message: Message) {
-        const user = message.from;
-        if (!this.users.includes(user)) {
-            throw Error('User not in room');
-        }
-
+    userNames = new Set<string>();
+    addMessage(message: Message): void {
         this.messages.push(message);
+    }
+
+    addUser(userName: string) {
+        this.userNames.add(userName);
+    }
+
+    deleteUser(userName: string) {
+        this.userNames.delete(userName);
     }
 }
