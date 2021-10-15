@@ -5,15 +5,15 @@ import { Server } from 'socket.io';
 
 export class GameManager {
     private ioServer: Server;
-    private gameMaster: GameMasterService = new GameMasterService();
 
-    constructor(server: http.Server) {
+    constructor(server: http.Server, private gameMaster: GameMasterService) {
         this.ioServer = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
 
     gameHandler(): void {
         this.ioServer.on('connection', (socket) => {
-            socket.emit('showPendingGames', this.gameMaster.pendingGames); // Pour afficher les PendingGames
+            // console.log(this.gameMaster.getPendingGames());
+            socket.emit('showPendingGames', this.gameMaster.getPendingGames());
 
             socket.on('createGame', (gameSetting: GameSettingsMultiUI) => {
                 console.log(gameSetting);

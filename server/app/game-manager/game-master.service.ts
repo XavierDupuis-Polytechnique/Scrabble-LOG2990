@@ -6,11 +6,18 @@ export class GameMasterService {
     pendingGames: Map<number, GameSettingsMultiUI> = new Map<number, GameSettingsMultiUI>();
     // constructor() {}
 
+    getPendingGames(): GameSettingsMulti[] {
+        const games: GameSettingsMulti[] = [];
+        this.pendingGames.forEach((game, id) => {
+            games.push(this.toGameSettingsMulti(id, game));
+        });
+        return games;
+    }
     createPendingGame(gameSetting: GameSettingsMultiUI) {
         // if (this.settingsIsValid(gameSetting)) {
         const gameId = this.idgenerator();
         this.pendingGames.set(gameId, gameSetting);
-        console.log('addGame', gameId);
+
         // }
     }
 
@@ -24,13 +31,8 @@ export class GameMasterService {
                 throw Error('This game already has a second player.');
             }
             game.opponentName = name;
-            this.startGame({
-                id,
-                timePerTurn: game.timePerTurn,
-                playerName: game.playerName,
-                opponentName: game.opponentName,
-                randomBonus: game.randomBonus,
-            });
+
+            this.startGame(this.toGameSettingsMulti(id, game));
         }
 
         console.log(this.pendingGames);
@@ -46,6 +48,12 @@ export class GameMasterService {
         const toChange = 100;
         const id = Math.floor(Math.random() * toChange);
         return id;
+    }
+
+    toGameSettingsMulti(id: number, settings: GameSettingsMultiUI): GameSettingsMulti {
+        const gameSettings = settings as GameSettingsMulti;
+        gameSettings.id = id;
+        return gameSettings;
     }
 
     // settingsIsValid(settings: GameSettingsMultiUI):boolean {
