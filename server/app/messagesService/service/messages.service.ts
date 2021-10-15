@@ -7,9 +7,9 @@ import { ChatUser } from '@app/messagesService/service/chat-user.interface';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
 
 export class MessageHandler {
-    private sio: io.Server;
-    private activeRooms = new Map<string, Room>();
-    private users = new Map<string, ChatUser>();
+    activeRooms = new Map<string, Room>();
+    users = new Map<string, ChatUser>();
+    readonly sio: io.Server;
 
     constructor(server: http.Server) {
         this.sio = new io.Server(server, {
@@ -20,19 +20,17 @@ export class MessageHandler {
 
     handleSockets() {
         this.sio.on('connection', (socket) => {
-            console.log(`new connection from ${socket.id}`);
             socket.on('userName', (userName: string) => {
                 try {
                     this.createUser(userName, socket.id);
                 } catch (e) {
                     this.sendError(socket, e);
                 }
-                console.log('userName', this.users);
             });
 
-            socket.on('roomMessages', (content: string) => {
+            socket.on('newMessage', (content: string) => {
                 try {
-                    this.addMessageToRoom(socket.id, content);
+                    this.sendMessageToRoom(socket.id, content);
                 } catch (e) {
                     this.sendError(socket, e);
                 }
@@ -44,41 +42,41 @@ export class MessageHandler {
                 } catch (e) {
                     this.sendError(socket, e);
                 }
-                console.log('rooms', this.activeRooms);
             });
 
             socket.on('disconnect', () => {
-                console.log(`deconnect from ${socket.id}`);
                 this.deleteUser(socket.id);
             });
         });
     }
 
-    private addMessageToRoom(socketID: string, content: string): void {
+    private sendMessageToRoom(socketID: string, content: string): void {
         const user = this.users.get(socketID);
         if (!user) {
-            throw Error('You have not entered a name in our system');
+            throw Error("Vous n'avez pas encore entré votre nom dans notre systême");
         }
 
-        if (content.length !== MAX_MESSAGE_LENGTH) {
+        if (content.length > MAX_MESSAGE_LENGTH) {
             throw Error('Le message doit être plus petit que 512 charactères');
         }
+
         const userName = user.name;
         const message: Message = {
             from: userName,
             content,
         };
-        console.log(userName, ':', content);
 
         const roomID = user.currentRoom;
         if (!roomID) {
-            throw Error('No chat room joined');
+            throw Error("Vous n'avez pas rejoint de salle de chat");
         }
+
         const room = this.activeRooms.get(roomID);
         if (!room) {
-            throw Error('Room not active anymore');
+            throw Error("La salle de chat n'est plus active");
         }
-        this.sio.to(roomID).emit('roomMessages', message);
+
+        this.sendMessageToRoomSockets(roomID, message);
         room.addMessage(message);
     }
 
@@ -139,12 +137,15 @@ export class MessageHandler {
     }
 
     private deleteRoom(roomID: string) {
-        console.log('deleting', roomID);
         this.activeRooms.delete(roomID);
     }
 
     private sendError(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, error: Error) {
         const errorMessage = error.message;
         socket.emit('error', errorMessage);
+    }
+
+    private sendMessageToRoomSockets(roomID: string, message: Message) {
+        this.sio.to(roomID).emit('roomMessages', message);
     }
 }
