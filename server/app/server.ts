@@ -1,4 +1,5 @@
 import { Application } from '@app/app';
+import { GameManager } from '@app/services/game-master-handler.service';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
@@ -9,6 +10,7 @@ export class Server {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private static readonly baseDix: number = 10;
     private server: http.Server;
+    private gameManager: GameManager;
 
     constructor(private readonly application: Application) {}
 
@@ -26,6 +28,8 @@ export class Server {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
+        this.gameManager = new GameManager(this.server);
+        this.gameManager.gameHandler();
 
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
