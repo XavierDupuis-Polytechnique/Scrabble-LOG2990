@@ -19,8 +19,7 @@ export class Application {
 
     constructor(
         private readonly exampleController: ExampleController,
-        private readonly dateController: DateController,
-        // private readonly messagesController: MessagesController,
+        private readonly dateController: DateController, // private readonly messagesController: MessagesController,
     ) {
         this.app = express();
 
