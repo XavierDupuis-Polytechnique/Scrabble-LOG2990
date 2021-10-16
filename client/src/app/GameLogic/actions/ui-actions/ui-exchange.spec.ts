@@ -1,5 +1,5 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
+import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { JOKER_CHAR, RACK_LETTER_COUNT, TWO } from '@app/GameLogic/constants';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
-import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
-import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
-import { UIMove } from '@app/GameLogic/actions/uiactions/ui-move';
-import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
+import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
+import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
+import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
+import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { ENTER, ESCAPE } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';

@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
-import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
-import { UIMove } from '@app/GameLogic/actions/uiactions/ui-move';
-import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
+import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
+import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
+import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { EMPTY_CHAR, ESCAPE, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';

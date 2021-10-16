@@ -1,6 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
+import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { Player } from '@app/GameLogic/player/player';
 

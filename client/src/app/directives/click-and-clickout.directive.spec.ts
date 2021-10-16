@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
+import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { ClickAndClickoutDirective } from './click-and-clickout.directive';
 
 describe('ClickAndClickoutDirective', () => {

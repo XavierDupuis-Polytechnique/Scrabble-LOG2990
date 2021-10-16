@@ -1,5 +1,5 @@
 import { Directive, HostListener } from '@angular/core';
-import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
+import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
 
 @Directive({

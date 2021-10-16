@@ -1,6 +1,6 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
+import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';

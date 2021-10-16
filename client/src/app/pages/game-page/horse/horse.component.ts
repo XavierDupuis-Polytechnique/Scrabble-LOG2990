@@ -1,8 +1,8 @@
 import { AfterContentInit, Component, EventEmitter, Output } from '@angular/core';
-import { UIExchange } from '@app/GameLogic/actions/uiactions/ui-exchange';
-import { UIInputControllerService } from '@app/GameLogic/actions/uiactions/ui-input-controller.service';
-import { UIMove } from '@app/GameLogic/actions/uiactions/ui-move';
-import { UIPlace } from '@app/GameLogic/actions/uiactions/ui-place';
+import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
+import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
+import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
+import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';

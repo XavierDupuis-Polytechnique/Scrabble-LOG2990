@@ -1,5 +1,5 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { UIAction } from '@app/GameLogic/actions/uiactions/ui-action';
+import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { ARROWLEFT, ARROWRIGHT, JOKER_CHAR, NOT_FOUND, RACK_LETTER_COUNT, SHIFT } from '@app/GameLogic/constants';
 import { WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
