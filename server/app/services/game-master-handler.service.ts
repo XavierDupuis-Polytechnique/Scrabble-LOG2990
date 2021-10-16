@@ -3,24 +3,31 @@ import { GameSettingsMultiUI } from '@app/game-manager/game-settings-multi.inter
 import * as http from 'http';
 import { Server } from 'socket.io';
 
+const showPendingGames = 'showPendingGames';
+const createGame = 'createGame';
+const joinGame = 'joinGame';
 export class GameManager {
     private ioServer: Server;
 
     constructor(server: http.Server, private gameMaster: GameMasterService) {
-        this.ioServer = new Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
+        this.ioServer = new Server(server, {
+            path: '/newGame',
+            cors: { origin: '*', methods: ['GET', 'POST'] },
+        });
     }
 
     gameHandler(): void {
         this.ioServer.on('connection', (socket) => {
             // console.log(this.gameMaster.getPendingGames());
-            socket.emit('showPendingGames', this.gameMaster.getPendingGames());
+            socket.emit(showPendingGames, this.gameMaster.getPendingGames());
 
-            socket.on('createGame', (gameSetting: GameSettingsMultiUI) => {
+            socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
                 console.log(gameSetting);
                 this.gameMaster.createPendingGame(gameSetting);
+                socket.emit(showPendingGames, this.gameMaster.getPendingGames());
             });
 
-            socket.on('joinGame', (id: number, name: string) => {
+            socket.on(joinGame, (id: number, name: string) => {
                 console.log(name);
                 this.gameMaster.joinPendingGame(id, name);
             });
