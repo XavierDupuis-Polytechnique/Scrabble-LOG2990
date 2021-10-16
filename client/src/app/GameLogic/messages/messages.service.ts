@@ -3,7 +3,10 @@ import { CommandParserService } from '@app/GameLogic/commands/command-parser/com
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
-
+import { io, Socket } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
+import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 @Injectable({
     providedIn: 'root',
 })
@@ -13,10 +16,34 @@ export class MessagesService {
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
-    constructor(private commandParser: CommandParserService) {}
+    private socket: Socket | undefined;
 
-    connectToRoom(roomID: string) {
-        return roomID;
+    constructor(private commandParser: CommandParserService, private gameInfo: GameInfoService) {}
+
+    connectToRoom(roomID: string, userName: string) {
+        if (this.socket) {
+            throw Error('Already connected to a chat room');
+        }
+        this.socket = io(environment.socketServerUrl, { path: '/messages' });
+
+        this.socket.on('error', (errorContent: string) => {
+            this.receiveSystemMessage(errorContent);
+        });
+
+        this.socket.on('roomMessages', (message: ChatMessage) => {
+            this.receiveServerMessage(message);
+        });
+
+        this.socket.emit('userName', userName);
+        this.socket.emit('joinRoom', roomID);
+    }
+
+    disconnectFromRoom() {
+        if (!this.socket) {
+            throw Error('No socket to disconnect from room');
+        }
+        this.socket.close();
+        this.socket = undefined;
     }
 
     receiveSystemMessage(content: string) {
@@ -38,6 +65,12 @@ export class MessagesService {
     }
 
     receiveMessagePlayer(forwarder: string, content: string) {
+        // TODO make this cleaner
+        if (this.socket) {
+            if (this.socket.connected) {
+                this.socket.emit('newMessage', content);
+            }
+        }
         const message = {
             content,
             from: forwarder,
@@ -51,6 +84,7 @@ export class MessagesService {
             this.receiveError(e as Error);
         }
     }
+
     receiveMessageOpponent(forwarder: string, content: string) {
         const message = {
             content,
@@ -85,6 +119,16 @@ export class MessagesService {
     clearLog(): void {
         this.messagesLog = [];
         this.messages$.next(this.messagesLog);
+    }
+
+    private receiveServerMessage(message: ChatMessage) {
+        // TODO get user name to get type of message to add to log
+        const name = message.from;
+        const userName = this.gameInfo.user.name;
+        if (name !== userName) {
+            const content = message.content;
+            this.receiveMessageOpponent(name, content);
+        }
     }
 
     private addMessageToLog(message: Message) {
