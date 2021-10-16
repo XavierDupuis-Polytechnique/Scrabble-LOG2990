@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Nouvelle Partie Multijoueurs</h2>
+<mat-dialog-content [formGroup]="onlineGameSettingsForm">
+    <mat-form-field>
+        <input matInput autocomplete="off" placeholder="Nom de joueur" formControlName="playerName" />
+        <mat-hint>Min 3 charactères Max 50 charactères</mat-hint>
+    </mat-form-field>
+    <br />
+    <br />
+    <mat-checkbox color="accent" formControlName="randomBonus">Bonus aléatoire</mat-checkbox>
+    <br />
+    <br />
+    <mat-label>Temps par tour </mat-label>
+    <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
+    <mat-slider
+        #timer
+        color="primary"
+        [min]="minTimePerTurn"
+        [max]="maxTimePerTurn"
+        [step]="stepTimePerTurn"
+        [formControlName]="'timePerTurn'"
+    ></mat-slider
+    ><br />
+</mat-dialog-content>
+<br />
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close] (click)="cancel()">Annuler</button>
+    <button mat-button [mat-dialog-close] (click)="playGame()" [disabled]="!formValid">Jouer</button>
+</mat-dialog-actions>
