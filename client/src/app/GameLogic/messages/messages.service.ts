@@ -38,7 +38,7 @@ export class MessagesService {
         this.socket.emit('joinRoom', roomID);
     }
 
-    disconnectFromRoom() {
+    disconnectChatRoom() {
         if (!this.socket) {
             throw Error('No socket to disconnect from room');
         }
