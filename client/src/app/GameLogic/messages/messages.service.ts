@@ -7,6 +7,7 @@ import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { isSocketConnected } from '@app/GameLogic/utils';
 @Injectable({
     providedIn: 'root',
 })
@@ -66,11 +67,10 @@ export class MessagesService {
 
     receiveMessagePlayer(forwarder: string, content: string) {
         // TODO make this cleaner
-        if (this.socket) {
-            if (this.socket.connected) {
-                this.socket.emit('newMessage', content);
-            }
+        if (isSocketConnected(this.socket)) {
+            this.sendMessageToServer(content);
         }
+
         const message = {
             content,
             from: forwarder,
@@ -134,5 +134,12 @@ export class MessagesService {
     private addMessageToLog(message: Message) {
         this.messagesLog.push(message);
         this.messages$.next(this.messagesLog);
+    }
+
+    private sendMessageToServer(content: string) {
+        if (!this.socket) {
+            throw Error('The socket you trying to send from is undefined');
+        }
+        this.socket.emit('newMessage', content);
     }
 }
