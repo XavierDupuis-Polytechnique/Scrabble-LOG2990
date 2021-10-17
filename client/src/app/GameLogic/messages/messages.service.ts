@@ -20,7 +20,7 @@ export class MessagesService {
 
     constructor(private commandParser: CommandParserService, private gameInfo: GameInfoService) {}
 
-    connectToRoom(roomID: string, userName: string) {
+    joinChatRoom(roomID: string, userName: string) {
         if (this.socket) {
             throw Error('Already connected to a chat room');
         }
