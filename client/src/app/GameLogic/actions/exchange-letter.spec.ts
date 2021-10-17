@@ -1,5 +1,5 @@
+import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
@@ -14,14 +14,12 @@ describe('ExchangeLetter', () => {
     let game: Game;
     const player: Player = new User('Tim');
     beforeEach(() => {
-        const boardService = new BoardService();
-        game = new Game(
-            DEFAULT_TIME_PER_TURN,
-            new TimerService(),
-            new PointCalculatorService(boardService),
-            boardService,
-            new MessagesService(new CommandParserService()),
-        );
+        TestBed.configureTestingModule({ providers: [MessagesService, TimerService, PointCalculatorService, BoardService] });
+        const messageService = TestBed.inject(MessagesService);
+        const timerService = TestBed.inject(TimerService);
+        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const boardService = TestBed.inject(BoardService);
+        game = new Game(DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         game.players[0] = player;
         game.start();
     });

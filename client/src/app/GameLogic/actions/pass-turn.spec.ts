@@ -1,5 +1,5 @@
+import { TestBed } from '@angular/core/testing';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -13,18 +13,14 @@ describe('PassTurn', () => {
     let game: Game;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
-    let timer: TimerService;
 
     beforeEach(() => {
-        timer = new TimerService();
-        const boardService = new BoardService();
-        game = new Game(
-            DEFAULT_TIME_PER_TURN,
-            timer,
-            new PointCalculatorService(boardService),
-            boardService,
-            new MessagesService(new CommandParserService()),
-        );
+        TestBed.configureTestingModule({ providers: [MessagesService, TimerService, PointCalculatorService, BoardService] });
+        const messageService = TestBed.inject(MessagesService);
+        const timerService = TestBed.inject(TimerService);
+        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const boardService = TestBed.inject(BoardService);
+        game = new Game(DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         game.players.push(player1);
         game.players.push(player2);
     });

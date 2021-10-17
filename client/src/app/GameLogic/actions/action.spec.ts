@@ -1,4 +1,4 @@
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { TestBed } from '@angular/core/testing';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
@@ -20,14 +20,12 @@ describe('Action', () => {
     let user: User;
     let gameSpy: jasmine.Spy<(action: Action) => void>;
     beforeEach(() => {
-        const boardService = new BoardService();
-        game = new Game(
-            TIME_PER_TURN,
-            new TimerService(),
-            new PointCalculatorService(boardService),
-            boardService,
-            new MessagesService(new CommandParserService()),
-        );
+        TestBed.configureTestingModule({ providers: [MessagesService, TimerService, PointCalculatorService, BoardService] });
+        const messageService = TestBed.inject(MessagesService);
+        const timerService = TestBed.inject(TimerService);
+        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const boardService = TestBed.inject(BoardService);
+        game = new Game(TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         gameSpy = spyOn(game, 'doAction');
         user = new User('Paul');
         action = new TestAction(user);
