@@ -67,9 +67,6 @@ export class MessagesService {
 
     receiveMessagePlayer(forwarder: string, content: string) {
         // TODO make this cleaner
-        if (isSocketConnected(this.socket)) {
-            this.sendMessageToServer(content);
-        }
 
         const message = {
             content,
@@ -79,7 +76,12 @@ export class MessagesService {
 
         this.addMessageToLog(message);
         try {
-            this.commandParser.parse(content, forwarder);
+            const commandType = this.commandParser.parse(content, forwarder);
+            if (commandType === undefined) {
+                if (isSocketConnected(this.socket)) {
+                    this.sendMessageToServer(content);
+                }
+            }
         } catch (e) {
             this.receiveError(e as Error);
         }
