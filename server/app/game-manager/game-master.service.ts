@@ -27,15 +27,13 @@ export class GameMasterService {
             if (!game) {
                 throw Error("The game you're trying to join doesn't exist.");
             }
-            if (game.opponentName !== '') {
+            if (game.opponentName !== undefined) {
                 throw Error('This game already has a second player.');
             }
             game.opponentName = name;
 
             this.startGame(this.toGameSettingsMulti(id, game));
         }
-
-        console.log(this.pendingGames);
     }
     deletePendingGame(id: number) {
         this.pendingGames.delete(id);

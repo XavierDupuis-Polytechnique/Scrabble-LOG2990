@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { NewOnlineGameFormComponent } from '@app/components/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
@@ -38,15 +39,25 @@ export class ClassicGameComponent {
     }
 
     openMultiGameForm() {
-        this.socketHandler.connect();
-        const fakeGame = {
-            timePerTurn: 60000,
-            playerName: 'player',
-            randomBonus: false,
-        };
-        this.socketHandler.createGameMulti(fakeGame);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.autoFocus = true;
+        dialogConfig.disableClose = true;
+        dialogConfig.minWidth = 40;
 
-        console.log('Nouvelle Partie MultiJoueurs');
+        const dialogRef = this.dialog.open(NewOnlineGameFormComponent, dialogConfig);
+        dialogRef.afterClosed().subscribe((result) => {
+            try {
+                // TODO:Socket validator
+                this.gameSettings = result;
+                this.socketHandler.connect();
+                this.socketHandler.createGameMulti(this.gameSettings);
+                console.log('Nouvelle Partie MultiJoueurs');
+                // this.startSoloGame();
+
+                // eslint-disable-next-line no-empty
+            } catch (e) {}
+            dialogRef.close();
+        });
     }
 
     startSoloGame() {

@@ -16,28 +16,24 @@ export class GameManager {
         });
     }
 
-    gameHandler(): void {
+    newGameHandler(): void {
         this.ioServer.on('connection', (socket) => {
-            // console.log(this.gameMaster.getPendingGames());
             socket.emit(showPendingGames, this.gameMaster.getPendingGames());
 
             socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
-                console.log(gameSetting);
+                console.log(gameSetting); // TODO: remove
                 this.gameMaster.createPendingGame(gameSetting);
-                socket.emit(showPendingGames, this.gameMaster.getPendingGames());
+                this.emitPendingGamesToAll();
             });
 
             socket.on(joinGame, (id: number, name: string) => {
-                console.log(name);
                 this.gameMaster.joinPendingGame(id, name);
+                this.emitPendingGamesToAll();
             });
         });
-        // this.ioServer.on('connection', (socket) => {
-        //     socket.on('validate', (word: string) => {
-        //         console.log('Joueur valide le mot: ', word);
-        //         const isValid = this.dictionary.isWordInDict(word);
-        //         socket.emit('wordValidated', isValid);
-        //     });
-        // });
+    }
+
+    emitPendingGamesToAll() {
+        this.ioServer.sockets.emit(showPendingGames, this.gameMaster.getPendingGames());
     }
 }

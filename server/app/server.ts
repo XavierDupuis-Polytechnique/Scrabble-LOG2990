@@ -31,7 +31,7 @@ export class Server {
 
         this.server = http.createServer(this.application.app);
         this.gameManager = new GameManager(this.server, this.gameMaster);
-        this.gameManager.gameHandler();
+        this.gameManager.newGameHandler();
 
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
