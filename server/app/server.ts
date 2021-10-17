@@ -1,6 +1,6 @@
 import { Application } from '@app/app';
-import { GameMasterService } from '@app/game-manager/game-master.service';
-import { GameManager } from '@app/services/game-master-handler.service';
+import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { NewOnlineGameManager } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
@@ -11,8 +11,8 @@ export class Server {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private static readonly baseDix: number = 10;
     private server: http.Server;
-    private gameMaster: GameMasterService = new GameMasterService();
-    private gameManager: GameManager;
+    private onlineGameService: NewOnlineGameService = new NewOnlineGameService();
+    private onlineGameManager: NewOnlineGameManager;
 
     constructor(private readonly application: Application) {}
 
@@ -30,8 +30,8 @@ export class Server {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
-        this.gameManager = new GameManager(this.server, this.gameMaster);
-        this.gameManager.newGameHandler();
+        this.onlineGameManager = new NewOnlineGameManager(this.server, this.onlineGameService);
+        this.onlineGameManager.newGameHandler();
 
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));

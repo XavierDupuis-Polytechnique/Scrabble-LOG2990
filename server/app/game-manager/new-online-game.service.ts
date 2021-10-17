@@ -2,7 +2,7 @@ import { GameSettingsMulti, GameSettingsMultiUI } from '@app/game-manager/game-s
 import { Service } from 'typedi';
 
 @Service()
-export class GameMasterService {
+export class NewOnlineGameService {
     pendingGames: Map<number, GameSettingsMultiUI> = new Map<number, GameSettingsMultiUI>();
     // constructor() {}
 
@@ -14,15 +14,12 @@ export class GameMasterService {
         return games;
     }
     createPendingGame(gameSetting: GameSettingsMultiUI) {
-        // if (this.settingsIsValid(gameSetting)) {
         const gameId = this.idgenerator();
         this.pendingGames.set(gameId, gameSetting);
-
-        // }
     }
 
     joinPendingGame(id: number, name: string) {
-        if (this.pendingGames.has(id)) {
+        if (this.isPendingGame(id)) {
             const game = this.pendingGames.get(id);
             if (!game) {
                 throw Error("The game you're trying to join doesn't exist.");
@@ -35,26 +32,30 @@ export class GameMasterService {
             this.startGame(this.toGameSettingsMulti(id, game));
         }
     }
-    deletePendingGame(id: number) {
+
+    isPendingGame(id: number): boolean {
+        return this.pendingGames.has(id);
+    }
+
+    private deletePendingGame(id: number) {
         this.pendingGames.delete(id);
     }
-    startGame(gameSettings: GameSettingsMulti) {
+
+    private startGame(gameSettings: GameSettingsMulti) {
         this.deletePendingGame(gameSettings.id);
+        //this.gameMaster.createGame(token)
         // Start Game
     }
-    idgenerator(): number {
+
+    private idgenerator(): number {
         const toChange = 100;
         const id = Math.floor(Math.random() * toChange);
         return id;
     }
 
-    toGameSettingsMulti(id: number, settings: GameSettingsMultiUI): GameSettingsMulti {
+    private toGameSettingsMulti(id: number, settings: GameSettingsMultiUI): GameSettingsMulti {
         const gameSettings = settings as GameSettingsMulti;
         gameSettings.id = id;
         return gameSettings;
     }
-
-    // settingsIsValid(settings: GameSettingsMultiUI):boolean {
-    //     // TODO
-    // }
 }

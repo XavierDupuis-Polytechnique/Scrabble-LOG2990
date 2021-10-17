@@ -46,12 +46,11 @@ export class ClassicGameComponent {
 
         const dialogRef = this.dialog.open(NewOnlineGameFormComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result) => {
+            this.socketHandler.connect();
             try {
                 // TODO:Socket validator
-                this.gameSettings = result;
-                this.socketHandler.connect();
-                this.socketHandler.createGameMulti(this.gameSettings);
-                console.log('Nouvelle Partie MultiJoueurs');
+                this.socketHandler.createGameMulti(result);
+                // this.gameSettings = result;
                 // this.startSoloGame();
 
                 // eslint-disable-next-line no-empty
