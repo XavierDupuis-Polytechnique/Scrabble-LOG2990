@@ -39,7 +39,12 @@ export class MessagesService {
         this.socket.emit('joinRoom', roomID);
     }
 
-    disconnectChatRoom() {
+    joinChatRoomWithUser(roomID: string) {
+        const userName = this.gameInfo.user.name;
+        this.joinChatRoom(roomID, userName);
+    }
+
+    leaveChatRoom() {
         if (!this.socket) {
             throw Error('No socket to disconnect from room');
         }
