@@ -16,7 +16,7 @@ import { HeaderBarComponent } from './components/header-bar/header-bar.component
 import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
 import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
-import { WaitingForPlayerComponent } from './pages/classic-game/waiting-online-game/waiting-for-player/waiting-for-player.component';
+import { WaitingForPlayerComponent } from './pages/classic-game/waiting-for-player/waiting-for-player.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
 import { TileComponent } from './pages/game-page/board/tile/tile.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';

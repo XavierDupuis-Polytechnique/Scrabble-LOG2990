@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
+import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
+import { WaitingForPlayerComponent } from '@app/pages/classic-game/waiting-for-player/waiting-for-player.component';
 
 @Component({
     selector: 'app-classic-game',
@@ -14,7 +15,6 @@ import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 })
 export class ClassicGameComponent {
     gameSettings: GameSettings;
-
 
     constructor(
         private router: Router,
@@ -51,6 +51,7 @@ export class ClassicGameComponent {
             try {
                 // TODO:Socket validator
                 this.socketHandler.createGameMulti(result);
+                this.openWaitingForPlayer();
                 // document.getElementById('waitingForPlayer')?.setAttribute("style", "display:flex;");
                 // this.gameSettings = result;
                 // this.startSoloGame();
@@ -60,7 +61,17 @@ export class ClassicGameComponent {
             dialogRef.close();
         });
     }
-
+    openWaitingForPlayer() {
+        const secondDialogConfig = new MatDialogConfig();
+        secondDialogConfig.autoFocus = true;
+        secondDialogConfig.disableClose = true;
+        const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
+        secondDialogRef.afterClosed().subscribe((result) => {
+            if (result) {
+                // ouvrir parametre mode solo (juste config du bot?)
+            }
+        });
+    }
     startSoloGame() {
         this.gameManager.createGame(this.gameSettings);
         this.router.navigate(['/game']);

@@ -1,0 +1,10 @@
+<mat-dialog-content #waitingForPlayer>
+    <div class="title">
+        <h3>En attente d'un joueur...</h3>
+        <mat-spinner color="accent" [diameter]="spinnerDiameter" [strokeWidth]="spinnerStrokeWidth"></mat-spinner>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-flat-button color="primary" mat-dialog-close>Cancel</button>
+    <button mat-flat-button color="primary" [mat-dialog-close]="true" (click)="convertToModeSolo()" cdkFocusInitial>Convertir en mode solo</button>
+</mat-dialog-actions>
