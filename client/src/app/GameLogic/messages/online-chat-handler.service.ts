@@ -50,7 +50,7 @@ export class OnlineChatHandlerService {
 
     sendMessage(content: string) {
         if (!this.socket) {
-            throw Error('The socket you trying to send from is undefined');
+            throw Error('No socket to send message from');
         }
         this.socket.emit('newMessage', content);
     }
