@@ -6,7 +6,9 @@ import { Server } from 'socket.io';
 const showPendingGames = 'showPendingGames';
 const createGame = 'createGame';
 const joinGame = 'joinGame';
-export class NewOnlineGameManager {
+const gameJoined = 'gameJoined';
+
+export class NewOnlineGameSocketHandler {
     private ioServer: Server;
 
     constructor(server: http.Server, private newOnlineGameService: NewOnlineGameService) {
@@ -22,7 +24,8 @@ export class NewOnlineGameManager {
 
             socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
                 if (this.isGameSettings(gameSetting)) {
-                    this.newOnlineGameService.createPendingGame(gameSetting);
+                    const gameId = this.newOnlineGameService.createPendingGame(gameSetting);
+                    socket.join(gameId.toString());
                     this.emitPendingGamesToAll();
                 }
                 // TODO: throw Error
@@ -30,8 +33,11 @@ export class NewOnlineGameManager {
 
             socket.on(joinGame, (id: number, name: string) => {
                 if (typeof id === 'number' && typeof name === 'string') {
-                    if (this.newOnlineGameService.isPendingGame(id)) {
-                        this.newOnlineGameService.joinPendingGame(id, name);
+                    const gameToken = this.newOnlineGameService.joinPendingGame(id, name);
+                    if (gameToken !== undefined) {
+                        const gameId = id.toString();
+                        socket.join(gameId);
+                        this.sendGameToken(gameId, gameToken.toString());
                         this.emitPendingGamesToAll();
                     }
                 }
@@ -39,10 +45,14 @@ export class NewOnlineGameManager {
         });
     }
 
-    emitPendingGamesToAll() {
-        this.ioServer.sockets.emit(showPendingGames, this.newOnlineGameService.getPendingGames());
+    private sendGameToken(gameId: string, gameToken: string) {
+        this.ioServer.to(gameId).emit(gameJoined, gameToken);
     }
 
+    private emitPendingGamesToAll() {
+        this.ioServer.sockets.emit(showPendingGames, this.newOnlineGameService.getPendingGames());
+    }
+    // TODO mettre dans un fichier UTIls
     private isGameSettings(obj: unknown): obj is GameSettingsMultiUI {
         return (
             (obj as GameSettingsMultiUI).playerName !== undefined &&

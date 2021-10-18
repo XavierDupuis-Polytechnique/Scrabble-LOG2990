@@ -1,10 +1,11 @@
 import { GameSettingsMulti, GameSettingsMultiUI } from '@app/game-manager/game-settings-multi.interface';
+import { GameMaster } from '@app/game-master/game-master.service';
 import { Service } from 'typedi';
 
 @Service()
 export class NewOnlineGameService {
     pendingGames: Map<number, GameSettingsMultiUI> = new Map<number, GameSettingsMultiUI>();
-    // constructor() {}
+    constructor(private gameMaster: GameMaster) {}
 
     getPendingGames(): GameSettingsMulti[] {
         const games: GameSettingsMulti[] = [];
@@ -13,24 +14,28 @@ export class NewOnlineGameService {
         });
         return games;
     }
-    createPendingGame(gameSetting: GameSettingsMultiUI) {
-        const gameId = this.idgenerator();
+    createPendingGame(gameSetting: GameSettingsMultiUI): number {
+        const gameId = this.generateId();
         this.pendingGames.set(gameId, gameSetting);
+        return gameId;
     }
 
-    joinPendingGame(id: number, name: string) {
-        if (this.isPendingGame(id)) {
-            const game = this.pendingGames.get(id);
-            if (!game) {
-                throw Error("The game you're trying to join doesn't exist.");
-            }
-            if (game.opponentName !== undefined) {
-                throw Error('This game already has a second player.');
-            }
-            game.opponentName = name;
-
-            this.startGame(this.toGameSettingsMulti(id, game));
+    joinPendingGame(id: number, name: string): number | undefined {
+        if (!this.isPendingGame(id)) {
+            return undefined;
         }
+        const gameSettings = this.pendingGames.get(id);
+        if (!gameSettings) {
+            throw Error("The game you're trying to join doesn't exist.");
+        }
+        if (gameSettings.opponentName !== undefined) {
+            throw Error('This game already has a second player.');
+        }
+        gameSettings.opponentName = name;
+        const onlineGameSettings = this.toGameSettingsMulti(id, gameSettings);
+        const gameToken = this.generateGameToken(onlineGameSettings);
+        this.startGame(gameToken, this.toGameSettingsMulti(id, onlineGameSettings));
+        return id;
     }
 
     isPendingGame(id: number): boolean {
@@ -41,18 +46,19 @@ export class NewOnlineGameService {
         this.pendingGames.delete(id);
     }
 
-    private startGame(gameSettings: GameSettingsMulti) {
+    private startGame(gameToken: string, gameSettings: GameSettingsMulti) {
         this.deletePendingGame(gameSettings.id);
-        //this.gameMaster.createGame(token)
-        // Start Game
+        this.gameMaster.createGame(gameToken, gameSettings);
     }
 
-    private idgenerator(): number {
+    private generateId(): number {
         const toChange = 100;
         const id = Math.floor(Math.random() * toChange);
         return id;
     }
-
+    private generateGameToken(gameSetting: GameSettingsMulti): string {
+        return gameSetting.id.toString();
+    }
     private toGameSettingsMulti(id: number, settings: GameSettingsMultiUI): GameSettingsMulti {
         const gameSettings = settings as GameSettingsMulti;
         gameSettings.id = id;
