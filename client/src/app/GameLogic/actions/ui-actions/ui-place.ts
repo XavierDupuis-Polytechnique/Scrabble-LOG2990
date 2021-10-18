@@ -15,7 +15,7 @@ export class UIPlace implements UIAction {
     concernedIndexes = new Set<number>();
     orderedIndexes: LetterPlacement[] = [];
     direction = Direction.Horizontal;
-    pointerPosition: { x: number | null; y: number | null } = { x: null, y: null };
+    pointerPosition: { x: number; y: number } | null = null;
 
     // TODO : NEXT LINE MUST BE A CONSTRUCTOR ATTRIBUTE
     board = new BoardService();
@@ -32,13 +32,15 @@ export class UIPlace implements UIAction {
 
     receiveLeftClick(args: unknown): void {
         const clickPosition = args as { x: number; y: number };
-        if (!this.isPlacementInProgress() && this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
+        if (this.isPlacementInProgress()) {
+            return;
+        }
+        if (this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
             if (clickPosition === this.pointerPosition) {
                 this.toggleDirection();
                 return;
             }
             this.pointerPosition = clickPosition;
-            // this.moveForwards();
         }
     }
 
@@ -48,22 +50,12 @@ export class UIPlace implements UIAction {
                 this.moveBackwards();
                 break;
             default:
-                // const nextPointerPosition = this.canMoveForwards();
-                if (this.isPointerValid() && this.canUseLetter(key)) {
+                if (this.canUseLetter(key)) {
                     this.useLetter(key);
                 }
-                if (this.canMoveForwards()) {
-                    this.moveForwards();
-                }
+                this.moveForwards();
                 break;
         }
-    }
-
-    useLetter(key: string) {
-        // "place" the letter on the board
-        // add letter rack index to concernedIndexes
-        // add letterPlacement to orderedIndexes
-        throw new Error('Method not implemented.');
     }
 
     receiveRoll(): void {
@@ -80,9 +72,22 @@ export class UIPlace implements UIAction {
         );
     }
 
-    private canMoveForwards(): { x: number | null; y: number | null } {
-        if (this.pointerPosition.x === null || this.pointerPosition.y === null) {
-            return { x: null, y: null };
+    private useLetter(key: string) {
+        if (!this.pointerPosition) {
+            return;
+        }
+        // TODO : FIND LETTER IN RACK
+        const rackIndex = 1;
+        const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex };
+        this.concernedIndexes.add(rackIndex);
+        this.orderedIndexes.push(newLetterPlacement);
+        // TODO : ADD LETTER VIUSALLY ON BOARD
+        throw new Error('Method not implemented.');
+    }
+
+    private moveForwards(): boolean {
+        if (!this.pointerPosition) {
+            return false;
         }
 
         let deltaX = 0;
@@ -101,15 +106,12 @@ export class UIPlace implements UIAction {
         } while (!this.canPlaceALetterHere(x, y));
 
         if (!this.isInsideOfBoard(x, y)) {
-            this.pointerPosition.x = null;
-            this.pointerPosition.x = null;
-            return { x: null, y: null };
+            this.pointerPosition = null;
+            return false;
         }
-        return { x, y };
-    }
 
-    private isPointerValid() {
-        return this.pointerPosition.x !== null && this.pointerPosition.y !== null;
+        this.pointerPosition = { x, y };
+        return true;
     }
 
     private canUseLetter(key: string): boolean {
@@ -128,10 +130,6 @@ export class UIPlace implements UIAction {
         return false;
     }
 
-    private moveForwards() {
-        throw new Error('Method not implemented.');
-    }
-
     private canPlaceALetterHere(x: number, y: number): boolean {
         if (this.isInsideOfBoard(x, y)) {
             return this.board.board.grid[y][x].letterObject.char === EMPTY_CHAR;
@@ -147,8 +145,7 @@ export class UIPlace implements UIAction {
         const lastLetter = this.orderedIndexes.pop();
         if (lastLetter !== undefined) {
             this.concernedIndexes.delete(lastLetter.rackIndex);
-            this.pointerPosition.x = lastLetter.x;
-            this.pointerPosition.y = lastLetter.y;
+            this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
             return true;
         }
         return false;
