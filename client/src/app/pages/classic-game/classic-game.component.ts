@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { NewOnlineGameFormComponent } from '@app/components/new-online-game-form/new-online-game-form.component';
+import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';

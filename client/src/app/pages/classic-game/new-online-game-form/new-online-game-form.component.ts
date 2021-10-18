@@ -7,7 +7,7 @@ import {
     MAX_TIME_PER_TURN,
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
-    STEP_TIME_PER_TURN
+    STEP_TIME_PER_TURN,
 } from '@app/GameLogic/constants';
 import { GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
 
