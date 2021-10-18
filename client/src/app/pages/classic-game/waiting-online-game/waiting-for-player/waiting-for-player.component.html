@@ -1,0 +1,10 @@
+<mat-card #waitingForPlayer>
+    <div class="title">
+        <h3>En attente d'un joueur...</h3>
+        <mat-spinner color='accent' [diameter]="spinnerDiameter" [strokeWidth]="spinnerStrokeWidth" ></mat-spinner>
+    </div>
+    <div class="buttons">
+        <button mat-flat-button color='primary' (click)="cancel()">Cancel</button>
+        <button mat-flat-button color='primary' (click)="convertToModeSolo()">Convertir en mode solo</button>
+    </div>
+</mat-card>

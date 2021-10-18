@@ -15,6 +15,7 @@ import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 export class ClassicGameComponent {
     gameSettings: GameSettings;
 
+
     constructor(
         private router: Router,
         private gameManager: GameManagerService,
@@ -50,6 +51,7 @@ export class ClassicGameComponent {
             try {
                 // TODO:Socket validator
                 this.socketHandler.createGameMulti(result);
+                // document.getElementById('waitingForPlayer')?.setAttribute("style", "display:flex;");
                 // this.gameSettings = result;
                 // this.startSoloGame();
 
