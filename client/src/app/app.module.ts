@@ -4,12 +4,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
-import { NewOnlineGameFormComponent } from '@app/components/new-online-game-form/new-online-game-form.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
+import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
@@ -26,6 +26,7 @@ import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.c
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
+
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
