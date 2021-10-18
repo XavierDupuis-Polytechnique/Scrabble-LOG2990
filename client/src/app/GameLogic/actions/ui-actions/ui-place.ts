@@ -3,7 +3,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { LetterPlacement } from '@app/GameLogic/actions/ui-actions/ui-place-interface';
-import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, JOKER_CHAR, SPACE } from '@app/GameLogic/constants';
+import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -31,14 +31,14 @@ export class UIPlace implements UIAction {
     }
 
     receiveLeftClick(args: unknown): void {
-        if (!this.isPlacementInProgress()) {
-            const clickPosition = args as { x: number; y: number };
+        const clickPosition = args as { x: number; y: number };
+        if (!this.isPlacementInProgress() && this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
             if (clickPosition === this.pointerPosition) {
                 this.toggleDirection();
                 return;
             }
             this.pointerPosition = clickPosition;
-            this.moveForwards();
+            // this.moveForwards();
         }
     }
 
@@ -49,7 +49,7 @@ export class UIPlace implements UIAction {
                 break;
             default:
                 // const nextPointerPosition = this.canMoveForwards();
-                if (this.pointerPosition.x && this.pointerPosition.y && this.canUseLetter(key)) {
+                if (this.isPointerValid() && this.canUseLetter(key)) {
                     this.useLetter(key);
                 }
                 if (this.canMoveForwards()) {
@@ -60,6 +60,9 @@ export class UIPlace implements UIAction {
     }
 
     useLetter(key: string) {
+        // "place" the letter on the board
+        // add letter rack index to concernedIndexes
+        // add letterPlacement to orderedIndexes
         throw new Error('Method not implemented.');
     }
 
@@ -78,7 +81,7 @@ export class UIPlace implements UIAction {
     }
 
     private canMoveForwards(): { x: number | null; y: number | null } {
-        if (!this.pointerPosition.x || !this.pointerPosition.y) {
+        if (this.pointerPosition.x === null || this.pointerPosition.y === null) {
             return { x: null, y: null };
         }
 
@@ -105,12 +108,16 @@ export class UIPlace implements UIAction {
         return { x, y };
     }
 
+    private isPointerValid() {
+        return this.pointerPosition.x !== null && this.pointerPosition.y !== null;
+    }
+
     private canUseLetter(key: string): boolean {
         let letterToUse = key;
         if (isStringAnUpperCaseLetter(key)) {
             letterToUse = JOKER_CHAR;
         }
-        if (isStringALowerCaseLetter(key)) {
+        if (isStringALowerCaseLetter(key) || key === JOKER_CHAR) {
             for (let i = 0; i < this.player.letterRack.length; i++) {
                 const rackLetter = this.player.letterRack[i];
                 if (rackLetter.char === letterToUse && !this.concernedIndexes.has(i)) {
@@ -127,7 +134,7 @@ export class UIPlace implements UIAction {
 
     private canPlaceALetterHere(x: number, y: number): boolean {
         if (this.isInsideOfBoard(x, y)) {
-            return this.board.board.grid[y][x].letterObject.char === SPACE;
+            return this.board.board.grid[y][x].letterObject.char === EMPTY_CHAR;
         }
         return false;
     }
