@@ -26,13 +26,13 @@ export class GamePageComponent {
         }
     }
 
-    abandonner(): void {
+    abandon(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         this.matDialog.open(AbandonButtonComponent, dialogConfig);
     }
 
-    passer() {
+    pass() {
         this.avs.sendAction(new PassTurn(this.info.user));
     }
 

@@ -7,10 +7,10 @@
         <app-board></app-board>
         <app-horse></app-horse>
         <div class="actions">
-            <button mat-raised-button color="accent" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
+            <button mat-raised-button color="accent" [disabled]="!isItMyTurn" (click)="pass()">Passer</button>
         </div>
         <div class="abandonner">
-            <button mat-raised-button (click)="abandonner()" *ngIf="!isEndOfGame">Abandonner la partie</button>
+            <button mat-raised-button (click)="abandon()" *ngIf="!isEndOfGame">Abandonner la partie</button>
             <button mat-raised-button [routerLink]="['/home']" *ngIf="isEndOfGame">Quitter</button>
         </div>
     </div>
