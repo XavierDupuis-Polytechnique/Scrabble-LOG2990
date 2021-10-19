@@ -151,7 +151,7 @@ describe('BotCrawler', () => {
         bot.letterRack = letters;
 
         let result: ValidWord[] = [];
-        const expected = 1959; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 1518; // It would take too long to list all the possibilities with any more details in this test.
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });

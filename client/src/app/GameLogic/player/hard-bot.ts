@@ -24,39 +24,31 @@ export class HardBot extends Bot {
             return this.exchangeAction();
         } else {
             const pickedWord = this.bestWordPicker(validWordsList);
-            return this.playAction(pickedWord);
+            return this.playAction(pickedWord[ZERO]);
         }
     }
 
     // TODO Add these extra words to debug (sprint 3)
-    bestWordPicker(validWordsList: ValidWord[]): ValidWord {
-        let bestWord = new ValidWord('');
-        bestWord.value.totalPoints = ZERO;
-        let secondWord = new ValidWord('');
-        secondWord.value.totalPoints = ZERO;
-        let thirdWord = new ValidWord('');
-        thirdWord.value.totalPoints = ZERO;
-        let fourthWord = new ValidWord('');
-        fourthWord.value.totalPoints = ZERO;
+    bestWordPicker(validWordsList: ValidWord[]): ValidWord[] {
+        const numberOfWords = 4;
+        const bestWords: ValidWord[] = [];
+        const zeroValueWord = new ValidWord('');
+        zeroValueWord.value.totalPoints = ZERO;
+
+        for (let i = 0; i < numberOfWords; i++) {
+            bestWords.push(zeroValueWord);
+        }
 
         for (const validWord of validWordsList) {
-            if (validWord.value.totalPoints > bestWord.value.totalPoints) {
-                fourthWord = thirdWord;
-                thirdWord = secondWord;
-                secondWord = bestWord;
-                bestWord = validWord;
-            } else if (validWord.value.totalPoints > secondWord.value.totalPoints) {
-                fourthWord = thirdWord;
-                thirdWord = secondWord;
-                secondWord = validWord;
-            } else if (validWord.value.totalPoints > thirdWord.value.totalPoints) {
-                fourthWord = thirdWord;
-                thirdWord = validWord;
-            } else if (validWord.value.totalPoints > fourthWord.value.totalPoints) {
-                fourthWord = validWord;
+            for (let index = ZERO; index < numberOfWords; index++) {
+                if (validWord.value.totalPoints > bestWords[index].value.totalPoints) {
+                    bestWords.splice(index, ZERO, validWord);
+                    bestWords.pop();
+                    break;
+                }
             }
         }
-        return bestWord;
+        return bestWords;
     }
 
     playAction(pickedWord: ValidWord): Action {
