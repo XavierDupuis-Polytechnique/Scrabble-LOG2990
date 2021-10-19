@@ -35,6 +35,26 @@ export class LetterBag {
         this.gameLetters.push(letter);
     }
 
+    countLetters(): Map<string, number> {
+        const LETTER_A_CODE = 'A'.charCodeAt(0);
+        const LETTER_Z_CODE = 'Z'.charCodeAt(0);
+        const letters: [string, number][] = [['*', 0]];
+        for (let code = LETTER_A_CODE; code < LETTER_Z_CODE; code++) {
+            letters.push([String.fromCharCode(code), 0]);
+        }
+        const occurrences = new Map<string, number>(letters);
+        for (const letter of this.gameLetters) {
+            const char = letter.char;
+            const occurrence = occurrences.get(char);
+            if (occurrence === undefined) {
+                occurrences.set(char, 1);
+            } else {
+                occurrences.set(char, occurrence + 1);
+            }
+        }
+        return occurrences;
+    }
+
     get lettersLeft(): number {
         return this.gameLetters.length;
     }
