@@ -50,10 +50,9 @@ export class UIPlace implements UIAction {
                 this.moveBackwards();
                 break;
             default:
-                if (this.canUseLetter(key)) {
-                    this.useLetter(key);
+                if (this.useLetter(key)) {
+                    this.moveForwards();
                 }
-                this.moveForwards();
                 break;
         }
     }
@@ -62,6 +61,7 @@ export class UIPlace implements UIAction {
         throw new Error('UIExchange should not be able to receive a MouseRoll');
     }
 
+    // TODO : REFACTOR WITH PROPER BEHAVIOR AND ATTRIBUTES
     create(): Action {
         return new PlaceLetter(
             this.player,
@@ -72,17 +72,19 @@ export class UIPlace implements UIAction {
         );
     }
 
-    private useLetter(key: string) {
+    private useLetter(key: string): boolean {
         if (!this.pointerPosition) {
-            return;
+            return false;
         }
-        // TODO : FIND LETTER IN RACK
-        const rackIndex = 1;
-        const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex };
-        this.concernedIndexes.add(rackIndex);
+        const possibleLetterIndex = this.canUseLetter(key);
+        if (possibleLetterIndex === null) {
+            return false;
+        }
+        const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
+        this.concernedIndexes.add(possibleLetterIndex);
         this.orderedIndexes.push(newLetterPlacement);
         // TODO : ADD LETTER VIUSALLY ON BOARD
-        throw new Error('Method not implemented.');
+        return true;
     }
 
     private moveForwards(): boolean {
@@ -114,20 +116,25 @@ export class UIPlace implements UIAction {
         return true;
     }
 
-    private canUseLetter(key: string): boolean {
+    private canUseLetter(key: string): number | null {
         let letterToUse = key;
-        if (isStringAnUpperCaseLetter(key)) {
+        if (isStringAnUpperCaseLetter(letterToUse)) {
             letterToUse = JOKER_CHAR;
         }
-        if (isStringALowerCaseLetter(key) || key === JOKER_CHAR) {
-            for (let i = 0; i < this.player.letterRack.length; i++) {
-                const rackLetter = this.player.letterRack[i];
-                if (rackLetter.char === letterToUse && !this.concernedIndexes.has(i)) {
-                    return true;
-                }
+        if (isStringALowerCaseLetter(letterToUse) || letterToUse === JOKER_CHAR) {
+            return this.findUnusedLetterIndex(letterToUse);
+        }
+        return null;
+    }
+
+    private findUnusedLetterIndex(char: string): number | null {
+        for (let index = 0; index < this.player.letterRack.length; index++) {
+            const rackLetter = this.player.letterRack[index];
+            if (rackLetter.char === char && !this.concernedIndexes.has(index)) {
+                return index;
             }
         }
-        return false;
+        return null;
     }
 
     private canPlaceALetterHere(x: number, y: number): boolean {
