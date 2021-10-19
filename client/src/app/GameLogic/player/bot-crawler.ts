@@ -1,3 +1,4 @@
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { ZERO } from '@app/GameLogic/constants';
 import { Tile } from '@app/GameLogic/game/board/tile';
@@ -301,9 +302,9 @@ export class BotCrawler {
         for (const word of possiblyValidWords) {
             let placement: PlacementSetting;
             if (word.isVertical) {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
+                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Vertical };
             } else {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Horizontal };
             }
             const fakeAction = new PlaceLetter(this.bot, word.word, placement, this.pointCalculatorService, this.wordValidator);
             const validWords = this.wordValidator.listOfValidWord(fakeAction);

@@ -34,7 +34,7 @@ describe('PlaceLetter', () => {
     const placement: PlacementSetting = {
         x: 0,
         y: 0,
-        direction: 'H',
+        direction: Direction.Horizontal,
     };
     let game: Game;
     const player1: Player = new User('Tim');
