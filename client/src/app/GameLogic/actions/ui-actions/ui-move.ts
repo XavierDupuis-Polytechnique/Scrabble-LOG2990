@@ -34,18 +34,7 @@ export class UIMove implements UIAction {
             case SHIFT:
                 return;
             default:
-                if (isStringALowerCaseLetter(key) || key === JOKER_CHAR) {
-                    let currentIndex = this.getCurrentIndex();
-                    if (isNaN(currentIndex)) {
-                        currentIndex = NOT_FOUND;
-                    }
-                    const newIndex = this.findNextLetterIndex(currentIndex + 1, key);
-                    if (newIndex !== undefined) {
-                        this.storeLetterIndex(newIndex);
-                        return;
-                    }
-                }
-                this.concernedIndexes.clear();
+                this.processKey(key);
         }
     }
 
@@ -61,6 +50,23 @@ export class UIMove implements UIAction {
 
     create(): Action {
         throw new Error('UIMove should not be able to create an Action');
+    }
+
+    private processKey(key: string) {
+        if (!isStringALowerCaseLetter(key) && key !== JOKER_CHAR) {
+            this.concernedIndexes.clear();
+            return;
+        }
+        let currentIndex = this.getCurrentIndex();
+        if (isNaN(currentIndex)) {
+            currentIndex = NOT_FOUND;
+        }
+        const newIndex = this.findNextLetterIndex(currentIndex + 1, key);
+        if (newIndex !== undefined) {
+            this.storeLetterIndex(newIndex);
+            return;
+        }
+        this.concernedIndexes.clear();
     }
 
     private moveRight() {
@@ -87,7 +93,7 @@ export class UIMove implements UIAction {
     }
 
     private getCurrentIndex(): number {
-        return this.concernedIndexes.values().next().value; // TODO : BULLETPROOF
+        return this.concernedIndexes.values().next().value;
     }
 
     private findNextLetterIndex(nextIndex: number, char: string): number | undefined {
