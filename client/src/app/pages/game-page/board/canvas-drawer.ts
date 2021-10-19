@@ -69,6 +69,13 @@ export class CanvasDrawer {
         }
     }
 
+    coordToTilePosition(x: number, y: number) {
+        const i = Math.floor((x - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
+        const j = Math.floor((y - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
+
+        return { indexI: i, indexJ: j };
+    }
+
     private tilePositionToCoord(i: number, j: number): Vec2 {
         const x = i * this.tileSize + (i + 1) * this.canvas.lineWidth;
         const y = j * this.tileSize + (j + 1) * this.canvas.lineWidth;

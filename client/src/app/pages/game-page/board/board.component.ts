@@ -68,4 +68,10 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: { x, y } };
         this.clickTile.emit(input);
     }
+
+    canvasClick(event: MouseEvent): void {
+        const pos = this.canvasDrawer.coordToTilePosition(event.offsetX, event.offsetY);
+        const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: { x: pos.indexI, y: pos.indexJ } };
+        this.clickTile.emit(input);
+    }
 }
