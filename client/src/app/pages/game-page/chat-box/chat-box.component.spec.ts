@@ -47,7 +47,7 @@ describe('ChatBoxComponent', () => {
     });
 
     it('should send message to message service if message valid', () => {
-        component.messageForm.setValue('Test message');
+        component.messageContent = 'Test message';
         component.sendMessage();
         expect(messageServiceSpy.receiveMessagePlayer).toHaveBeenCalled();
     });
@@ -59,6 +59,7 @@ describe('ChatBoxComponent', () => {
 
     it('should change color of number of character if it exceeds limit', () => {
         const maxCharPlusOne = 514;
+
         expect(fixture.debugElement.query(By.css('#red'))).toBeNull();
         component.isError(maxCharPlusOne);
         fixture.detectChanges();

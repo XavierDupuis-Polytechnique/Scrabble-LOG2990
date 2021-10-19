@@ -20,12 +20,13 @@ describe('PointCalculatorService', () => {
     let pointCalculator: PointCalculatorService;
     let timer: TimerService;
     let boardService: BoardService;
+    let messages: MessagesService;
+    const randomBonus = false;
     let player1: Player;
     let player2: Player;
     let action: MockPlaceLetter;
     let game: MockGame;
     let grid: Tile[][];
-    let messages: MessagesService;
     const timePerTurn = 30;
     const emptyRack: Letter[] = [];
     const rack: Letter[] = [
@@ -47,7 +48,7 @@ describe('PointCalculatorService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
         messages = TestBed.inject(MessagesService);
-        game = new MockGame(timePerTurn, timer, pointCalculator, boardService, messages);
+        game = new MockGame(randomBonus, timePerTurn, timer, pointCalculator, boardService, messages);
         player1 = new User('Tim');
         player2 = new User('Max');
         listOfWord = [];
@@ -388,7 +389,7 @@ describe('PointCalculatorService', () => {
             { char: 'T', value: 1 },
         ];
         const timeTurn = 30;
-        game = new MockGame(timeTurn, timer, pointCalculator, boardService, messages);
+        game = new MockGame(randomBonus, timeTurn, timer, pointCalculator, boardService, messages);
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;

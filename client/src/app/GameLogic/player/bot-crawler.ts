@@ -1,4 +1,5 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { ZERO } from '@app/GameLogic/constants';
 import { Tile } from '@app/GameLogic/game/board/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Bot } from '@app/GameLogic/player/bot';
@@ -39,7 +40,10 @@ export class BotCrawler {
                 initialWord.rightCount = MIDDLE_OF_BOARD;
                 placedLetter.push(initialWord);
                 const possiblyValidWords: ValidWord[] = this.wordCheck(placedLetter);
-                this.bot.letterRack.push(tmpLetter[0]);
+                possiblyValidWords.forEach((word) => {
+                    word.numberOfLettersPlaced++;
+                });
+                this.bot.letterRack.splice(rackIndex, ZERO, tmpLetter[0]);
 
                 this.crossCheck(possiblyValidWords);
             }

@@ -61,6 +61,7 @@ describe('ClassicGameComponent', () => {
                             botDifficulty: 'easy',
                             playerName: 'Sam',
                             timePerTurn: 3000,
+                            randomBonus: false,
                         }),
                 };
             },

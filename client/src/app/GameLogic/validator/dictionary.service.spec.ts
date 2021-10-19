@@ -35,7 +35,7 @@ describe('DictionaryService', () => {
     it('should return all words containing the searched letters zyklon', () => {
         const searchedLetters = new ValidWord('zyklon', 0, 0, 5, 5);
         let result: ValidWord[] = [];
-        const expected: ValidWord[] = [new ValidWord('zyklons')];
+        const expected: ValidWord[] = [new ValidWord('zyklons', 0, 0, 0, 0, false, 0, 0, 1)];
         result = dictionaryService.wordGen(searchedLetters);
 
         expect(result).toEqual(expected);
@@ -62,7 +62,7 @@ describe('DictionaryService', () => {
     it('should return all words containing the searched letters zyk-on', () => {
         const searchedLetters = new ValidWord('zyk-on', 0, 0, 0, 1);
         let result: ValidWord[] = [];
-        const expected: ValidWord[] = [new ValidWord('zyklon'), new ValidWord('zyklons')];
+        const expected: ValidWord[] = [new ValidWord('zyklon', 0, 0, 0, 0, false, 0, 0, 1), new ValidWord('zyklons', 0, 0, 0, 0, false, 0, 0, 2)];
         result = dictionaryService.wordGen(searchedLetters);
 
         expect(result).toEqual(expected);
@@ -71,7 +71,7 @@ describe('DictionaryService', () => {
     it('should return all words containing the searched letters z-k-on', () => {
         const searchedLetters = new ValidWord('z-k-on', 0, 0, 0, 1);
         let result: ValidWord[] = [];
-        const expected: ValidWord[] = [new ValidWord('zyklon'), new ValidWord('zyklons')];
+        const expected: ValidWord[] = [new ValidWord('zyklon', 0, 0, 0, 0, false, 0, 0, 2), new ValidWord('zyklons', 0, 0, 0, 0, false, 0, 0, 3)];
         result = dictionaryService.wordGen(searchedLetters);
 
         expect(result).toEqual(expected);
@@ -81,15 +81,15 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('i-----l--ions');
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
-            new ValidWord('immobilisions'),
-            new ValidWord('infibulations'),
-            new ValidWord('infibulerions'),
-            new ValidWord('initialerions'),
-            new ValidWord('initialisions'),
-            new ValidWord('insufflations'),
-            new ValidWord('insufflerions'),
-            new ValidWord('intitulerions'),
-            new ValidWord('irresolutions'),
+            new ValidWord('immobilisions', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('infibulations', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('infibulerions', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('initialerions', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('initialisions', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('insufflations', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('insufflerions', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('intitulerions', 0, 0, 0, 0, false, 0, 0, 7),
+            new ValidWord('irresolutions', 0, 0, 0, 0, false, 0, 0, 7),
         ];
         result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
@@ -99,15 +99,15 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('allo', 0, 0, 1, 1, false, 1);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
-            new ValidWord('alloc', 0, 0, 0, 0, false, 1, 0),
-            new ValidWord('ballon'),
-            new ValidWord('ballot'),
-            new ValidWord('gallo'),
-            new ValidWord('gallon'),
-            new ValidWord('gallos'),
-            new ValidWord('gallot'),
-            new ValidWord('vallon'),
-            new ValidWord('wallon'),
+            new ValidWord('alloc', 0, 0, 0, 0, false, 1, 0, 1),
+            new ValidWord('ballon', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('ballot', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('gallo', 0, 0, 0, 0, false, 0, 0, 1),
+            new ValidWord('gallon', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('gallos', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('gallot', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('vallon', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('wallon', 0, 0, 0, 0, false, 0, 0, 2),
         ];
         result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
@@ -117,12 +117,12 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('battait', 0, 0, 2, 0, false, 2);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
-            new ValidWord('abattait', 0, 0, 0, 0, false, 1, 0),
-            new ValidWord('debattait', 0, 0, 0, 0, false, 0, 0),
-            new ValidWord('ebattait', 0, 0, 0, 0, false, 1, 0),
-            new ValidWord('embattait', 0, 0, 0, 0, false, 0, 0),
-            new ValidWord('rabattait', 0, 0, 0, 0, false, 0, 0),
-            new ValidWord('rebattait', 0, 0, 0, 0, false, 0, 0),
+            new ValidWord('abattait', 0, 0, 0, 0, false, 1, 0, 1),
+            new ValidWord('debattait', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('ebattait', 0, 0, 0, 0, false, 1, 0, 1),
+            new ValidWord('embattait', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('rabattait', 0, 0, 0, 0, false, 0, 0, 2),
+            new ValidWord('rebattait', 0, 0, 0, 0, false, 0, 0, 2),
         ];
         result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
@@ -132,15 +132,15 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('allo', 0, 0, 1, 1, false, 8, 8);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
-            new ValidWord('alloc', 0, 0, 0, 0, false, 8, 8),
-            new ValidWord('ballon', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('ballot', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('gallo', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('gallon', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('gallos', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('gallot', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('vallon', 0, 0, 0, 0, false, 7, 8),
-            new ValidWord('wallon', 0, 0, 0, 0, false, 7, 8),
+            new ValidWord('alloc', 0, 0, 0, 0, false, 8, 8, 1),
+            new ValidWord('ballon', 0, 0, 0, 0, false, 7, 8, 2),
+            new ValidWord('ballot', 0, 0, 0, 0, false, 7, 8, 2),
+            new ValidWord('gallo', 0, 0, 0, 0, false, 7, 8, 1),
+            new ValidWord('gallon', 0, 0, 0, 0, false, 7, 8, 2),
+            new ValidWord('gallos', 0, 0, 0, 0, false, 7, 8, 2),
+            new ValidWord('gallot', 0, 0, 0, 0, false, 7, 8, 2),
+            new ValidWord('vallon', 0, 0, 0, 0, false, 7, 8, 2),
+            new ValidWord('wallon', 0, 0, 0, 0, false, 7, 8, 2),
         ];
         result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
@@ -150,9 +150,9 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('allochimi', 0, 0, 5, 5, true, 5, 5);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
-            new ValidWord('cristallochimie', 0, 0, 0, 0, true, 5, 0),
-            new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 2),
-            new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 2),
+            new ValidWord('cristallochimie', 0, 0, 0, 0, true, 5, 0, 6),
+            new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 2, 4),
+            new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 2, 5),
         ];
         result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
@@ -162,9 +162,9 @@ describe('DictionaryService', () => {
         const searchedLetters = new ValidWord('tal--chim-e', 0, 0, 8, 8, true, 5, 5);
         let result: ValidWord[] = [];
         const expected: ValidWord[] = [
-            new ValidWord('cristallochimie', 0, 0, 0, 0, true, 5, 1),
-            new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 3),
-            new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 3),
+            new ValidWord('cristallochimie', 0, 0, 0, 0, true, 5, 1, 7),
+            new ValidWord('metallochimie', 0, 0, 0, 0, true, 5, 3, 5),
+            new ValidWord('metallochimies', 0, 0, 0, 0, true, 5, 3, 6),
         ];
         result = dictionaryService.wordGen(searchedLetters);
         expect(result).toEqual(expected);
