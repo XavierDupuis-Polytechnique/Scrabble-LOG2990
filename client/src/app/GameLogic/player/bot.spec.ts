@@ -4,20 +4,20 @@ import { TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/con
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('Bot', () => {
+    const dict = new DictionaryService();
     TestBed.configureTestingModule({
-        providers: [BotCreatorService, BotMessagesService],
+        providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, BotMessagesService],
     });
     let bot: EasyBot;
     let botCreator: BotCreatorService;
     let botMessage: BotMessagesService;
-    let spySendAction: jasmine.Spy;
 
     beforeEach(() => {
         botCreator = TestBed.inject(BotCreatorService);
         botMessage = TestBed.inject(BotMessagesService);
-        spySendAction = spyOn(botMessage, 'sendAction');
         bot = botCreator.createBot('testBot', 'easy') as EasyBot;
     });
 
@@ -36,6 +36,7 @@ describe('Bot', () => {
     });
 
     it('should play before 3 seconds', fakeAsync(() => {
+        const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         bot.chooseAction(new PassTurn(bot));
         tick(TIME_BEFORE_PICKING_ACTION);
@@ -44,6 +45,7 @@ describe('Bot', () => {
     }));
 
     it('should play after 3 seconds', fakeAsync(() => {
+        const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         bot.chooseAction(new PassTurn(bot));
@@ -52,6 +54,7 @@ describe('Bot', () => {
     }));
 
     it('should pass turn after 20 seconds', fakeAsync(() => {
+        const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         tick(TIME_BEFORE_PASS);

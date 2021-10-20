@@ -15,6 +15,7 @@ import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { EasyBot } from './easy-bot';
 
 describe('EasyBot', () => {
@@ -25,11 +26,20 @@ describe('EasyBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
+    const dict = new DictionaryService();
     const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [BoardService, BotCreatorService, BotMessagesService, TimerService, PointCalculatorService, MessagesService, GameInfoService],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                BotCreatorService,
+                BotMessagesService,
+                TimerService,
+                PointCalculatorService,
+                MessagesService,
+                GameInfoService,
+            ],
         });
         boardService = TestBed.inject(BoardService);
         botCreatorService = TestBed.inject(BotCreatorService);

@@ -32,6 +32,7 @@ describe('ActionValidatorService', () => {
     let info: GameInfoService;
     let messagesSpy: MessagesService;
     let wordSearcher: WordSearcher;
+    const dict = new DictionaryService();
     const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 
@@ -52,11 +53,11 @@ describe('ActionValidatorService', () => {
         messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
         TestBed.configureTestingModule({
             providers: [
+                { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesSpy },
                 CommandParserService,
                 PointCalculatorService,
                 BoardService,
-                DictionaryService,
                 TimerService,
                 GameInfoService,
                 PointCalculatorService,

@@ -6,6 +6,7 @@ import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
     const letterCreator = new LetterCreator();
@@ -20,8 +21,9 @@ const placeTestWords = (x: number, y: number, isVertical: boolean, word: string,
 };
 
 describe('BotCrawler', () => {
+    const dict = new DictionaryService();
     TestBed.configureTestingModule({
-        providers: [BoardService, BotCreatorService],
+        providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService],
     });
     let bot: EasyBot;
     let boardService: BoardService;

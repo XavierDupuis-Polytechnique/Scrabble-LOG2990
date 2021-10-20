@@ -44,6 +44,7 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
+    const dict = new DictionaryService();
     const randomBonus = false;
     beforeEach(() => {
         timer = new TimerService();
@@ -56,8 +57,8 @@ describe('PlaceLetter', () => {
         });
         TestBed.configureTestingModule({
             providers: [
+                { provide: DictionaryService, useValue: dict },
                 BoardService,
-                DictionaryService,
                 { provide: PointCalculatorService, useValue: pointCalculatorSpy },
                 { provide: WordSearcher, useClass: MockWordSearcher },
                 GameInfoService,

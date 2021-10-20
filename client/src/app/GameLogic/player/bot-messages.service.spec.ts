@@ -17,6 +17,7 @@ import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { placementSettingsToString } from '@app/GameLogic/utils';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('BotMessagesService', () => {
@@ -57,10 +58,19 @@ describe('BotMessagesService', () => {
     let wordSearcher: WordSearcher;
     let commandExecuter: CommandExecuterService;
     let easyBot: EasyBot;
+    const dict = new DictionaryService();
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [MessagesService, CommandExecuterService, BotCreatorService, PointCalculatorService, WordSearcher, CommandExecuterService],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                MessagesService,
+                CommandExecuterService,
+                BotCreatorService,
+                PointCalculatorService,
+                WordSearcher,
+                CommandExecuterService,
+            ],
         });
         messageService = TestBed.inject(MessagesService);
         botMessage = TestBed.inject(BotMessagesService);
@@ -221,9 +231,9 @@ describe('BotMessagesService', () => {
         const expected: string[] = [];
         expected.push(
             '\\n' +
-                'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
-                'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-                'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+            'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
+            'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
+            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
         );
         expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
@@ -261,8 +271,8 @@ describe('BotMessagesService', () => {
         const expected: string[] = [];
         expected.push(
             '\\n' +
-                'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-                'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+            'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
+            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
         );
         expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });

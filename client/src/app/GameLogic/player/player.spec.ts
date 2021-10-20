@@ -10,10 +10,20 @@ import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('Player', () => {
+    const dict = new DictionaryService();
     TestBed.configureTestingModule({
-        providers: [BotCreatorService, BotMessagesService, TimerService, PointCalculatorService, MessagesService, GameInfoService],
+        providers: [
+            { provide: DictionaryService, useValue: dict },
+            BotCreatorService,
+            BotMessagesService,
+            TimerService,
+            PointCalculatorService,
+            MessagesService,
+            GameInfoService,
+        ],
     });
     let bot: EasyBot;
     let boardService: BoardService;
