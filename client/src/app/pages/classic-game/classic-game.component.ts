@@ -50,10 +50,11 @@ export class ClassicGameComponent {
             this.socketHandler.connect();
             try {
                 // TODO:Socket validator
+
+                this.gameSettings = result;
                 this.socketHandler.createGameMulti(result);
                 this.openWaitingForPlayer();
                 // document.getElementById('waitingForPlayer')?.setAttribute("style", "display:flex;");
-                // this.gameSettings = result;
                 // this.startSoloGame();
 
                 // eslint-disable-next-line no-empty
@@ -68,7 +69,8 @@ export class ClassicGameComponent {
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterClosed().subscribe((result) => {
             if (result) {
-                // ouvrir parametre mode solo (juste config du bot?)
+                console.log('ClassicComponentReceive', result);
+                // this.openSoloGameForm();
             }
         });
     }

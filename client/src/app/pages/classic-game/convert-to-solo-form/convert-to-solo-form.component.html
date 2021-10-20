@@ -1,0 +1,10 @@
+<mat-dialog-content>
+    <mat-label>Difficulté de votre adversaire</mat-label>
+    <mat-select [(ngModel)]="botDifficulty">
+        <mat-option matNativeControl required value="easy">Débutant</mat-option>
+    </mat-select>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <!-- <button mat-flat-button color="primary" mat-dialog-close>Cancel</button> -->
+    <button mat-flat-button color="primary" [mat-dialog-close]="true" (click)="sendParameter()" cdkFocusInitial>Commencer la partie</button>
+</mat-dialog-actions>
