@@ -48,7 +48,7 @@ describe('ActionValidatorService', () => {
         }
     }
 
-    beforeAll(() => {
+    beforeEach(() => {
         messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
         TestBed.configureTestingModule({
             providers: [
@@ -67,9 +67,6 @@ describe('ActionValidatorService', () => {
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
-    });
-
-    beforeEach(() => {
         game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
         p1 = new User('p1');
         p2 = new User('p2');
