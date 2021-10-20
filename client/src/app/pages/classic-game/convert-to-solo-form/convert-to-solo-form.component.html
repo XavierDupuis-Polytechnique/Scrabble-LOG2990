@@ -2,13 +2,16 @@
     <mat-label>Difficulté de votre adversaire</mat-label>
     <br />
     <br />
-    <mat-select [(ngModel)]="botDifficulty" placeholder="Difficulté du joueur virtuel">
-        <mat-option matNativeControl required value="easy">Débutant</mat-option>
-    </mat-select>
+    <mat-form-field>
+        <mat-label>Difficulté de votre adversaire</mat-label>
+        <mat-select [formControl]="botDifficulty">
+            <mat-option matNativeControl required value="easy">Débutant</mat-option>
+        </mat-select>
+    </mat-form-field>
     <br />
     <br />
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-flat-button color="primary" (click)="cancel()">Cancel</button>
-    <button mat-flat-button color="primary" (click)="sendParameter()" cdkFocusInitial>Commencer la partie</button>
+    <button mat-flat-button color="primary" [disabled]="!valid" (click)="sendParameter()">Commencer la partie</button>
 </mat-dialog-actions>

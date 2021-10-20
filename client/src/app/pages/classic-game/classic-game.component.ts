@@ -48,26 +48,24 @@ export class ClassicGameComponent {
         const dialogRef = this.dialog.open(NewOnlineGameFormComponent, dialogConfig);
         dialogRef.afterClosed().subscribe((result) => {
             this.socketHandler.connect();
-            try {
+            if (result) {
                 // TODO:Socket validator
 
                 this.gameSettings = result;
                 this.socketHandler.createGameMulti(result);
                 this.openWaitingForPlayer();
-                // document.getElementById('waitingForPlayer')?.setAttribute("style", "display:flex;");
                 // this.startSoloGame();
-
-                // eslint-disable-next-line no-empty
-            } catch (e) {}
+            }
             dialogRef.close();
         });
     }
     openWaitingForPlayer() {
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
-        // secondDialogConfig.disableClose = true;
+        secondDialogConfig.disableClose = true;
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterClosed().subscribe((result) => {
+            console.log(result);
             if (result) {
                 this.gameSettings = {
                     playerName: this.gameSettings.playerName,
@@ -75,10 +73,10 @@ export class ClassicGameComponent {
                     randomBonus: this.gameSettings.randomBonus,
                     timePerTurn: this.gameSettings.timePerTurn,
                 };
-                console.log('ClassicComponentReceive', result);
                 console.log('ClassicComponentGameSettings', this.gameSettings);
-                // this.startSoloGame(this.gameSettigns);
-                // this.openSoloGameForm();
+                this.startSoloGame();
+            } else {
+                // result = vide
             }
         });
     }

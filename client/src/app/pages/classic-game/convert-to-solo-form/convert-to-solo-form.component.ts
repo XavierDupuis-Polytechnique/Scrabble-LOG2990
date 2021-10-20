@@ -23,6 +23,9 @@ export class ConvertToSoloFormComponent implements AfterContentChecked {
         this.botDifficulty.reset();
     }
     sendParameter(): void {
-        this.dialogRef.close(this.botDifficulty);
+        this.dialogRef.close(this.botDifficulty.value);
+    }
+    get valid() {
+        return this.botDifficulty.valid;
     }
 }
