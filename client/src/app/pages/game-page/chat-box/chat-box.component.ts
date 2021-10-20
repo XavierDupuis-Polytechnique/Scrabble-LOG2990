@@ -1,7 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
 import { NewlinePipe } from '@app/components/newline-pipe/newline.pipe';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable } from 'rxjs';
@@ -16,6 +17,8 @@ const MAX_MESSAGE_LENGTH = 512;
 })
 export class ChatBoxComponent implements AfterViewInit {
     @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
+    @Output() clickChatbox = new EventEmitter();
+    @Output() self = InputComponent.Chatbox;
 
     messageContent: string;
 
@@ -30,6 +33,11 @@ export class ChatBoxComponent implements AfterViewInit {
             this.cdRef.detectChanges();
             this.scrollDownChat();
         });
+    }
+
+    click() {
+        const input: UIInput = { from: this.self, type: InputType.LeftClick };
+        this.clickChatbox.emit(input);
     }
 
     sendMessage() {

@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
+import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
+import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 
 @Component({
     selector: 'app-game-page',
@@ -11,7 +16,13 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
-    constructor(private gameManager: GameManagerService, public info: GameInfoService, private avs: ActionValidatorService, private router: Router) {
+    constructor(
+        private gameManager: GameManagerService,
+        public info: GameInfoService,
+        private avs: ActionValidatorService,
+        private router: Router,
+        private inputController: UIInputControllerService,
+    ) {
         try {
             this.gameManager.startGame();
         } catch (e) {
@@ -19,12 +30,18 @@ export class GamePageComponent {
         }
     }
 
-    abandonner(): void {
-        this.gameManager.stopGame();
+    @HostListener('window:keyup', ['$event'])
+    keypressEvent($event: KeyboardEvent) {
+        const input: UIInput = { type: InputType.KeyPress, args: $event.key };
+        this.inputController.receive(input);
     }
 
-    passer() {
-        this.avs.sendAction(new PassTurn(this.info.user));
+    receiveInput(input: UIInput) {
+        this.inputController.receive(input);
+    }
+
+    abandonner(): void {
+        this.gameManager.stopGame();
     }
 
     get isItMyTurn() {
@@ -41,5 +58,39 @@ export class GamePageComponent {
         } catch (e) {
             return false;
         }
+    }
+
+    get canPlace() {
+        return this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
+    }
+
+    get canExchange() {
+        return (
+            this.isItMyTurn &&
+            this.inputController.activeAction instanceof UIExchange &&
+            this.inputController.canBeExecuted &&
+            this.info.numberOfLettersRemaining > RACK_LETTER_COUNT
+        );
+    }
+
+    get canPass() {
+        return this.isItMyTurn;
+    }
+
+    get canCancel() {
+        return this.canPlace || this.canExchange;
+    }
+
+    // TODO : REROUTE TO UIINPUTCONTROLLER -> REMOVE AVS -> MIGRATE TESTS
+    pass() {
+        this.avs.sendAction(new PassTurn(this.info.user));
+    }
+
+    confirm() {
+        this.inputController.confirm();
+    }
+
+    cancel() {
+        this.inputController.cancel();
     }
 }

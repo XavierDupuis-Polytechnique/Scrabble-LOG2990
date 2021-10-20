@@ -12,6 +12,14 @@ mat-grid-tile {
     background-color: rgb(240, 231, 216);
     border: 1px solid rgb(134, 114, 98);
     box-shadow: 2px 2px 2px 0.2;
+    background-image: url('^assets/img/tuile.png');
+    background-size: contain;
+}
+
+mat-grid-tile:hover {
+    background: white;
+    cursor: pointer;
+    border: 1px;
 }
 
 sub {
@@ -25,4 +33,18 @@ sub {
     background-color: var(--brown-choco);
     border: 3px solid rgb(37, 37, 37);
     border-radius: 2%;
+}
+
+.selectedForMove {
+    border: solid 2px darkred !important;
+    background: red;
+}
+
+.selectedForExchange {
+    border: solid 2px green !important;
+    background: chartreuse;
+}
+
+.selectedForPlace {
+    opacity: 0.3;
 }
