@@ -82,7 +82,7 @@ export class ActionValidatorService {
 
     private validateLettersCanBePlaced(action: PlaceLetter) {
         let x = action.placement.x;
-        const y = action.placement.y;
+        let y = action.placement.y;
         let lettersNeeded = '';
 
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
@@ -102,6 +102,11 @@ export class ActionValidatorService {
                     return false;
                 }
             }
+            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
+                y++;
+            } else {
+                x++;
+            }
         }
         if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
             let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
@@ -117,7 +122,9 @@ export class ActionValidatorService {
     }
 
     private validateBoardsLimits(action: PlaceLetter): boolean {
-        // TODO : VALIDATE NEGATIVE
+        if (action.placement.y < 0 || action.placement.x < 0) {
+            return false;
+        }
         let concernedAxisValue;
         if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
             concernedAxisValue = action.placement.y;
@@ -159,92 +166,18 @@ export class ActionValidatorService {
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
+            if (x === centerTilePosition && y === centerTilePosition) {
+                return true;
+            }
             if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
                 y++;
             } else {
                 x++;
             }
-            if (x === centerTilePosition && y === centerTilePosition) {
-                return true;
-            }
         }
         this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
         return false;
     }
-
-    // private oldValidatePlaceLetter(action: PlaceLetter): boolean {
-    //     const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
-    //     let hasCenterTile = this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
-
-    //     let hasNeighbour = false;
-
-    //     let x = action.placement.x;
-    //     let y = action.placement.y;
-    //     let lettersNeeded = '';
-    //     let nextPos = 0;
-
-    //     for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
-    //         if (nextPos >= BOARD_DIMENSION || nextPos >= BOARD_DIMENSION) {
-    //             this.sendErrorMessage(
-    //                 'Commande impossible à réaliser : Les lettres déboderont de la grille en ' + String.fromCharCode(y + 'A'.charCodeAt(0)) + ++x,
-    //             );
-    //             return false;
-    //         }
-
-    //         const currentTileChar = this.boardService.board.grid[y][x].letterObject.char.toLowerCase();
-    //         const wordCurrentChar = action.word.charAt(letterIndex);
-
-    //         if (currentTileChar === EMPTY_CHAR) {
-    //             lettersNeeded = lettersNeeded.concat(wordCurrentChar);
-    //         } else {
-    //             if (wordCurrentChar.toLowerCase() !== currentTileChar) {
-    //                 this.sendErrorMessage(
-    //                     `Commande impossible à réaliser : La lettre
-    //                     ${wordCurrentChar}
-    //                     ne peut être placé en
-    //                     ${String.fromCharCode(y + 'A'.charCodeAt(0))}
-    //                     ${++x}`,
-    //                 );
-    //                 return false;
-    //             }
-    //         }
-
-    //         if (!hasCenterTile) {
-    //             if (x === centerTilePosition && y === centerTilePosition) {
-    //                 hasCenterTile = true;
-    //                 hasNeighbour = true;
-    //             }
-    //         } else {
-    //             if (!hasNeighbour) {
-    //                 hasNeighbour = this.boardService.board.hasNeighbour(x, y);
-    //             }
-    //         }
-
-    //         nextPos = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical ? ++y : ++x;
-    //     }
-
-    //     if (!hasCenterTile) {
-    //         this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
-    //         return false;
-    //     }
-
-    //     if (!hasNeighbour) {
-    //         this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
-    //         return false;
-    //     }
-
-    //     if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
-    //         let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
-    //         if (this.hasAJoker(action.player.letterRack)) {
-    //             message = message.concat(
-    //                 ' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.',
-    //             );
-    //         }
-    //         this.sendErrorMessage(message);
-    //         return false;
-    //     }
-    //     return true;
-    // }
 
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
