@@ -155,7 +155,8 @@ export class Board {
         let listMultiplicator = multiplicators;
         if (randomBonus) {
             listMultiplicator = this.randomMultiplicators();
-            if (listMultiplicator === multiplicators) {
+            // While is called max two times, if board is the same.
+            while (listMultiplicator === multiplicators) {
                 listMultiplicator = this.randomMultiplicators();
             }
         }
