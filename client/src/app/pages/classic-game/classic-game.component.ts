@@ -65,11 +65,19 @@ export class ClassicGameComponent {
     openWaitingForPlayer() {
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
-        secondDialogConfig.disableClose = true;
+        // secondDialogConfig.disableClose = true;
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterClosed().subscribe((result) => {
             if (result) {
+                this.gameSettings = {
+                    playerName: this.gameSettings.playerName,
+                    botDifficulty: result,
+                    randomBonus: this.gameSettings.randomBonus,
+                    timePerTurn: this.gameSettings.timePerTurn,
+                };
                 console.log('ClassicComponentReceive', result);
+                console.log('ClassicComponentGameSettings', this.gameSettings);
+                // this.startSoloGame(this.gameSettigns);
                 // this.openSoloGameForm();
             }
         });

@@ -20,4 +20,7 @@ export class OnlineGameInitService {
             console.log('Nouvelle Partie MultiJoueurs');
         }
     }
+    receiveGameToken() {
+        return false;
+    }
 }

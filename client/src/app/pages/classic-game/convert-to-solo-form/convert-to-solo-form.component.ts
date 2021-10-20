@@ -18,6 +18,10 @@ export class ConvertToSoloFormComponent implements AfterContentChecked {
     ngAfterContentChecked() {
         this.cdref.detectChanges();
     }
+    cancel(): void {
+        this.dialogRef.close();
+        this.botDifficulty.reset();
+    }
     sendParameter(): void {
         this.dialogRef.close(this.botDifficulty);
     }
