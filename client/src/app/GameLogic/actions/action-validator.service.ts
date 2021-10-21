@@ -4,7 +4,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { BOARD_DIMENSION, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BOARD_DIMENSION, BOARD_MAX_POSITION, EMPTY_CHAR, JOKER_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -64,11 +64,7 @@ export class ActionValidatorService {
     }
 
     private validatePlaceLetter(action: PlaceLetter): boolean {
-        if (!this.validateBoardsLimits(action)) {
-            return false;
-        }
-
-        if (!this.validateLettersCanBePlaced(action)) {
+        if (!this.validatePlacementWithBoard(action)) {
             return false;
         }
 
@@ -78,6 +74,10 @@ export class ActionValidatorService {
             return this.validateOtherPlaceLetter(action);
         }
         return this.validateFirstPlaceLetter(action);
+    }
+
+    private validatePlacementWithBoard(action: PlaceLetter) {
+        return this.validateBoardsLimits(action) && this.validateLettersCanBePlaced(action);
     }
 
     private validateLettersCanBePlaced(action: PlaceLetter) {
@@ -132,7 +132,7 @@ export class ActionValidatorService {
             concernedAxisValue = action.placement.x;
         }
         const lastLetterPosition = concernedAxisValue + action.word.length;
-        const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION || lastLetterPosition < BOARD_MIN_POSITION;
+        const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION;
         if (doesLastPositionOverflow) {
             this.sendErrorMessage('Commande impossible à réaliser : Les lettres déboderont de la grille');
             return false;
