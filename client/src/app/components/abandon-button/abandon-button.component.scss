@@ -4,14 +4,13 @@
     justify-content: center;
 }
 #abandonGame-modal-footer {
-    flex-grow: 1;
     align-items: center;
+    flex-grow: 1;
     justify-content: space-between;
     align-items: baseline;
     flex-basis: 100%;
 }
 
-.abandonButton,
-.closeButton {
+.abandonDialog {
     margin: 10%;
 }

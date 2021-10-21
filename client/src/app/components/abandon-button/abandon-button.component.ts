@@ -14,7 +14,6 @@ export class AbandonButtonComponent implements OnInit {
 
     abandon() {
         this.gameManager.stopGame();
-        alert('Vous avez abandonnez la partie');
         this.router.navigate(['/home']);
         this.closeDialog();
     }
