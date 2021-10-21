@@ -57,7 +57,7 @@ export class CommandParserService {
         return undefined;
     }
 
-    placeLetterFormatter(args: string[]): string[] {
+    private placeLetterFormatter(args: string[]): string[] {
         if (args[0].length <= MAX_PLACE_LETTER_ARG_SIZE && args[0].length >= MIN_PLACE_LETTER_ARG_SIZE) {
             const row = args[0].charCodeAt(0);
             const col = this.colArgVerifier(args[0]);
@@ -74,7 +74,7 @@ export class CommandParserService {
         return args;
     }
 
-    placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
+    private placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             throw Error(this.errorSyntax + ': ligne hors champ');
         }
@@ -89,7 +89,7 @@ export class CommandParserService {
         }
     }
 
-    colArgVerifier(arg1: string): number {
+    private colArgVerifier(arg1: string): number {
         let col;
         if (this.isNumeric(arg1[1]) && this.isNumeric(arg1[2]) && arg1.length === MAX_PLACE_LETTER_ARG_SIZE) {
             col = Number(arg1[1] + arg1[2]);
@@ -101,7 +101,7 @@ export class CommandParserService {
         throw Error(this.errorSyntax + ': colonne invalide');
     }
 
-    exchangeLetterArgVerifier(word: string) {
+    private exchangeLetterArgVerifier(word: string) {
         if (INVALID_EXCHANGE_LETTER.test(word) || word === undefined) {
             throw Error('les paramètres sont invalides');
         }
