@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
@@ -7,10 +7,8 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
     templateUrl: './abandon-button.component.html',
     styleUrls: ['./abandon-button.component.scss'],
 })
-export class AbandonButtonComponent implements OnInit {
+export class AbandonButtonComponent {
     constructor(public dialogRef: MatDialogRef<AbandonButtonComponent>, private router: Router, private gameManager: GameManagerService) {}
-
-    ngOnInit() {}
 
     abandon() {
         this.gameManager.stopGame();

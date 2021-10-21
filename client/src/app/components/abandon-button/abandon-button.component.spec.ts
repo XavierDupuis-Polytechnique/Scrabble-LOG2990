@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { routes } from '@app/modules/app-routing.module';
 import { AbandonButtonComponent } from './abandon-button.component';
 
 describe('AbandonButtonComponent', () => {
@@ -24,7 +25,7 @@ describe('AbandonButtonComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             declarations: [AbandonButtonComponent],
-            imports: [RouterTestingModule, MatDialogModule],
+            imports: [RouterTestingModule.withRoutes(routes), MatDialogModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: MatDialogRef, useValue: mockDialogRef },
