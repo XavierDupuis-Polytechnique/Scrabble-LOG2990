@@ -6,8 +6,11 @@ import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { ENTER, ESCAPE } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 @Injectable({
     providedIn: 'root',
@@ -24,7 +27,13 @@ export class UIInputControllerService {
         return false;
     }
 
-    constructor(private avs: ActionValidatorService, private info: GameInfoService) {}
+    constructor(
+        private avs: ActionValidatorService,
+        private info: GameInfoService,
+        private pointCalculator: PointCalculatorService,
+        private wordSearcher: WordSearcher,
+        private boardService: BoardService,
+    ) {}
 
     receive(input: UIInput) {
         this.processInput(input);
@@ -50,7 +59,7 @@ export class UIInputControllerService {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
-                    this.activeAction = new UIPlace(this.info.user);
+                    this.activeAction = new UIPlace(this.info.user, this.pointCalculator, this.wordSearcher, this.boardService);
                     return true;
                 }
                 break;
@@ -116,6 +125,7 @@ export class UIInputControllerService {
             throw new Error('Action couldnt be created : requirements for creation are not met');
         }
         const newAction: Action = this.activeAction.create();
+        console.log(newAction);
         this.avs.sendAction(newAction);
         this.discardAction();
         this.activeComponent = InputComponent.Outside;

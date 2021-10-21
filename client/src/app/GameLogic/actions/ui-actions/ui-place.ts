@@ -3,12 +3,12 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { LetterPlacement } from '@app/GameLogic/actions/ui-actions/ui-place-interface';
+import { WordPlacement } from '@app/GameLogic/actions/ui-actions/word-placement.interface';
 import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { isStringALowerCaseLetter, isStringAnUpperCaseLetter } from '@app/GameLogic/utils';
-import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { convertToProperLetter, isStringALowerCaseLetter, isStringAnUpperCaseLetter } from '@app/GameLogic/utils';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 export class UIPlace implements UIAction {
@@ -17,13 +17,15 @@ export class UIPlace implements UIAction {
     direction = Direction.Horizontal;
     pointerPosition: { x: number; y: number } | null = null;
 
-    // TODO : NEXT LINE MUST BE A CONSTRUCTOR ATTRIBUTE
-    board = new BoardService();
-
-    constructor(private player: Player) {}
+    constructor(
+        private player: Player,
+        private pointCalculator: PointCalculatorService,
+        private wordSearcher: WordSearcher,
+        private boardService: BoardService,
+    ) {}
 
     get canBeCreated(): boolean {
-        throw new Error('Method not implemented.');
+        return this.orderedIndexes.length > 0;
     }
 
     receiveRightClick(): void {
@@ -36,11 +38,12 @@ export class UIPlace implements UIAction {
             return;
         }
         if (this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
-            if (clickPosition === this.pointerPosition) {
+            if (this.isSamePositionClicked(clickPosition)) {
                 this.toggleDirection();
                 return;
             }
             this.pointerPosition = clickPosition;
+            this.direction = Direction.Horizontal;
         }
     }
 
@@ -48,7 +51,7 @@ export class UIPlace implements UIAction {
         switch (key) {
             case BACKSPACE:
                 this.moveBackwards();
-                break;
+                return;
             default:
                 if (this.useLetter(key)) {
                     this.moveForwards();
@@ -61,15 +64,44 @@ export class UIPlace implements UIAction {
         throw new Error('UIExchange should not be able to receive a MouseRoll');
     }
 
-    // TODO : REFACTOR WITH PROPER BEHAVIOR AND ATTRIBUTES
     create(): Action {
+        const wordPlacement = this.getWordFromBoard();
         return new PlaceLetter(
             this.player,
-            '',
-            { direction: this.direction, x: 0, y: 0 },
-            new PointCalculatorService(new BoardService()),
-            new WordSearcher(new BoardService(), new DictionaryService()),
+            wordPlacement.word,
+            { direction: this.direction, x: wordPlacement.x, y: wordPlacement.y },
+            this.pointCalculator,
+            this.wordSearcher,
         );
+    }
+
+    private isSamePositionClicked(clickPosition: { x: number; y: number }) {
+        if (!this.pointerPosition) {
+            return false;
+        }
+        return clickPosition.x === this.pointerPosition.x && clickPosition.y === this.pointerPosition.y;
+    }
+
+    private getWordFromBoard(): WordPlacement {
+        const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
+        let x = lastLetterPlacement.x;
+        let y = lastLetterPlacement.y;
+        let currentTileChar;
+        let word = '';
+        let isThereALetter;
+        // TODO : retreive letters to the left and to the RIGHT
+        do {
+            currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
+            // TODO : MANAGE JOKER
+            word = currentTileChar.toLowerCase() + word;
+            if (this.direction === Direction.Vertical) {
+                y--;
+            } else {
+                x--;
+            }
+            isThereALetter = x >= BOARD_MIN_POSITION && y >= BOARD_MIN_POSITION && currentTileChar !== EMPTY_CHAR;
+        } while (isThereALetter);
+        return { word, x, y };
     }
 
     private useLetter(key: string): boolean {
@@ -83,7 +115,9 @@ export class UIPlace implements UIAction {
         const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
         this.concernedIndexes.add(possibleLetterIndex);
         this.orderedIndexes.push(newLetterPlacement);
-        // TODO : ADD LETTER VIUSALLY ON BOARD
+        // TODO : WHY [X][Y]
+        // const concernedTile = this.boardService.board.grid[this.pointerPosition.x][this.pointerPosition.y];
+        // concernedTile.letterObject.char = this.player.letterRack[possibleLetterIndex].char;
         return true;
     }
 
@@ -117,12 +151,12 @@ export class UIPlace implements UIAction {
     }
 
     private canUseLetter(key: string): number | null {
-        let letterToUse = key;
-        if (isStringAnUpperCaseLetter(letterToUse)) {
-            letterToUse = JOKER_CHAR;
+        let letter = convertToProperLetter(key);
+        if (isStringAnUpperCaseLetter(letter)) {
+            letter = JOKER_CHAR;
         }
-        if (isStringALowerCaseLetter(letterToUse) || letterToUse === JOKER_CHAR) {
-            return this.findUnusedLetterIndex(letterToUse);
+        if (isStringALowerCaseLetter(letter) || letter === JOKER_CHAR) {
+            return this.findUnusedLetterIndex(letter);
         }
         return null;
     }
@@ -130,7 +164,7 @@ export class UIPlace implements UIAction {
     private findUnusedLetterIndex(char: string): number | null {
         for (let index = 0; index < this.player.letterRack.length; index++) {
             const rackLetter = this.player.letterRack[index];
-            if (rackLetter.char === char && !this.concernedIndexes.has(index)) {
+            if (rackLetter.char.toLowerCase() === char && !this.concernedIndexes.has(index)) {
                 return index;
             }
         }
@@ -139,7 +173,7 @@ export class UIPlace implements UIAction {
 
     private canPlaceALetterHere(x: number, y: number): boolean {
         if (this.isInsideOfBoard(x, y)) {
-            return this.board.board.grid[y][x].letterObject.char === EMPTY_CHAR;
+            return this.boardService.board.grid[y][x].letterObject.char === EMPTY_CHAR;
         }
         return false;
     }
