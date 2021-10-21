@@ -2,16 +2,34 @@
 // import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { ASCII_CODE, BOARD_DIMENSION } from '@app/GameLogic/constants';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
+import { isCharUpperCase } from '@app/GameLogic/utils';
 import { Board, multiplicators, MultiType } from './board';
 
-describe('Board test', () => {
-    let board: Board;
-    const randomBonus = false;
-    const letterCreator = new LetterCreator();
+class MockLetterCreator extends LetterCreator {
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    static readonly gameLettersValue = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0];
+    indexRectifier = 'A'.charCodeAt(0);
 
-    beforeEach(() => {
-        board = new Board(randomBonus);
-    });
+    createLetter(char: string): Letter {
+        if (isCharUpperCase(char)) {
+            return {
+                char: char.toUpperCase(),
+                value: 0,
+            };
+        }
+        char = char.toUpperCase();
+        return {
+            char,
+            value: LetterCreator.gameLettersValue[char.charCodeAt(0) - this.indexRectifier],
+        };
+    }
+}
+describe('Board test', () => {
+    const randomBonus = false;
+    const letterCreator = new MockLetterCreator();
+    const board: Board = new Board(randomBonus);
+
     it('Board size', () => {
         expect(board.grid.length).toBe(BOARD_DIMENSION);
         board.grid.forEach((row) => {
