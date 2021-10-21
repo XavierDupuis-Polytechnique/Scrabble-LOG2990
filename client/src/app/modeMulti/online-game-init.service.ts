@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
 import { GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { Subject } from 'rxjs';
 import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 @Injectable({
     providedIn: 'root',
 })
 export class OnlineGameInitService {
-    socket: io.Socket;
-
+    pendingGameId$ = new Subject<string>();
+    private socket: io.Socket;
     // constructor() {}
 
     connect() {
         this.socket = io.connect(environment.serverSocketUrl, { path: '/newGame' });
+    }
+    disconnect() {
+        this.socket.disconnect();
     }
 
     createGameMulti(gameSettings: GameSettingsMultiUI) {
@@ -20,7 +24,10 @@ export class OnlineGameInitService {
             console.log('Nouvelle Partie MultiJoueurs');
         }
     }
-    receiveGameToken() {
-        return false;
+
+    waitForSecondPLayer() {
+        this.socket.on('pendingGameId', (pendingGameid: string) => {
+            this.pendingGameId$.next(pendingGameid);
+        });
     }
 }

@@ -7,7 +7,7 @@ import {
     MAX_TIME_PER_TURN,
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
-    STEP_TIME_PER_TURN,
+    STEP_TIME_PER_TURN
 } from '@app/GameLogic/constants';
 import { GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
 
@@ -47,6 +47,7 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
     ngAfterContentChecked() {
         this.cdref.detectChanges();
     }
+
     playGame(): void {
         this.dialogRef.close(this.onlineGameSettingsForm.value);
     }
@@ -62,9 +63,5 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
 
     get formValid() {
         return this.onlineGameSettingsForm.valid;
-    }
-
-    get settings() {
-        return this.onlineGameSettingsForm.value;
     }
 }

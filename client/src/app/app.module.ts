@@ -12,6 +12,7 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { ConvertToSoloFormComponent } from '@app/pages/classic-game/convert-to-solo-form/convert-to-solo-form.component';
 import { GameCardComponent } from '@app/pages/classic-game/game-card/game-card.component';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/pages/classic-game/pending-games/pending-games.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
@@ -57,6 +58,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         WaitingForPlayerComponent,
         ConvertToSoloFormComponent,
         GameCardComponent,
+        PendingGamesComponent,
     ],
     imports: [
         AppMaterialModule,

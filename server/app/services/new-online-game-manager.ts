@@ -7,6 +7,7 @@ const showPendingGames = 'showPendingGames';
 const createGame = 'createGame';
 const joinGame = 'joinGame';
 const gameJoined = 'gameJoined';
+const pendingGameId = 'pendingGameId';
 
 export class NewOnlineGameSocketHandler {
     private ioServer: Server;
@@ -25,10 +26,10 @@ export class NewOnlineGameSocketHandler {
             socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
                 if (this.isGameSettings(gameSetting)) {
                     const gameId = this.newOnlineGameService.createPendingGame(gameSetting);
+                    socket.emit(pendingGameId, gameId.toString());
                     socket.join(gameId.toString());
                     this.emitPendingGamesToAll();
-                }
-                // TODO: throw Error
+                } // TODO: throw Error
             });
 
             socket.on(joinGame, (id: number, name: string) => {

@@ -6,23 +6,22 @@ import { DebugElement } from '@angular/core';
 import { PendingGamesComponent } from './pending-games.component';
 
 describe('PendingGamesComponent', () => {
-  let component: PendingGamesComponent;
-  let fixture: ComponentFixture<PendingGamesComponent>;
+    let component: PendingGamesComponent;
+    let fixture: ComponentFixture<PendingGamesComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PendingGamesComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [PendingGamesComponent],
+        }).compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(PendingGamesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(PendingGamesComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -1,3 +1,7 @@
-<p>
-  pending-games works!
-</p>
+<mat-dialog-content #pendingGames>
+    <h3>Joindre une partie</h3>
+    <app-game-card></app-game-card>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-flat-button color="primary" mat-dialog-close (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

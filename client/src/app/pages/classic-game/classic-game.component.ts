@@ -6,6 +6,7 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/pages/classic-game/pending-games/pending-games.component';
 import { WaitingForPlayerComponent } from '@app/pages/classic-game/waiting-for-player/waiting-for-player.component';
 
 @Component({
@@ -22,6 +23,7 @@ export class ClassicGameComponent {
         private dialog: MatDialog,
         private socketHandler: OnlineGameInitService,
     ) {}
+
     openSoloGameForm() {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
@@ -29,13 +31,13 @@ export class ClassicGameComponent {
         dialogConfig.minWidth = 60;
 
         const dialogRef = this.dialog.open(NewSoloGameFormComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe((result) => {
-            try {
-                this.gameSettings = result;
-                this.startSoloGame();
-                // eslint-disable-next-line no-empty
-            } catch (e) {}
-            dialogRef.close();
+        dialogRef.afterClosed().subscribe((formSolo) => {
+            if (!formSolo) {
+                return;
+            }
+            this.gameSettings = formSolo;
+            this.startSoloGame();
+            // eslint-disable-next-line no-empty
         });
     }
 
@@ -43,43 +45,53 @@ export class ClassicGameComponent {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
         dialogConfig.disableClose = true;
-        dialogConfig.minWidth = 40;
+        dialogConfig.minWidth = 60;
 
         const dialogRef = this.dialog.open(NewOnlineGameFormComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe((result) => {
-            this.socketHandler.connect();
-            if (result) {
-                // TODO:Socket validator
-
-                this.gameSettings = result;
-                this.socketHandler.createGameMulti(result);
-                this.openWaitingForPlayer();
-                // this.startSoloGame();
+        dialogRef.afterClosed().subscribe((formOnline) => {
+            if (!formOnline) {
+                return;
             }
-            dialogRef.close();
+            // TODO:Socket validator
+            this.gameSettings = formOnline;
+            this.socketHandler.connect();
+            this.socketHandler.createGameMulti(formOnline);
+            this.socketHandler.waitForSecondPLayer();
+            this.openWaitingForPlayer();
         });
     }
     openWaitingForPlayer() {
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
         secondDialogConfig.disableClose = true;
+        // secondDialogConfig.minWidth = 60;
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
-        secondDialogRef.afterClosed().subscribe((result) => {
-            console.log(result);
-            if (result) {
-                this.gameSettings = {
-                    playerName: this.gameSettings.playerName,
-                    botDifficulty: result,
-                    randomBonus: this.gameSettings.randomBonus,
-                    timePerTurn: this.gameSettings.timePerTurn,
-                };
-                console.log('ClassicComponentGameSettings', this.gameSettings);
-                this.startSoloGame();
-            } else {
-                // result = vide
+        secondDialogRef.afterClosed().subscribe((botDifficulty) => {
+            console.log(botDifficulty);
+            if (!botDifficulty) {
+                // botDifficulty = vide
+                return;
             }
+            this.socketHandler.disconnect();
+            this.gameSettings = {
+                playerName: this.gameSettings.playerName,
+                botDifficulty,
+                randomBonus: this.gameSettings.randomBonus,
+                timePerTurn: this.gameSettings.timePerTurn,
+            };
+            console.log('ClassicComponentGameSettings', this.gameSettings);
+            this.startSoloGame();
         });
     }
+
+    openPendingGames() {
+        const pendingGamesDialogConfig = new MatDialogConfig();
+        pendingGamesDialogConfig.autoFocus = true;
+        pendingGamesDialogConfig.disableClose = true;
+        pendingGamesDialogConfig.minWidth = 750;
+        this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
+    }
+
     startSoloGame() {
         this.gameManager.createGame(this.gameSettings);
         this.router.navigate(['/game']);
