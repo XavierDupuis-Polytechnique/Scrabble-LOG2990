@@ -10,7 +10,6 @@ import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ConvertToSoloFormComponent } from '@app/pages/classic-game/convert-to-solo-form/convert-to-solo-form.component';
-import { GameCardComponent } from '@app/pages/classic-game/game-card/game-card.component';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/pending-games/pending-games.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -57,7 +56,6 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         BoldPipe,
         WaitingForPlayerComponent,
         ConvertToSoloFormComponent,
-        GameCardComponent,
         PendingGamesComponent,
     ],
     imports: [
