@@ -12,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class PendingGamesComponent implements AfterContentChecked, OnInit {
     columnsToDisplay = ['id', 'playerName', 'randomBonus', 'timePerTurn'];
+    selectedRow: GameSettingsMulti;
     dataSource = new MatTableDataSource<GameSettingsMulti>();
     columns = [
         {
@@ -58,6 +59,13 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
 
     cancel(): void {
         this.dialogRef.close();
+    }
+
+    setSelectedRow(row: GameSettingsMulti) {
+        this.selectedRow = row;
+    }
+    isSelectedRow(row: GameSettingsMulti) {
+        return row === this.selectedRow;
     }
     get pendingGames$(): BehaviorSubject<GameSettingsMulti[]> {
         return this.onlineSocketHandler.pendingGames$;

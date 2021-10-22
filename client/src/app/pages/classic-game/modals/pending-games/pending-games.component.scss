@@ -1,0 +1,24 @@
+table {
+    width: 100%;
+    height: 45;
+}
+
+.mat-row .mat-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+    border-color: currentColor;
+    background-color: white;
+    color: black;
+}
+
+.row-is-clicked {
+    // font-weight: bold;
+    background-color: white;
+    .mat-cell {
+        color: black;
+    }
+}

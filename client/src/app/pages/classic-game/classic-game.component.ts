@@ -5,9 +5,9 @@ import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
-import { NewOnlineGameFormComponent } from '@app/pages/classic-game/new-online-game-form/new-online-game-form.component';
-import { PendingGamesComponent } from '@app/pages/classic-game/pending-games/pending-games.component';
-import { WaitingForPlayerComponent } from '@app/pages/classic-game/waiting-for-player/waiting-for-player.component';
+import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
+import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
 
 @Component({
     selector: 'app-classic-game',

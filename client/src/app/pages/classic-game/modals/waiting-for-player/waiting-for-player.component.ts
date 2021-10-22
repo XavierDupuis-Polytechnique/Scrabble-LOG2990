@@ -1,7 +1,7 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
-import { ConvertToSoloFormComponent } from '@app/pages/classic-game/convert-to-solo-form/convert-to-solo-form.component';
+import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { Observable } from 'rxjs';
 const SPINNER_WIDTH_STROKE = 7;
 const SPINNER_DIAMETER = 40;
