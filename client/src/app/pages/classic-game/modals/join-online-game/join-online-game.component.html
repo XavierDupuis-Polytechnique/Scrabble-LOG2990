@@ -1,7 +1,7 @@
 <h2>Configuration partie multijoueurs</h2>
 <div mat-dialog-content>
     <mat-form-field appearance="fill">
-        <input matInput autocomplete="off" placeholder="Nom de joueur" formControlName="playerName" />
+        <input matInput autocomplete="off" placeholder="Nom de joueur" [formControl]="playerName" />
         <mat-hint>Le nom est différent du joueur 1. Min 3 charactères Max 50 charactères</mat-hint>
     </mat-form-field>
 </div>

@@ -79,6 +79,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.autoFocus = true;
         dialogConfig.disableClose = true;
+        dialogConfig.data = this.selectedRow;
         // dialogConfig.minWidth = 350;
         // dialogConfig.minHeight = 300;
         this.dialog.open(JoinOnlineGameComponent, dialogConfig);
