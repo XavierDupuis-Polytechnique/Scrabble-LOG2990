@@ -4,3 +4,6 @@ export interface GameSettingsMultiUI {
     opponentName?: string;
     randomBonus: boolean;
 }
+export interface GameSettingsMulti extends GameSettingsMultiUI {
+    id: string;
+}

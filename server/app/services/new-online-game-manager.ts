@@ -3,7 +3,7 @@ import { NewOnlineGameService } from '@app/game-manager/new-online-game.service'
 import * as http from 'http';
 import { Server } from 'socket.io';
 
-const showPendingGames = 'showPendingGames';
+const pendingGames = 'pendingGames';
 const createGame = 'createGame';
 const joinGame = 'joinGame';
 const gameJoined = 'gameJoined';
@@ -21,7 +21,7 @@ export class NewOnlineGameSocketHandler {
 
     newGameHandler(): void {
         this.ioServer.on('connection', (socket) => {
-            socket.emit(showPendingGames, this.newOnlineGameService.getPendingGames());
+            socket.emit(pendingGames, this.newOnlineGameService.getPendingGames());
 
             socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
                 if (this.isGameSettings(gameSetting)) {
@@ -51,7 +51,7 @@ export class NewOnlineGameSocketHandler {
     }
 
     private emitPendingGamesToAll() {
-        this.ioServer.sockets.emit(showPendingGames, this.newOnlineGameService.getPendingGames());
+        this.ioServer.sockets.emit(pendingGames, this.newOnlineGameService.getPendingGames());
     }
     // TODO mettre dans un fichier UTIls
     private isGameSettings(obj: unknown): obj is GameSettingsMultiUI {

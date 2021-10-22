@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
-import { Subject } from 'rxjs';
+import { GameSettingsMulti, GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { BehaviorSubject, Subject } from 'rxjs';
 import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 @Injectable({
@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
+    pendingGames$ = new BehaviorSubject<GameSettingsMulti[]>([]);
     private socket: io.Socket;
     // constructor() {}
 
@@ -28,6 +29,12 @@ export class OnlineGameInitService {
     waitForSecondPLayer() {
         this.socket.on('pendingGameId', (pendingGameid: string) => {
             this.pendingGameId$.next(pendingGameid);
+        });
+    }
+
+    listenForPendingGames() {
+        this.socket.on('pendingGames', (pendingGames: GameSettingsMulti[]) => {
+            this.pendingGames$.next(pendingGames);
         });
     }
 }

@@ -27,7 +27,7 @@ import { MatSliderModule } from '@angular/material/slider';
 // import { MatSnackBarModule } from '@angular/material/snack-bar';
 // import { MatSortModule } from '@angular/material/sort';
 import { MatStepperModule } from '@angular/material/stepper';
-// import { MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 // import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -62,7 +62,7 @@ const modules = [
     // MatSnackBarModule,
     // MatSortModule,
     MatStepperModule,
-    // MatTableModule,
+    MatTableModule,
     // MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
