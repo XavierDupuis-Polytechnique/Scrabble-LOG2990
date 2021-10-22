@@ -1,8 +1,10 @@
+import { DatePipe } from '@angular/common';
 import { AfterContentChecked, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { GameSettingsMulti } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
+import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -12,37 +14,41 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class PendingGamesComponent implements AfterContentChecked, OnInit {
     columnsToDisplay = ['id', 'playerName', 'randomBonus', 'timePerTurn'];
-    selectedRow: GameSettingsMulti;
+    selectedRow: GameSettingsMulti | undefined;
     dataSource = new MatTableDataSource<GameSettingsMulti>();
-    columns = [
-        {
-            columnDef: 'id',
-            header: 'Id',
-            cell: (form: GameSettingsMulti) => `${form.id}`,
-        },
-        {
-            columnDef: 'playerName',
-            header: 'Joueur 1',
-            cell: (form: GameSettingsMulti) => `${form.playerName}`,
-        },
-        {
-            columnDef: 'randomBonus',
-            header: 'Bonus Aléatoire',
-            cell: (form: GameSettingsMulti) => `${form.randomBonus}`,
-        },
-        {
-            columnDef: 'timePerTurn',
-            header: 'Temps par tour',
-            cell: (form: GameSettingsMulti) => `${form.timePerTurn}`,
-        },
-    ];
+    columns: { columnDef: string; header: string; cell: (form: GameSettingsMulti) => string }[];
+    datePipe = new DatePipe('en_US');
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: GameSettingsMulti,
         private dialogRef: MatDialogRef<PendingGamesComponent>,
+        private dialog: MatDialog,
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: OnlineGameInitService,
-    ) {}
+    ) {
+        this.columns = [
+            {
+                columnDef: 'id',
+                header: 'Id',
+                cell: (form: GameSettingsMulti) => `${form.id}`,
+            },
+            {
+                columnDef: 'playerName',
+                header: 'Joueur 1',
+                cell: (form: GameSettingsMulti) => `${form.playerName}`,
+            },
+            {
+                columnDef: 'randomBonus',
+                header: 'Bonus Aléatoire',
+                cell: (form: GameSettingsMulti) => `${form.randomBonus}`,
+            },
+            {
+                columnDef: 'timePerTurn',
+                header: 'Temps par tour',
+                cell: (form: GameSettingsMulti) => `${this.datePipe.transform(form.timePerTurn, 'm:ss')} `,
+            },
+        ];
+    }
 
     ngOnInit() {
         this.pendingGames$.subscribe((gameSettings) => {
@@ -62,11 +68,26 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
     }
 
     setSelectedRow(row: GameSettingsMulti) {
-        this.selectedRow = row;
+        if (this.selectedRow === row) {
+            this.selectedRow = undefined;
+        } else {
+            this.selectedRow = row;
+        }
     }
+
+    joinGame() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.autoFocus = true;
+        dialogConfig.disableClose = true;
+        // dialogConfig.minWidth = 350;
+        // dialogConfig.minHeight = 300;
+        this.dialog.open(JoinOnlineGameComponent, dialogConfig);
+    }
+
     isSelectedRow(row: GameSettingsMulti) {
         return row === this.selectedRow;
     }
+
     get pendingGames$(): BehaviorSubject<GameSettingsMulti[]> {
         return this.onlineSocketHandler.pendingGames$;
     }

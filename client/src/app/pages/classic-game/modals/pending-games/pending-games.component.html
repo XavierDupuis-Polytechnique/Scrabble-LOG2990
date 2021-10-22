@@ -11,14 +11,10 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-        <tr
-            mat-row
-            (click)="setSelectedRow(row)"
-            [class.row-is-clicked]="isSelectedRow(row)"
-            *matRowDef="let row; columns: columnsToDisplay"
-        ></tr>
+        <tr mat-row (click)="setSelectedRow(row)" [class.row-is-clicked]="isSelectedRow(row)" *matRowDef="let row; columns: columnsToDisplay"></tr>
     </table>
 </mat-dialog-content>
 <mat-dialog-actions>
     <button mat-flat-button color="primary" mat-dialog-close (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" [disabled]="selectedRow === undefined" (click)="joinGame()">Rejoindre la partie</button>
 </mat-dialog-actions>

@@ -10,6 +10,7 @@ import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
+import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -57,6 +58,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         WaitingForPlayerComponent,
         ConvertToSoloFormComponent,
         PendingGamesComponent,
+        JoinOnlineGameComponent,
     ],
     imports: [
         AppMaterialModule,
