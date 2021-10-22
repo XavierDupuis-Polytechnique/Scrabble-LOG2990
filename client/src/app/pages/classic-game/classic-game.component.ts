@@ -67,7 +67,6 @@ export class ClassicGameComponent {
         // secondDialogConfig.minWidth = 60;
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
-            console.log(botDifficulty);
             if (!botDifficulty) {
                 // botDifficulty = vide
                 return;

@@ -4,7 +4,7 @@ import { Service } from 'typedi';
 
 @Service()
 export class NewOnlineGameService {
-    pendingGames: Map<number, GameSettingsMultiUI> = new Map<number, GameSettingsMultiUI>();
+    pendingGames: Map<string, GameSettingsMultiUI> = new Map<string, GameSettingsMultiUI>();
     constructor(private gameMaster: GameMaster) {}
 
     getPendingGames(): GameSettingsMulti[] {
@@ -14,13 +14,13 @@ export class NewOnlineGameService {
         });
         return games;
     }
-    createPendingGame(gameSetting: GameSettingsMultiUI): number {
+    createPendingGame(gameSetting: GameSettingsMultiUI): string {
         const gameId = this.generateId();
         this.pendingGames.set(gameId, gameSetting);
         return gameId;
     }
 
-    joinPendingGame(id: number, name: string): number | undefined {
+    joinPendingGame(id: string, name: string): string | undefined {
         if (!this.isPendingGame(id)) {
             return undefined;
         }
@@ -38,11 +38,11 @@ export class NewOnlineGameService {
         return id;
     }
 
-    isPendingGame(id: number): boolean {
+    isPendingGame(id: string): boolean {
         return this.pendingGames.has(id);
     }
 
-    private deletePendingGame(id: number) {
+    deletePendingGame(id: string) {
         this.pendingGames.delete(id);
     }
 
@@ -51,15 +51,17 @@ export class NewOnlineGameService {
         this.gameMaster.createGame(gameToken, gameSettings);
     }
 
-    private generateId(): number {
+    private generateId(): string {
         const toChange = 100;
         const id = Math.floor(Math.random() * toChange);
-        return id;
+        return id.toString();
     }
+
     private generateGameToken(gameSetting: GameSettingsMulti): string {
-        return gameSetting.id.toString();
+        return gameSetting.id;
     }
-    private toGameSettingsMulti(id: number, settings: GameSettingsMultiUI): GameSettingsMulti {
+
+    private toGameSettingsMulti(id: string, settings: GameSettingsMultiUI): GameSettingsMulti {
         const gameSettings = settings as GameSettingsMulti;
         gameSettings.id = id;
         return gameSettings;

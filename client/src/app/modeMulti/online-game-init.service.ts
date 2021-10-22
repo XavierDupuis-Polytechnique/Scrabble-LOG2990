@@ -22,7 +22,6 @@ export class OnlineGameInitService {
     createGameMulti(gameSettings: GameSettingsMultiUI) {
         if (gameSettings.playerName !== undefined && gameSettings.randomBonus !== undefined && gameSettings.timePerTurn !== undefined) {
             this.socket.emit('createGame', gameSettings);
-            console.log('Nouvelle Partie MultiJoueurs');
         }
     }
 

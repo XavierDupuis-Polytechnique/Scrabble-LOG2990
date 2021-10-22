@@ -6,5 +6,5 @@ export interface GameSettingsMultiUI {
 }
 
 export interface GameSettingsMulti extends GameSettingsMultiUI {
-    id: number; // TODO change to string
+    id: string; // TODO change to string
 }

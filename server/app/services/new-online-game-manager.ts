@@ -21,27 +21,37 @@ export class NewOnlineGameSocketHandler {
 
     newGameHandler(): void {
         this.ioServer.on('connection', (socket) => {
+            let gameId: string;
             socket.emit(pendingGames, this.newOnlineGameService.getPendingGames());
 
             socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
                 if (this.isGameSettings(gameSetting)) {
-                    const gameId = this.newOnlineGameService.createPendingGame(gameSetting);
-                    socket.emit(pendingGameId, gameId.toString());
-                    socket.join(gameId.toString());
+                    gameId = this.newOnlineGameService.createPendingGame(gameSetting);
+                    socket.emit(pendingGameId, gameId);
+                    socket.join(gameId);
                     this.emitPendingGamesToAll();
                 } // TODO: throw Error
             });
 
-            socket.on(joinGame, (id: number, name: string) => {
-                if (typeof id === 'number' && typeof name === 'string') {
+            socket.on(joinGame, (id: string, name: string) => {
+                if (typeof id === 'string' && typeof name === 'string') {
                     const gameToken = this.newOnlineGameService.joinPendingGame(id, name);
                     if (gameToken !== undefined) {
-                        const gameId = id.toString();
+                        gameId = id;
                         socket.join(gameId);
-                        this.sendGameToken(gameId, gameToken.toString());
+                        this.sendGameToken(gameId, gameToken);
                         this.emitPendingGamesToAll();
                     }
                 }
+            });
+
+            socket.on('disconnect', () => {
+                console.log('disconnected');
+                if (gameId === undefined) {
+                    return;
+                }
+                this.newOnlineGameService.deletePendingGame(gameId);
+                this.emitPendingGamesToAll();
             });
         });
     }
