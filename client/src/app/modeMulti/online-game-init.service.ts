@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<GameSettingsMulti[]>([]);
+    gameToken$ = new Subject<string>();
     private socket: io.Socket;
     // constructor() {}
 
@@ -25,10 +26,19 @@ export class OnlineGameInitService {
         }
     }
 
-    waitForSecondPLayer() {
+    waitForSecondPlayer() {
         this.socket.on('pendingGameId', (pendingGameid: string) => {
             this.pendingGameId$.next(pendingGameid);
         });
+
+        this.socket.on('gameJoined', (gameToken: string) => {
+            this.gameToken$.next(gameToken);
+            console.log(this.gameToken$);
+        });
+    }
+
+    joinPendingGame(id: string, playerName: string) {
+        this.socket.emit('joinGame', id, playerName);
     }
 
     listenForPendingGames() {

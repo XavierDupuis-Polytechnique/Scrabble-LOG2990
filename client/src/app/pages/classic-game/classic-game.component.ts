@@ -37,7 +37,6 @@ export class ClassicGameComponent {
             }
             this.gameSettings = formSolo;
             this.startSoloGame();
-            // eslint-disable-next-line no-empty
         });
     }
 
@@ -56,7 +55,7 @@ export class ClassicGameComponent {
             this.gameSettings = formOnline;
             this.socketHandler.connect();
             this.socketHandler.createGameMulti(formOnline);
-            this.socketHandler.waitForSecondPLayer();
+            this.socketHandler.waitForSecondPlayer();
             this.openWaitingForPlayer();
         });
     }
@@ -64,22 +63,19 @@ export class ClassicGameComponent {
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
         secondDialogConfig.disableClose = true;
-        // secondDialogConfig.minWidth = 60;
+
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
-            if (!botDifficulty) {
-                // botDifficulty = vide
-                return;
+            if (botDifficulty) {
+                this.socketHandler.disconnect();
+                this.gameSettings = {
+                    playerName: this.gameSettings.playerName,
+                    botDifficulty,
+                    randomBonus: this.gameSettings.randomBonus,
+                    timePerTurn: this.gameSettings.timePerTurn,
+                };
+                this.startSoloGame();
             }
-            this.socketHandler.disconnect();
-            this.gameSettings = {
-                playerName: this.gameSettings.playerName,
-                botDifficulty,
-                randomBonus: this.gameSettings.randomBonus,
-                timePerTurn: this.gameSettings.timePerTurn,
-            };
-            console.log('ClassicComponentGameSettings', this.gameSettings);
-            this.startSoloGame();
         });
     }
 
@@ -87,7 +83,7 @@ export class ClassicGameComponent {
         const pendingGamesDialogConfig = new MatDialogConfig();
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
-        pendingGamesDialogConfig.minWidth = 750;
+        pendingGamesDialogConfig.minWidth = 550;
         this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
     }
 

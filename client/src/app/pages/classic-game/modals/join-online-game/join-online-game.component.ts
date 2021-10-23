@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, ValidatorFn, Validators } from '@angular/
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '@app/GameLogic/constants';
 import { GameSettingsMulti } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 @Component({
     selector: 'app-join-online-game',
@@ -16,6 +17,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         @Inject(MAT_DIALOG_DATA) public data: GameSettingsMulti,
         private dialogRef: MatDialogRef<JoinOnlineGameComponent>,
         private cdref: ChangeDetectorRef,
+        private onlineSocketHandler: OnlineGameInitService,
     ) {}
     ngOnInit() {
         this.playerName = this.data.playerName;
@@ -39,6 +41,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
 
     sendParameter(): void {
         this.dialogRef.close(this.oppName.value);
+        this.onlineSocketHandler.joinPendingGame(this.data.id, this.oppName.value);
     }
 
     get valid() {
@@ -47,6 +50,6 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
 
     forbiddenNameValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: unknown } | null =>
-            control.value?.toLowerCase() !== this.playerName ? null : { forbidden: control.value };
+            control.value !== this.playerName ? null : { forbidden: control.value };
     }
 }

@@ -39,8 +39,6 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
                 this.botDifficulty = result;
                 this.isSoloStarted = true;
                 this.dialogRef.close(this.botDifficulty);
-            } else {
-                console.log('Waiting for second player');
             }
         });
     }

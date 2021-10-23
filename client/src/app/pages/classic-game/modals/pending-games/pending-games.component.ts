@@ -56,7 +56,6 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
     ngOnInit() {
         this.pendingGames$.subscribe((gameSettings) => {
             this.dataSource.data = gameSettings;
-            console.log(gameSettings);
         });
         this.onlineSocketHandler.connect(); // TODO change in socketHandler
         this.onlineSocketHandler.listenForPendingGames();
@@ -82,16 +81,15 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
     }
 
     joinGame() {
-        const joinpendingGameRef = new MatDialogConfig();
-        joinpendingGameRef.autoFocus = true;
-        joinpendingGameRef.disableClose = true;
-        joinpendingGameRef.data = this.selectedRow;
-        const joinpendingGame = this.dialog.open(JoinOnlineGameComponent, joinpendingGameRef);
-        joinpendingGame.afterClosed().subscribe((playerName) => {
-            if (!playerName) {
-                return;
+        const joinPendingGameRef = new MatDialogConfig();
+        joinPendingGameRef.autoFocus = true;
+        joinPendingGameRef.disableClose = true;
+        joinPendingGameRef.data = this.selectedRow;
+        const joinPendingGame = this.dialog.open(JoinOnlineGameComponent, joinPendingGameRef);
+        joinPendingGame.beforeClosed().subscribe((name) => {
+            if (name) {
+                this.dialog.closeAll();
             }
-            console.log(playerName);
         });
     }
 

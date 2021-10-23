@@ -21,6 +21,7 @@ export class NewOnlineGameSocketHandler {
 
     newGameHandler(): void {
         this.ioServer.on('connection', (socket) => {
+            console.log('Connected: ', socket.id);
             let gameId: string;
             socket.emit(pendingGames, this.newOnlineGameService.getPendingGames());
 
@@ -30,10 +31,12 @@ export class NewOnlineGameSocketHandler {
                     socket.emit(pendingGameId, gameId);
                     socket.join(gameId);
                     this.emitPendingGamesToAll();
+                    console.log(gameSetting.playerName, 'created a new game (id:', gameId, ')');
                 } // TODO: throw Error
             });
 
             socket.on(joinGame, (id: string, name: string) => {
+                console.log(name, 'joined game', id);
                 if (typeof id === 'string' && typeof name === 'string') {
                     const gameToken = this.newOnlineGameService.joinPendingGame(id, name);
                     if (gameToken !== undefined) {
@@ -46,7 +49,7 @@ export class NewOnlineGameSocketHandler {
             });
 
             socket.on('disconnect', () => {
-                console.log('disconnected');
+                console.log('Disconnected: ', socket.id);
                 if (gameId === undefined) {
                     return;
                 }
@@ -57,7 +60,7 @@ export class NewOnlineGameSocketHandler {
     }
 
     private sendGameToken(gameId: string, gameToken: string) {
-        this.ioServer.to(gameId).emit(gameJoined, gameToken);
+        this.ioServer.sockets.to(gameId).emit(gameJoined, gameToken);
     }
 
     private emitPendingGamesToAll() {
