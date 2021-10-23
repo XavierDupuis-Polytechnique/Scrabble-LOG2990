@@ -1,11 +1,25 @@
 <h2>Configuration partie multijoueurs</h2>
-<div mat-dialog-content>
-    <mat-form-field appearance="fill">
-        <input matInput autocomplete="off" placeholder="Nom de joueur" [formControl]="playerName" />
-        <mat-hint>Le nom est différent du joueur 1. Min 3 charactères Max 50 charactères</mat-hint>
+<mat-dialog-content>
+    <mat-form-field>
+        <input matInput autocomplete="off" placeholder="Nom de joueur" [formControl]="oppName" />
+        <mat-hint>Nom différent de l'adversaire. Min 3, Max 50 charactères</mat-hint>
     </mat-form-field>
-</div>
-<div mat-dialog-actions>
-    <button mat-flat-button color="primary" (click)="cancel()">Cancel</button>
-    <button mat-flat-button color="primary" [disabled]="!valid" (click)="sendParameter()">Commencer la partie</button>
-</div>
+
+    <mat-form-field>
+        <mat-label>Adversaire</mat-label>
+        <input matInput [disabled]="true" [value]="data.playerName" />
+    </mat-form-field>
+    <br />
+    <br />
+    <mat-checkbox [disabled]="true" [checked]="data.randomBonus">Bonus aléatoire</mat-checkbox>
+    <br />
+    <br />
+    <mat-label>Temps par tour </mat-label>
+    <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
+    <mat-slider #timer [disabled]="true" [value]="data.timePerTurn"></mat-slider><br />
+</mat-dialog-content>
+<br />
+<mat-dialog-actions>
+    <button mat-button [mat-dialog-close] (click)="cancel()">Annuler</button>
+    <button mat-button color="primary" [disabled]="!valid" (click)="sendParameter()">Commencer la partie</button>
+</mat-dialog-actions>

@@ -8,6 +8,6 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-flat-button color="primary" mat-dialog-close (click)="cancel()">Cancel</button>
-    <button mat-flat-button color="primary" (click)="convertToModeSolo()">Convertir en mode solo</button>
+    <button mat-button color="primary" [mat-dialog-close] (click)="cancel()">Cancel</button>
+    <button mat-button color="primary" (click)="convertToModeSolo()">Convertir en mode solo</button>
 </mat-dialog-actions>

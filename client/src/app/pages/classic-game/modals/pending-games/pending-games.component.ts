@@ -1,6 +1,8 @@
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { DatePipe } from '@angular/common';
-import { AfterContentChecked, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { GameSettingsMulti } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
@@ -12,19 +14,20 @@ import { BehaviorSubject } from 'rxjs';
     templateUrl: './pending-games.component.html',
     styleUrls: ['./pending-games.component.scss'],
 })
-export class PendingGamesComponent implements AfterContentChecked, OnInit {
+export class PendingGamesComponent implements AfterContentChecked, OnInit, AfterViewInit {
+    @ViewChild(MatSort) tableSort: MatSort;
     columnsToDisplay = ['id', 'playerName', 'randomBonus', 'timePerTurn'];
     selectedRow: GameSettingsMulti | undefined;
     dataSource = new MatTableDataSource<GameSettingsMulti>();
     columns: { columnDef: string; header: string; cell: (form: GameSettingsMulti) => string }[];
     datePipe = new DatePipe('en_US');
-
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: GameSettingsMulti,
         private dialogRef: MatDialogRef<PendingGamesComponent>,
         private dialog: MatDialog,
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: OnlineGameInitService,
+        private liveAnnouncer: LiveAnnouncer,
     ) {
         this.columns = [
             {
@@ -40,7 +43,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
             {
                 columnDef: 'randomBonus',
                 header: 'Bonus Aléatoire',
-                cell: (form: GameSettingsMulti) => `${form.randomBonus}`,
+                cell: (form: GameSettingsMulti) => (form.randomBonus === true ? 'activé' : 'désactivé'),
             },
             {
                 columnDef: 'timePerTurn',
@@ -57,6 +60,9 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
         });
         this.onlineSocketHandler.connect(); // TODO change in socketHandler
         this.onlineSocketHandler.listenForPendingGames();
+    }
+    ngAfterViewInit() {
+        this.dataSource.sort = this.tableSort;
     }
 
     ngAfterContentChecked() {
@@ -76,13 +82,17 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
     }
 
     joinGame() {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.autoFocus = true;
-        dialogConfig.disableClose = true;
-        dialogConfig.data = this.selectedRow;
-        // dialogConfig.minWidth = 350;
-        // dialogConfig.minHeight = 300;
-        this.dialog.open(JoinOnlineGameComponent, dialogConfig);
+        const joinpendingGameRef = new MatDialogConfig();
+        joinpendingGameRef.autoFocus = true;
+        joinpendingGameRef.disableClose = true;
+        joinpendingGameRef.data = this.selectedRow;
+        const joinpendingGame = this.dialog.open(JoinOnlineGameComponent, joinpendingGameRef);
+        joinpendingGame.afterClosed().subscribe((playerName) => {
+            if (!playerName) {
+                return;
+            }
+            console.log(playerName);
+        });
     }
 
     isSelectedRow(row: GameSettingsMulti) {
@@ -91,5 +101,13 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit {
 
     get pendingGames$(): BehaviorSubject<GameSettingsMulti[]> {
         return this.onlineSocketHandler.pendingGames$;
+    }
+
+    announceSortChange(sortState: Sort) {
+        if (sortState.direction) {
+            this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+        } else {
+            this.liveAnnouncer.announce('Sorting cleared');
+        }
     }
 }
