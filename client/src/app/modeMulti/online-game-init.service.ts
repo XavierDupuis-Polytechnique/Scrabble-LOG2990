@@ -15,12 +15,19 @@ export class OnlineGameInitService {
 
     connect() {
         this.socket = io.connect(environment.serverSocketUrl, { path: '/newGame' });
+        if (this.socket.connected === undefined) {
+            throw Error("Can't connect to server");
+        }
     }
+
     disconnect() {
         this.socket.disconnect();
     }
 
     createGameMulti(gameSettings: GameSettingsMultiUI) {
+        if (!this.socket.connected) {
+            this.connect();
+        }
         if (gameSettings.playerName !== undefined && gameSettings.randomBonus !== undefined && gameSettings.timePerTurn !== undefined) {
             this.socket.emit('createGame', gameSettings);
         }
@@ -42,6 +49,9 @@ export class OnlineGameInitService {
     }
 
     listenForPendingGames() {
+        if (this.socket.connected === undefined) {
+            this.connect();
+        }
         this.socket.on('pendingGames', (pendingGames: GameSettingsMulti[]) => {
             this.pendingGames$.next(pendingGames);
         });

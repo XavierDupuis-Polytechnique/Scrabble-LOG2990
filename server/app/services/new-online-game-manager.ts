@@ -23,6 +23,7 @@ export class NewOnlineGameSocketHandler {
         this.ioServer.on('connection', (socket) => {
             console.log('Connected: ', socket.id);
             let gameId: string;
+            // socket.sendBuffer = [];
             socket.emit(pendingGames, this.newOnlineGameService.getPendingGames());
 
             socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {

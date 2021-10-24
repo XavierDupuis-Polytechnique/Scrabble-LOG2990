@@ -57,7 +57,6 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         this.pendingGames$.subscribe((gameSettings) => {
             this.dataSource.data = gameSettings;
         });
-        this.onlineSocketHandler.connect(); // TODO change in socketHandler
         this.onlineSocketHandler.listenForPendingGames();
     }
     ngAfterViewInit() {
