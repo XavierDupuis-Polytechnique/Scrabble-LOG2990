@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GameSettingsMulti, GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
 import * as io from 'socket.io-client';
 import { environment } from 'src/environments/environment';
@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
-    pendingGames$ = new BehaviorSubject<GameSettingsMulti[]>([]);
+    pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     gameToken$ = new Subject<string>();
     private socket: io.Socket;
     // constructor() {}
@@ -24,7 +24,7 @@ export class OnlineGameInitService {
         this.socket.disconnect();
     }
 
-    createGameMulti(gameSettings: GameSettingsMultiUI) {
+    createGameMulti(gameSettings: OnlineGameSettingsUI) {
         if (!this.socket.connected) {
             this.connect();
         }
@@ -52,7 +52,7 @@ export class OnlineGameInitService {
         if (this.socket.connected === undefined) {
             this.connect();
         }
-        this.socket.on('pendingGames', (pendingGames: GameSettingsMulti[]) => {
+        this.socket.on('pendingGames', (pendingGames: OnlineGameSettings[]) => {
             this.pendingGames$.next(pendingGames);
         });
     }

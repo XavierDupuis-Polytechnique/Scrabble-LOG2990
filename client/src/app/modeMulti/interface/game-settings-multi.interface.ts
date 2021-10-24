@@ -1,9 +1,9 @@
-export interface GameSettingsMultiUI {
+export interface OnlineGameSettingsUI {
     timePerTurn: number;
     playerName: string;
     opponentName?: string;
     randomBonus: boolean;
 }
-export interface GameSettingsMulti extends GameSettingsMultiUI {
+export interface OnlineGameSettings extends OnlineGameSettingsUI {
     id: string;
 }

@@ -2,7 +2,7 @@ import { AfterContentChecked, ChangeDetectorRef, Component, Inject, OnInit } fro
 import { AbstractControl, FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '@app/GameLogic/constants';
-import { GameSettingsMulti } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 @Component({
@@ -14,7 +14,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
     playerName: string;
     oppName: FormControl;
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: GameSettingsMulti,
+        @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettings,
         private dialogRef: MatDialogRef<JoinOnlineGameComponent>,
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: OnlineGameInitService,

@@ -1,4 +1,4 @@
-import { GameSettingsMultiUI } from '@app/game-manager/game-settings-multi.interface';
+import { OnlineGameSettingsUI } from '@app/game-manager/game-settings-multi.interface';
 import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
 import * as http from 'http';
 import { Server } from 'socket.io';
@@ -26,7 +26,7 @@ export class NewOnlineGameSocketHandler {
             // socket.sendBuffer = [];
             socket.emit(pendingGames, this.newOnlineGameService.getPendingGames());
 
-            socket.on(createGame, (gameSetting: GameSettingsMultiUI) => {
+            socket.on(createGame, (gameSetting: OnlineGameSettingsUI) => {
                 if (this.isGameSettings(gameSetting)) {
                     gameId = this.newOnlineGameService.createPendingGame(gameSetting);
                     socket.emit(pendingGameId, gameId);
@@ -59,7 +59,15 @@ export class NewOnlineGameSocketHandler {
             });
         });
     }
-
+    // private createGame(gameSetting: OnlineGameSettingsUI) {
+    //     if (this.isGameSettings(gameSetting)) {
+    //         gameId = this.newOnlineGameService.createPendingGame(gameSetting);
+    //         socket.emit(pendingGameId, gameId);
+    //         socket.join(gameId);
+    //         this.emitPendingGamesToAll();
+    //         console.log(gameSetting.playerName, 'created a new game (id:', gameId, ')');
+    //     }
+    // }
     private sendGameToken(gameId: string, gameToken: string) {
         this.ioServer.sockets.to(gameId).emit(gameJoined, gameToken);
     }
@@ -68,15 +76,15 @@ export class NewOnlineGameSocketHandler {
         this.ioServer.sockets.emit(pendingGames, this.newOnlineGameService.getPendingGames());
     }
     // TODO mettre dans un fichier UTIls
-    private isGameSettings(obj: unknown): obj is GameSettingsMultiUI {
+    private isGameSettings(obj: unknown): obj is OnlineGameSettingsUI {
         return (
-            (obj as GameSettingsMultiUI).playerName !== undefined &&
-            typeof (obj as GameSettingsMultiUI).playerName === 'string' &&
-            (obj as GameSettingsMultiUI).opponentName === undefined &&
-            (obj as GameSettingsMultiUI).randomBonus !== undefined &&
-            typeof (obj as GameSettingsMultiUI).randomBonus === 'boolean' &&
-            (obj as GameSettingsMultiUI).timePerTurn !== undefined &&
-            typeof (obj as GameSettingsMultiUI).timePerTurn === 'number'
+            (obj as OnlineGameSettingsUI).playerName !== undefined &&
+            typeof (obj as OnlineGameSettingsUI).playerName === 'string' &&
+            (obj as OnlineGameSettingsUI).opponentName === undefined &&
+            (obj as OnlineGameSettingsUI).randomBonus !== undefined &&
+            typeof (obj as OnlineGameSettingsUI).randomBonus === 'boolean' &&
+            (obj as OnlineGameSettingsUI).timePerTurn !== undefined &&
+            typeof (obj as OnlineGameSettingsUI).timePerTurn === 'number'
         );
     }
 }

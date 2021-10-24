@@ -9,7 +9,7 @@ import {
     MIN_TIME_PER_TURN,
     STEP_TIME_PER_TURN,
 } from '@app/GameLogic/constants';
-import { GameSettingsMultiUI } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { OnlineGameSettingsUI } from '@app/modeMulti/interface/game-settings-multi.interface';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 
@@ -19,7 +19,7 @@ const NO_WHITE_SPACE_RGX = /^\S*$/;
     styleUrls: ['./new-online-game-form.component.scss'],
 })
 export class NewOnlineGameFormComponent implements AfterContentChecked {
-    onlineGameSettingsForm = new FormGroup({
+    onlineGameSettingsUIForm = new FormGroup({
         playerName: new FormControl('', [
             Validators.required,
             Validators.minLength(MIN_NAME_LENGTH),
@@ -39,7 +39,7 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
     stepTimePerTurn = STEP_TIME_PER_TURN;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: GameSettingsMultiUI,
+        @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettingsUI,
         private dialogRef: MatDialogRef<NewOnlineGameFormComponent>,
         private cdref: ChangeDetectorRef,
     ) {}
@@ -49,12 +49,12 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
     }
 
     playGame(): void {
-        this.dialogRef.close(this.onlineGameSettingsForm.value);
+        this.dialogRef.close(this.onlineGameSettingsUIForm.value);
     }
 
     cancel(): void {
         this.dialogRef.close();
-        this.onlineGameSettingsForm.reset({
+        this.onlineGameSettingsUIForm.reset({
             playerName: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
             randomBonus: false,
@@ -62,6 +62,6 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
     }
 
     get formValid() {
-        return this.onlineGameSettingsForm.valid;
+        return this.onlineGameSettingsUIForm.valid;
     }
 }
