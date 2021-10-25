@@ -54,10 +54,10 @@ export class ClassicGameComponent {
             // TODO:Socket validator
             this.gameSettings = formOnline;
             this.socketHandler.createGameMulti(formOnline);
-            this.socketHandler.waitForSecondPlayer();
             this.openWaitingForPlayer();
         });
     }
+
     openWaitingForPlayer() {
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
@@ -79,10 +79,6 @@ export class ClassicGameComponent {
     }
 
     openPendingGames() {
-        // if (!) {
-        //     return;
-        //     console.log('Partie MultiJoueur desactive, impossible de se connecter au serveur');
-        // }
         const pendingGamesDialogConfig = new MatDialogConfig();
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
