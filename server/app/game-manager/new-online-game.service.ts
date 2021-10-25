@@ -1,11 +1,11 @@
 import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/game-manager/game-settings-multi.interface';
-import { GameMaster } from '@app/game-master/game-master.service';
+import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { Service } from 'typedi';
 
 @Service()
 export class NewOnlineGameService {
     pendingGames: Map<string, OnlineGameSettingsUI> = new Map<string, OnlineGameSettingsUI>();
-    constructor(private gameMaster: GameMaster) {}
+    constructor(private gameMaster: GameManagerService) {}
 
     getPendingGames(): OnlineGameSettings[] {
         const games: OnlineGameSettings[] = [];
