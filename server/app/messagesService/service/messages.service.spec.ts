@@ -25,6 +25,9 @@ describe('MessagesService', () => {
             // no warning but slow
             handler = new MessageHandler(httpServer);
             handler.handleSockets();
+            handler.sio.on('connection', (socket) => {
+                serverSocket = socket;
+            });
             done();
         });
     });
@@ -33,10 +36,10 @@ describe('MessagesService', () => {
         // fast but warning
         // handler = new MessageHandler(httpServer);
         // handler.handleSockets();
-        handler.sio.once('connection', (socket) => {
-            serverSocket = socket;
-        });
-        clientSocket = Client(`http://localhost:${port}`, { path: '/messages', multiplex: false });
+        // handler.sio.once('connection', (socket) => {
+        //     serverSocket = socket;
+        // });
+        clientSocket = Client(`http://localhost:${port}`, { path: '/messages' });
         clientSocket.on('connect', done);
     });
 
