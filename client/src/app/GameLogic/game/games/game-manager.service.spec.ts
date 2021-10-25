@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
     let service: GameManagerService;
+    const dict = new DictionaryService();
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         service = TestBed.inject(GameManagerService);
     });
 

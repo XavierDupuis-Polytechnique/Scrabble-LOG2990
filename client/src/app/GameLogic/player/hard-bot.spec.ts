@@ -8,7 +8,6 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { HardBot } from '@app/GameLogic/player/hard-bot';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -22,19 +21,12 @@ describe('HardBot', () => {
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
     const dict = new DictionaryService();
+    let newGame: Game;
     const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                { provide: DictionaryService, useValue: dict },
-                BotCreatorService,
-                BotMessagesService,
-                TimerService,
-                PointCalculatorService,
-                MessagesService,
-                GameInfoService,
-            ],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         });
         boardService = TestBed.inject(BoardService);
         botCreatorService = TestBed.inject(BotCreatorService);
@@ -42,8 +34,8 @@ describe('HardBot', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
-
-        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        newGame = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
+        gameInfo.receiveGame(newGame);
         hardBot = botCreatorService.createBot('Tim', 'hard') as HardBot;
     });
 
@@ -51,14 +43,12 @@ describe('HardBot', () => {
         expect(hardBot).toBeTruthy();
     });
 
-    it('should return the best word it can place (pianola) (horizontal))', fakeAsync(() => {
+    it('should return the best word it can place (piano) (horizontal))', fakeAsync(() => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'L', value: 1 },
             { char: 'N', value: 1 },
             { char: 'I', value: 1 },
             { char: 'P', value: 1 },
-            { char: 'A', value: 1 },
             { char: 'O', value: 1 },
         ];
         hardBot.letterRack = letters;
@@ -68,22 +58,17 @@ describe('HardBot', () => {
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);
 
-        const result = 'pianola';
+        const result = 'piano';
         const expected: PlaceLetter = actionSpy.calls.first().returnValue as PlaceLetter;
         expect(expected.word).toEqual(result);
         tick(TIME_BEFORE_PICKING_ACTION);
         tick(TIME_BEFORE_PASS);
     }));
 
-    it('should return the best word it can place (pianola) (vertical))', fakeAsync(() => {
+    it('should return the best word it can place (vertical))', fakeAsync(() => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'L', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'I', value: 1 },
-            { char: 'P', value: 1 },
             { char: 'A', value: 1 },
-            { char: 'O', value: 1 },
         ];
         hardBot.letterRack = letters;
         const actionSpy = spyOn(hardBot, 'actionPicker').and.callThrough();
@@ -92,7 +77,7 @@ describe('HardBot', () => {
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);
 
-        const result = 'pianola';
+        const result = 'aa';
         const expected: PlaceLetter = actionSpy.calls.first().returnValue as PlaceLetter;
         expect(expected.word).toEqual(result);
         tick(TIME_BEFORE_PICKING_ACTION);
@@ -125,24 +110,4 @@ describe('HardBot', () => {
         tick(TIME_BEFORE_PICKING_ACTION);
         tick(TIME_BEFORE_PASS);
     }));
-
-    // it('setActive', () => {
-    //     hardBot.setActive();
-    //     expect().nothing();
-    // });
-
-    // it('playAction', () => {
-    //     hardBot.playAction();
-    //     expect().nothing();
-    // });
-
-    // it('exchangeAction', () => {
-    //     hardBot.exchangeAction();
-    //     expect().nothing();
-    // });
-
-    // it('passAction', () => {
-    //     hardBot.passAction();
-    //     expect().nothing();
-    // });
 });

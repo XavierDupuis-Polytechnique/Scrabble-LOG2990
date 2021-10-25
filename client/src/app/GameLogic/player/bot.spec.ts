@@ -8,14 +8,14 @@ import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('Bot', () => {
     const dict = new DictionaryService();
-    TestBed.configureTestingModule({
-        providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, BotMessagesService],
-    });
     let bot: EasyBot;
     let botCreator: BotCreatorService;
     let botMessage: BotMessagesService;
 
     beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         botCreator = TestBed.inject(BotCreatorService);
         botMessage = TestBed.inject(BotMessagesService);
         bot = botCreator.createBot('testBot', 'easy') as EasyBot;

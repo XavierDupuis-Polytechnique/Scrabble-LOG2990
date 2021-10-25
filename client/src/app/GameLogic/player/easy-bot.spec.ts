@@ -12,7 +12,6 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -27,19 +26,12 @@ describe('EasyBot', () => {
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
     const dict = new DictionaryService();
+    let newGame: Game;
     const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                { provide: DictionaryService, useValue: dict },
-                BotCreatorService,
-                BotMessagesService,
-                TimerService,
-                PointCalculatorService,
-                MessagesService,
-                GameInfoService,
-            ],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         });
         boardService = TestBed.inject(BoardService);
         botCreatorService = TestBed.inject(BotCreatorService);
@@ -47,8 +39,8 @@ describe('EasyBot', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
-
-        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        newGame = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
+        gameInfo.receiveGame(newGame);
         easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
     });
 
@@ -63,7 +55,7 @@ describe('EasyBot', () => {
         const spyExchange = spyOn(easyBot, 'exchangeAction');
 
         for (let i = 0; i < numberOfTime; i++) {
-            gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+            gameInfo.receiveGame(newGame);
             easyBot.randomActionPicker();
         }
         let value;
@@ -76,16 +68,11 @@ describe('EasyBot', () => {
     it('should return a valid first turn action (empty board))', fakeAsync(() => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
-            { char: 'C', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
+            { char: 'A', value: 1 },
         ];
         easyBot.letterRack = letters;
         const test = spyOn(easyBot, 'randomActionPicker').and.callThrough();
-
+        spyOn(Math, 'random').and.returnValue(0.2);
         easyBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);
 
@@ -98,12 +85,7 @@ describe('EasyBot', () => {
     it('should return a valid word 2-6 points', () => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
-            { char: 'C', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
+            { char: 'A', value: 1 },
         ];
         easyBot.letterRack = letters;
 
@@ -119,13 +101,8 @@ describe('EasyBot', () => {
 
     it('should return a valid word 7-12 points', () => {
         const letters: Letter[] = [
-            { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
-            { char: 'C', value: 1 },
             { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
+            { char: 'B', value: 1 },
         ];
         easyBot.letterRack = letters;
 
@@ -142,12 +119,8 @@ describe('EasyBot', () => {
     it('should return a valid word 13-18 points', () => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
+            { char: 'B', value: 1 },
             { char: 'C', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
         ];
         easyBot.letterRack = letters;
 
@@ -164,19 +137,14 @@ describe('EasyBot', () => {
     it('should return a valid PlaceLetter action (playAction through spied randomAction)(vertical)', () => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
-            { char: 'C', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
+            { char: 'A', value: 1 },
         ];
         easyBot.letterRack = letters;
         const getRandomInt = spyOn(easyBot, 'getRandomInt');
         getRandomInt.withArgs(1).and.returnValue(1);
         getRandomInt.and.callThrough();
 
-        spyOn(Math, 'random').and.returnValue(0.5);
+        spyOn(Math, 'random').and.returnValue(0.2);
         const result = easyBot.randomActionPicker();
         expect(result).toBeInstanceOf(PlaceLetter);
     });
@@ -184,19 +152,14 @@ describe('EasyBot', () => {
     it('should return a valid PlaceLetter action (playAction through spied randomAction)(horizontal)', () => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'P', value: 1 },
-            { char: '*', value: 1 },
-            { char: 'C', value: 1 },
-            { char: 'U', value: 1 },
-            { char: 'E', value: 1 },
-            { char: 'V', value: 1 },
+            { char: 'A', value: 1 },
         ];
         easyBot.letterRack = letters;
         const getRandomInt = spyOn(easyBot, 'getRandomInt');
         getRandomInt.withArgs(1).and.returnValue(0);
         getRandomInt.and.callThrough();
 
-        spyOn(Math, 'random').and.returnValue(0.5);
+        spyOn(Math, 'random').and.returnValue(0.2);
         const result = easyBot.randomActionPicker();
         expect(result).toBeInstanceOf(PlaceLetter);
     });
@@ -220,8 +183,8 @@ describe('EasyBot', () => {
             { char: 'V', value: 1 },
         ];
         easyBot.letterRack = letters;
-
-        const result = easyBot.exchangeAction();
+        spyOn(Math, 'random').and.returnValue(0.9);
+        const result = easyBot.randomActionPicker();
         expect(result).toBeInstanceOf(ExchangeLetter);
     });
 });

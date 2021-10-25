@@ -60,18 +60,7 @@ describe('BotMessagesService', () => {
     let easyBot: EasyBot;
     const dict = new DictionaryService();
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                { provide: DictionaryService, useValue: dict },
-                MessagesService,
-                CommandExecuterService,
-                BotCreatorService,
-                PointCalculatorService,
-                WordSearcher,
-                CommandExecuterService,
-            ],
-        });
+    beforeAll(() => {
         messageService = TestBed.inject(MessagesService);
         botMessage = TestBed.inject(BotMessagesService);
         botCreatorService = TestBed.inject(BotCreatorService);
@@ -79,6 +68,11 @@ describe('BotMessagesService', () => {
         wordSearcher = TestBed.inject(WordSearcher);
         commandExecuter = TestBed.inject(CommandExecuterService);
         easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
+    });
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
     });
 
     it('should be created', () => {
