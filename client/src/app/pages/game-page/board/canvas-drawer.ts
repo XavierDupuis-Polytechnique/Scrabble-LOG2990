@@ -1,4 +1,5 @@
 import { Board } from '@app/GameLogic/game/board/board';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -9,11 +10,6 @@ interface Vec2 {
 enum BonusType {
     LetterBonus,
     WordBonus,
-}
-
-enum Direction {
-    Horizontal,
-    Vertical,
 }
 
 export class CanvasDrawer {
@@ -53,18 +49,18 @@ export class CanvasDrawer {
 
         for (let i = 0; i < board.grid.length; i++) {
             for (let j = 0; j < board.grid.length; j++) {
-                if (board.grid[i][j].letterMultiplicator !== 1) {
-                    this.drawBonus(i, j, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
-                } else if (board.grid[i][j].wordMultiplicator !== 1) {
-                    this.drawBonus(i, j, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
-                } else if (board.grid[i][j].letterObject.char !== ' ') {
+                if (board.grid[i][j].letterObject.char !== ' ') {
                     this.drawTile(board.grid[i][j].letterObject.char, board.grid[i][j].letterObject.value, i, j);
+                } else if (board.grid[j][i].letterMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[j][i].letterMultiplicator);
+                } else if (board.grid[j][i].wordMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[j][i].wordMultiplicator);
                 }
             }
         }
 
         if (this.indicatorPos.x !== -1) {
-            if (board.grid[this.indicatorPos.x][this.indicatorPos.y].letterObject.char === ' ') {
+            if (board.grid[this.indicatorPos.y][this.indicatorPos.x].letterObject.char === ' ') {
                 this.drawIndicator();
             } else {
                 this.indicatorPos = { x: -1, y: -1 };
@@ -107,6 +103,10 @@ export class CanvasDrawer {
         this.indicatorPos = { x: i, y: j };
     }
 
+    setDirection(dir: Direction) {
+        this.indicatorDir = dir;
+    }
+
     private tilePositionToCoord(i: number, j: number): Vec2 {
         const x = i * this.tileSize + (i + 1) * this.canvas.lineWidth;
         const y = j * this.tileSize + (j + 1) * this.canvas.lineWidth;
@@ -129,6 +129,10 @@ export class CanvasDrawer {
         this.canvas.stroke();
     }
     private drawTile(letter: string, value: number, i: number, j: number) {
+        const pos = this.tilePositionToCoord(j, i);
+        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         this.canvas.fillStyle = '#000000';
 
@@ -141,7 +145,6 @@ export class CanvasDrawer {
 
         const offset = (this.tileSize - tileWidth) / 2;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        const pos = this.tilePositionToCoord(j, i);
         pos.x += offset;
         pos.y += this.tileSize * 0.7;
         this.canvas.textBaseline = 'bottom';
@@ -207,11 +210,17 @@ export class CanvasDrawer {
     private drawIndicator() {
         // TODO afficher une fleche
         const pos = this.tilePositionToCoord(this.indicatorPos.x, this.indicatorPos.y);
+        const img = new Image();
         if (this.indicatorDir === Direction.Horizontal) {
-            this.canvas.fillStyle = '#000000';
+            this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
+            img.src = 'assets/img/ArrowRight.png';
         } else {
-            this.canvas.fillStyle = '#500000';
+            this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
+            img.src = 'assets/img/ArrowDown.png';
         }
         this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+
+        this.canvas.drawImage(img, pos.x, pos.y, this.tileSize, this.tileSize);
+        this.canvas.restore();
     }
 }

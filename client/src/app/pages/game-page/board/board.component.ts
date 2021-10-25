@@ -1,5 +1,7 @@
 import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, IterableDiffers, Output, ViewChild } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
+import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
+import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { ASCII_CODE } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
@@ -25,7 +27,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     fontSize: number;
     canvasDrawer: CanvasDrawer;
 
-    constructor(private boardService: BoardService, private itDiffer: IterableDiffers) {
+    constructor(private boardService: BoardService, private itDiffer: IterableDiffers, private inputController: UIInputControllerService) {
         this.board = this.boardService.board;
         this.fontSize = (this.minFontSize + this.maxFontSize) / 2;
     }
@@ -45,6 +47,17 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     ngDoCheck() {
         const changes = this.itDiffer.find([]).create(undefined).diff(this.board.grid);
         if (changes && this.canvasDrawer) {
+            if (this.inputController.activeAction instanceof UIPlace) {
+                if (this.inputController.activeAction.pointerPosition) {
+                    this.canvasDrawer.setIndicator(
+                        this.inputController.activeAction.pointerPosition.x,
+                        this.inputController.activeAction.pointerPosition.y,
+                    );
+                    this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
+                }
+            } else {
+                this.canvasDrawer.setIndicator(-1, -1);
+            }
             this.canvasDrawer.drawGrid(this.board);
         }
     }
@@ -71,7 +84,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
 
     canvasClick(event: MouseEvent): void {
         const pos = this.canvasDrawer.coordToTilePosition(event.offsetX, event.offsetY);
-        this.canvasDrawer.click(pos.indexI, pos.indexJ);
+        // this.canvasDrawer.click(pos.indexI, pos.indexJ);
         const input: UIInput = { from: this.self, type: InputType.LeftClick, args: { x: pos.indexI, y: pos.indexJ } };
         this.clickTile.emit(input);
     }
