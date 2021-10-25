@@ -78,9 +78,11 @@ export class UIPlace implements UIAction {
     }
 
     destroy(): void {
+        console.log('DESTROY UIPLACE');
         for (const placement of this.orderedIndexes) {
             const newBlankLetter = this.letterCreator.createBlankLetter(' ');
             this.boardService.board.grid[placement.y][placement.x].letterObject = newBlankLetter;
+            console.log(this.boardService.board.grid[placement.y][placement.x], 'SHOULD BE BLANK ');
         }
     }
 
@@ -97,20 +99,30 @@ export class UIPlace implements UIAction {
         let y = lastLetterPlacement.y;
         let currentTileChar;
         let word = '';
-        let isThereALetter;
-        // TODO : retreive letters to the left and to the RIGHT
-        do {
-            currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
-            // TODO : MANAGE JOKER
-            word = currentTileChar.toLowerCase() + word;
+        while (this.isThereALetter(x, y)) {
             if (this.direction === Direction.Vertical) {
                 y--;
             } else {
                 x--;
             }
-            isThereALetter = x >= BOARD_MIN_POSITION && y >= BOARD_MIN_POSITION && currentTileChar !== EMPTY_CHAR;
-        } while (isThereALetter);
+        }
+        // TODO : retreive letters to the left and to the RIGHT
+        do {
+            currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
+            // TODO : MANAGE JOKER
+            word += currentTileChar.toLowerCase();
+            console.log('partial word : ' + word);
+            if (this.direction === Direction.Vertical) {
+                y++;
+            } else {
+                x++;
+            }
+        } while (this.isThereALetter(x, y));
         return { word, x, y };
+    }
+
+    private isThereALetter(x: number, y: number) {
+        return this.isInsideOfBoard(x, y) && this.boardService.board.grid[y][x].letterObject.char !== EMPTY_CHAR;
     }
 
     private useLetter(key: string): boolean {
@@ -124,9 +136,9 @@ export class UIPlace implements UIAction {
         const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
         this.concernedIndexes.add(possibleLetterIndex);
         this.orderedIndexes.push(newLetterPlacement);
-        // TODO : WHY [X][Y]
-        // const concernedTile = this.boardService.board.grid[this.pointerPosition.x][this.pointerPosition.y];
-        // concernedTile.letterObject.char = this.player.letterRack[possibleLetterIndex].char;
+        const concernedTile = this.boardService.board.grid[this.pointerPosition.y][this.pointerPosition.x];
+        const newTile = this.letterCreator.createLetter(this.player.letterRack[possibleLetterIndex].char);
+        concernedTile.letterObject = newTile;
         return true;
     }
 
@@ -194,6 +206,9 @@ export class UIPlace implements UIAction {
     private moveBackwards(): boolean {
         const lastLetter = this.orderedIndexes.pop();
         if (lastLetter !== undefined) {
+            const newBlankLetter = this.letterCreator.createBlankLetter(' ');
+            this.boardService.board.grid[lastLetter.y][lastLetter.x].letterObject = newBlankLetter;
+            console.log(this.boardService.board.grid[lastLetter.y][lastLetter.x], 'SHOULD BE BLANK ');
             this.concernedIndexes.delete(lastLetter.rackIndex);
             this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
             return true;
