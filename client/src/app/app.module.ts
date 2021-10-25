@@ -9,12 +9,17 @@ import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
+import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
+import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
+import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
 import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
+import { WaitingForPlayerComponent } from './pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
 import { HorseComponent } from './pages/game-page/horse/horse.component';
@@ -45,6 +50,7 @@ import { MouseRollDirective } from './directives/mouse-roll.directive';
         BoardComponent,
         HorseComponent,
         NewSoloGameFormComponent,
+        NewOnlineGameFormComponent,
         HomepageComponent,
         ClassicGameComponent,
         Log2990GameComponent,
@@ -54,6 +60,10 @@ import { MouseRollDirective } from './directives/mouse-roll.directive';
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
+        WaitingForPlayerComponent,
+        ConvertToSoloFormComponent,
+        PendingGamesComponent,
+        JoinOnlineGameComponent,
     ],
     imports: [
         AppMaterialModule,

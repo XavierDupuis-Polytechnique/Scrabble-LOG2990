@@ -1,6 +1,7 @@
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/GameLogic/constants';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { OnlineGameSettingsUI } from '@app/modeMulti/interface/game-settings-multi.interface';
 
 export const placementSettingsToString = (placement: PlacementSetting): string => {
     const x = placement.x;
@@ -54,4 +55,16 @@ export const isStringAnUpperCaseLetter = (string: string): boolean => {
 
 export const getRandomInt = (max: number, min: number = 0): number => {
     return Math.floor(Math.random() * (max - min) + min);
+};
+
+export const isGameSettings = (obj: unknown) => {
+    return (
+        (obj as OnlineGameSettingsUI).playerName !== undefined &&
+        typeof (obj as OnlineGameSettingsUI).playerName === 'string' &&
+        (obj as OnlineGameSettingsUI).opponentName === undefined &&
+        (obj as OnlineGameSettingsUI).randomBonus !== undefined &&
+        typeof (obj as OnlineGameSettingsUI).randomBonus === 'boolean' &&
+        (obj as OnlineGameSettingsUI).timePerTurn !== undefined &&
+        typeof (obj as OnlineGameSettingsUI).timePerTurn === 'number'
+    );
 };
