@@ -20,11 +20,27 @@ export class GameSocketsHandler {
     handleSockets() {
         this.sio.on('connection', (socket) => {
             socket.on('joinGame', (gameToken: string) => {
-                this.addPlayerToGame(socket.id, gameToken);
+                try {
+                    this.addPlayerToGame(socket.id, gameToken);
+                    socket.join(gameToken);
+                } catch (e) {
+                    console.error(e);
+                    socket.disconnect();
+                }
             });
 
             socket.on('nextAction', (action: OnlineAction) => {
-                this.sendPlayerAction(socket.id, action);
+                try {
+                    this.sendPlayerAction(socket.id, action);
+                } catch (e) {
+                    console.error(e);
+                    socket.disconnect();
+                }
+            });
+
+            socket.on('disconnect', () => {
+                console.log('disconnect');
+                this.removePlayer(socket.id);
             });
         });
     }
@@ -42,5 +58,9 @@ export class GameSocketsHandler {
     private sendPlayerAction(socketId: string, action: OnlineAction) {
         const playerId = socketId;
         this.gameManager.receivePlayerAction(playerId, action);
+    }
+
+    private removePlayer(playerId: string) {
+        this.gameManager.removePlayerFromGame(playerId);
     }
 }
