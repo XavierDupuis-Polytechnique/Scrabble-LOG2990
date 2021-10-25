@@ -19,8 +19,8 @@ const testSpy: jasmine.SpyObj<GameInfoService> = jasmine.createSpyObj('GameInfoS
 describe('HorseComponent', () => {
     let component: HorseComponent;
     let fixture: ComponentFixture<HorseComponent>;
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             declarations: [HorseComponent],
             providers: [
                 { provide: GameManagerService, useClass: MockGameManagerService },

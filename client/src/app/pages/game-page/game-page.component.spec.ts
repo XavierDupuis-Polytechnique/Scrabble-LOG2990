@@ -14,13 +14,11 @@ describe('GamePageComponent', () => {
     let actionValidatorServiceSpy: jasmine.SpyObj<ActionValidatorService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
         actionValidatorServiceSpy = jasmine.createSpyObj('ActionValidatorService', ['sendAction']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-    });
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+        await TestBed.configureTestingModule({
             declarations: [GamePageComponent, SidebarComponent],
             imports: [RouterTestingModule, MatSliderModule],
             providers: [

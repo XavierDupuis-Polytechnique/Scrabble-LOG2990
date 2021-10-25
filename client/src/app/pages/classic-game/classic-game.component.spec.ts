@@ -20,9 +20,9 @@ describe('ClassicGameComponent', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         createGame: () => {},
     };
-    beforeEach(() => {
+    beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
-        TestBed.configureTestingModule({
+        await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [

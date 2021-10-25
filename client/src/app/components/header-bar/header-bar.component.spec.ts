@@ -7,8 +7,8 @@ describe('HeaderBarComponent', () => {
     let component: HeaderBarComponent;
     let fixture: ComponentFixture<HeaderBarComponent>;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             imports: [AppRoutingModule],
             declarations: [HeaderBarComponent, MatToolbar],
         }).compileComponents();

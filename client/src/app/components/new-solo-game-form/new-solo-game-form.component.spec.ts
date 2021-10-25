@@ -18,8 +18,8 @@ describe('NewSoloGameFormComponent', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         close: () => {},
     };
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             imports: [
                 MatDialogModule,
                 MatSliderModule,
