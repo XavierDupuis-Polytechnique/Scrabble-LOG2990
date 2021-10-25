@@ -1,4 +1,5 @@
 import { Action } from '@app/GameLogic/actions/action';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
@@ -95,7 +96,7 @@ export class EasyBot extends Bot {
             const placeSetting: PlacementSetting = {
                 x: pickedWord.startingTileX,
                 y: pickedWord.startingTileY,
-                direction: pickedWord.isVertical ? 'V' : 'H',
+                direction: pickedWord.isVertical ? Direction.Vertical : Direction.Horizontal,
             };
             const action = new PlaceLetter(this, pickedWord.word, placeSetting, this.pointCalculatorService, this.wordValidator);
             return action;

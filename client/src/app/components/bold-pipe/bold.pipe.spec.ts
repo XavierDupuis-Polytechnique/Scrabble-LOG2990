@@ -1,12 +1,14 @@
+import { TestBed } from '@angular/core/testing';
 import { BoldPipe } from './bold.pipe';
 
 describe('BoldPipe', () => {
     let pipe: BoldPipe;
     beforeEach(() => {
+        TestBed.configureTestingModule({});
         pipe = new BoldPipe();
     });
     it('create an instance', () => {
-        expect(new BoldPipe()).toBeTruthy();
+        expect(pipe).toBeTruthy();
     });
 
     it('should transform properly', () => {

@@ -11,6 +11,7 @@ import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.int
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('ActionCompilerService', () => {
@@ -19,9 +20,10 @@ describe('ActionCompilerService', () => {
     let player: Player;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
+    const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [ActionCompilerService, GameInfoService, PointCalculatorService, WordSearcher],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         });
         service = TestBed.inject(ActionCompilerService);
         gameInfo = TestBed.inject(GameInfoService);

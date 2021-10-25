@@ -8,9 +8,9 @@ describe('PlayerInfoComponent', () => {
     let fixture: ComponentFixture<PlayerInfoComponent>;
     let gameManagerSpy: jasmine.SpyObj<GameManagerService>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
-        TestBed.configureTestingModule({
+        await TestBed.configureTestingModule({
             declarations: [PlayerInfoComponent],
             providers: [{ provide: GameManagerService, useValue: gameManagerSpy }],
         }).compileComponents();
