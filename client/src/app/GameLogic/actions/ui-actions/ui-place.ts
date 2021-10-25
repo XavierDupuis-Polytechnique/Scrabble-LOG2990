@@ -68,13 +68,15 @@ export class UIPlace implements UIAction {
 
     create(): Action {
         const wordPlacement = this.getWordFromBoard();
-        return new PlaceLetter(
+        const createdAction = new PlaceLetter(
             this.player,
             wordPlacement.word,
             { direction: this.direction, x: wordPlacement.x, y: wordPlacement.y },
             this.pointCalculator,
             this.wordSearcher,
         );
+        console.log(createdAction);
+        return createdAction;
     }
 
     destroy(): void {
@@ -93,6 +95,7 @@ export class UIPlace implements UIAction {
         return clickPosition.x === this.pointerPosition.x && clickPosition.y === this.pointerPosition.y;
     }
 
+    // TODO : REFACTOR, REASON : TRASH
     private getWordFromBoard(): WordPlacement {
         const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
         let x = lastLetterPlacement.x;
@@ -101,28 +104,35 @@ export class UIPlace implements UIAction {
         let word = '';
         while (this.isThereALetter(x, y)) {
             if (this.direction === Direction.Vertical) {
-                y--;
-            } else {
-                x--;
-            }
-        }
-        // TODO : retreive letters to the left and to the RIGHT
-        do {
-            currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
-            // TODO : MANAGE JOKER
-            word += currentTileChar.toLowerCase();
-            console.log('partial word : ' + word);
-            if (this.direction === Direction.Vertical) {
                 y++;
             } else {
                 x++;
+            }
+        }
+        if (this.direction === Direction.Vertical) {
+            y--;
+        } else {
+            x--;
+        }
+        do {
+            currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
+            // TODO : MANAGE JOKER
+            word = currentTileChar.toLowerCase() + word;
+            console.log('partial word : ' + word);
+            if (this.direction === Direction.Vertical) {
+                y--;
+            } else {
+                x--;
             }
         } while (this.isThereALetter(x, y));
         return { word, x, y };
     }
 
     private isThereALetter(x: number, y: number) {
-        return this.isInsideOfBoard(x, y) && this.boardService.board.grid[y][x].letterObject.char !== EMPTY_CHAR;
+        if (!this.isInsideOfBoard(x, y)) {
+            return false;
+        }
+        return this.boardService.board.grid[y][x].letterObject.char !== EMPTY_CHAR;
     }
 
     private useLetter(key: string): boolean {

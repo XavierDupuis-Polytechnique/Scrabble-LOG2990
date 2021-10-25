@@ -125,8 +125,8 @@ export class UIInputControllerService {
             throw new Error('Action couldnt be created : requirements for creation are not met');
         }
         const newAction: Action = this.activeAction.create();
-        this.avs.sendAction(newAction);
         this.discardAction();
+        this.avs.sendAction(newAction);
         this.activeComponent = InputComponent.Outside;
     }
 
