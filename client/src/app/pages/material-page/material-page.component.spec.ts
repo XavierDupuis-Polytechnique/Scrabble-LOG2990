@@ -46,9 +46,6 @@ describe('MaterialPageComponent', () => {
                 },
             ],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(MaterialPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

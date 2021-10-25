@@ -1,5 +1,6 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSliderModule } from '@angular/material/slider';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
@@ -18,20 +19,16 @@ describe('GamePageComponent', () => {
         actionValidatorServiceSpy = jasmine.createSpyObj('ActionValidatorService', ['sendAction']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
     });
-
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
+    beforeEach(() => {
+        TestBed.configureTestingModule({
             declarations: [GamePageComponent, SidebarComponent],
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, MatSliderModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: ActionValidatorService, useValue: actionValidatorServiceSpy },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
             ],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(GamePageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

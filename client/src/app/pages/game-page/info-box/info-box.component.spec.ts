@@ -40,14 +40,11 @@ describe('InfoBoxComponent', () => {
     let component: InfoBoxComponent;
     let fixture: ComponentFixture<InfoBoxComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
+    beforeEach(() => {
+        TestBed.configureTestingModule({
             declarations: [InfoBoxComponent],
             providers: [{ provide: GameInfoService, useValue: testMock }],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(InfoBoxComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

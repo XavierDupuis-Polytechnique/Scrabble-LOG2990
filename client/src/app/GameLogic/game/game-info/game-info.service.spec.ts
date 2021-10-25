@@ -25,15 +25,7 @@ describe('GameInfoService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                { provide: DictionaryService, useValue: dict },
-                MessagesService,
-                PointCalculatorService,
-                BoardService,
-                TimerService,
-                GameInfoService,
-                PointCalculatorService,
-            ],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         });
         service = TestBed.inject(GameInfoService);
         timer = TestBed.inject(TimerService);

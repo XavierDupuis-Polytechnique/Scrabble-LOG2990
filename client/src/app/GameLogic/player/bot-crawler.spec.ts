@@ -91,8 +91,8 @@ describe('BotCrawler2', () => {
     let bot: EasyBot;
     let boardService: BoardService;
     let botCreator: BotCreatorService;
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService],
         });
         botCreator = TestBed.inject(BotCreatorService);

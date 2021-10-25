@@ -242,7 +242,7 @@ describe('DictionaryService', () => {
             { char: 'T', value: 1 },
             { char: 'A', value: 1 },
             { char: 'A', value: 1 },
-            { char: 'E', value: 1 },
+            { char: '*', value: 1 },
             { char: 'D', value: 1 },
             { char: 'Z', value: 1 },
         ];

@@ -7,13 +7,10 @@ describe('BoardComponent', () => {
     let component: BoardComponent;
     let fixture: ComponentFixture<BoardComponent>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
+    beforeEach(() => {
+        TestBed.configureTestingModule({
             declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(BoardComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

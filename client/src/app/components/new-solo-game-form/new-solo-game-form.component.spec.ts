@@ -1,6 +1,12 @@
 /* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { NewSoloGameFormComponent } from './new-solo-game-form.component';
 
@@ -12,9 +18,18 @@ describe('NewSoloGameFormComponent', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         close: () => {},
     };
-    beforeEach(async () => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [MatDialogModule],
+            imports: [
+                MatDialogModule,
+                MatSliderModule,
+                MatDialogModule,
+                MatInputModule,
+                MatSelectModule,
+                BrowserAnimationsModule,
+                MatCheckboxModule,
+                ReactiveFormsModule,
+            ],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
@@ -24,9 +39,6 @@ describe('NewSoloGameFormComponent', () => {
             ],
             declarations: [NewSoloGameFormComponent],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(NewSoloGameFormComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
