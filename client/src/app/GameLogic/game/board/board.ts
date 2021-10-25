@@ -109,33 +109,7 @@ export class Board {
                 this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
             }
         }
-
-        let listMultiplicator = multiplicators;
-        if (randomBonus) {
-            listMultiplicator = this.randomMultiplicator();
-        }
-        for (const elem of listMultiplicator) {
-            if (elem.type === MultiType.Letter) {
-                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
-            } else {
-                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].wordMultiplicator = elem.v;
-            }
-        }
-    }
-
-    randomMultiplicator(): BoardSettingPosition[] {
-        const newMultiplicators: BoardSettingPosition[] = [];
-        const values: number[] = [];
-        for (const multiplicator of multiplicators) {
-            newMultiplicators.push({ ...multiplicator });
-            values.push(multiplicator.v);
-        }
-        for (const element of newMultiplicators) {
-            const newValueIndex = Math.floor(Math.random() * values.length);
-            element.v = values[newValueIndex];
-            values.splice(newValueIndex, 1);
-        }
-        return newMultiplicators;
+        this.generateMultiplicators(randomBonus);
     }
 
     hasNeighbour(x: number, y: number): boolean {
@@ -160,5 +134,37 @@ export class Board {
             }
         }
         return false;
+    }
+
+    private randomMultiplicators(): BoardSettingPosition[] {
+        const newMultiplicators: BoardSettingPosition[] = [];
+        const values: number[] = [];
+        for (const multiplicator of multiplicators) {
+            newMultiplicators.push({ ...multiplicator });
+            values.push(multiplicator.v);
+        }
+        for (const element of newMultiplicators) {
+            const newValueIndex = Math.floor(Math.random() * values.length);
+            element.v = values[newValueIndex];
+            values.splice(newValueIndex, 1);
+        }
+        return newMultiplicators;
+    }
+
+    private generateMultiplicators(randomBonus: boolean): void {
+        let listMultiplicator = multiplicators;
+        if (randomBonus) {
+            listMultiplicator = this.randomMultiplicators();
+            while (listMultiplicator === multiplicators) {
+                listMultiplicator = this.randomMultiplicators();
+            }
+        }
+        for (const elem of listMultiplicator) {
+            if (elem.type === MultiType.Letter) {
+                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
+            } else {
+                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].wordMultiplicator = elem.v;
+            }
+        }
     }
 }

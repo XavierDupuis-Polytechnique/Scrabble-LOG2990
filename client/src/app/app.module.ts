@@ -17,11 +17,13 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
+import { ClickAndClickoutDirective } from './directives/click-and-clickout.directive';
+import { MouseRollDirective } from './directives/mouse-roll.directive';
+import { PreventContextMenuDirective } from './directives/prevent-context-menu.directive';
 import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
 import { WaitingForPlayerComponent } from './pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
-import { TileComponent } from './pages/game-page/board/tile/tile.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
 import { HorseComponent } from './pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
@@ -53,12 +55,14 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         Log2990GameComponent,
         LeaderboardComponent,
         HeaderBarComponent,
-        TileComponent,
         BoldPipe,
         WaitingForPlayerComponent,
         ConvertToSoloFormComponent,
         PendingGamesComponent,
         JoinOnlineGameComponent,
+        PreventContextMenuDirective,
+        ClickAndClickoutDirective,
+        MouseRollDirective,
     ],
     imports: [
         AppMaterialModule,

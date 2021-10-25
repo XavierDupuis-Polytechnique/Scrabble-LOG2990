@@ -1,6 +1,15 @@
-<div class="rackContainer">
+<div class="rackContainer" appClickAndClickout [inputComponent]="self">
     <mat-grid-list cols="7" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile *ngFor="let letter of playerRack" style="background-image: url('assets/img/tuile.png'); background-size: contain">
+        <mat-grid-tile
+            *ngFor="let letter of playerRack; let index = index"
+            (click)="click(inputType.LeftClick, index)"
+            (contextmenu)="click(inputType.RightClick, index)"
+            [ngClass]="{
+                selectedForMove: isLetterSelectedForMove(index),
+                selectedForExchange: isLetterSelectedForExchange(index),
+                selectedForPlace: isLetterSelectedForPlace(index)
+            }"
+        >
             {{ letter.char }}
             <sub>{{ letter.value }}</sub>
         </mat-grid-tile>
