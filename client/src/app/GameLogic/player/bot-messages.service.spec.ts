@@ -225,9 +225,9 @@ describe('BotMessagesService', () => {
         const expected: string[] = [];
         expected.push(
             '\\n' +
-            'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
-            'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+                'H8:A H9:V H11:O H12:N (25) \\n#A##V#I#O##N# (25) \\n\\n' +
+                'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
+                'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
         );
         expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
@@ -265,8 +265,8 @@ describe('BotMessagesService', () => {
         const expected: string[] = [];
         expected.push(
             '\\n' +
-            'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
-            'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
+                'H8:L H9:O H10:N H11:G H12:M H13:O H14:T (80) \\n#L##O##N##G##M##O##T# (30) \\nBingo! (50)\\n\\n' +
+                'H8:V H9:O H10:L H12:N H13:T (45) \\n#V##O##L#A#N##T# (45) \\n\\n',
         );
         expect(spyReceiveSystemMessage.calls.first().args).toEqual(expected);
     });
