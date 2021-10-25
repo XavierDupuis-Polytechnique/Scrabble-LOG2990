@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { createServer } from 'http';
+import { createServer, Server } from 'http';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 import { expect } from 'chai';
 import { AddressInfo } from 'net';
@@ -15,29 +15,43 @@ describe('MessagesService', () => {
     let clientSocket: ClientSocket;
     let serverSocket: Socket;
     let port: number;
-    beforeEach((done) => {
-        const httpServer = createServer();
-        handler = new MessageHandler(httpServer);
-        handler.handleSockets();
+    let httpServer: Server;
+
+    before((done) => {
+        httpServer = createServer();
         httpServer.listen(() => {
+            process.setMaxListeners(0);
             port = (httpServer.address() as AddressInfo).port;
-            clientSocket = Client(`http://localhost:${port}`, { path: '/messages', multiplex: false });
-            handler.sio.on('connection', (socket) => {
-                serverSocket = socket;
-            });
-            clientSocket.on('connect', done);
+            // no warning but slow
+            handler = new MessageHandler(httpServer);
+            handler.handleSockets();
+            done();
         });
+    });
+
+    beforeEach((done) => {
+        // fast but warning
+        // handler = new MessageHandler(httpServer);
+        // handler.handleSockets();
+        handler.sio.once('connection', (socket) => {
+            serverSocket = socket;
+        });
+        clientSocket = Client(`http://localhost:${port}`, { path: '/messages', multiplex: false });
+        clientSocket.on('connect', done);
     });
 
     afterEach(() => {
         clientSocket.close();
-        handler.sio.close();
+    });
+
+    after(() => {
+        httpServer.close();
     });
 
     it('should create new user', (done) => {
         const userName = 'test';
         clientSocket.emit('userName', userName);
-        serverSocket.on('userName', () => {
+        serverSocket.once('userName', () => {
             const user = [...handler.users.values()][0];
             expect(user.name).to.equal(userName);
             done();
@@ -102,8 +116,9 @@ describe('MessagesService', () => {
 
         setTimeout(() => {
             expect(receivedMessage).to.be.false;
+            clientSocket2.close();
             done();
-        }, 150);
+        }, 30);
     });
 
     it('client should receive error when setting two userName', (done) => {
