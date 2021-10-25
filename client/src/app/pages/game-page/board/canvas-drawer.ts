@@ -11,6 +11,11 @@ enum BonusType {
     WordBonus,
 }
 
+enum Direction {
+    Horizontal,
+    Vertical,
+}
+
 export class CanvasDrawer {
     canvas: CanvasRenderingContext2D;
     width: number;
@@ -20,6 +25,9 @@ export class CanvasDrawer {
     private scale: number = 0.5;
     private offset: number = 50;
     private font = 'Arial';
+
+    private indicatorPos: Vec2 = { x: -1, y: -1 };
+    private indicatorDir: Direction;
 
     constructor(canvasContext: CanvasRenderingContext2D, w: number, h: number) {
         this.canvas = canvasContext;
@@ -54,6 +62,14 @@ export class CanvasDrawer {
                 }
             }
         }
+
+        if (this.indicatorPos.x !== -1) {
+            if (board.grid[this.indicatorPos.x][this.indicatorPos.y].letterObject.char === ' ') {
+                this.drawIndicator();
+            } else {
+                this.indicatorPos = { x: -1, y: -1 };
+            }
+        }
     }
 
     checkFontSize(fontSize: number): boolean {
@@ -74,6 +90,21 @@ export class CanvasDrawer {
         const j = Math.floor((y - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
 
         return { indexI: i, indexJ: j };
+    }
+
+    click(i: number, j: number) {
+        if (this.indicatorPos.x !== i || this.indicatorPos.y !== j) {
+            this.indicatorDir = Direction.Horizontal;
+        } else if (this.indicatorDir === Direction.Horizontal) {
+            this.indicatorDir = Direction.Vertical;
+        } else {
+            this.indicatorDir = Direction.Horizontal;
+        }
+        this.setIndicator(i, j);
+    }
+
+    setIndicator(i: number, j: number) {
+        this.indicatorPos = { x: i, y: j };
     }
 
     private tilePositionToCoord(i: number, j: number): Vec2 {
@@ -110,7 +141,7 @@ export class CanvasDrawer {
 
         const offset = (this.tileSize - tileWidth) / 2;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        const pos = this.tilePositionToCoord(i, j);
+        const pos = this.tilePositionToCoord(j, i);
         pos.x += offset;
         pos.y += this.tileSize * 0.7;
         this.canvas.textBaseline = 'bottom';
@@ -171,5 +202,16 @@ export class CanvasDrawer {
         this.canvas.fillStyle = '#FFFFFF';
         this.canvas.fillText(s, pos.x, pos.y);
         this.canvas.fillText(`X${mul}`, pos.x, pos.y + this.tileSize / 2);
+    }
+
+    private drawIndicator() {
+        // TODO afficher une fleche
+        const pos = this.tilePositionToCoord(this.indicatorPos.x, this.indicatorPos.y);
+        if (this.indicatorDir === Direction.Horizontal) {
+            this.canvas.fillStyle = '#000000';
+        } else {
+            this.canvas.fillStyle = '#500000';
+        }
+        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
     }
 }
