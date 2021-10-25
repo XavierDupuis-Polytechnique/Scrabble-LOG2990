@@ -1,6 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { PlayerInfoComponent } from './player-info.component';
 
 describe('PlayerInfoComponent', () => {
@@ -11,6 +12,7 @@ describe('PlayerInfoComponent', () => {
     beforeEach(async () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [PlayerInfoComponent],
             providers: [{ provide: GameManagerService, useValue: gameManagerSpy }],
         }).compileComponents();

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -39,6 +40,7 @@ describe('ClassicGameComponent', () => {
                     useValue: gameManager,
                 },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(ClassicGameComponent);
         component = fixture.componentInstance;

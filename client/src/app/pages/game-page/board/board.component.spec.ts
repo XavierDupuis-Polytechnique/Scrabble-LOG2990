@@ -1,6 +1,8 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
@@ -9,7 +11,9 @@ describe('BoardComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(BoardComponent);
         component = fixture.componentInstance;
