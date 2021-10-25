@@ -4,15 +4,19 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { JoinOnlineGameComponent } from './join-online-game.component';
 
-fdescribe('JoinOnlineGameComponent', () => {
+describe('JoinOnlineGameComponent', () => {
     let component: JoinOnlineGameComponent;
     let fixture: ComponentFixture<JoinOnlineGameComponent>;
 
     const mockDialogRef = {
-        close: jasmine.createSpy('close'),
+        close: jasmine.createSpy('close').and.returnValue(() => {}),
+    };
+    const mockOnlineGameService = {
+        joinPendingGame: jasmine.createSpy('onlineService').and.returnValue(() => {}),
     };
     beforeEach(
         waitForAsync(() => {
@@ -22,6 +26,7 @@ fdescribe('JoinOnlineGameComponent', () => {
                 providers: [
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: mockDialogRef },
+                    { provide: OnlineGameInitService, useValue: mockOnlineGameService },
                 ],
                 declarations: [JoinOnlineGameComponent],
                 schemas: [CUSTOM_ELEMENTS_SCHEMA],
