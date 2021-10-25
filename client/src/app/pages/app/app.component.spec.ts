@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
@@ -6,7 +7,7 @@ import { AppComponent } from '@app/pages/app/app.component';
 describe('AppComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppRoutingModule],
+            imports: [AppRoutingModule, CommonModule],
             declarations: [AppComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();

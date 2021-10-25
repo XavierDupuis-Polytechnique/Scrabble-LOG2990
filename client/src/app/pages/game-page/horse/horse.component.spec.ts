@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -23,7 +24,7 @@ describe('HorseComponent', () => {
     let fixture: ComponentFixture<HorseComponent>;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule],
+            imports: [AppMaterialModule, CommonModule],
             declarations: [HorseComponent],
             providers: [
                 { provide: GameManagerService, useClass: MockGameManagerService },

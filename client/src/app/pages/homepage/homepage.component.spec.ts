@@ -1,4 +1,5 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { LocationStrategy } from '@angular/common';
+import { MockLocationStrategy } from '@angular/common/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HomepageComponent } from './homepage.component';
@@ -11,7 +12,7 @@ describe('HomepageComponent', () => {
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule],
             declarations: [HomepageComponent],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [{ provide: LocationStrategy, useClass: MockLocationStrategy }],
         }).compileComponents();
         fixture = TestBed.createComponent(HomepageComponent);
         component = fixture.componentInstance;

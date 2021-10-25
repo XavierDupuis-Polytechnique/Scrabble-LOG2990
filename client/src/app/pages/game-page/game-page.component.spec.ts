@@ -1,3 +1,5 @@
+import { LocationStrategy } from '@angular/common';
+import { MockLocationStrategy } from '@angular/common/testing'; // Remove error @injectable
 import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,6 +26,7 @@ describe('GamePageComponent', () => {
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: ActionValidatorService, useValue: actionValidatorServiceSpy },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
+                { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
