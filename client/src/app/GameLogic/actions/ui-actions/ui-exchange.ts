@@ -41,4 +41,8 @@ export class UIExchange implements UIAction {
         });
         return new ExchangeLetter(this.player, lettersToExchange);
     }
+
+    destroy(): void {
+        return;
+    }
 }

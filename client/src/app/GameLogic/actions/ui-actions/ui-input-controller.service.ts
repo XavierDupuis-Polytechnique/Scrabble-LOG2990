@@ -125,13 +125,15 @@ export class UIInputControllerService {
             throw new Error('Action couldnt be created : requirements for creation are not met');
         }
         const newAction: Action = this.activeAction.create();
-        console.log(newAction);
         this.avs.sendAction(newAction);
         this.discardAction();
         this.activeComponent = InputComponent.Outside;
     }
 
     private discardAction() {
+        if (this.activeAction) {
+            this.activeAction.destroy();
+        }
         this.activeAction = null;
     }
 

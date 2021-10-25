@@ -6,6 +6,7 @@ import { LetterPlacement } from '@app/GameLogic/actions/ui-actions/ui-place-inte
 import { WordPlacement } from '@app/GameLogic/actions/ui-actions/word-placement.interface';
 import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { convertToProperLetter, isStringALowerCaseLetter, isStringAnUpperCaseLetter } from '@app/GameLogic/utils';
@@ -14,6 +15,7 @@ import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher
 export class UIPlace implements UIAction {
     concernedIndexes = new Set<number>();
     orderedIndexes: LetterPlacement[] = [];
+    letterCreator = new LetterCreator();
     direction = Direction.Horizontal;
     pointerPosition: { x: number; y: number } | null = null;
 
@@ -73,6 +75,13 @@ export class UIPlace implements UIAction {
             this.pointCalculator,
             this.wordSearcher,
         );
+    }
+
+    destroy(): void {
+        for (const placement of this.orderedIndexes) {
+            const newBlankLetter = this.letterCreator.createBlankLetter(' ');
+            this.boardService.board.grid[placement.y][placement.x].letterObject = newBlankLetter;
+        }
     }
 
     private isSamePositionClicked(clickPosition: { x: number; y: number }) {

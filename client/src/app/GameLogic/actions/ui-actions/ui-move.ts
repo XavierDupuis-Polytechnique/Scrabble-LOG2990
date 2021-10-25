@@ -63,6 +63,10 @@ export class UIMove implements UIAction {
         throw new Error('UIMove should not be able to create an Action');
     }
 
+    destroy(): void {
+        return;
+    }
+
     private moveRight() {
         if (this.canBeCreated) {
             const currentLetterIndex = this.getCurrentIndex();
