@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,9 +12,11 @@ describe('JoinOnlineGameComponent', () => {
     let fixture: ComponentFixture<JoinOnlineGameComponent>;
 
     const mockDialogRef = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         close: jasmine.createSpy('close').and.returnValue(() => {}),
     };
     const mockOnlineGameService = {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         joinPendingGame: jasmine.createSpy('onlineService').and.returnValue(() => {}),
     };
     beforeEach(
@@ -87,7 +88,7 @@ describe('JoinOnlineGameComponent', () => {
         expect(component.oppName.valid).toBeTrue();
         expect(component.sendParameter).toHaveBeenCalled();
     });
-    // TODO ERROR
+
     it('startGame should close the dialog', () => {
         component.sendParameter();
         expect(mockDialogRef.close).toHaveBeenCalled();
