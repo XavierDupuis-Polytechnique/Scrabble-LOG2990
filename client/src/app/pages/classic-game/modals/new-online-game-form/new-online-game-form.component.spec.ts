@@ -4,7 +4,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { NewOnlineGameFormComponent } from './new-online-game-form.component';
 
-fdescribe('NewOnlineGameFormComponent', () => {
+describe('NewOnlineGameFormComponent', () => {
     let component: NewOnlineGameFormComponent;
     let fixture: ComponentFixture<NewOnlineGameFormComponent>;
 
