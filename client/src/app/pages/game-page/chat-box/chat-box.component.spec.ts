@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -23,7 +24,7 @@ describe('ChatBoxComponent', () => {
         gameInfoServiceSpy = jasmine.createSpyObj('GameInfoService', ['getPlayer']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         TestBed.configureTestingModule({
-            imports: [AppMaterialModule, BrowserAnimationsModule],
+            imports: [AppMaterialModule, BrowserAnimationsModule, FormsModule],
             declarations: [ChatBoxComponent],
             providers: [
                 { provide: MessagesService, useValue: messageServiceSpy },

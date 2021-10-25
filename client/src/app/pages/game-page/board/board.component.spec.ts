@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -11,7 +12,7 @@ describe('BoardComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule],
+            imports: [AppMaterialModule, FormsModule],
             declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
