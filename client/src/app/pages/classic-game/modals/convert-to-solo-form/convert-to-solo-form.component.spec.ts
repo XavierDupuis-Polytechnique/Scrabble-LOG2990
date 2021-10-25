@@ -7,12 +7,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ConvertToSoloFormComponent } from './convert-to-solo-form.component';
 
-fdescribe('ConvertToSoloFormComponent', () => {
+describe('ConvertToSoloFormComponent', () => {
     let component: ConvertToSoloFormComponent;
     let fixture: ComponentFixture<ConvertToSoloFormComponent>;
 
     const mockDialogRef = {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         close: jasmine.createSpy('close'),
     };
     beforeEach(async () => {
