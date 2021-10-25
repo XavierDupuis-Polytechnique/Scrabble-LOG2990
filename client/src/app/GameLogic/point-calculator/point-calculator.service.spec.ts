@@ -17,7 +17,7 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
-fdescribe('PointCalculatorService', () => {
+describe('PointCalculatorService', () => {
     let pointCalculator: PointCalculatorService;
     let timer: TimerService;
     let boardService: BoardService;

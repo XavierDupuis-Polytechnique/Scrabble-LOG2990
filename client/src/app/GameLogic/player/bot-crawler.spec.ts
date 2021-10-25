@@ -43,7 +43,7 @@ describe('BotCrawler1', () => {
 
         expected.push(new ValidWord('hello'));
 
-        result = bot.botCrawler.lineSplitter(testLine);
+        result = bot.botCrawler.getAllPossibilitiesOnLine(testLine);
         expect(result).toEqual(expected);
     });
 
@@ -56,7 +56,7 @@ describe('BotCrawler1', () => {
         expected.push(new ValidWord('o', 0, 0, 0, 0, false, 4));
         expected.push(new ValidWord('hel-o', 0, 0, 0, 0));
 
-        result = bot.botCrawler.lineSplitter(testLine);
+        result = bot.botCrawler.getAllPossibilitiesOnLine(testLine);
         expect(result).toEqual(expected);
     });
 
@@ -72,7 +72,7 @@ describe('BotCrawler1', () => {
         expected.push(new ValidWord('ng---hello', 0, 0, 0, 4, VERTICAL, 0, 5));
         expected.push(new ValidWord('test-ng---hello', 0, 0, 8, 4, VERTICAL));
 
-        result = bot.botCrawler.lineSplitter(testLine);
+        result = bot.botCrawler.getAllPossibilitiesOnLine(testLine);
         expect(result).toEqual(expected);
     });
 
@@ -81,7 +81,7 @@ describe('BotCrawler1', () => {
         let result: ValidWord[] = [];
         const expected = 21; // It would take too long to list all the possibilities with any more details in this test.
 
-        result = bot.botCrawler.lineSplitter(testLine);
+        result = bot.botCrawler.getAllPossibilitiesOnLine(testLine);
         expect(result.length).toEqual(expected);
     });
 });
