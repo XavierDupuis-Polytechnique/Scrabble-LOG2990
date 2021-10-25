@@ -8,7 +8,7 @@ describe('Example service', () => {
     let exampleService: ExampleService;
     let dateService: SinonStubbedInstance<DateService>;
 
-    beforeEach(async zz() => {
+    beforeEach(async () => {
         dateService = createStubInstance(DateService);
         dateService.currentTime.resolves({
             title: 'Time',
