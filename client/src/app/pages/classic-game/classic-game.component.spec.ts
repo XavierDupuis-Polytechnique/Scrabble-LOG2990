@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatToolbar } from '@angular/material/toolbar';
@@ -9,6 +10,7 @@ import { HeaderBarComponent } from '@app/components/header-bar/header-bar.compon
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from './classic-game.component';
 
 describe('ClassicGameComponent', () => {
@@ -24,7 +26,7 @@ describe('ClassicGameComponent', () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
-            imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule, CommonModule],
+            imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
@@ -39,6 +41,7 @@ describe('ClassicGameComponent', () => {
                     useValue: gameManager,
                 },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(ClassicGameComponent);
         component = fixture.componentInstance;

@@ -1,7 +1,11 @@
+import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { FormsModule } from '@angular/forms';
+import { MatSliderChange } from '@angular/material/slider';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
@@ -11,8 +15,10 @@ describe('BoardComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
+            declarations: [BoardComponent, ClickAndClickoutDirective],
             providers: [{ provide: DictionaryService, useValue: dict }],
+            imports: [AppMaterialModule, FormsModule, CommonModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
     beforeEach(() => {

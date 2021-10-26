@@ -1,10 +1,11 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatSliderModule } from '@angular/material/slider';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { routes } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
@@ -19,13 +20,14 @@ describe('GamePageComponent', () => {
         actionValidatorServiceSpy = jasmine.createSpyObj('ActionValidatorService', ['sendAction']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         await TestBed.configureTestingModule({
-            declarations: [GamePageComponent, SidebarComponent],
-            imports: [RouterTestingModule, MatSliderModule],
+            declarations: [GamePageComponent],
+            imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: ActionValidatorService, useValue: actionValidatorServiceSpy },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(GamePageComponent);
         component = fixture.componentInstance;
