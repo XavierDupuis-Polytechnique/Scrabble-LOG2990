@@ -27,7 +27,7 @@ export class UIPlace implements UIAction {
     ) {}
 
     get canBeCreated(): boolean {
-        return this.orderedIndexes.length > 0;
+        return this.orderedIndexes.length > 0 && this.concernedIndexes.size > 0;
     }
 
     receiveRightClick(): void {
@@ -75,17 +75,15 @@ export class UIPlace implements UIAction {
             this.pointCalculator,
             this.wordSearcher,
         );
-        console.log(createdAction);
         return createdAction;
     }
 
     destroy(): void {
-        console.log('DESTROY UIPLACE');
         for (const placement of this.orderedIndexes) {
             const newBlankLetter = this.letterCreator.createBlankLetter(' ');
             this.boardService.board.grid[placement.y][placement.x].letterObject = newBlankLetter;
-            console.log(this.boardService.board.grid[placement.y][placement.x], 'SHOULD BE BLANK ');
         }
+        this.pointerPosition = null;
     }
 
     private isSamePositionClicked(clickPosition: { x: number; y: number }) {
@@ -118,7 +116,7 @@ export class UIPlace implements UIAction {
             currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
             // TODO : MANAGE JOKER
             word = currentTileChar.toLowerCase() + word;
-            console.log('partial word : ' + word);
+            // console.log('partial word : ' + word);
             if (this.direction === Direction.Vertical) {
                 y--;
             } else {
@@ -147,7 +145,11 @@ export class UIPlace implements UIAction {
         this.concernedIndexes.add(possibleLetterIndex);
         this.orderedIndexes.push(newLetterPlacement);
         const concernedTile = this.boardService.board.grid[this.pointerPosition.y][this.pointerPosition.x];
-        const newTile = this.letterCreator.createLetter(this.player.letterRack[possibleLetterIndex].char);
+        let usedChar = this.player.letterRack[possibleLetterIndex].char;
+        if (usedChar === JOKER_CHAR) {
+            usedChar = key;
+        }
+        const newTile = this.letterCreator.createLetter(usedChar);
         concernedTile.letterObject = newTile;
         return true;
     }
@@ -170,15 +172,14 @@ export class UIPlace implements UIAction {
         do {
             x += deltaX;
             y += deltaY;
-        } while (!this.canPlaceALetterHere(x, y));
+            if (this.canPlaceALetterHere(x, y)) {
+                this.pointerPosition = { x, y };
+                return true;
+            }
+        } while (this.isInsideOfBoard(x, y));
 
-        if (!this.isInsideOfBoard(x, y)) {
-            this.pointerPosition = null;
-            return false;
-        }
-
-        this.pointerPosition = { x, y };
-        return true;
+        this.pointerPosition = null;
+        return false;
     }
 
     private canUseLetter(key: string): number | null {
@@ -203,10 +204,10 @@ export class UIPlace implements UIAction {
     }
 
     private canPlaceALetterHere(x: number, y: number): boolean {
-        if (this.isInsideOfBoard(x, y)) {
-            return this.boardService.board.grid[y][x].letterObject.char === EMPTY_CHAR;
+        if (!this.isInsideOfBoard(x, y)) {
+            return false;
         }
-        return false;
+        return this.boardService.board.grid[y][x].letterObject.char === EMPTY_CHAR;
     }
 
     private isInsideOfBoard(x: number, y: number) {
@@ -218,7 +219,6 @@ export class UIPlace implements UIAction {
         if (lastLetter !== undefined) {
             const newBlankLetter = this.letterCreator.createBlankLetter(' ');
             this.boardService.board.grid[lastLetter.y][lastLetter.x].letterObject = newBlankLetter;
-            console.log(this.boardService.board.grid[lastLetter.y][lastLetter.x], 'SHOULD BE BLANK ');
             this.concernedIndexes.delete(lastLetter.rackIndex);
             this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
             return true;
@@ -227,7 +227,7 @@ export class UIPlace implements UIAction {
     }
 
     private isPlacementInProgress(): boolean {
-        return this.concernedIndexes.size > 0;
+        return this.canBeCreated;
     }
 
     private toggleDirection(): void {
