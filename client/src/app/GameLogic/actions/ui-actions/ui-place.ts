@@ -169,9 +169,11 @@ export class UIPlace implements UIAction {
         const usedChar = this.player.letterRack[possibleLetterIndex].char;
         if (usedChar === JOKER_CHAR) {
             concernedTile.letterObject = this.letterCreator.createBlankLetter(key);
+            concernedTile.letterObject.isTemp = true;
             return true;
         }
         concernedTile.letterObject = this.letterCreator.createLetter(usedChar);
+        concernedTile.letterObject.isTemp = true;
         return true;
     }
 

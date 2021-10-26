@@ -51,6 +51,9 @@ export class CanvasDrawer {
             for (let j = 0; j < board.grid.length; j++) {
                 if (board.grid[i][j].letterObject.char !== ' ') {
                     this.drawTile(board.grid[i][j].letterObject.char, board.grid[i][j].letterObject.value, i, j);
+                    if (board.grid[i][j].letterObject.isTemp === true) {
+                        this.drawHighlight(j, i);
+                    }
                 } else if (board.grid[j][i].letterMultiplicator !== 1) {
                     this.drawBonus(j, i, BonusType.LetterBonus, board.grid[j][i].letterMultiplicator);
                 } else if (board.grid[j][i].wordMultiplicator !== 1) {
@@ -115,6 +118,7 @@ export class CanvasDrawer {
 
     private drawRow(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
+        this.canvas.strokeStyle = '#000000';
         this.canvas.beginPath();
         this.canvas.moveTo(this.offset, offset);
         this.canvas.lineTo(this.width, offset);
@@ -123,6 +127,7 @@ export class CanvasDrawer {
 
     private drawColumn(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
+        this.canvas.strokeStyle = '#000000';
         this.canvas.beginPath();
         this.canvas.moveTo(offset, this.offset);
         this.canvas.lineTo(offset, this.height);
@@ -222,5 +227,13 @@ export class CanvasDrawer {
 
         this.canvas.drawImage(img, pos.x, pos.y, this.tileSize, this.tileSize);
         this.canvas.restore();
+    }
+
+    private drawHighlight(i: number, j: number) {
+        const pos = this.tilePositionToCoord(i, j);
+        this.canvas.fillStyle = 'rgba(0.5, 0, 0.5, 0.25)';
+        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+        this.canvas.strokeStyle = '#FF0000';
+        this.canvas.strokeRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
     }
 }
