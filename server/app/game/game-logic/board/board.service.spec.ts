@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-/* tslint:disable:no-unused-variable */
+// /* eslint-disable @typescript-eslint/no-magic-numbers */
+// /* tslint:disable:no-unused-variable */
 
-import { BoardService } from './board.service';
+// import { BoardService } from './board.service';
 
-describe('board service', () => {
-    const boardService = new BoardService();
+// describe('board service', () => {
+//     const boardService = new BoardService();
 
-    it('should have property board', () => {
-        expect(boardService.board).toBeDefined();
-    });
-});
+//     it('should have property board', () => {
+//         expect(boardService.board).toBeDefined();
+//     });
+// });

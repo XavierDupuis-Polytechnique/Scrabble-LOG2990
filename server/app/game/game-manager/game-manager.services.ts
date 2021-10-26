@@ -48,7 +48,7 @@ export class GameManagerService {
         this.activePlayers.set(playerId, playerRef);
         console.log('active players', this.activePlayers);
         // TODO when theres 2 player connected
-        newServerGame.startGame();
+        // newServerGame.startGame();
     }
 
     receivePlayerAction(playerId: string, action: OnlineAction) {
