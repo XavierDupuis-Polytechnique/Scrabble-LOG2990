@@ -13,12 +13,12 @@ export class OnlineGame {
     activePlayerIndex: number = 0;
     lettersRemaining: number = 0;
     isEndOfGame: boolean = false;
+    winnerIndex: number[] = [];
 
     constructor(
-        // public timePerTurn: number,
         private timer: TimerService,
         private onlineSocket: GameSocketHandlerService,
-        private boardService: BoardService, // private messagesService: MessagesService, // private clientHandler: ClientHandlerService,
+        private boardService: BoardService,
         private gameSetting: OnlineGameSettings,
     ) {
         this.boardService.board = new Board();
@@ -33,7 +33,7 @@ export class OnlineGame {
         this.updateActivePlayer(gameState);
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
-        this.updateIsEndOfGame(gameState);
+        this.updateEndOfGame(gameState);
     }
 
     updateBoard(gameState: GameState) {
@@ -55,7 +55,8 @@ export class OnlineGame {
             this.players[i].letterRack = gameState.players[i].letterRack;
         }
     }
-    updateIsEndOfGame(gameState: GameState) {
-        this.isEndOfGame = gameState.isEndofGame;
+    updateEndOfGame(gameState: GameState) {
+        this.isEndOfGame = gameState.isEndOfGame;
+        this.winnerIndex = gameState.winnerIndex;
     }
 }
