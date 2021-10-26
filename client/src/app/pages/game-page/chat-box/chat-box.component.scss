@@ -16,7 +16,7 @@ mat-form-field {
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
-    word-break: normal;
+    word-break: break-all;
     background-color: var(--white);
     opacity: 0.9;
     margin: 1%;

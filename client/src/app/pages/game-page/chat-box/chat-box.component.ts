@@ -18,8 +18,7 @@ const MAX_MESSAGE_LENGTH = 512;
 export class ChatBoxComponent implements AfterViewInit {
     @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
     @Output() clickChatbox = new EventEmitter();
-    @Output() self = InputComponent.Chatbox;
-
+    self = InputComponent.Chatbox;
     messageContent: string;
 
     readonly maxMessageLength = MAX_MESSAGE_LENGTH;
