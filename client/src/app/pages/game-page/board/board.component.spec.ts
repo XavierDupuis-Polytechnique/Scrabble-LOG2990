@@ -1,21 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
     let component: BoardComponent;
     let fixture: ComponentFixture<BoardComponent>;
+    const dict = new DictionaryService();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         }).compileComponents();
+    });
+    beforeEach(() => {
         fixture = TestBed.createComponent(BoardComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
-
     it('should create', () => {
         expect(component).toBeTruthy();
     });
