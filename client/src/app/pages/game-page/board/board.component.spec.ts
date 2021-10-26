@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { MatSlider, MatSliderChange } from '@angular/material/slider';
+import { MatSliderChange } from '@angular/material/slider';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { BoardComponent } from './board.component';
 
@@ -14,7 +14,7 @@ describe('BoardComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [AppMaterialModule, FormsModule, CommonModule],
-            declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
+            declarations: [BoardComponent, ClickAndClickoutDirective],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(BoardComponent);

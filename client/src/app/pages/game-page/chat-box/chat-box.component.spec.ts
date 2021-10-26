@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
@@ -26,7 +27,7 @@ describe('ChatBoxComponent', () => {
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         TestBed.configureTestingModule({
             imports: [AppMaterialModule, BrowserAnimationsModule, FormsModule, CommonModule],
-            declarations: [ChatBoxComponent],
+            declarations: [ChatBoxComponent, ClickAndClickoutDirective],
             providers: [
                 { provide: MessagesService, useValue: messageServiceSpy },
                 { provide: GameInfoService, useValue: gameInfoServiceSpy },
