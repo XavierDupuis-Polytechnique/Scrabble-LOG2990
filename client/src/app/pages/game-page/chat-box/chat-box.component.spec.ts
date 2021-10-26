@@ -1,5 +1,5 @@
 import { ChangeDetectorRef } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
@@ -19,24 +19,16 @@ describe('ChatBoxComponent', () => {
         messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveMessagePlayer']);
         messageServiceSpy.messages$ = new BehaviorSubject<Message[]>([{ content: 'Test', from: 'test from', type: MessageType.Player1 }]);
         gameInfoServiceSpy = jasmine.createSpyObj('GameInfoService', ['getPlayer']);
-        gameInfoServiceSpy.user = new User('SAMUEL');
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-    });
-
-    beforeEach(
-        waitForAsync(() => {
-            TestBed.configureTestingModule({
-                declarations: [ChatBoxComponent],
-                providers: [
-                    { provide: MessagesService, useValue: messageServiceSpy },
-                    { provide: GameInfoService, useValue: gameInfoServiceSpy },
-                    { provide: ChangeDetectorRef, useValue: cdRefSpy },
-                ],
-            }).compileComponents();
-        }),
-    );
-
-    beforeEach(() => {
+        TestBed.configureTestingModule({
+            declarations: [ChatBoxComponent],
+            providers: [
+                { provide: MessagesService, useValue: messageServiceSpy },
+                { provide: GameInfoService, useValue: gameInfoServiceSpy },
+                { provide: ChangeDetectorRef, useValue: cdRefSpy },
+            ],
+        }).compileComponents();
+        gameInfoServiceSpy.user = new User('SAMUEL');
         fixture = TestBed.createComponent(ChatBoxComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

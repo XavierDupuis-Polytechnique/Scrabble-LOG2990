@@ -1,3 +1,5 @@
+import { Vec2 } from '@app/classes/vec2';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { ZERO } from '@app/GameLogic/constants';
 import { Tile } from '@app/GameLogic/game/board/tile';
@@ -70,9 +72,9 @@ export class BotCrawler {
             letterInBox = grid[y][x].letterObject.char;
         }
         if (letterInBox !== ' ') {
-            const lettersOnLine: ValidWord = new ValidWord('');
-            this.getLettersOnLine(x, y, lettersOnLine, grid, isVertical, letterInBox);
-            const allPlacedLettersCombination = this.lineSplitter(lettersOnLine);
+            const position: Vec2 = { x, y };
+            const lettersOnLine = this.getLettersOnLine(position, grid, isVertical, letterInBox);
+            const allPlacedLettersCombination = this.getAllPossibilitiesOnLine(lettersOnLine);
             const possiblyValidWords: ValidWord[] = this.wordCheck(allPlacedLettersCombination);
             this.crossCheck(possiblyValidWords);
         }
@@ -98,7 +100,7 @@ export class BotCrawler {
         }
     }
 
-    lineSplitter(lettersOnLine: ValidWord): ValidWord[] {
+    getAllPossibilitiesOnLine(lettersOnLine: ValidWord): ValidWord[] {
         const allPossibilities: ValidWord[] = [];
         const notFound = -1;
         const startOfLine = 0;
@@ -210,54 +212,56 @@ export class BotCrawler {
         return allPossibilities;
     }
 
-    private getLettersOnLine(x: number, y: number, lettersOnLine: ValidWord, grid: Tile[][], isVertical: boolean, letterInBox: string) {
+    private getLettersOnLine(position: Vec2, grid: Tile[][], isVertical: boolean, letterInBox: string): ValidWord {
+        const lettersOnLine: ValidWord = new ValidWord('');
         let lastLetterOfLine: number;
         let rightCount = 0;
         if (isVertical) {
-            lettersOnLine.leftCount = y;
+            lettersOnLine.leftCount = position.y;
         } else {
-            lettersOnLine.leftCount = x;
+            lettersOnLine.leftCount = position.x;
         }
         lettersOnLine.isVertical = isVertical;
-        lettersOnLine.startingTileX = x;
-        lettersOnLine.startingTileY = y;
+        lettersOnLine.startingTileX = position.x;
+        lettersOnLine.startingTileY = position.y;
         if (isVertical) {
             let tmpY = END_OF_BOARD;
-            let tmpYLetterInBox = grid[tmpY][x].letterObject.char;
+            let tmpYLetterInBox = grid[tmpY][position.x].letterObject.char;
 
             while (tmpYLetterInBox === ' ') {
                 tmpY--;
                 rightCount++;
-                tmpYLetterInBox = grid[tmpY][x].letterObject.char;
+                tmpYLetterInBox = grid[tmpY][position.x].letterObject.char;
             }
             lastLetterOfLine = tmpY;
             lettersOnLine.rightCount = rightCount;
-            tmpY = y;
+            tmpY = position.y;
 
             while (tmpY <= lastLetterOfLine) {
-                letterInBox = grid[tmpY][x].letterObject.char;
+                letterInBox = grid[tmpY][position.x].letterObject.char;
                 lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 tmpY++;
             }
         } else {
             let tmpX = END_OF_BOARD;
-            let tmpXLetterInBox = grid[y][tmpX].letterObject.char;
+            let tmpXLetterInBox = grid[position.y][tmpX].letterObject.char;
 
             while (tmpXLetterInBox === ' ') {
                 tmpX--;
                 rightCount++;
-                tmpXLetterInBox = grid[y][tmpX].letterObject.char;
+                tmpXLetterInBox = grid[position.y][tmpX].letterObject.char;
             }
             lastLetterOfLine = tmpX;
             lettersOnLine.rightCount = rightCount;
-            tmpX = x;
+            tmpX = position.x;
 
             while (tmpX <= lastLetterOfLine) {
-                letterInBox = grid[y][tmpX].letterObject.char;
+                letterInBox = grid[position.y][tmpX].letterObject.char;
                 lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 tmpX++;
             }
         }
+        return lettersOnLine;
     }
 
     private emptyCheck(letterInBox: string): string {
@@ -301,9 +305,9 @@ export class BotCrawler {
         for (const word of possiblyValidWords) {
             let placement: PlacementSetting;
             if (word.isVertical) {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
+                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Vertical };
             } else {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Horizontal };
             }
             const fakeAction = new PlaceLetter(this.bot, word.word, placement, this.pointCalculatorService, this.wordValidator);
             const validWords = this.wordValidator.listOfValidWord(fakeAction);

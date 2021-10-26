@@ -27,9 +27,6 @@ describe('HorseComponent', () => {
                 { provide: GameInfoService, useValue: testSpy },
             ],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(HorseComponent);
         component = fixture.componentInstance;
     });

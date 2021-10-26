@@ -20,19 +20,12 @@ describe('GameInfoService', () => {
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let messages: MessagesService;
+    const dict = new DictionaryService();
     const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                MessagesService,
-                PointCalculatorService,
-                BoardService,
-                DictionaryService,
-                TimerService,
-                GameInfoService,
-                PointCalculatorService,
-            ],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         });
         service = TestBed.inject(GameInfoService);
         timer = TestBed.inject(TimerService);

@@ -11,9 +11,6 @@ describe('BoardComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(BoardComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
