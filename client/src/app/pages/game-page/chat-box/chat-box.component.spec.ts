@@ -1,10 +1,15 @@
-import { ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BehaviorSubject } from 'rxjs';
 import { ChatBoxComponent } from './chat-box.component';
 
@@ -21,12 +26,14 @@ describe('ChatBoxComponent', () => {
         gameInfoServiceSpy = jasmine.createSpyObj('GameInfoService', ['getPlayer']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         TestBed.configureTestingModule({
-            declarations: [ChatBoxComponent],
+            imports: [AppMaterialModule, BrowserAnimationsModule, FormsModule, CommonModule],
+            declarations: [ChatBoxComponent, ClickAndClickoutDirective],
             providers: [
                 { provide: MessagesService, useValue: messageServiceSpy },
                 { provide: GameInfoService, useValue: gameInfoServiceSpy },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         gameInfoServiceSpy.user = new User('SAMUEL');
         fixture = TestBed.createComponent(ChatBoxComponent);

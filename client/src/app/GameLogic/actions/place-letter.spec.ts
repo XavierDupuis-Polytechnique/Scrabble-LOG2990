@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
@@ -17,7 +18,7 @@ import { isCharUpperCase } from '@app/GameLogic/utils';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-
+@Injectable()
 class MockWordSearcher extends WordSearcher {
     validity = true;
     listOfValidWord(): Word[] {
