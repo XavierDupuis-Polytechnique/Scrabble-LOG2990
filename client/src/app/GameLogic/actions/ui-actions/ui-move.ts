@@ -15,7 +15,7 @@ export class UIMove implements UIAction {
     }
 
     receiveRightClick(): void {
-        throw Error('UIMove should not be able to receive a RightClick');
+        return;
     }
 
     receiveLeftClick(args: unknown): void {
@@ -91,7 +91,7 @@ export class UIMove implements UIAction {
     }
 
     private getCurrentIndex(): number {
-        return this.concernedIndexes.values().next().value; // TODO : BULLETPROOF
+        return this.concernedIndexes.values().next().value;
     }
 
     private findNextLetterIndex(nextIndex: number, char: string): number | undefined {
