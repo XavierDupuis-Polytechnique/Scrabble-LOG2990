@@ -14,6 +14,7 @@ import { User } from '@app/GameLogic/player/user';
 import { MockGame } from '@app/GameLogic/point-calculator/mock-game';
 import { MockPlaceLetter } from '@app/GameLogic/point-calculator/mock-place-letter';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('PointCalculatorService', () => {
@@ -41,8 +42,18 @@ describe('PointCalculatorService', () => {
     let listOfWord: Tile[][];
     let word: Tile[];
     let wordSearcher: WordSearcher;
+    const dict = new DictionaryService();
     beforeEach(() => {
-        TestBed.configureTestingModule({ providers: [TimerService, BoardService, PointCalculatorService, WordSearcher, MessagesService] });
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                TimerService,
+                BoardService,
+                PointCalculatorService,
+                WordSearcher,
+                MessagesService,
+            ],
+        });
         timer = TestBed.inject(TimerService);
         boardService = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);

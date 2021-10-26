@@ -13,6 +13,9 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { HeaderBarComponent } from './components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
+import { ClickAndClickoutDirective } from './directives/click-and-clickout.directive';
+import { MouseRollDirective } from './directives/mouse-roll.directive';
+import { PreventContextMenuDirective } from './directives/prevent-context-menu.directive';
 import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
@@ -23,9 +26,6 @@ import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.c
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
-import { PreventContextMenuDirective } from './directives/prevent-context-menu.directive';
-import { ClickAndClickoutDirective } from './directives/click-and-clickout.directive';
-import { MouseRollDirective } from './directives/mouse-roll.directive';
 
 /**
  * Main module that is used in main.ts.

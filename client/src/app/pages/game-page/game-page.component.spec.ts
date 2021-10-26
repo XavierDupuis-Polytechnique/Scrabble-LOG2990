@@ -38,11 +38,10 @@ describe('GamePageComponent', () => {
             };
         }
     }
-    beforeEach(() => {
-        cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-    });
 
     beforeEach(async () => {
+        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
+        cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, SidebarComponent],
             imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule],
@@ -54,9 +53,6 @@ describe('GamePageComponent', () => {
                 { provide: UIInputControllerService, useClass: UIInputControllerServiceMock },
             ],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
         component = fixture.componentInstance;
