@@ -12,7 +12,7 @@ import {
     TEN,
     THREE,
     TWO,
-    ZERO,
+    ZERO
 } from '@app/GameLogic/constants';
 import { WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
@@ -49,11 +49,11 @@ describe('UIMove', () => {
         expect(action.canBeCreated).toBeFalsy();
     });
 
-    it('should throw error when receiving a RightClick', () => {
-        expect(() => {
-            new UIMove(player).receiveRightClick();
-        }).toThrowError('UIMove should not be able to receive a RightClick');
-    });
+    // it('should throw error when receiving a RightClick', () => {
+    //     expect(() => {
+    //         new UIMove(player).receiveRightClick();
+    //     }).toThrowError('UIMove should not be able to receive a RightClick');
+    // });
 
     it('should update the concernedIndexes (unique) following a receiveLeftClick call', () => {
         const firstIndex = 0;
