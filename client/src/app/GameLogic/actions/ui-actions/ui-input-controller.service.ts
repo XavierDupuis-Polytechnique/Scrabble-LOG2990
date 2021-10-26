@@ -33,7 +33,13 @@ export class UIInputControllerService {
         private pointCalculator: PointCalculatorService,
         private wordSearcher: WordSearcher,
         private boardService: BoardService,
-    ) {}
+    ) {
+        this.info.endTurn$.subscribe(() => {
+            if (this.activeAction instanceof UIPlace) {
+                this.discardAction();
+            }
+        });
+    }
 
     receive(input: UIInput) {
         this.processInput(input);
@@ -108,7 +114,7 @@ export class UIInputControllerService {
                 this.processMouseRoll(input.args);
                 break;
             default:
-                throw new Error('Unresolved input of type ' + input.type);
+                throw Error('Unresolved input of type ' + input.type);
         }
     }
 
@@ -119,10 +125,10 @@ export class UIInputControllerService {
 
     confirm() {
         if (this.activeAction === null) {
-            throw new Error('Action couldnt be created : no UIAction is active');
+            throw Error('Action couldnt be created : no UIAction is active');
         }
         if (!this.canBeExecuted) {
-            throw new Error('Action couldnt be created : requirements for creation are not met');
+            throw Error('Action couldnt be created : requirements for creation are not met');
         }
         const newAction: Action = this.activeAction.create();
         this.discardAction();
