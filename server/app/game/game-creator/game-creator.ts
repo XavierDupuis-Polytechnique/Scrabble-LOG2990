@@ -33,6 +33,7 @@ export class GameCreator {
         }
         const players = this.createPlayers(firstPlayerName, secondPlayerName);
         newServerGame.players = players;
+        console.log("Game creator");
         return newServerGame;
     }
 

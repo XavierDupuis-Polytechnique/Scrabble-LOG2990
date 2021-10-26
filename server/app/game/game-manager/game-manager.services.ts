@@ -28,13 +28,13 @@ export class GameManagerService {
         // private messageService: MessagesService,
         private boardService: BoardService,
     ) {
-        new GameCreator(this.timer, this.pointCalculator, this.boardService);
+        this.gameCreator = new GameCreator(this.timer, this.pointCalculator, this.boardService);
+        this.activeGames.set('1', new ServerGame(false, 60000, this.timer, this.pointCalculator, this.boardService));
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
         const newServerGame = this.gameCreator.createServerGame(onlineGameSettings);
         this.activeGames.set(gameToken, newServerGame);
-        newServerGame.startGame();
         console.log('active games', this.activeGames);
     }
 
@@ -43,9 +43,12 @@ export class GameManagerService {
         if (!game) {
             throw Error(`GameToken ${gameToken} is not in active game`);
         }
+        // TODO get reference des players de la game
         const playerRef = { gameToken, player: new Player() };
         this.activePlayers.set(playerId, playerRef);
         console.log('active players', this.activePlayers);
+        // TODO when theres 2 player connected
+        newServerGame.startGame();
     }
 
     receivePlayerAction(playerId: string, action: OnlineAction) {

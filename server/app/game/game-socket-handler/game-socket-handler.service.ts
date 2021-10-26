@@ -19,9 +19,11 @@ export class GameSocketsHandler {
 
     handleSockets() {
         this.sio.on('connection', (socket) => {
+            console.log('Connected');
             socket.on('joinGame', (gameToken: string) => {
                 try {
                     this.addPlayerToGame(socket.id, gameToken);
+                    console.log('player added');
                     socket.join(gameToken);
                 } catch (e) {
                     console.error(e);
@@ -58,6 +60,7 @@ export class GameSocketsHandler {
     private sendPlayerAction(socketId: string, action: OnlineAction) {
         const playerId = socketId;
         this.gameManager.receivePlayerAction(playerId, action);
+        console.log('PLayer action');
     }
 
     private removePlayer(playerId: string) {
