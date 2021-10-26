@@ -1,7 +1,7 @@
 import { Application } from '@app/app';
-import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
+import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
 import { NewOnlineGameSocketHandler } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
