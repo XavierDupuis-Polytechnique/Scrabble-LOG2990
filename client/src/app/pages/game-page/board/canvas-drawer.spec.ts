@@ -1,3 +1,4 @@
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { Board } from '@app/GameLogic/game/board/board';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 describe('Canvas drawer test', () => {
@@ -46,12 +47,40 @@ describe('Canvas drawer test', () => {
         expect(canvasDrawer.height).toEqual(CANVAS_WIDTH);
     });
 
-    it('drawGrod should change pixel on screen', () => {
+    it('drawGrid should change pixel on screen', () => {
         let imageData = canvasDrawer.canvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
         canvasDrawer.drawGrid(board);
         imageData = canvasDrawer.canvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
+    });
+
+    it('if indicator, should call drawImage', () => {
+        canvasDrawer.setIndicator(0, 0);
+        canvasDrawer.setDirection(Direction.Horizontal);
+
+        const drawImageSpy = spyOn(canvasDrawer.canvas, 'drawImage');
+        canvasDrawer.drawGrid(board);
+
+        canvasDrawer.setDirection(Direction.Vertical);
+        canvasDrawer.drawGrid(board);
+        expect(drawImageSpy).toHaveBeenCalled();
+        expect(drawImageSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('if 1 temp letter is placed, should call strokeRect', () => {
+        const strokeRectSpy = spyOn(canvasDrawer.canvas, 'strokeRect');
+        board.grid[0][0].letterObject = { char: 'A', value: 2, isTemp: true };
+        canvasDrawer.drawGrid(board);
+        expect(strokeRectSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('if 2 temp letter is placed, should call strokeRect to time', () => {
+        const strokeRectSpy = spyOn(canvasDrawer.canvas, 'strokeRect');
+        board.grid[0][0].letterObject = { char: 'A', value: 2, isTemp: true };
+        board.grid[0][1].letterObject = { char: 'A', value: 2, isTemp: true };
+        canvasDrawer.drawGrid(board);
+        expect(strokeRectSpy).toHaveBeenCalledTimes(2);
     });
 });
