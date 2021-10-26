@@ -8,24 +8,31 @@ import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { merge } from 'rxjs';
+import { merge, Observable, Subject } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
 export class Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
-    board: Board = new Board();
+    board: Board;
     activePlayerIndex: number;
     consecutivePass: number = 0;
     turnNumber: number = 0;
+    private endTurnSubject = new Subject<void>();
+
+    get endTurn$(): Observable<void> {
+        return this.endTurnSubject;
+    }
 
     constructor(
+        public randomBonus: boolean,
         public timePerTurn: number,
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
         private messagesService: MessagesService,
     ) {
+        this.board = new Board(randomBonus);
         this.boardService.board = this.board;
     }
 
@@ -119,6 +126,7 @@ export class Game {
             }
             this.nextPlayer();
             this.startTurn();
+            this.endTurnSubject.next();
         });
 
         action.execute(this);

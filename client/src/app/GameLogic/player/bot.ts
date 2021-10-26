@@ -31,7 +31,7 @@ export abstract class Bot extends Player {
         protected wordValidator: WordSearcher,
         protected botMessage: BotMessagesService,
         protected gameInfo: GameInfoService,
-        protected commandeExecuter: CommandExecuterService,
+        protected commandExecuter: CommandExecuterService,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);

@@ -40,3 +40,27 @@ export const isCharUpperCase = (char: string) => {
 export const isSocketConnected = (socket: Socket | undefined): boolean => {
     return socket ? socket.connected : false;
 };
+
+export const isStringALowerCaseLetter = (string: string): boolean => {
+    if (string.length !== 1) {
+        return false;
+    }
+    const charCode = string.charCodeAt(0);
+    return charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0);
+};
+
+export const isStringAnUpperCaseLetter = (string: string): boolean => {
+    if (string.length !== 1) {
+        return false;
+    }
+    const charCode = string.charCodeAt(0);
+    return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
+};
+
+export const convertToProperLetter = (string: string): string => {
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
+export const getRandomInt = (max: number, min: number = 0): number => {
+    return Math.floor(Math.random() * (max - min) + min);
+};

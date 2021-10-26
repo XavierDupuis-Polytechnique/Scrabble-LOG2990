@@ -7,14 +7,12 @@ import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('Player', () => {
-    TestBed.configureTestingModule({
-        providers: [BotCreatorService, BotMessagesService, TimerService, PointCalculatorService, MessagesService, GameInfoService],
-    });
+    const dict = new DictionaryService();
     let bot: EasyBot;
     let boardService: BoardService;
     let botCreator: BotCreatorService;
@@ -22,8 +20,12 @@ describe('Player', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
+    const randomBonus = false;
 
     beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         boardService = TestBed.inject(BoardService);
         botCreator = TestBed.inject(BotCreatorService);
         timer = TestBed.inject(TimerService);
@@ -31,7 +33,7 @@ describe('Player', () => {
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
         bot = botCreator.createBot('testBot', 'easy') as EasyBot;
-        gameInfo.receiveGame(new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
     });
 
     it('should create an instance', () => {

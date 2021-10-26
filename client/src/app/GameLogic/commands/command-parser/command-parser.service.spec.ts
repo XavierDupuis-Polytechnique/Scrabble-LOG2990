@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import * as commandParserService from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
@@ -71,20 +72,20 @@ describe('CommandParser', () => {
 
     it('should throw ' + syntaxError3, () => {
         expect(() => {
-            service.placeLetterFormatter(['a1v', EMPTY_CHAR]);
+            service['placeLetterFormatter'](['a1v', EMPTY_CHAR]);
         }).toThrowError(syntaxError3);
     });
 
     it('should throw ' + syntaxError3, () => {
         expect(() => {
-            service.placeLetterFormatter(['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
+            service['placeLetterFormatter'](['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
         }).toThrowError(syntaxError3);
     });
 
     it('testArg should be equal to expectedArg', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
-        expect(service.placeLetterFormatter(testArg)).toEqual(expectedArg);
+        expect(service['placeLetterFormatter'](testArg)).toEqual(expectedArg);
     });
 
     it('should throw ' + syntaxError1, () => {

@@ -1,0 +1,24 @@
+<div id="abandonGame-modal-wrapper">
+    <header id="abandonGame-modal-header">
+        <h1 mat-dialog-title id="abandonGame-modal-title">Voulez-vous abandonner la partie ?</h1>
+        <div mat-dialog-content id="dataMessage">Vous seriez alors déclaré perdant.</div>
+    </header>
+    <footer mat-dialog-actions id="abandonGame-modal-footer">
+        <button
+            mat-raised-button
+            id="abandonButton"
+            class="mat-focus-indicator mat-raised-button mat-button-base mat-accent abandonDialog"
+            (click)="abandon()"
+        >
+            Abandonner
+        </button>
+        <button
+            mat-raised-button
+            id="closeButton"
+            class="mat-focus-indicator mat-raised-button mat-button-base mat-accent abandonDialog"
+            (click)="closeDialog()"
+        >
+            Revenir
+        </button>
+    </footer>
+</div>

@@ -1,25 +1,31 @@
+import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { MatSlider, MatSliderChange } from '@angular/material/slider';
-import { TileComponent } from '@app/pages/game-page/board/tile/tile.component';
+import { FormsModule } from '@angular/forms';
+import { MatSliderChange } from '@angular/material/slider';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
     let component: BoardComponent;
     let fixture: ComponentFixture<BoardComponent>;
+    const dict = new DictionaryService();
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile, TileComponent],
+            declarations: [BoardComponent, ClickAndClickoutDirective],
+            providers: [{ provide: DictionaryService, useValue: dict }],
+            imports: [AppMaterialModule, FormsModule, CommonModule],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
-
     beforeEach(() => {
         fixture = TestBed.createComponent(BoardComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
-
     it('should create', () => {
         expect(component).toBeTruthy();
     });
