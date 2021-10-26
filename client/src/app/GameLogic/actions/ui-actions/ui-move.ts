@@ -15,7 +15,7 @@ export class UIMove implements UIAction {
     }
 
     receiveRightClick(): void {
-        throw new Error('UIMove should not be able to receive a RightClick');
+        throw Error('UIMove should not be able to receive a RightClick');
     }
 
     receiveLeftClick(args: unknown): void {
@@ -60,7 +60,7 @@ export class UIMove implements UIAction {
     }
 
     create(): Action {
-        throw new Error('UIMove should not be able to create an Action');
+        throw Error('UIMove should not be able to create an Action');
     }
 
     destroy(): void {
@@ -112,7 +112,7 @@ export class UIMove implements UIAction {
             this.concernedIndexes.add(letterIndex);
         }
         if (this.concernedIndexes.size > 1) {
-            throw new Error('Only one letter should be selected for UIMove');
+            throw Error('Only one letter should be selected for UIMove');
         }
     }
 }

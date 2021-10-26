@@ -22,7 +22,7 @@ import { getRandomInt } from '@app/GameLogic/utils';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { UIPlace } from './ui-place';
 
-fdescribe('UIPlace', () => {
+describe('UIPlace', () => {
     let player: Player;
     let action: UIPlace;
     let boardService: BoardService;
@@ -353,7 +353,7 @@ fdescribe('UIPlace', () => {
         }
     });
 
-    it('should properly retreive the corrrect word from the board when create the PlacerLetter (horizontal)', () => {
+    it('should properly retreive the corrrect word and position from the board when create the PlacerLetter (horizontal)', () => {
         player.letterRack[THREE].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
@@ -366,9 +366,10 @@ fdescribe('UIPlace', () => {
         }
         const placeLetterAction = action.create() as PlaceLetter;
         expect(placeLetterAction.word).toBe(expectedWord);
+        expect(placeLetterAction.placement).toEqual({ x, y, direction: action.direction });
     });
 
-    it('should properly retreive the corrrect word from the board when create the PlacerLetter (vertical)', () => {
+    it('should properly retreive the correct word and position from the board when create the PlacerLetter (vertical)', () => {
         player.letterRack[THREE].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
@@ -382,5 +383,6 @@ fdescribe('UIPlace', () => {
         }
         const placeLetterAction = action.create() as PlaceLetter;
         expect(placeLetterAction.word).toBe(expectedWord);
+        expect(placeLetterAction.placement).toEqual({ x, y, direction: action.direction });
     });
 });

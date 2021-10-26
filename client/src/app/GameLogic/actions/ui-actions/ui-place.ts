@@ -31,7 +31,7 @@ export class UIPlace implements UIAction {
     }
 
     receiveRightClick(): void {
-        throw new Error('UIPlace should not be able to receive a RightClick');
+        return;
     }
 
     receiveLeftClick(args: unknown): void {
@@ -63,7 +63,7 @@ export class UIPlace implements UIAction {
     }
 
     receiveRoll(): void {
-        throw new Error('UIExchange should not be able to receive a MouseRoll');
+        return;
     }
 
     create(): Action {
@@ -113,16 +113,23 @@ export class UIPlace implements UIAction {
             x--;
         }
         do {
-            currentTileChar = this.boardService.board.grid[y][x].letterObject.char;
-            // TODO : MANAGE JOKER
-            word = currentTileChar.toLowerCase() + word;
-            // console.log('partial word : ' + word);
+            currentTileChar = this.boardService.board.grid[y][x].letterObject;
+            if (currentTileChar.value === 0) {
+                word = currentTileChar.char.toUpperCase() + word;
+            } else {
+                word = currentTileChar.char.toLowerCase() + word;
+            }
             if (this.direction === Direction.Vertical) {
                 y--;
             } else {
                 x--;
             }
         } while (this.isThereALetter(x, y));
+        if (this.direction === Direction.Vertical) {
+            y++;
+        } else {
+            x++;
+        }
         return { word, x, y };
     }
 
@@ -145,12 +152,12 @@ export class UIPlace implements UIAction {
         this.concernedIndexes.add(possibleLetterIndex);
         this.orderedIndexes.push(newLetterPlacement);
         const concernedTile = this.boardService.board.grid[this.pointerPosition.y][this.pointerPosition.x];
-        let usedChar = this.player.letterRack[possibleLetterIndex].char;
+        const usedChar = this.player.letterRack[possibleLetterIndex].char;
         if (usedChar === JOKER_CHAR) {
-            usedChar = key;
+            concernedTile.letterObject = this.letterCreator.createBlankLetter(key);
+            return true;
         }
-        const newTile = this.letterCreator.createLetter(usedChar);
-        concernedTile.letterObject = newTile;
+        concernedTile.letterObject = this.letterCreator.createLetter(usedChar);
         return true;
     }
 
