@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, IterableDiffers, Output, ViewChild } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
-import { ASCII_CODE } from '@app/GameLogic/constants';
+import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
+import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
+import { ASCII_CODE, NOT_FOUND } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
@@ -18,14 +20,14 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     @ViewChild('ScrabbleBoard') scrabbleBoard: ElementRef;
     @Output() clickTile = new EventEmitter();
     @ViewChild('gridCanvas') private canvas!: ElementRef<HTMLCanvasElement>;
-    self = InputComponent.Board;
+    readonly self = InputComponent.Board;
     board: Board;
     minFontSize = MIN_FONT_SIZE;
     maxFontSize = MAX_FONT_SIZE;
     fontSize: number;
     canvasDrawer: CanvasDrawer;
 
-    constructor(private boardService: BoardService, private itDiffer: IterableDiffers) {
+    constructor(private boardService: BoardService, private itDiffer: IterableDiffers, private inputController: UIInputControllerService) {
         this.board = this.boardService.board;
         this.fontSize = (this.minFontSize + this.maxFontSize) / 2;
     }
@@ -45,6 +47,17 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     ngDoCheck() {
         const changes = this.itDiffer.find([]).create(undefined).diff(this.board.grid);
         if (changes && this.canvasDrawer) {
+            if (this.inputController.activeAction instanceof UIPlace) {
+                if (this.inputController.activeAction.pointerPosition) {
+                    this.canvasDrawer.setIndicator(
+                        this.inputController.activeAction.pointerPosition.x,
+                        this.inputController.activeAction.pointerPosition.y,
+                    );
+                    this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
+                }
+            } else {
+                this.canvasDrawer.setIndicator(NOT_FOUND, NOT_FOUND);
+            }
             this.canvasDrawer.drawGrid(this.board);
         }
     }
@@ -64,8 +77,15 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         }
     }
 
-    click(x: number, y: number) {
-        const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: { x, y } };
+    // click(x: number, y: number) {
+    //     const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: { x, y } };
+    //     this.clickTile.emit(input);
+    // }
+
+    canvasClick(event: MouseEvent): void {
+        const pos = this.canvasDrawer.coordToTilePosition(event.offsetX, event.offsetY);
+        // this.canvasDrawer.click(pos.indexI, pos.indexJ);
+        const input: UIInput = { from: this.self, type: InputType.LeftClick, args: { x: pos.indexI, y: pos.indexJ } };
         this.clickTile.emit(input);
     }
 }

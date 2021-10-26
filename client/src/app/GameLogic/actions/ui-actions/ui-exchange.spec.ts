@@ -49,23 +49,23 @@ describe('UIExchange', () => {
         expect(action.concernedIndexes.size).toBe(TWO);
     });
 
-    it('should throw error when receiving a LeftClick', () => {
-        expect(() => {
-            action.receiveLeftClick('');
-        }).toThrowError('UIExchange should not be able to receive a LeftClick');
-    });
+    // it('should throw error when receiving a LeftClick', () => {
+    //     expect(() => {
+    //         action.receiveLeftClick('');
+    //     }).toThrowError('UIExchange should not be able to receive a LeftClick');
+    // });
 
-    it('should throw error when receiving a KeyPress', () => {
-        expect(() => {
-            action.receiveKey('');
-        }).toThrowError('UIExchange should not be able to receive a KeyPress');
-    });
+    // it('should throw error when receiving a KeyPress', () => {
+    //     expect(() => {
+    //         action.receiveKey('');
+    //     }).toThrowError('UIExchange should not be able to receive a KeyPress');
+    // });
 
-    it('should throw error when receiving a MouseRoll', () => {
-        expect(() => {
-            action.receiveRoll('');
-        }).toThrowError('UIExchange should not be able to receive a MouseRoll');
-    });
+    // it('should throw error when receiving a MouseRoll', () => {
+    //     expect(() => {
+    //         action.receiveRoll('');
+    //     }).toThrowError('UIExchange should not be able to receive a MouseRoll');
+    // });
 
     it('should create the corresponding ExchangeLetter action', () => {
         const firstIndex = 0;

@@ -8,4 +8,5 @@ export abstract class UIAction {
     abstract receiveKey(key: string): void;
     abstract receiveRoll(args: unknown): void;
     abstract create(): Action;
+    abstract destroy(): void;
 }
