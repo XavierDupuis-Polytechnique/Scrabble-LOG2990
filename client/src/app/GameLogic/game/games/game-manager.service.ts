@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { OnlineGame } from '@app/GameLogic/game/games/online-game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { Observable, Subject } from 'rxjs';
 import { Game } from './game';
 import { GameSettings } from './game-settings.interface';
@@ -17,6 +20,7 @@ import { GameSettings } from './game-settings.interface';
 })
 export class GameManagerService {
     private game: Game;
+    private onlineGame: OnlineGame;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
@@ -30,6 +34,7 @@ export class GameManagerService {
         private messageService: MessagesService,
         private boardService: BoardService,
         private commandExecuter: CommandExecuterService,
+        private gameSocketHandler: GameSocketHandlerService,
     ) {}
 
     createGame(gameSettings: GameSettings): void {
@@ -50,6 +55,15 @@ export class GameManagerService {
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
+    }
+
+    joinOnlineGame(gameSettings: OnlineGameSettings, gameToken: string) {
+        if (this.game) {
+            this.stopGame();
+        }
+        this.gameSocketHandler.joinGame(gameToken);
+        this.onlineGame = new OnlineGame(this.timer, this.gameSocketHandler, this.boardService, gameSettings);
+        this.info.receiveOnlineGame(this.onlineGame);
     }
 
     startGame(): void {
