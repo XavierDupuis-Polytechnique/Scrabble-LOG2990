@@ -34,7 +34,7 @@ export class UIInputControllerService {
         private wordSearcher: WordSearcher,
         private boardService: BoardService,
     ) {
-        this.info.endTurn$.subscribe(() => {
+        this.info.endTurn$?.subscribe(() => {
             if (this.activeAction instanceof UIPlace) {
                 this.discardAction();
             }
