@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Message, MessageType } from './message.interface';
 
 @Injectable({
@@ -31,6 +31,15 @@ export class MessagesService {
             type: MessageType.System,
         };
         this.addMessageToLog(errorMessage);
+    }
+    get errorMessages$(): Observable<string> {
+        return this.commandParser.errormessage$;
+    }
+
+    receiveErrorMessage2() {
+        this.errorMessages$.subscribe((message) => {
+            this.receiveErrorMessage(message);
+        });
     }
 
     receiveMessagePlayer(forwarder: string, content: string) {

@@ -6,7 +6,7 @@ import {
     CHARACTER_V,
     MAX_PLACE_LETTER_ARG_SIZE,
     MIN_PLACE_LETTER_ARG_SIZE,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/GameLogic/constants';
 import { Observable, Subject } from 'rxjs';
 
@@ -18,10 +18,14 @@ const INVALID_EXCHANGE_LETTER = new RegExp('[^a-z*]');
 export class CommandParserService {
     private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
+    private errorMessageContent$: Subject<string> = new Subject();
+
     get parsedCommand$(): Observable<Command> {
         return this.command$;
     }
-
+    get errormessage$() {
+        return this.errorMessageContent$;
+    }
     createCommand(from: string, args: string[], commandType: CommandType): Command {
         const command = { from, type: commandType, args } as Command;
         return command;
@@ -29,6 +33,10 @@ export class CommandParserService {
 
     sendCommand(command: Command) {
         this.command$.next(command);
+    }
+
+    sendErrorMessage(message: string) {
+        this.errorMessageContent$.next(message);
     }
 
     parse(message: string, from: string): CommandType | undefined {
@@ -40,7 +48,7 @@ export class CommandParserService {
                 let args = toVerify.slice(1, toVerify.length);
                 if (commandType === CommandType.Place) {
                     if (toVerify.length < 3) {
-                        throw Error('mot ou emplacement manquant');
+                        this.sendErrorMessage('mot ou emplacement manquant');
                     }
                     args = this.placeLetterFormatter(args);
                 }
@@ -52,7 +60,7 @@ export class CommandParserService {
                 return commandCondition as CommandType;
             }
             const errorContent = commandCondition + ' est une entrée invalide';
-            throw Error(errorContent);
+            this.sendErrorMessage(errorContent);
         }
         return undefined;
     }
@@ -69,45 +77,49 @@ export class CommandParserService {
             args = [];
             args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
         } else {
-            throw Error(this.errorSyntax + ': les paramètres sont invalides');
+            this.sendErrorMessage(this.errorSyntax + ': les paramètres sont invalides');
         }
         return args;
     }
 
-    private placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
+    private placeLetterArgVerifier(row: number, col: number | undefined, direction: number, word: string) {
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
-            throw Error(this.errorSyntax + ': ligne hors champ');
+            this.sendErrorMessage(this.errorSyntax + ': ligne hors champ');
         }
-        if (col > BOARD_DIMENSION) {
-            throw Error(this.errorSyntax + ': colonne hors champ');
+        if (col === undefined || col > BOARD_DIMENSION) {
+            this.sendErrorMessage(this.errorSyntax + ': colonne hors champ');
         }
         if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
-            throw Error(this.errorSyntax + ': direction invalide');
+            this.sendErrorMessage(this.errorSyntax + ': direction invalide');
         }
         if (word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
-            throw Error(this.errorSyntax + ': mot invalide');
+            this.sendErrorMessage(this.errorSyntax + ': mot invalide');
         }
     }
 
-    private colArgVerifier(arg1: string): number {
+    private colArgVerifier(columns: string): number | undefined {
         let col;
-        if (this.isNumeric(arg1[1]) && this.isNumeric(arg1[2]) && arg1.length === MAX_PLACE_LETTER_ARG_SIZE) {
-            col = Number(arg1[1] + arg1[2]);
+        if (this.isNumeric(columns[1]) && this.isNumeric(columns[2]) && columns.length === MAX_PLACE_LETTER_ARG_SIZE) {
+            col = Number(columns[1] + columns[2]);
             return col;
-        } else if (this.isNumeric(arg1[1]) && arg1.length === MIN_PLACE_LETTER_ARG_SIZE) {
-            col = Number(arg1[1]);
+        } else if (this.isNumeric(columns[1]) && columns.length === MIN_PLACE_LETTER_ARG_SIZE) {
+            col = Number(columns[1]);
             return col;
         }
-        throw Error(this.errorSyntax + ': colonne invalide');
+        this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+        return undefined;
     }
 
-    private exchangeLetterArgVerifier(word: string) {
+    private exchangeLetterArgVerifier(word: string): boolean {
         if (INVALID_EXCHANGE_LETTER.test(word) || word === undefined) {
-            throw Error('les paramètres sont invalides');
+            this.sendErrorMessage('les paramètres sont invalides');
+            return false;
         }
         if (word.length > RACK_LETTER_COUNT) {
-            throw Error('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+            this.sendErrorMessage('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+            return false;
         }
+        return true;
     }
 
     private isNumeric(value: string) {
