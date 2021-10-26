@@ -1,5 +1,7 @@
 import { Component, HostListener } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { AbandonButtonComponent } from '@app/components/abandon-button/abandon-button.component';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
@@ -21,6 +23,7 @@ export class GamePageComponent {
         public info: GameInfoService,
         private avs: ActionValidatorService,
         private router: Router,
+        public matDialog: MatDialog,
         private inputController: UIInputControllerService,
     ) {
         try {
@@ -40,10 +43,11 @@ export class GamePageComponent {
         this.inputController.receive(input);
     }
 
-    abandonner(): void {
-        this.gameManager.stopGame();
+    abandon(): void {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        this.matDialog.open(AbandonButtonComponent, dialogConfig);
     }
-
     get isItMyTurn() {
         try {
             return this.info.user === this.info.activePlayer;

@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
@@ -17,7 +18,7 @@ import { isCharUpperCase } from '@app/GameLogic/utils';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Word } from '@app/GameLogic/validator/word-search/word';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
-
+@Injectable()
 class MockWordSearcher extends WordSearcher {
     validity = true;
     listOfValidWord(): Word[] {
@@ -34,7 +35,7 @@ describe('PlaceLetter', () => {
     const placement: PlacementSetting = {
         x: 0,
         y: 0,
-        direction: 'H',
+        direction: Direction.Horizontal,
     };
     let game: Game;
     const player1: Player = new User('Tim');
@@ -44,6 +45,7 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
+    const dict = new DictionaryService();
     const randomBonus = false;
     beforeEach(() => {
         timer = new TimerService();
@@ -56,8 +58,8 @@ describe('PlaceLetter', () => {
         });
         TestBed.configureTestingModule({
             providers: [
+                { provide: DictionaryService, useValue: dict },
                 BoardService,
-                DictionaryService,
                 { provide: PointCalculatorService, useValue: pointCalculatorSpy },
                 { provide: WordSearcher, useClass: MockWordSearcher },
                 GameInfoService,

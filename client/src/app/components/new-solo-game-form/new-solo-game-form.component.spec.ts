@@ -1,7 +1,10 @@
 /* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { NewSoloGameFormComponent } from './new-solo-game-form.component';
 
 describe('NewSoloGameFormComponent', () => {
@@ -13,8 +16,8 @@ describe('NewSoloGameFormComponent', () => {
         close: () => {},
     };
     beforeEach(async () => {
-        TestBed.configureTestingModule({
-            imports: [MatDialogModule],
+        await TestBed.configureTestingModule({
+            imports: [AppMaterialModule, BrowserAnimationsModule, ReactiveFormsModule],
             providers: [
                 {
                     provide: MAT_DIALOG_DATA,
@@ -24,9 +27,6 @@ describe('NewSoloGameFormComponent', () => {
             ],
             declarations: [NewSoloGameFormComponent],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(NewSoloGameFormComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
