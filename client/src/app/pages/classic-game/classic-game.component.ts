@@ -64,6 +64,11 @@ export class ClassicGameComponent {
         secondDialogConfig.disableClose = true;
 
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
+        secondDialogRef.afterOpened().subscribe(() => {
+            this.socketHandler.gameToken$.subscribe(() => {
+                secondDialogRef.close();
+            });
+        });
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
             if (botDifficulty) {
                 this.socketHandler.disconnect();
