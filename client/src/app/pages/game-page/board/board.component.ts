@@ -19,8 +19,8 @@ const MIN_FONT_SIZE = 7;
 export class BoardComponent implements AfterViewInit, DoCheck {
     @ViewChild('ScrabbleBoard') scrabbleBoard: ElementRef;
     @Output() clickTile = new EventEmitter();
-    @Output() self = InputComponent.Board;
     @ViewChild('gridCanvas') private canvas!: ElementRef<HTMLCanvasElement>;
+    readonly self = InputComponent.Board;
     board: Board;
     minFontSize = MIN_FONT_SIZE;
     maxFontSize = MAX_FONT_SIZE;
