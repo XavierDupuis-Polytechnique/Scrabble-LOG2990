@@ -44,12 +44,16 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         this.onlineSocketHandler.joinPendingGame(this.data.id, this.oppName.value);
     }
 
+    forbiddenNameValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: unknown } | null =>
+            control.value !== this.playerName ? null : { forbidden: control.value };
+    }
+
     get valid() {
         return this.oppName.valid;
     }
 
-    forbiddenNameValidator(): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: unknown } | null =>
-            control.value !== this.playerName ? null : { forbidden: control.value };
+    get timePerTurn() {
+        return this.data.randomBonus === true ? 'est activé' : 'est désactivé';
     }
 }
