@@ -8,14 +8,18 @@ import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/in
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { getRandomInt } from '@app/GameLogic/utils';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { UIInputControllerService } from './ui-input-controller.service';
 
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
+    const dict = new DictionaryService();
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         service = TestBed.inject(UIInputControllerService);
         player = new User('p1');
         player.letterRack = [
