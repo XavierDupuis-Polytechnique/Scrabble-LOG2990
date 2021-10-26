@@ -8,9 +8,12 @@ export interface LightPlayer {
     letterRack: Letter[];
 }
 
-export class GameState {
+export interface GameState {
     players: LightPlayer[];
     activePlayerIndex: number;
     grid: Tile[][];
     letterBag: LetterBag;
+
+    isEndOfGame: boolean;
+    winnerIndex: number[];
 }
