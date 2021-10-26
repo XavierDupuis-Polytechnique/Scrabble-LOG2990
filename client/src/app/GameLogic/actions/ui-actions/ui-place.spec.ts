@@ -12,7 +12,7 @@ import {
     ONE,
     RACK_LETTER_COUNT,
     THREE,
-    ZERO
+    ZERO,
 } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Player } from '@app/GameLogic/player/player';

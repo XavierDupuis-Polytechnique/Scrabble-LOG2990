@@ -2,7 +2,7 @@ import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, IterableDi
 import { MatSliderChange } from '@angular/material/slider';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
-import { ASCII_CODE } from '@app/GameLogic/constants';
+import { ASCII_CODE, NOT_FOUND } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
@@ -56,7 +56,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
                     this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
                 }
             } else {
-                this.canvasDrawer.setIndicator(-1, -1);
+                this.canvasDrawer.setIndicator(NOT_FOUND, NOT_FOUND);
             }
             this.canvasDrawer.drawGrid(this.board);
         }

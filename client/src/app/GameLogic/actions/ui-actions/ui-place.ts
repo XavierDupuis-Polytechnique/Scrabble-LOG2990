@@ -93,25 +93,24 @@ export class UIPlace implements UIAction {
         return clickPosition.x === this.pointerPosition.x && clickPosition.y === this.pointerPosition.y;
     }
 
-    // TODO : REFACTOR, REASON : TRASH
     private getWordFromBoard(): WordPlacement {
+        if (this.direction === Direction.Horizontal) {
+            return this.getHorizontalWordFromBoard();
+        } else {
+            return this.getVerticalWordFromBoard();
+        }
+    }
+
+    private getVerticalWordFromBoard(): WordPlacement {
         const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
-        let x = lastLetterPlacement.x;
+        const x = lastLetterPlacement.x;
         let y = lastLetterPlacement.y;
         let currentTileChar;
         let word = '';
         while (this.isThereALetter(x, y)) {
-            if (this.direction === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
+            y++;
         }
-        if (this.direction === Direction.Vertical) {
-            y--;
-        } else {
-            x--;
-        }
+        y--;
         do {
             currentTileChar = this.boardService.board.grid[y][x].letterObject;
             if (currentTileChar.value === 0) {
@@ -119,17 +118,32 @@ export class UIPlace implements UIAction {
             } else {
                 word = currentTileChar.char.toLowerCase() + word;
             }
-            if (this.direction === Direction.Vertical) {
-                y--;
-            } else {
-                x--;
-            }
+            y--;
         } while (this.isThereALetter(x, y));
-        if (this.direction === Direction.Vertical) {
-            y++;
-        } else {
+        y++;
+        return { word, x, y };
+    }
+
+    private getHorizontalWordFromBoard(): WordPlacement {
+        const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
+        let x = lastLetterPlacement.x;
+        const y = lastLetterPlacement.y;
+        let currentTileChar;
+        let word = '';
+        while (this.isThereALetter(x, y)) {
             x++;
         }
+        x--;
+        do {
+            currentTileChar = this.boardService.board.grid[y][x].letterObject;
+            if (currentTileChar.value === 0) {
+                word = currentTileChar.char.toUpperCase() + word;
+            } else {
+                word = currentTileChar.char.toLowerCase() + word;
+            }
+            x--;
+        } while (this.isThereALetter(x, y));
+        x++;
         return { word, x, y };
     }
 
