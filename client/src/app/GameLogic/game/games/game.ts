@@ -14,18 +14,20 @@ export class Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
-    board: Board = new Board();
+    board: Board;
     activePlayerIndex: number;
     consecutivePass: number = 0;
     turnNumber: number = 0;
 
     constructor(
+        public randomBonus: boolean,
         public timePerTurn: number,
         private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
         private messagesService: MessagesService,
     ) {
+        this.board = new Board(randomBonus);
         this.boardService.board = this.board;
     }
 

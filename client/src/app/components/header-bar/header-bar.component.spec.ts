@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { MatToolbar } from '@angular/material/toolbar';
+import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { HeaderBarComponent } from './header-bar.component';
 
 describe('HeaderBarComponent', () => {
@@ -8,11 +9,9 @@ describe('HeaderBarComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            declarations: [HeaderBarComponent],
+            imports: [AppRoutingModule],
+            declarations: [HeaderBarComponent, MatToolbar],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(HeaderBarComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();

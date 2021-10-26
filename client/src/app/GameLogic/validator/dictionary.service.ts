@@ -182,9 +182,12 @@ export class DictionaryService {
             oldSubWordLength = tmpWord.word.length;
         }
         for (const dictWord of tmpDict) {
-            wordList.push(
-                new ValidWord(dictWord.word, RESET, RESET, RESET, RESET, partWord.isVertical, dictWord.startingTileX, dictWord.startingTileY),
-            );
+            const newWord: ValidWord = new ValidWord(dictWord.word);
+            newWord.isVertical = partWord.isVertical;
+            newWord.startingTileX = dictWord.startingTileX;
+            newWord.startingTileY = dictWord.startingTileY;
+            newWord.numberOfLettersPlaced = dictWord.word.length - letterCountOfPartWord;
+            wordList.push(newWord);
         }
     }
 
@@ -201,6 +204,7 @@ export class DictionaryService {
                     const newWord: ValidWord = new ValidWord(dictWord);
                     newWord.isVertical = partWord.isVertical;
                     this.setStartingTile(partWord, newWord, foundIndex);
+                    newWord.numberOfLettersPlaced = dictWord.length - letterCountOfPartWord;
                     wordList.push(newWord);
                 }
             }

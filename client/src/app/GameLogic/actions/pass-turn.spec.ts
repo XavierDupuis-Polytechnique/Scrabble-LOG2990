@@ -14,11 +14,13 @@ describe('PassTurn', () => {
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     let timer: TimerService;
+    const randomBonus = false;
 
     beforeEach(() => {
         timer = new TimerService();
         const boardService = new BoardService();
         game = new Game(
+            randomBonus,
             DEFAULT_TIME_PER_TURN,
             timer,
             new PointCalculatorService(boardService),

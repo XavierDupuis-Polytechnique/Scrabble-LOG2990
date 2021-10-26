@@ -7,6 +7,7 @@ import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.int
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { MockBoard } from '@app/GameLogic/validator/word-search/mock-board';
 import { MockDictionaryService } from '@app/GameLogic/validator/word-search/mock-dictionary-service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -14,24 +15,22 @@ import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher
 describe('WordSearcher', () => {
     let wordSearcher: WordSearcher;
     let mockBoard: MockBoard;
-    let dictionaryService: MockDictionaryService;
     let boardService: BoardService;
     let pointCalculator: PointCalculatorService;
-
+    const mockDict = new MockDictionaryService();
     let player: Player;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [MockDictionaryService, BoardService, WordSearcher, PointCalculatorService],
+            providers: [{ provide: DictionaryService, useValue: mockDict }],
         });
         player = new User('Max');
         boardService = TestBed.inject(BoardService);
-        dictionaryService = TestBed.inject(MockDictionaryService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         mockBoard = new MockBoard();
         boardService.board = mockBoard;
         pointCalculator = TestBed.inject(PointCalculatorService);
-        wordSearcher = new WordSearcher(boardService, dictionaryService);
+        wordSearcher = TestBed.inject(WordSearcher);
     });
 
     it('should be created', () => {
@@ -131,5 +130,12 @@ describe('WordSearcher', () => {
         const action = new PlaceLetter(player, 'rateau', placement, pointCalculator, wordSearcher);
         const isValid = wordSearcher.validateWords(action);
         expect(isValid).toBe(false);
+    });
+    it('should return true even if word has blank letter', () => {
+        mockBoard.grid[2][2].letterObject = { char: 'N', value: 1 };
+        const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
+        const action = new PlaceLetter(player, 'On', placement, pointCalculator, wordSearcher);
+        const isValid = wordSearcher.validateWords(action);
+        expect(isValid).toBe(true);
     });
 });

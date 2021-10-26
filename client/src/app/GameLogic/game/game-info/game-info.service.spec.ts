@@ -9,6 +9,10 @@ import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-ca
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { GameInfoService } from './game-info.service';
 
+const passThrough = (map: Map<string, number>): Map<string, number> => {
+    return map;
+};
+
 describe('GameInfoService', () => {
     let service: GameInfoService;
     let game: Game;
@@ -16,18 +20,12 @@ describe('GameInfoService', () => {
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let messages: MessagesService;
+    const dict = new DictionaryService();
+    const randomBonus = false;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [
-                MessagesService,
-                PointCalculatorService,
-                BoardService,
-                DictionaryService,
-                TimerService,
-                GameInfoService,
-                PointCalculatorService,
-            ],
+            providers: [{ provide: DictionaryService, useValue: dict }],
         });
         service = TestBed.inject(GameInfoService);
         timer = TestBed.inject(TimerService);
@@ -35,7 +33,7 @@ describe('GameInfoService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
 
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
+        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];
         game.start();
     });
@@ -77,6 +75,13 @@ describe('GameInfoService', () => {
     it('should throw Error for numberOfLettersRemaining if no game was received', () => {
         expect(() => {
             const n = service.numberOfLettersRemaining;
+            n.toString();
+        }).toThrowError('No Game in GameInfo');
+    });
+
+    it('should throw Error if no game was received on letterOcurrence call', () => {
+        expect(() => {
+            const n = service.letterOccurences;
             n.toString();
         }).toThrowError('No Game in GameInfo');
     });
@@ -124,5 +129,13 @@ describe('GameInfoService', () => {
         game.players[1].points = Number.MAX_SAFE_INTEGER;
         spyOn(game, 'getWinner').and.returnValue([game.players[1]]);
         expect(service.winner).toEqual([game.players[1]]);
+    });
+
+    it('should call #countLetters from letterBag', () => {
+        service.receiveGame(game);
+        const spy = spyOn(game.letterBag, 'countLetters');
+        // eslint-disable-next-line no-unused-vars
+        passThrough(service.letterOccurences);
+        expect(spy).toHaveBeenCalled();
     });
 });

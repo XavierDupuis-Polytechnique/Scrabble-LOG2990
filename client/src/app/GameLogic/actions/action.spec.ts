@@ -19,9 +19,11 @@ describe('Action', () => {
     let action: TestAction;
     let user: User;
     let gameSpy: jasmine.Spy<(action: Action) => void>;
+    const randomBonus = false;
     beforeEach(() => {
         const boardService = new BoardService();
         game = new Game(
+            randomBonus,
             TIME_PER_TURN,
             new TimerService(),
             new PointCalculatorService(boardService),

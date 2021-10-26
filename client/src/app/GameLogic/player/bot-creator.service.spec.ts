@@ -1,11 +1,15 @@
 import { TestBed } from '@angular/core/testing';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BotCreatorService } from './bot-creator.service';
 
 describe('BotCreatorService', () => {
     let botCreator: BotCreatorService;
+    const dict = new DictionaryService();
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         botCreator = TestBed.inject(BotCreatorService);
     });
 

@@ -1,10 +1,15 @@
-import { ChangeDetectorRef } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BehaviorSubject } from 'rxjs';
 import { ChatBoxComponent } from './chat-box.component';
 
@@ -19,24 +24,18 @@ describe('ChatBoxComponent', () => {
         messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveMessagePlayer']);
         messageServiceSpy.messages$ = new BehaviorSubject<Message[]>([{ content: 'Test', from: 'test from', type: MessageType.Player1 }]);
         gameInfoServiceSpy = jasmine.createSpyObj('GameInfoService', ['getPlayer']);
-        gameInfoServiceSpy.user = new User('SAMUEL');
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
-    });
-
-    beforeEach(
-        waitForAsync(() => {
-            TestBed.configureTestingModule({
-                declarations: [ChatBoxComponent],
-                providers: [
-                    { provide: MessagesService, useValue: messageServiceSpy },
-                    { provide: GameInfoService, useValue: gameInfoServiceSpy },
-                    { provide: ChangeDetectorRef, useValue: cdRefSpy },
-                ],
-            }).compileComponents();
-        }),
-    );
-
-    beforeEach(() => {
+        TestBed.configureTestingModule({
+            imports: [AppMaterialModule, BrowserAnimationsModule, FormsModule, CommonModule],
+            declarations: [ChatBoxComponent, ClickAndClickoutDirective],
+            providers: [
+                { provide: MessagesService, useValue: messageServiceSpy },
+                { provide: GameInfoService, useValue: gameInfoServiceSpy },
+                { provide: ChangeDetectorRef, useValue: cdRefSpy },
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        }).compileComponents();
+        gameInfoServiceSpy.user = new User('SAMUEL');
         fixture = TestBed.createComponent(ChatBoxComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -47,7 +46,7 @@ describe('ChatBoxComponent', () => {
     });
 
     it('should send message to message service if message valid', () => {
-        component.messageForm.setValue('Test message');
+        component.messageContent = 'Test message';
         component.sendMessage();
         expect(messageServiceSpy.receiveMessagePlayer).toHaveBeenCalled();
     });
@@ -59,6 +58,7 @@ describe('ChatBoxComponent', () => {
 
     it('should change color of number of character if it exceeds limit', () => {
         const maxCharPlusOne = 514;
+
         expect(fixture.debugElement.query(By.css('#red'))).toBeNull();
         component.isError(maxCharPlusOne);
         fixture.detectChanges();

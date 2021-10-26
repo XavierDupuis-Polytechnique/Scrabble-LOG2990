@@ -13,6 +13,7 @@ const TIME_PER_TURN = 10;
 describe('Game', () => {
     let game: Game;
     let timerSpy: TimerService;
+    const randomBonus = false;
     let pointCalculatorSpy: jasmine.SpyObj<PointCalculatorService>;
     let boardSpy: jasmine.SpyObj<BoardService>;
     let messageSpy: jasmine.SpyObj<MessagesService>;
@@ -27,7 +28,7 @@ describe('Game', () => {
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
-        game = new Game(TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy);
+        game = new Game(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy);
         user1 = new User('Tim');
         user2 = new User('Paul');
         game.players = [user1, user2];

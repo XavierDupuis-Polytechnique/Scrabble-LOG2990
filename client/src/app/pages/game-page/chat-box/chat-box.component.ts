@@ -1,12 +1,13 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
 import { NewlinePipe } from '@app/components/newline-pipe/newline.pipe';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable } from 'rxjs';
-const NOT_ONLY_SPACE_RGX = '.*[^ ].*';
+
+const NOT_ONLY_SPACE_RGX = new RegExp('.*[^ ].*');
 const MAX_MESSAGE_LENGTH = 512;
 
 @Component({
@@ -16,12 +17,10 @@ const MAX_MESSAGE_LENGTH = 512;
 })
 export class ChatBoxComponent implements AfterViewInit {
     @ViewChild('chat', { read: ElementRef }) chat: ElementRef;
+    @Output() clickChatbox = new EventEmitter();
+    self = InputComponent.Chatbox;
+    messageContent: string;
 
-    messageForm: FormControl = new FormControl('', [
-        Validators.required,
-        Validators.maxLength(MAX_MESSAGE_LENGTH),
-        Validators.pattern(NOT_ONLY_SPACE_RGX),
-    ]);
     readonly maxMessageLength = MAX_MESSAGE_LENGTH;
     private boldPipe = new BoldPipe();
     private newlinePipe = new NewlinePipe();
@@ -35,18 +34,28 @@ export class ChatBoxComponent implements AfterViewInit {
         });
     }
 
+    click() {
+        const input: UIInput = { from: this.self, type: InputType.LeftClick };
+        this.clickChatbox.emit(input);
+    }
+
     sendMessage() {
         if (!this.messageValid) {
             return;
         }
 
-        const content = this.messageForm.value;
+        const content = this.messageContent;
         const playerName = this.gameInfo.user.name;
         this.messageService.receiveMessagePlayer(playerName, content);
 
-        this.messageForm.reset();
+        // this.messageForm.reset();
+        this.resetMessageContent();
         this.cdRef.detectChanges();
         this.scrollDownChat();
+    }
+
+    resetMessageContent() {
+        this.messageContent = '';
     }
 
     get messages$(): Observable<Message[]> {
@@ -54,7 +63,11 @@ export class ChatBoxComponent implements AfterViewInit {
     }
 
     get messageValid(): boolean {
-        return this.messageForm.valid;
+        if (this.messageContent === undefined) {
+            return false;
+        }
+        const content = this.messageContent;
+        return content.length !== 0 && content.length <= MAX_MESSAGE_LENGTH && NOT_ONLY_SPACE_RGX.test(content);
     }
 
     isError(length: number) {

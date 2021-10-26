@@ -4,19 +4,25 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
+import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
+import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
+import { MouseRollDirective } from '@app/directives/mouse-roll.directive';
+import { PreventContextMenuDirective } from '@app/directives/prevent-context-menu.directive';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { GameLogicModule } from '@app/GameLogic/game-logic.module';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
+import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
+import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
+import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { HeaderBarComponent } from './components/header-bar/header-bar.component';
-import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
-import { GameLogicModule } from './GameLogic/game-logic.module';
 import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
+import { WaitingForPlayerComponent } from './pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
-import { TileComponent } from './pages/game-page/board/tile/tile.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
 import { HorseComponent } from './pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
@@ -35,7 +41,6 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
     declarations: [
         AppComponent,
         GamePageComponent,
-        MaterialPageComponent,
         SidebarComponent,
         PlayerInfoComponent,
         InfoBoxComponent,
@@ -43,13 +48,20 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         BoardComponent,
         HorseComponent,
         NewSoloGameFormComponent,
+        NewOnlineGameFormComponent,
         HomepageComponent,
         ClassicGameComponent,
         Log2990GameComponent,
         LeaderboardComponent,
         HeaderBarComponent,
-        TileComponent,
         BoldPipe,
+        PreventContextMenuDirective,
+        ClickAndClickoutDirective,
+        MouseRollDirective,
+        WaitingForPlayerComponent,
+        ConvertToSoloFormComponent,
+        PendingGamesComponent,
+        JoinOnlineGameComponent,
     ],
     imports: [
         AppMaterialModule,

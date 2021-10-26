@@ -8,12 +8,16 @@
     <br />
     <mat-form-field>
         <mat-label>Difficulté de votre adversaire</mat-label>
-        <mat-select [formControlName]="'adversaryDifficulty'">
+        <mat-select [formControlName]="'botDifficulty'">
             <mat-option matNativeControl required value="easy">Débutant</mat-option>
+            <mat-option matNativeControl required value="hard">Expert</mat-option>
         </mat-select>
     </mat-form-field>
     <br />
-    <mat-label>Temps par tour</mat-label> <br />
+    <mat-checkbox color="accent" formControlName="randomBonus">Bonus aléatoire</mat-checkbox>
+    <br />
+    <br />
+    <mat-label>Temps par tour </mat-label>
     <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
     <mat-slider
         #timer

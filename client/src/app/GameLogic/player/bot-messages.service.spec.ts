@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
@@ -16,6 +17,7 @@ import { EasyBot } from '@app/GameLogic/player/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { placementSettingsToString } from '@app/GameLogic/utils';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('BotMessagesService', () => {
@@ -56,17 +58,20 @@ describe('BotMessagesService', () => {
     let wordSearcher: WordSearcher;
     let commandExecuter: CommandExecuterService;
     let easyBot: EasyBot;
+    const dict = new DictionaryService();
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [MessagesService, CommandExecuterService, BotCreatorService, PointCalculatorService, WordSearcher, CommandExecuterService],
-        });
+    beforeAll(() => {
         messageService = TestBed.inject(MessagesService);
         botMessage = TestBed.inject(BotMessagesService);
         botCreatorService = TestBed.inject(BotCreatorService);
         pointCalculatorService = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
         commandExecuter = TestBed.inject(CommandExecuterService);
+    });
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         easyBot = botCreatorService.createBot('Tim', 'easy') as EasyBot;
     });
 
@@ -289,7 +294,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should return the placement settings in a string', () => {
-        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const placement: PlacementSetting = { x: 5, y: 5, direction: Direction.Horizontal };
         const result = placementSettingsToString(placement);
         const expected = 'f6h';
 
@@ -297,7 +302,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should throw when the position is invalid x < BOARD_MIN_POSITION', () => {
-        const placement: PlacementSetting = { x: -1, y: 5, direction: 'H' };
+        const placement: PlacementSetting = { x: -1, y: 5, direction: Direction.Horizontal };
         const result = () => {
             placementSettingsToString(placement);
         };
@@ -306,7 +311,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should throw when the position is invalid x > BOARD_MAX_POSITION', () => {
-        const placement: PlacementSetting = { x: 18, y: 5, direction: 'H' };
+        const placement: PlacementSetting = { x: 18, y: 5, direction: Direction.Horizontal };
         const result = () => {
             placementSettingsToString(placement);
         };
@@ -315,7 +320,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should throw when the position is invalid y < BOARD_MIN_POSITION', () => {
-        const placement: PlacementSetting = { x: 5, y: -1, direction: 'H' };
+        const placement: PlacementSetting = { x: 5, y: -1, direction: Direction.Horizontal };
         const result = () => {
             placementSettingsToString(placement);
         };
@@ -324,7 +329,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should throw when the position is invalid y > BOARD_MAX_POSITION', () => {
-        const placement: PlacementSetting = { x: 5, y: 18, direction: 'H' };
+        const placement: PlacementSetting = { x: 5, y: 18, direction: Direction.Horizontal };
         const result = () => {
             placementSettingsToString(placement);
         };
@@ -382,7 +387,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should sendAction of type PlaceLetter', () => {
-        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const placement: PlacementSetting = { x: 5, y: 5, direction: Direction.Horizontal };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
         const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
         const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');
@@ -406,7 +411,7 @@ describe('BotMessagesService', () => {
     });
 
     it('should sendAction of type PlaceLetter with debug active', () => {
-        const placement: PlacementSetting = { x: 5, y: 5, direction: 'H' };
+        const placement: PlacementSetting = { x: 5, y: 5, direction: Direction.Horizontal };
         const action: Action = new PlaceLetter(easyBot, 'hello', placement, pointCalculatorService, wordSearcher);
         const spySendPlaceLetterMessage = spyOn(botMessage, 'sendPlaceLetterMessage').and.callThrough();
         const spyReceiveMessageOpponent = spyOn(messageService, 'receiveMessageOpponent');

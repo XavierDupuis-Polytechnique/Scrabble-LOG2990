@@ -1,16 +1,24 @@
 import { Application } from '@app/app';
+import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { GameManagerService } from '@app/game/game-manager/game-manager.services';
+import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
+import { NewOnlineGameSocketHandler } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private static readonly baseDix: number = 10;
     private server: http.Server;
-
-    constructor(private readonly application: Application) {}
+    private onlineGameManager: NewOnlineGameSocketHandler;
+    private gameSocketsHandler: GameSocketsHandler;
+    constructor(
+        private readonly application: Application,
+        private onlineGameService: NewOnlineGameService,
+        private gameManager: GameManagerService,
+    ) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
@@ -22,10 +30,17 @@ export class Server {
             return false;
         }
     }
+
     init(): void {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
+
+        this.onlineGameManager = new NewOnlineGameSocketHandler(this.server, this.onlineGameService);
+        this.onlineGameManager.newGameHandler();
+
+        this.gameSocketsHandler = new GameSocketsHandler(this.server, this.gameManager);
+        this.gameSocketsHandler.handleSockets();
 
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
