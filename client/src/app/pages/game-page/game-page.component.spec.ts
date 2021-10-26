@@ -20,17 +20,20 @@ describe('GamePageComponent', () => {
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
     let uiInput: UIInput;
     class ActionValidatorServiceMock {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        sendAction() {}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        sendAction() {
+            return;
+        }
     }
     class UIInputControllerServiceMock {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        receive() {}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        confirm() {}
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        cancel() {}
+        receive() {
+            return;
+        }
+        confirm() {
+            return;
+        }
+        cancel() {
+            return;
+        }
     }
     class MatDialogMock {
         open() {
