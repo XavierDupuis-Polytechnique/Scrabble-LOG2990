@@ -1,3 +1,4 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
@@ -15,7 +16,9 @@ describe('UIInputControllerService', () => {
     let service: UIInputControllerService;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        });
         service = TestBed.inject(UIInputControllerService);
         player = new User('p1');
         player.letterRack = [

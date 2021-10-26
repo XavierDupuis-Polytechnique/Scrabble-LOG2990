@@ -1,14 +1,15 @@
 // eslint-disable-next-line max-classes-per-file
-import { ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { routes } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { of } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
@@ -43,8 +44,8 @@ describe('GamePageComponent', () => {
         gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         await TestBed.configureTestingModule({
-            declarations: [GamePageComponent, SidebarComponent],
-            imports: [RouterTestingModule, MatDialogModule, BrowserAnimationsModule],
+            declarations: [GamePageComponent],
+            imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: ActionValidatorService, useClass: ActionValidatorServiceMock },
@@ -52,6 +53,7 @@ describe('GamePageComponent', () => {
                 { provide: MatDialog, useClass: MatDialogMock },
                 { provide: UIInputControllerService, useClass: UIInputControllerServiceMock },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
