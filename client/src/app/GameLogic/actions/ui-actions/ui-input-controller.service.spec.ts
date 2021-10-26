@@ -17,9 +17,12 @@ import { UIInputControllerService } from './ui-input-controller.service';
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
+    const dict = new DictionaryService();
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+        });
         service = TestBed.inject(UIInputControllerService);
         player = new User('p1');
         player.letterRack = [

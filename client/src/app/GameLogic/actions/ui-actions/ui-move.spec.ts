@@ -12,7 +12,7 @@ import {
     TEN,
     THREE,
     TWO,
-    ZERO,
+    ZERO
 } from '@app/GameLogic/constants';
 import { WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
