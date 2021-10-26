@@ -3,8 +3,8 @@ import { MatSliderChange } from '@angular/material/slider';
 import { ASCII_CODE } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
-import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 
 const MAX_FONT_SIZE = 14;
 const MIN_FONT_SIZE = 7;
@@ -17,8 +17,8 @@ const MIN_FONT_SIZE = 7;
 export class BoardComponent implements AfterViewInit, DoCheck {
     @ViewChild('ScrabbleBoard') scrabbleBoard: ElementRef;
     @Output() clickTile = new EventEmitter();
-    @Output() self = InputComponent.Board;
     @ViewChild('gridCanvas') private canvas!: ElementRef<HTMLCanvasElement>;
+    self = InputComponent.Board;
     board: Board;
     minFontSize = MIN_FONT_SIZE;
     maxFontSize = MAX_FONT_SIZE;

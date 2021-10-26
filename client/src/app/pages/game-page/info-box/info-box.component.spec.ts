@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { THOUSAND, TWO } from '@app/GameLogic/constants';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
@@ -43,7 +44,7 @@ describe('InfoBoxComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule],
+            imports: [AppMaterialModule, CommonModule],
             declarations: [InfoBoxComponent],
             providers: [{ provide: GameInfoService, useValue: testMock }],
         }).compileComponents();

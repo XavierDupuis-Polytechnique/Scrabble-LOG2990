@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +13,7 @@ describe('BoardComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            imports: [AppMaterialModule, FormsModule],
+            imports: [AppMaterialModule, FormsModule, CommonModule],
             declarations: [BoardComponent, MatSlider, MatGridList, MatGridTile],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
