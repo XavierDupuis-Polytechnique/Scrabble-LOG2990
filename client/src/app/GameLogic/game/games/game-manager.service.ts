@@ -70,10 +70,12 @@ export class GameManagerService {
     }
 
     startGame(): void {
-        if (!this.game) {
+        if (!this.game && !this.onlineGame) {
             throw Error('No game created yet');
         }
-        this.game.start();
+        if (!this.onlineGame) {
+            this.game.start();
+        }
     }
 
     stopGame(): void {

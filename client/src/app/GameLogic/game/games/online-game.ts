@@ -4,7 +4,6 @@ import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
-import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 
 export class OnlineGame {
@@ -15,12 +14,13 @@ export class OnlineGame {
     winnerIndex: number[] = [];
 
     constructor(
+        public playerName: string,
         private timer: TimerService,
         private onlineSocket: GameSocketHandlerService,
         private boardService: BoardService,
-        private gameSetting: OnlineGameSettings,
     ) {
         this.boardService.board = new Board();
+        this.playerName = playerName;
         this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });
@@ -39,7 +39,9 @@ export class OnlineGame {
         this.updateEndOfGame(gameState);
     }
     startTimer() {
-        this.timer.start(this.gameSetting.timePerTurn);
+        // TODO: Get gameSettings from game state (Kinda wasteful since you only need it once tho?)
+        // this.timer.start(this.gameSetting.timePerTurn);
+        this.timer.start(0);
     }
 
     updateBoard(gameState: GameState) {
