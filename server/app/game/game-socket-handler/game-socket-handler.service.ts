@@ -23,7 +23,6 @@ export class GameSocketsHandler {
             socket.on('joinGame', (gameToken: string) => {
                 try {
                     this.addPlayerToGame(socket.id, gameToken);
-                    console.log('player added');
                     socket.join(gameToken);
                 } catch (e) {
                     console.error(e);
