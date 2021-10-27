@@ -50,7 +50,7 @@ export class GameInfoService {
             throw Error('No Game in GameInfo');
         }
         if (!this.game) {
-            return new Map<string, number>(); // TODO Find a way to pass the remaining letters from the server //this.onlineGame.lettersRemaining;
+            return new Map<string, number>(); // TODO Find a way to get letterBag from the server //this.onlineGame.lettersRemaining;
         }
         return this.game.letterBag.countLetters();
     }
@@ -87,10 +87,20 @@ export class GameInfoService {
     }
 
     get isEndOfGame(): boolean {
+        if (!this.game) {
+            return this.onlineGame.isEndOfGame;
+        }
         return this.game.isEndOfGame();
     }
 
     get winner(): Player[] {
+        if (!this.game) {
+            const winner: Player[] = [];
+            for (const winnerIndex of this.onlineGame.winnerIndex) {
+                winner.push(this.onlineGame.players[winnerIndex]);
+            }
+            return winner;
+        }
         return this.game.getWinner();
     }
 }

@@ -4,6 +4,7 @@ import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 
 export class OnlineGame {
@@ -11,13 +12,13 @@ export class OnlineGame {
     activePlayerIndex: number = 0;
     lettersRemaining: number = 0;
     isEndOfGame: boolean = false;
+    winnerIndex: number[] = [];
 
     constructor(
-        // public timePerTurn: number,
-        public playerName: string,
         private timer: TimerService,
         private onlineSocket: GameSocketHandlerService,
-        private boardService: BoardService, // private messagesService: MessagesService, // private clientHandler: ClientHandlerService,
+        private boardService: BoardService,
+        private gameSetting: OnlineGameSettings,
     ) {
         this.boardService.board = new Board();
         this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
@@ -26,13 +27,19 @@ export class OnlineGame {
     }
 
     receiveState(gameState: GameState) {
-        // TODO: put in one method update state then start timer
+        this.updateClient(gameState);
+        this.startTimer();
+    }
+
+    updateClient(gameState: GameState) {
         this.updateBoard(gameState);
         this.updateActivePlayer(gameState);
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
-        this.updateIsEndOfGame(gameState);
-        this.timer.start(0);
+        this.updateEndOfGame(gameState);
+    }
+    startTimer() {
+        this.timer.start(this.gameSetting.timePerTurn);
     }
 
     updateBoard(gameState: GameState) {
@@ -40,8 +47,6 @@ export class OnlineGame {
     }
 
     updateActivePlayer(gameState: GameState) {
-        // TODO: get time per turn from gamestate
-        // this.timer.start(this.gameSetting.timePerTurn);
         this.activePlayerIndex = gameState.activePlayerIndex;
     }
 
@@ -55,7 +60,8 @@ export class OnlineGame {
             this.players[i].letterRack = gameState.players[i].letterRack;
         }
     }
-    updateIsEndOfGame(gameState: GameState) {
-        this.isEndOfGame = gameState.isEndofGame;
+    updateEndOfGame(gameState: GameState) {
+        this.isEndOfGame = gameState.isEndOfGame;
+        this.winnerIndex = gameState.winnerIndex;
     }
 }
