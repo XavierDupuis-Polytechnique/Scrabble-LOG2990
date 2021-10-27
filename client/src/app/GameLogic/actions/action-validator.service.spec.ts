@@ -385,7 +385,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
-    it('should validate placing a "word" with already present letters on the board (horizontal)', () => {
+    it('should validate placing a word with already present letters on the board (horizontal)', () => {
         const horizontalWord = 'abcdefghijk';
         for (let x = 0; x < horizontalWord.length; x++) {
             if (x % 2) {
@@ -400,7 +400,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate placing a "word" with already present letters on the board (vertical)', () => {
+    it('should validate placing a word with already present letters on the board (vertical)', () => {
         const verticalWord = 'abcdefghijk';
         for (let y = 0; y < verticalWord.length; y++) {
             if (y % 2) {
@@ -415,7 +415,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate placing a "word" that lands on the last row (horizontal)', () => {
+    it('should validate placing a word that lands on the last column (horizontal)', () => {
         const verticalWord = 'abcdefg';
         const beginPos = BOARD_MAX_POSITION - verticalWord.length + 1;
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
@@ -429,7 +429,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate placing a "word" that lands on the last row (vertical)', () => {
+    it('should validate placing a word that lands on the last row (vertical)', () => {
         const verticalWord = 'abcdefg';
         const beginPos = BOARD_MAX_POSITION - verticalWord.length + 1;
         game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
