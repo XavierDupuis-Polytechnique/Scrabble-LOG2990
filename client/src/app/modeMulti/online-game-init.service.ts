@@ -10,9 +10,12 @@ import { environment } from 'src/environments/environment';
 export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
-    gameToken$ = new Subject<string>();
+    gameToken$ = new BehaviorSubject<string | undefined>(undefined);
     private socket: Socket;
-    // constructor() {}
+
+    resetGameToken() {
+        this.gameToken$.next(undefined);
+    }
 
     createGameMulti(gameSettings: OnlineGameSettingsUI) {
         this.connect();

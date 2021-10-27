@@ -1,7 +1,13 @@
-import { OnlineGameSettings } from '@app/game-manager/game-settings-multi.interface';
-import { Game } from '@app/game/game-logic/game/game';
+import { GameCreator } from '@app/game/game-creator/game-creator';
+import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
+import { BoardService } from '@app/game/game-logic/board/board.service';
+import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { Player } from '@app/game/game-logic/player/player';
+import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerService } from '@app/game/game-logic/timer/timer.service';
+import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
+import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
 
@@ -12,28 +18,44 @@ interface PlayerRef {
 
 @Service()
 export class GameManagerService {
-    activeGames = new Map<string, Game>();
+    activeGames = new Map<string, ServerGame>();
     activePlayers = new Map<string, PlayerRef>(); // playerId => PlayerRef
     private newGameStateSubject = new Subject<string>();
+    private gameCreator: GameCreator;
 
-    constructor() {
-        this.activeGames.set('69', new Game());
+    constructor(
+        private timer: TimerService,
+        private pointCalculator: PointCalculatorService,
+        // private messageService: MessagesService,
+        private boardService: BoardService,
+    ) {
+        this.gameCreator = new GameCreator(this.timer, this.pointCalculator, this.boardService);
+        this.activeGames.set('1', new ServerGame(false, 60000, this.timer, this.pointCalculator, this.boardService));
     }
 
-    createGame(gameToken: string, gameSettings: OnlineGameSettings) {
-        this.activeGames.set(gameToken, new Game());
+    createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
+        const newServerGame = this.gameCreator.createServerGame(onlineGameSettings);
+        this.activeGames.set(gameToken, newServerGame);
         console.log('active games', this.activeGames);
     }
 
-    addPlayerToGame(playerId: string, gameToken: string) {
+    addPlayerToGame(playerId: string, userAuth: UserAuth) {
+        const gameToken = userAuth.gameToken;
         const game = this.activeGames.get(gameToken);
         if (!game) {
             throw Error(`GameToken ${gameToken} is not in active game`);
         }
-        // game.getPlayer(playerName)
-        const playerRef = { gameToken, player: new Player() };
+        // TODO get reference des players de la game
+        const playerName = userAuth.playerName;
+        const user = game.players.find((player: Player) => player.name === playerName);
+        if (!user) {
+            throw Error(`Player ${playerName} not created in ${gameToken}`);
+        }
+        const playerRef = { gameToken, player: user };
         this.activePlayers.set(playerId, playerRef);
         console.log('active players', this.activePlayers);
+        // TODO when theres 2 player connected
+        // newServerGame.startGame();
     }
 
     receivePlayerAction(playerId: string, action: OnlineAction) {
@@ -42,7 +64,9 @@ export class GameManagerService {
             throw Error(`Player ${playerId} is not active anymore`);
         }
         const player = playerRef.player;
-        player.play(action.type);
+        // TODO compile action
+        // player.play(action);
+        player.play(new PassTurn(player));
     }
 
     removePlayerFromGame(playerId: string) {

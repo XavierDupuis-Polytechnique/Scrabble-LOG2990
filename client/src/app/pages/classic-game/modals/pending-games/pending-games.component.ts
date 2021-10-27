@@ -87,7 +87,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         const joinPendingGame = this.dialog.open(JoinOnlineGameComponent, joinPendingGameRef);
         joinPendingGame.beforeClosed().subscribe((name) => {
             if (name) {
-                this.dialog.closeAll();
+                this.dialogRef.close(name);
             }
         });
     }

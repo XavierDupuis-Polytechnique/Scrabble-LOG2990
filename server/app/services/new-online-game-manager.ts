@@ -1,5 +1,5 @@
-import { OnlineGameSettingsUI } from '@app/game-manager/game-settings-multi.interface';
-import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
+import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
