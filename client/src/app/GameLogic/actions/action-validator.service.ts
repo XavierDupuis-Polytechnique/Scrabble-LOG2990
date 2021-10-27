@@ -146,14 +146,14 @@ export class ActionValidatorService {
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
+            hasNeighbour = this.boardService.board.hasNeighbour(x, y);
+            if (hasNeighbour) {
+                return true;
+            }
             if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
                 y++;
             } else {
                 x++;
-            }
-            hasNeighbour = this.boardService.board.hasNeighbour(x, y);
-            if (hasNeighbour) {
-                return true;
             }
         }
         this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
