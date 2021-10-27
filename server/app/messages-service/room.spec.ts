@@ -4,11 +4,11 @@ import { expect } from 'chai';
 
 describe('Room', () => {
     let room: Room;
-    beforeEach(async () => {
+    beforeEach(() => {
         room = new Room();
     });
 
-    it('should add message to messages', async () => {
+    it('should add message to messages', () => {
         const message: Message = {
             from: 'Test',
             content: 'Allo',
@@ -18,13 +18,13 @@ describe('Room', () => {
         expect(lastMessage).to.equal(message);
     });
 
-    it('should add user name to usersName', async () => {
+    it('should add user name to usersName', () => {
         const userName = 'test';
         room.addUser(userName);
         expect(room.userNames.has(userName)).to.equal(true);
     });
 
-    it('should delete user from room', async () => {
+    it('should delete user from room', () => {
         const userName = 'test';
         room.addUser(userName);
         room.deleteUser(userName);
