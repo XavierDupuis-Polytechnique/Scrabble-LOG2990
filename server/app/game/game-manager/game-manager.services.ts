@@ -1,5 +1,5 @@
 import { GameCreator } from '@app/game/game-creator/game-creator';
-import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
+import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { BoardService } from '@app/game/game-logic/board/board.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { Player } from '@app/game/game-logic/player/player';
@@ -18,7 +18,8 @@ interface PlayerRef {
 @Service()
 export class GameManagerService {
     activeGames = new Map<string, ServerGame>();
-    activePlayers = new Map<string, PlayerRef>(); // playerId => PlayerRef
+    activePlayers = new Map<string, PlayerRef>();
+    numberOfPlayers = new Map<string, number>();
     private newGameStateSubject = new Subject<string>();
     private gameCreator: GameCreator;
 
@@ -27,6 +28,7 @@ export class GameManagerService {
         private pointCalculator: PointCalculatorService,
         // private messageService: MessagesService,
         private boardService: BoardService,
+        private actionCompiler: ActionCompilerService,
     ) {
         this.gameCreator = new GameCreator(this.timer, this.pointCalculator, this.boardService);
         this.activeGames.set('1', new ServerGame(false, 60000, this.timer, this.pointCalculator, this.boardService));
@@ -35,6 +37,7 @@ export class GameManagerService {
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
         const newServerGame = this.gameCreator.createServerGame(onlineGameSettings);
         this.activeGames.set(gameToken, newServerGame);
+        this.numberOfPlayers.set(gameToken, 0);
         console.log('active games', this.activeGames);
     }
 
@@ -44,11 +47,14 @@ export class GameManagerService {
             throw Error(`GameToken ${gameToken} is not in active game`);
         }
         // TODO get reference des players de la game
-        const playerRef = { gameToken, player: new Player() };
+        const playerRef = { gameToken, player: new Player('') };
         this.activePlayers.set(playerId, playerRef);
+        this.increaseNumberOfPlayers(gameToken);
         console.log('active players', this.activePlayers);
-        // TODO when theres 2 player connected
-        // newServerGame.startGame();
+
+        if (this.numberOfPlayers.get(gameToken) === 2) {
+            game.startGame();
+        }
     }
 
     receivePlayerAction(playerId: string, action: OnlineAction) {
@@ -59,7 +65,9 @@ export class GameManagerService {
         const player = playerRef.player;
         // TODO compile action
         // player.play(action);
-        player.play(new PassTurn(player));
+        const compiledAction = this.actionCompiler.translate(action, player);
+        player.play(compiledAction);
+        console.log(`${player.name} played ${action.type}.`);
     }
 
     removePlayerFromGame(playerId: string) {
@@ -74,6 +82,15 @@ export class GameManagerService {
         console.log(`Player ${playerId} left the game`);
         console.log('Current active players', this.activePlayers);
         console.log('Current active games', this.activeGames);
+    }
+
+    increaseNumberOfPlayers(gameToken: string) {
+        let numberOfPlayers = this.numberOfPlayers.get(gameToken);
+        if (numberOfPlayers === undefined) {
+            throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
+        }
+        numberOfPlayers += 1;
+        this.numberOfPlayers.set(gameToken, numberOfPlayers);
     }
 
     get newGameStates$(): Observable<string> {

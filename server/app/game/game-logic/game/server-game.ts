@@ -29,6 +29,7 @@ export class ServerGame {
     }
 
     startGame(): void {
+        console.log('Starting a game');
         if (this.players.length < 2) {
             throw Error('Game started with no players');
         }
@@ -101,6 +102,7 @@ export class ServerGame {
 
     private startTurn() {
         const activePlayer = this.players[this.activePlayerIndex];
+        console.log(`Start ${activePlayer.name}'s turn`);
         // activePlayer.setActive();
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
