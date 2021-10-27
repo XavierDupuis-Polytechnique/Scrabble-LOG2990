@@ -1,10 +1,8 @@
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
-import { BoardService } from '@app/game/game-logic/board/board.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
-import { TimerService } from '@app/game/game-logic/timer/timer.service';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
@@ -25,18 +23,16 @@ export class GameManagerService {
     private gameCreator: GameCreator;
 
     constructor(
-        private timer: TimerService,
         private pointCalculator: PointCalculatorService,
         // private messageService: MessagesService,
-        private boardService: BoardService,
         private actionCompiler: ActionCompilerService,
     ) {
-        this.gameCreator = new GameCreator(this.timer, this.pointCalculator, this.boardService);
-        this.activeGames.set('1', new ServerGame(false, 60000, this.timer, this.pointCalculator, this.boardService));
+        this.gameCreator = new GameCreator(this.pointCalculator);
+        this.activeGames.set('1', new ServerGame(false, 60000, '1', this.pointCalculator));
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
-        const newServerGame = this.gameCreator.createServerGame(onlineGameSettings);
+        const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
         this.numberOfPlayers.set(gameToken, 0);
         console.log('active games', this.activeGames);
@@ -75,11 +71,10 @@ export class GameManagerService {
         try {
             const compiledAction = this.actionCompiler.translate(action, player);
             player.play(compiledAction);
+            console.log(`${player.name} played ${action.type}.`);
         } catch (e) {
             console.log(`Server couldnt translate ${action.type} for ${player.name}`);
         }
-        console.log(`${player.name} played ${action.type}.`);
-        console.log(player.letterRack);
     }
 
     removePlayerFromGame(playerId: string) {

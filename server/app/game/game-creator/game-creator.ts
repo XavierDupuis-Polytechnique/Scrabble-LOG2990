@@ -1,27 +1,19 @@
-import { BoardService } from '@app/game/game-logic/board/board.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
-import { TimerService } from '@app/game/game-logic/timer/timer.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
 
 export class GameCreator {
     static defaultOpponentName = 'AZERTY';
 
-    constructor(
-        private timer: TimerService,
-        private pointCalculator: PointCalculatorService,
-        // private messageService: MessagesService,
-        private boardService: BoardService,
-    ) {}
+    constructor(private pointCalculator: PointCalculatorService) {}
 
-    createServerGame(onlineGameSettings: OnlineGameSettings): ServerGame {
+    createServerGame(onlineGameSettings: OnlineGameSettings, gameToken: string): ServerGame {
         const newServerGame = new ServerGame(
             onlineGameSettings.randomBonus,
             onlineGameSettings.timePerTurn,
-            this.timer,
+            gameToken,
             this.pointCalculator,
-            this.boardService,
             // this.messageService,
         );
 

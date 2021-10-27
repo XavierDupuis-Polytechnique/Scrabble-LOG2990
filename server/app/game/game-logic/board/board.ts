@@ -101,6 +101,7 @@ export class Board {
     grid: Tile[][];
 
     constructor(public randomBonus: boolean = false) {
+        console.log("BOARD CSTRT")
         this.grid = [];
         for (let i = 0; i < BOARD_DIMENSION; i++) {
             this.grid[i] = [];

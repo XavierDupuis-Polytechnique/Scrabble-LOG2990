@@ -1,31 +1,29 @@
 import { Action } from '@app/game/game-logic/actions/action';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { Board } from '@app/game/game-logic/board/board';
-import { BoardService } from '@app/game/game-logic/board/board.service';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
-import { TimerService } from '@app/game/game-logic/timer/timer.service';
+import { Timer } from '@app/game/game-logic/timer/timer.service';
 import { first, mapTo, merge } from 'rxjs';
 
 export class ServerGame {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
-    board: Board;
     activePlayerIndex: number;
     consecutivePass: number = 0;
+    timer = new Timer();
+    board: Board;
 
     constructor(
         public randomBonus: boolean,
         public timePerTurn: number,
-        private timer: TimerService,
-        private pointCalculator: PointCalculatorService,
-        private boardService: BoardService, // private messagesService: MessagesService,
+        public gameToken: string,
+        private pointCalculator: PointCalculatorService, // private messagesService: MessagesService,
     ) {
         this.board = new Board(randomBonus);
-        this.boardService.board = this.board;
     }
 
     startGame(): void {
@@ -43,6 +41,7 @@ export class ServerGame {
     }
 
     isEndOfGame() {
+        console.log('Consecutive pass ', this.consecutivePass);
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
                 if (player.isLetterRackEmpty) {
@@ -61,6 +60,7 @@ export class ServerGame {
     }
 
     onEndOfGame() {
+        console.log('GAME ENDED');
         this.pointCalculator.endOfGamePointDeduction(this);
         // this.displayLettersLeft();
     }
