@@ -44,11 +44,11 @@ export class GameManagerService {
 
     addPlayerToGame(playerId: string, userAuth: UserAuth) {
         const gameToken = userAuth.gameToken;
+        console.log('User Auth-GameToken:', userAuth.gameToken);
         const game = this.activeGames.get(gameToken);
         if (!game) {
             throw Error(`GameToken ${gameToken} is not in active game`);
         }
-        // TODO get reference des players de la game
         const playerName = userAuth.playerName;
         const user = game.players.find((player: Player) => player.name === playerName);
         if (!user) {
@@ -70,11 +70,10 @@ export class GameManagerService {
             throw Error(`Player ${playerId} is not active anymore`);
         }
         const player = playerRef.player;
-        // TODO compile action
-        // player.play(action);
         const compiledAction = this.actionCompiler.translate(action, player);
         player.play(compiledAction);
         console.log(`${player.name} played ${action.type}.`);
+        console.log(player.getLettersFromRack);
     }
 
     removePlayerFromGame(playerId: string) {

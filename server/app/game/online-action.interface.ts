@@ -1,6 +1,8 @@
+import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
 import { OnlineActionType } from '@app/game/online-action.enum';
 
 export interface OnlineAction {
     type: OnlineActionType;
-    args?: string[];
+    placementSettings?: PlacementSetting;
+    letters?: string;
 }

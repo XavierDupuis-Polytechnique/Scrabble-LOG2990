@@ -63,7 +63,6 @@ export class GameSocketsHandler {
     private sendPlayerAction(socketId: string, action: OnlineAction) {
         const playerId = socketId;
         this.gameManager.receivePlayerAction(playerId, action);
-        console.log('PLayer action');
     }
 
     private removePlayer(playerId: string) {
