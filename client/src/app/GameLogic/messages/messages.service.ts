@@ -25,6 +25,10 @@ export class MessagesService {
         this.onlineChat.errorMessage$.subscribe((errorContent: string) => {
             this.receiveErrorMessage(errorContent);
         });
+
+        this.onlineChat.systemMessage$.subscribe((content: string) => {
+            this.receiveSystemMessage(content);
+        });
     }
 
     receiveSystemMessage(content: string) {

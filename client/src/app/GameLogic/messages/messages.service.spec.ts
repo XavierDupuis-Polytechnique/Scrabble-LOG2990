@@ -15,15 +15,23 @@ describe('Service: Messages', () => {
     let onlineChatSpy: jasmine.SpyObj<OnlineChatHandlerService>;
     const mockOpponentMessage$ = new Subject<ChatMessage>();
     const mockErrorMessage$ = new Subject<string>();
+    const mockSystemMessage$ = new Subject<string>();
 
     beforeEach(() => {
         commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse']);
-        onlineChatSpy = jasmine.createSpyObj('OnlineChatHandler', ['sendMessage'], ['connected', 'opponentMessage$', 'errorMessage$']);
+        onlineChatSpy = jasmine.createSpyObj(
+            'OnlineChatHandler',
+            ['sendMessage'],
+            ['connected', 'opponentMessage$', 'errorMessage$', 'systemMessage$'],
+        );
         (Object.getOwnPropertyDescriptor(onlineChatSpy, 'opponentMessage$')?.get as jasmine.Spy<() => Observable<ChatMessage>>).and.returnValue(
             mockOpponentMessage$,
         );
         (Object.getOwnPropertyDescriptor(onlineChatSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
             mockErrorMessage$,
+        );
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'systemMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
+            mockSystemMessage$,
         );
 
         TestBed.configureTestingModule({

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
+import { OnlineSystemMessage } from '@app/GameLogic/messages/online-system-message.interface';
 import { isSocketConnected } from '@app/GameLogic/utils';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -14,6 +15,7 @@ export class OnlineChatHandlerService {
     private socket: Socket | undefined;
     private newRoomMessageSubject = new Subject<ChatMessage>();
     private errorSubject = new Subject<string>();
+    private sysMessageSubject = new Subject<string>();
 
     constructor(private gameInfo: GameInfoService) {}
 
@@ -21,7 +23,7 @@ export class OnlineChatHandlerService {
         if (this.socket) {
             throw Error('Already connected to a chat room');
         }
-        this.socket = io(environment.serverSocketUrl, { path: '/messages' });
+        this.socket = io(environment.socketServerUrl, { path: '/messages' });
 
         this.socket.on('error', (errorContent: string) => {
             this.receiveChatServerError(errorContent);
@@ -29,6 +31,11 @@ export class OnlineChatHandlerService {
 
         this.socket.on('roomMessages', (message: ChatMessage) => {
             this.receiveServerMessage(message);
+        });
+
+        this.socket.on('systemMessages', (sysMessage: OnlineSystemMessage) => {
+            const content = sysMessage.content;
+            this.receiveSystemMessage(content);
         });
 
         this.socket.emit('userName', userName);
@@ -77,11 +84,19 @@ export class OnlineChatHandlerService {
         return this.errorSubject;
     }
 
+    get systemMessage$(): Observable<string> {
+        return this.sysMessageSubject;
+    }
+
     private receiveServerMessage(message: ChatMessage) {
         this.newRoomMessageSubject.next(message);
     }
 
     private receiveChatServerError(content: string) {
         this.errorSubject.next(content);
+    }
+
+    private receiveSystemMessage(content: string) {
+        this.sysMessageSubject.next(content);
     }
 }
