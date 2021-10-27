@@ -2,6 +2,7 @@ import { GameManagerService } from '@app/game/game-manager/game-manager.services
 import { OnlineAction } from '@app/game/online-action.interface';
 import * as http from 'http';
 import * as io from 'socket.io';
+import { UserAuth } from './user-auth';
 
 export class GameSocketsHandler {
     readonly sio: io.Server;
@@ -20,10 +21,12 @@ export class GameSocketsHandler {
     handleSockets() {
         this.sio.on('connection', (socket) => {
             console.log('Connected');
-            socket.on('joinGame', (gameToken: string) => {
+            socket.on('joinGame', (userAuth: UserAuth) => {
+                console.log('user auth', userAuth);
                 try {
-                    this.addPlayerToGame(socket.id, gameToken);
+                    this.addPlayerToGame(socket.id, userAuth);
                     console.log('player added');
+                    const gameToken = userAuth.gameToken;
                     socket.join(gameToken);
                 } catch (e) {
                     console.error(e);
@@ -52,9 +55,9 @@ export class GameSocketsHandler {
         this.sio.to(gameToken).emit('gameState', gameState);
     }
 
-    private addPlayerToGame(socketId: string, gameToken: string) {
+    private addPlayerToGame(socketId: string, userAuth: UserAuth) {
         const playerId = socketId;
-        this.gameManager.addPlayerToGame(playerId, gameToken);
+        this.gameManager.addPlayerToGame(playerId, userAuth);
     }
 
     private sendPlayerAction(socketId: string, action: OnlineAction) {
