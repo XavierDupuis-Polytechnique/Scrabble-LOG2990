@@ -59,7 +59,9 @@ export class GameManagerService {
         this.increaseNumberOfPlayers(gameToken);
         console.log('active players', this.activePlayers);
 
+        console.log('number of players in game', this.numberOfPlayers.get(gameToken));
         if (this.numberOfPlayers.get(gameToken) === 2) {
+            console.log('--game will start');
             game.startGame();
         }
     }
@@ -70,10 +72,14 @@ export class GameManagerService {
             throw Error(`Player ${playerId} is not active anymore`);
         }
         const player = playerRef.player;
-        const compiledAction = this.actionCompiler.translate(action, player);
-        player.play(compiledAction);
+        try {
+            const compiledAction = this.actionCompiler.translate(action, player);
+            player.play(compiledAction);
+        } catch (e) {
+            console.log(`Server couldnt translate ${action.type} for ${player.name}`);
+        }
         console.log(`${player.name} played ${action.type}.`);
-        console.log(player.getLettersFromRack);
+        console.log(player.letterRack);
     }
 
     removePlayerFromGame(playerId: string) {
@@ -84,6 +90,8 @@ export class GameManagerService {
         const gameToken = playerRef.gameToken;
         // TODO set winner to the player still online
         this.activePlayers.delete(playerId);
+        const game = this.activeGames.get(gameToken);
+        game?.onEndOfGame();
         this.activeGames.delete(gameToken);
         console.log(`Player ${playerId} left the game`);
         console.log('Current active players', this.activePlayers);

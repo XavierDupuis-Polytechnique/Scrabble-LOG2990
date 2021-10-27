@@ -7,8 +7,7 @@ import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
-import { OnlineActionType } from '@app/game/online-action.enum';
-import { OnlineAction } from '@app/game/online-action.interface';
+import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { Service } from 'typedi';
 
 @Service()
@@ -24,7 +23,8 @@ export class ActionCompilerService {
                 if (!letters) {
                     throw Error('Argument of Action Invalid. Cant compile.');
                 }
-                const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters.split['']);
+                const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters.split(''));
+                console.log(letters, ' became ', lettersToExchange);
                 return new ExchangeLetter(player, lettersToExchange);
             }
 

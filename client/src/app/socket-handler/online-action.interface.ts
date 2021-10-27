@@ -1,4 +1,5 @@
-import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+
 export interface OnlineAction {
     type: OnlineActionType;
     placementSettings?: PlacementSetting;
