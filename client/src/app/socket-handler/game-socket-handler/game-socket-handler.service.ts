@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameState } from '@app/GameLogic/game/game-state';
+import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
@@ -39,12 +40,12 @@ export class GameSocketHandlerService {
         return this.endTurnSubject;
     }
 
-    joinGame(gameToken: string) {
+    joinGame(userAuth: UserAuth) {
         if (this.socket) {
             throw Error(GAME_ALREADY_JOINED);
         }
         this.socket = io(environment.serverSocketUrl, { path: '/game' });
-        this.socket.emit('joinGame', gameToken);
+        this.socket.emit('joinGame', userAuth);
         this.socket.on('gameState', this.receiveGameState);
     }
 

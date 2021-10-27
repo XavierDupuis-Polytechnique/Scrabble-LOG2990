@@ -2,7 +2,7 @@ import { GameManagerService } from '@app/game/game-manager/game-manager.services
 import { OnlineAction } from '@app/game/online-action.interface';
 import * as http from 'http';
 import * as io from 'socket.io';
-import { UserAuth } from './user-auth';
+import { UserAuth } from './user-auth.interface';
 
 export class GameSocketsHandler {
     readonly sio: io.Server;

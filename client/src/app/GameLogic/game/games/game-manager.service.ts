@@ -9,7 +9,7 @@ import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
-import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { Observable, Subject } from 'rxjs';
 import { Game } from './game';
@@ -57,12 +57,15 @@ export class GameManagerService {
         this.info.receiveGame(this.game);
     }
 
-    joinOnlineGame(gameSettings: OnlineGameSettings, gameToken: string) {
+    joinOnlineGame(userAuth: UserAuth) {
         if (this.game) {
             this.stopGame();
         }
-        this.gameSocketHandler.joinGame(gameToken);
-        this.onlineGame = new OnlineGame(this.timer, this.gameSocketHandler, this.boardService, gameSettings);
+        console.log('joinOnline game', userAuth);
+        this.gameSocketHandler.joinGame(userAuth);
+        const playerName = userAuth.playerName;
+        // TODO: maybe find a way to receive timer time perturn
+        this.onlineGame = new OnlineGame(playerName, this.timer, this.gameSocketHandler, this.boardService);
         this.info.receiveOnlineGame(this.onlineGame);
     }
 

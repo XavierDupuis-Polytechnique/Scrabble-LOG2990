@@ -5,7 +5,7 @@ import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerService } from '@app/game/game-logic/timer/timer.service';
-import { UserAuth } from '@app/game/game-socket-handler/user-auth';
+import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
 import { Observable, Subject } from 'rxjs';
