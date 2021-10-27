@@ -7,15 +7,22 @@ import { expect } from 'chai';
 import { AddressInfo } from 'net';
 import { Socket } from 'socket.io';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
-import { MessageHandler } from '@app/messages-service/messages.service';
 import { Message } from '@app/messages-service/message.interface';
+import { MessagesSocketHandler, SYSTEM_MESSAGES } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
+import { createSinonStubInstance } from '@app/test.util';
+import { GlobalSystemMessage, IndividualSystemMessage, SystemMessage } from '@app/messages-service/system-message.interface';
+import { Subject } from 'rxjs';
+import * as sinon from 'sinon';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 
-describe('MessagesService', () => {
-    let handler: MessageHandler;
+describe('SystemMessagesService', () => {
+    let handler: MessagesSocketHandler;
     let clientSocket: ClientSocket;
     let serverSocket: Socket;
     let port: number;
     let httpServer: Server;
+    const mockGlobalSystemMessages$ = new Subject<GlobalSystemMessage>();
+    const mockIndividualSystemMessages$ = new Subject<IndividualSystemMessage>();
 
     before((done) => {
         httpServer = createServer();
@@ -23,7 +30,10 @@ describe('MessagesService', () => {
             process.setMaxListeners(0);
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
-            handler = new MessageHandler(httpServer);
+            const systemMessagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
+            sinon.stub(systemMessagesService, 'globalSystemMessages$').get(() => mockGlobalSystemMessages$);
+            sinon.stub(systemMessagesService, 'individualSystemMessages$').get(() => mockIndividualSystemMessages$);
+            handler = new MessagesSocketHandler(httpServer, systemMessagesService);
             handler.handleSockets();
             handler.sio.on('connection', (socket) => {
                 serverSocket = socket;
@@ -262,5 +272,40 @@ describe('MessagesService', () => {
         });
 
         clientSocket.emit('joinRoom', roomID);
+    });
+
+    it('should receive global system message', (done) => {
+        const name = 'abc';
+        clientSocket.emit('userName', name);
+        const room = 'abc';
+        clientSocket.emit('joinRoom', room);
+        serverSocket.on('joinRoom', () => {
+            mockGlobalSystemMessages$.next(sysMessage);
+        });
+        const sysMessage: GlobalSystemMessage = {
+            content: 'allo',
+            gameToken: room,
+        };
+        clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
+            expect(message).to.deep.equal(sysMessage.content);
+            done();
+        });
+    });
+
+    it('should receive individual system message', (done) => {
+        const name = 'abc';
+        clientSocket.emit('userName', name);
+        const room = 'def';
+        clientSocket.emit('joinRoom', room);
+
+        const sysMessage: IndividualSystemMessage = {
+            content: 'allo',
+            playerId: serverSocket.id,
+        };
+        clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
+            expect(message).to.deep.equal(sysMessage.content);
+            done();
+        });
+        mockIndividualSystemMessages$.next(sysMessage);
     });
 });

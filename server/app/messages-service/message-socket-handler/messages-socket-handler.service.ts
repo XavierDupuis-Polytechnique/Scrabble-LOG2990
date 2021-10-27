@@ -5,22 +5,38 @@ import { ChatUser } from '@app/messages-service/chat-user.interface';
 import { Room } from '@app/messages-service/room';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Message } from '@app/messages-service/message.interface';
+import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-service/system-message.interface';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 
-export class MessageHandler {
+export const SYSTEM_MESSAGES = 'systemMessages';
+export const NEW_MESSAGE = 'newMessage';
+export const ROOM_MESSAGES = 'roomMessages';
+export const NEW_USER_NAME = 'userName';
+export const JOIN_ROOM = 'joinRoom';
+
+export class MessagesSocketHandler {
     activeRooms = new Map<string, Room>();
     users = new Map<string, ChatUser>();
     readonly sio: io.Server;
 
-    constructor(server: http.Server) {
+    constructor(server: http.Server, private systemMessagesService: SystemMessagesService) {
         this.sio = new io.Server(server, {
             path: '/messages',
             cors: { origin: '*', methods: ['GET', 'POST'] },
+        });
+
+        this.systemMessagesService.globalSystemMessages$.subscribe((message) => {
+            this.sendGlobalSystemMessage(message);
+        });
+
+        this.systemMessagesService.individualSystemMessages$.subscribe((message) => {
+            this.sendIndividualSystemMessage(message);
         });
     }
 
     handleSockets() {
         this.sio.on('connection', (socket) => {
-            socket.on('userName', (userName: string) => {
+            socket.on(NEW_USER_NAME, (userName: string) => {
                 try {
                     this.createUser(userName, socket.id);
                 } catch (e) {
@@ -28,7 +44,7 @@ export class MessageHandler {
                 }
             });
 
-            socket.on('newMessage', (content: string) => {
+            socket.on(NEW_MESSAGE, (content: string) => {
                 try {
                     this.sendMessageToRoom(socket.id, content);
                 } catch (e) {
@@ -36,7 +52,7 @@ export class MessageHandler {
                 }
             });
 
-            socket.on('joinRoom', (roomID: string) => {
+            socket.on(JOIN_ROOM, (roomID: string) => {
                 try {
                     this.addUserToRoom(socket, roomID);
                 } catch (e) {
@@ -140,12 +156,24 @@ export class MessageHandler {
         this.activeRooms.delete(roomID);
     }
 
-    private sendError(socket: io.Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>, error: Error) {
+    private sendError(socket: io.Socket, error: Error) {
         const errorMessage = error.message;
         socket.emit('error', errorMessage);
     }
 
     private sendMessageToRoomSockets(roomID: string, message: Message) {
-        this.sio.to(roomID).emit('roomMessages', message);
+        this.sio.to(roomID).emit(ROOM_MESSAGES, message);
+    }
+
+    private sendGlobalSystemMessage(globalMessage: GlobalSystemMessage) {
+        const roomID = globalMessage.gameToken;
+        const content = globalMessage.content;
+        this.sio.to(roomID).emit(SYSTEM_MESSAGES, content);
+    }
+
+    private sendIndividualSystemMessage(individualMessage: IndividualSystemMessage) {
+        const socketID = individualMessage.playerId;
+        const content = individualMessage.content;
+        this.sio.to(socketID).emit(SYSTEM_MESSAGES, content);
     }
 }
