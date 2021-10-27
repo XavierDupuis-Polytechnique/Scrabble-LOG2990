@@ -131,7 +131,7 @@ export class ActionValidatorService {
         } else {
             concernedAxisValue = action.placement.x;
         }
-        const lastLetterPosition = concernedAxisValue + action.word.length;
+        const lastLetterPosition = concernedAxisValue + action.word.length - 1;
         const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION;
         if (doesLastPositionOverflow) {
             this.sendErrorMessage('Commande impossible à réaliser : Les lettres déboderont de la grille');
