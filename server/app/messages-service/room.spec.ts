@@ -1,5 +1,5 @@
-import { Message } from '@app/messagesService/service/message.interface';
-import { Room } from '@app/messagesService/service/room';
+import { Message } from '@app/messages-service/message.interface';
+import { Room } from '@app/messages-service/room';
 import { expect } from 'chai';
 
 describe('Room', () => {

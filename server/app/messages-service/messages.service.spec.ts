@@ -5,10 +5,10 @@ import { createServer, Server } from 'http';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 import { expect } from 'chai';
 import { AddressInfo } from 'net';
-import { MessageHandler } from '@app/messagesService/service/messages.service';
 import { Socket } from 'socket.io';
-import { Message } from '@app/messagesService/service/message.interface';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
+import { MessageHandler } from '@app/messages-service/messages.service';
+import { Message } from '@app/messages-service/message.interface';
 
 describe('MessagesService', () => {
     let handler: MessageHandler;

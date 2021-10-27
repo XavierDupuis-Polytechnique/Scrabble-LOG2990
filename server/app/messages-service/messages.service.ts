@@ -1,10 +1,10 @@
 import * as io from 'socket.io';
 import * as http from 'http';
-import { Room } from '@app/messagesService/service/room';
-import { Message } from '@app/messagesService/service/message.interface';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { ChatUser } from '@app/messagesService/service/chat-user.interface';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
+import { ChatUser } from '@app/messages-service/chat-user.interface';
+import { Room } from '@app/messages-service/room';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { Message } from '@app/messages-service/message.interface';
 
 export class MessageHandler {
     activeRooms = new Map<string, Room>();

@@ -1,5 +1,5 @@
 import { Application } from '@app/app';
-import { MessageHandler } from '@app/messagesService/service/messages.service';
+import { MessageHandler } from '@app/messages-service/messages.service';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';

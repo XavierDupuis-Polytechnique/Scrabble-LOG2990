@@ -1,4 +1,4 @@
-import { Message } from '@app/messagesService/service/message.interface';
+import { Message } from '@app/messages-service/message.interface';
 
 export class Room {
     messages: Message[] = [];
