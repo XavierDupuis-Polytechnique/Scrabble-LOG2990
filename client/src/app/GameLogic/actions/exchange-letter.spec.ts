@@ -1,5 +1,5 @@
+import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
@@ -9,21 +9,20 @@ import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('ExchangeLetter', () => {
     let game: Game;
     const player: Player = new User('Tim');
     const randomBonus = false;
+    const dict = new DictionaryService();
     beforeEach(() => {
-        const boardService = new BoardService();
-        game = new Game(
-            randomBonus,
-            DEFAULT_TIME_PER_TURN,
-            new TimerService(),
-            new PointCalculatorService(boardService),
-            boardService,
-            new MessagesService(new CommandParserService()),
-        );
+        TestBed.configureTestingModule({ providers: [{ provide: DictionaryService, useValue: dict }] });
+        const messageService = TestBed.inject(MessagesService);
+        const timerService = TestBed.inject(TimerService);
+        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const boardService = TestBed.inject(BoardService);
+        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         game.players[0] = player;
         game.start();
     });

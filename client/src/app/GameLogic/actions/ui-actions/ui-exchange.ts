@@ -23,15 +23,15 @@ export class UIExchange implements UIAction {
     }
 
     receiveLeftClick(): void {
-        throw new Error('UIExchange should not be able to receive a LeftClick');
+        return;
     }
 
     receiveKey(): void {
-        throw new Error('UIExchange should not be able to receive a KeyPress');
+        return;
     }
 
     receiveRoll(): void {
-        throw new Error('UIExchange should not be able to receive a MouseRoll');
+        return;
     }
 
     create(): Action {
@@ -40,5 +40,9 @@ export class UIExchange implements UIAction {
             lettersToExchange.push(this.player.letterRack[index]);
         });
         return new ExchangeLetter(this.player, lettersToExchange);
+    }
+
+    destroy(): void {
+        return;
     }
 }

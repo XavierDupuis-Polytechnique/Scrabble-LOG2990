@@ -4,7 +4,7 @@ import { OnlineGame } from '@app/GameLogic/game/games/online-game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -15,11 +15,19 @@ export class GameInfoService {
     private game: Game;
     private onlineGame: OnlineGame;
 
+    private endTurnSubject = new Subject<void>();
+    get endTurn$(): Observable<void> {
+        return this.endTurnSubject;
+    }
+
     constructor(private timer: TimerService) {}
 
     receiveGame(game: Game): void {
         this.players = game.players;
         this.game = game;
+        this.game.endTurn$.subscribe(() => {
+            this.endTurnSubject.next();
+        });
     }
 
     receiveOnlineGame(onlineGame: OnlineGame): void {
