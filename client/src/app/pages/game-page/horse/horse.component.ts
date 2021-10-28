@@ -14,7 +14,7 @@ import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-
 })
 export class HorseComponent implements AfterContentInit {
     @Output() clickLetter = new EventEmitter();
-    @Output() self = InputComponent.Horse;
+    readonly self = InputComponent.Horse;
 
     inputType = InputType;
 

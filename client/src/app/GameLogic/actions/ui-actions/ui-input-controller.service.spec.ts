@@ -1,21 +1,30 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
-import { EMPTY_CHAR, ESCAPE, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { EMPTY_CHAR, ENTER, ESCAPE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { getRandomInt } from '@app/GameLogic/utils';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { UIInputControllerService } from './ui-input-controller.service';
 
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
+    const dict = new DictionaryService();
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: DictionaryService, useValue: dict }],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        });
         service = TestBed.inject(UIInputControllerService);
         player = new User('p1');
         player.letterRack = [
@@ -247,20 +256,29 @@ describe('UIInputControllerService', () => {
         expect(service.activeComponent).toBe(InputComponent.Outside);
     });
 
-    // TODO : UNCOMMENT WHEN UIPLACE.CREATE() IS FUNCTIONNAL
-    // it('should create the Action following the "ENTER" Keypress', () => {
-    //     service.activeAction = new UIPlace(player);
-    //     service.activeComponent = InputComponent.Board;
-    //     const args = ENTER;
-    //     const input: UIInput = { type: InputType.KeyPress, args };
-    //     const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
-    //         return;
-    //     });
-    //     service.processInputType(input);
-    //     expect(sendActionSpy).toHaveBeenCalled();
-    //     expect(service.activeAction).toBeNull();
-    //     expect(service.activeComponent).toBe(InputComponent.Outside);
-    // });
+    it('should create the Action following the "ENTER" Keypress', () => {
+        service.activeAction = new UIPlace(
+            player,
+            new PointCalculatorService(new BoardService()),
+            new WordSearcher(new BoardService(), new DictionaryService()),
+            new BoardService(),
+        );
+        service.activeComponent = InputComponent.Board;
+        const input1: UIInput = { type: InputType.LeftClick, from: InputComponent.Board, args: { x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD } };
+        service.processInput(input1);
+        player.letterRack[0].char = 'A';
+        const input2: UIInput = { type: InputType.KeyPress, args: player.letterRack[0].char.toLowerCase() };
+        service.processInput(input2);
+        const args = ENTER;
+        const input3: UIInput = { type: InputType.KeyPress, args };
+        const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
+            return;
+        });
+        service.processInputType(input3);
+        expect(sendActionSpy).toHaveBeenCalled();
+        expect(service.activeAction).toBeNull();
+        expect(service.activeComponent).toBe(InputComponent.Outside);
+    });
 
     it('should refer a MouseRoll to the processMouseRoll method', () => {
         service.activeAction = new UIMove(player);

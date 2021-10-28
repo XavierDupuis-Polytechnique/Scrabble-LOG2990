@@ -52,6 +52,10 @@ export const isStringAnUpperCaseLetter = (string: string): boolean => {
     return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
 };
 
+export const convertToProperLetter = (string: string): string => {
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
 export const getRandomInt = (max: number, min: number = 0): number => {
     return Math.floor(Math.random() * (max - min) + min);
 };

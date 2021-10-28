@@ -1,4 +1,6 @@
 import { Board } from '@app/GameLogic/game/board/board';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { UrlResolver } from '@angular/compiler';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -21,6 +23,9 @@ export class CanvasDrawer {
     private offset: number = 50;
     private font = 'Arial';
 
+    private indicatorPos: Vec2 = { x: -1, y: -1 };
+    private indicatorDir: Direction;
+
     constructor(canvasContext: CanvasRenderingContext2D, w: number, h: number) {
         this.canvas = canvasContext;
         this.canvas.lineWidth = 1;
@@ -29,13 +34,13 @@ export class CanvasDrawer {
         this.canvas.lineWidth = 1;
         this.tileSize = (this.width - this.offset - this.canvas.lineWidth * 16) / 15;
     }
-    drawGrid(board: Board): void {
+    drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = '#FFFFFF';
         this.canvas.fillRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = '#000000';
+        this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-
         for (let i = 0; i < 16; i++) {
             this.drawRow(i);
             this.drawColumn(i);
@@ -45,28 +50,63 @@ export class CanvasDrawer {
 
         for (let i = 0; i < board.grid.length; i++) {
             for (let j = 0; j < board.grid.length; j++) {
-                if (board.grid[i][j].letterMultiplicator !== 1) {
-                    this.drawBonus(i, j, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
-                } else if (board.grid[i][j].wordMultiplicator !== 1) {
-                    this.drawBonus(i, j, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
-                } else if (board.grid[i][j].letterObject.char !== ' ') {
+                if (board.grid[i][j].letterObject.char !== ' ') {
                     this.drawTile(board.grid[i][j].letterObject.char, board.grid[i][j].letterObject.value, i, j);
+                    if (board.grid[i][j].letterObject.isTemp === true) {
+                        this.drawHighlight(j, i);
+                    }
+                } else if (board.grid[j][i].letterMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[j][i].letterMultiplicator);
+                } else if (board.grid[j][i].wordMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[j][i].wordMultiplicator);
                 }
+            }
+        }
+
+        if (this.indicatorPos.x !== -1 && this.indicatorPos.y !== -1 && this.indicatorDir) {
+            if (board.grid[this.indicatorPos.y][this.indicatorPos.x].letterObject.char === ' ') {
+                this.drawIndicator();
             }
         }
     }
 
-    checkFontSize(fontSize: number): boolean {
-        this.canvas.font = `${fontSize}px ${this.font}`;
-        const temp1 = this.canvas.measureText('W').width;
-        this.canvas.font = `${fontSize * this.scale}px ${this.font}`;
-        const temp2 = this.canvas.measureText('10').width;
-        const width = temp1 + temp2;
-        if (width > this.tileSize) {
-            return false;
-        } else {
-            return true;
-        }
+    // checkFontSize(fontSize: number): boolean {
+    //     this.canvas.font = `${fontSize}px ${this.font}`;
+    //     const temp1 = this.canvas.measureText('W').width;
+    //     this.canvas.font = `${fontSize * this.scale}px ${this.font}`;
+    //     const temp2 = this.canvas.measureText('10').width;
+    //     const width = temp1 + temp2;
+    //     if (width > this.tileSize) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
+
+    coordToTilePosition(x: number, y: number) {
+        const i = Math.floor((x - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
+        const j = Math.floor((y - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
+
+        return { indexI: i, indexJ: j };
+    }
+
+    // click(i: number, j: number) {
+    //     if (this.indicatorPos.x !== i || this.indicatorPos.y !== j) {
+    //         this.indicatorDir = Direction.Horizontal;
+    //     } else if (this.indicatorDir === Direction.Horizontal) {
+    //         this.indicatorDir = Direction.Vertical;
+    //     } else {
+    //         this.indicatorDir = Direction.Horizontal;
+    //     }
+    //     this.setIndicator(i, j);
+    // }
+
+    setIndicator(i: number, j: number) {
+        this.indicatorPos = { x: i, y: j };
+    }
+
+    setDirection(dir: Direction) {
+        this.indicatorDir = dir;
     }
 
     private tilePositionToCoord(i: number, j: number): Vec2 {
@@ -77,6 +117,7 @@ export class CanvasDrawer {
 
     private drawRow(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
+        this.canvas.strokeStyle = '#000000';
         this.canvas.beginPath();
         this.canvas.moveTo(this.offset, offset);
         this.canvas.lineTo(this.width, offset);
@@ -85,12 +126,17 @@ export class CanvasDrawer {
 
     private drawColumn(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
+        this.canvas.strokeStyle = '#000000';
         this.canvas.beginPath();
         this.canvas.moveTo(offset, this.offset);
         this.canvas.lineTo(offset, this.height);
         this.canvas.stroke();
     }
     private drawTile(letter: string, value: number, i: number, j: number) {
+        const pos = this.tilePositionToCoord(j, i);
+        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         this.canvas.fillStyle = '#000000';
 
@@ -103,7 +149,6 @@ export class CanvasDrawer {
 
         const offset = (this.tileSize - tileWidth) / 2;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        const pos = this.tilePositionToCoord(i, j);
         pos.x += offset;
         pos.y += this.tileSize * 0.7;
         this.canvas.textBaseline = 'bottom';
@@ -164,5 +209,31 @@ export class CanvasDrawer {
         this.canvas.fillStyle = '#FFFFFF';
         this.canvas.fillText(s, pos.x, pos.y);
         this.canvas.fillText(`X${mul}`, pos.x, pos.y + this.tileSize / 2);
+    }
+
+    private drawIndicator() {
+        // TODO afficher une fleche
+        const pos = this.tilePositionToCoord(this.indicatorPos.x, this.indicatorPos.y);
+        const img = new Image();
+        const t = new UrlResolver();
+        this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
+        if (this.indicatorDir === Direction.Horizontal) {
+            img.src = t.resolve(window.location.origin, 'assets/img/ArrowRight.png');
+        } else {
+            this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
+            img.src = t.resolve(window.location.origin, 'assets/img/ArrowDown.png');
+        }
+        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+
+        this.canvas.drawImage(img, pos.x, pos.y, this.tileSize, this.tileSize);
+        this.canvas.restore();
+    }
+
+    private drawHighlight(i: number, j: number) {
+        const pos = this.tilePositionToCoord(i, j);
+        this.canvas.fillStyle = 'rgba(0.5, 0, 0.5, 0.25)';
+        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+        this.canvas.strokeStyle = '#FF0000';
+        this.canvas.strokeRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
     }
 }

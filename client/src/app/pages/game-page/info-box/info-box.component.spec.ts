@@ -1,8 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { THOUSAND, TWO } from '@app/GameLogic/constants';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { User } from '@app/GameLogic/player/user';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { InfoBoxComponent, MILISECONDS_IN_MINUTE } from './info-box.component';
 
@@ -40,8 +42,9 @@ describe('InfoBoxComponent', () => {
     let component: InfoBoxComponent;
     let fixture: ComponentFixture<InfoBoxComponent>;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [AppMaterialModule, CommonModule],
             declarations: [InfoBoxComponent],
             providers: [{ provide: GameInfoService, useValue: testMock }],
         }).compileComponents();
