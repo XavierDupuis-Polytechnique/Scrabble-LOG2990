@@ -23,7 +23,7 @@ export class OnlineChatHandlerService {
         if (this.socket) {
             throw Error('Already connected to a chat room');
         }
-        this.socket = io(environment.socketServerUrl, { path: '/messages' });
+        this.socket = io(environment.serverSocketUrl, { path: '/messages' });
 
         this.socket.on('error', (errorContent: string) => {
             this.receiveChatServerError(errorContent);
