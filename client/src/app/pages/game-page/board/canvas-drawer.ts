@@ -34,13 +34,13 @@ export class CanvasDrawer {
         this.canvas.lineWidth = 1;
         this.tileSize = (this.width - this.offset - this.canvas.lineWidth * 16) / 15;
     }
-    drawGrid(board: Board): void {
+    drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = '#FFFFFF';
         this.canvas.fillRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = '#000000';
+        this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-
         for (let i = 0; i < 16; i++) {
             this.drawRow(i);
             this.drawColumn(i);

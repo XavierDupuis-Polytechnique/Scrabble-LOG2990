@@ -8,8 +8,8 @@ import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 
-const MAX_FONT_SIZE = 14;
-const MIN_FONT_SIZE = 7;
+const MAX_FONT_SIZE = 25;
+const MIN_FONT_SIZE = 14;
 
 @Component({
     selector: 'app-board',
@@ -41,7 +41,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
 
             this.canvasDrawer = new CanvasDrawer(canvasContext, canvasElement.clientWidth, canvasElement.clientHeight);
         }
-        this.canvasDrawer.drawGrid(this.board);
+        this.canvasDrawer.drawGrid(this.board, this.fontSize);
     }
 
     ngDoCheck() {
