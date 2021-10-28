@@ -4,18 +4,18 @@ import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/modeMulti/interfa
 import { BehaviorSubject, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
+
 @Injectable({
     providedIn: 'root',
 })
 export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
-    gameToken$ = new BehaviorSubject<string | undefined>(undefined);
-    gameSettings$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
+    startGame$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
     private socket: Socket;
 
     resetGameToken() {
-        this.gameToken$.next(undefined);
+        this.startGame$.next(undefined);
     }
 
     createGameMulti(gameSettings: OnlineGameSettingsUI) {
@@ -59,8 +59,7 @@ export class OnlineGameInitService {
     private listenForGameToken() {
         this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
             const gameToken = gameSetting.id;
-            this.gameToken$.next(gameToken);
-            this.gameSettings$.next(gameSetting);
+            this.startGame$.next(gameSetting);
             console.log('Game Token: ', gameToken, 'Game Settings:', gameSetting);
             this.socket.disconnect();
             console.log('Disconnect');

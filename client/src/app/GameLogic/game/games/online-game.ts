@@ -14,6 +14,7 @@ export class OnlineGame {
     winnerIndex: number[] = [];
 
     constructor(
+        public timePerTurn: number,
         public playerName: string,
         private timer: TimerService,
         private onlineSocket: GameSocketHandlerService,
@@ -62,6 +63,7 @@ export class OnlineGame {
             this.players[i].letterRack = gameState.players[i].letterRack;
         }
     }
+
     updateEndOfGame(gameState: GameState) {
         this.isEndOfGame = gameState.isEndOfGame;
         this.winnerIndex = gameState.winnerIndex;

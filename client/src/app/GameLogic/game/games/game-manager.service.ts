@@ -9,6 +9,7 @@ import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { Observable, Subject } from 'rxjs';
@@ -57,15 +58,22 @@ export class GameManagerService {
         this.info.receiveGame(this.game);
     }
 
-    joinOnlineGame(userAuth: UserAuth) {
+    joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
         if (this.game) {
             this.stopGame();
         }
+        if (!gameSettings.opponentName) {
+            throw Error('No opponent name was entered');
+        }
         console.log('joinOnline game', userAuth);
         this.gameSocketHandler.joinGame(userAuth);
-        const playerName = userAuth.playerName;
+        const userName = userAuth.playerName;
         // TODO: maybe find a way to receive timer time perturn
-        this.onlineGame = new OnlineGame(playerName, this.timer, this.gameSocketHandler, this.boardService);
+        const timerPerTurn = Number(gameSettings.timePerTurn);
+        this.onlineGame = new OnlineGame(timerPerTurn, userName, this.timer, this.gameSocketHandler, this.boardService);
+        const opponentName = gameSettings.playerName === userName ? gameSettings.opponentName : gameSettings.playerName;
+        const players = this.createOnlinePlayers(userName, opponentName);
+        this.allocateOnlinePlayers(players);
         this.info.receiveOnlineGame(this.onlineGame);
     }
 
@@ -94,5 +102,16 @@ export class GameManagerService {
 
     private allocatePlayers(players: Player[]) {
         this.game.players = players;
+    }
+
+    private createOnlinePlayers(userName: string, opponentName: string): Player[] {
+        const user = new User(userName);
+        const opponent = new User(opponentName);
+        this.info.receiveUser(user);
+        return [user, opponent];
+    }
+
+    private allocateOnlinePlayers(players: Player[]) {
+        this.onlineGame.players = players;
     }
 }

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
@@ -58,11 +59,11 @@ export class ClassicGameComponent {
             this.socketHandler.createGameMulti(formOnline);
             this.openWaitingForPlayer();
             const name = formOnline.playerName;
-            this.socketHandler.gameToken$.pipe(takeWhile((val) => !val, true)).subscribe((gameToken) => {
-                if (!gameToken) {
+            this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+                if (!onlineGameSettings) {
                     return;
                 }
-                this.startOnlineGame(gameToken, name);
+                this.startOnlineGame(name, onlineGameSettings);
             });
         });
     }
@@ -95,19 +96,20 @@ export class ClassicGameComponent {
         pendingGamesDialogConfig.minWidth = 550;
         const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
         dialogRef.afterClosed().subscribe((name: string) => {
-            this.socketHandler.gameToken$.pipe(takeWhile((val) => !val, true)).subscribe((gameToken) => {
-                if (!gameToken) {
+            this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+                if (!onlineGameSettings) {
                     return;
                 }
-                this.startOnlineGame(gameToken, name);
+                this.startOnlineGame(name, onlineGameSettings);
             });
         });
     }
 
-    startOnlineGame(gameToken: string, name: string) {
-        const userAuth: UserAuth = { playerName: name, gameToken };
+    startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
+        const gameToken = onlineGameSettings.id;
+        const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
-        this.gameManager.joinOnlineGame(userAuth);
+        this.gameManager.joinOnlineGame(userAuth, onlineGameSettings);
         this.router.navigate(['/game']);
     }
 
