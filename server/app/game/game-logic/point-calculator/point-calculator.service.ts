@@ -1,7 +1,6 @@
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
-import { BoardService } from '@app/game/game-logic/board/board.service';
 import { Tile } from '@app/game/game-logic/board/tile';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { Player } from '@app/game/game-logic/player/player';
@@ -13,18 +12,12 @@ const BONUS = 50;
 
 @Service()
 export class PointCalculatorService {
-    constructor(private boardService: BoardService) {}
-
-    get grid() {
-        return this.boardService.board.grid;
-    }
-
-    placeLetterCalculation(action: PlaceLetter, wordList: Tile[][]): number {
+    placeLetterCalculation(action: PlaceLetter, wordList: Tile[][], grid: Tile[][]): number {
         let totalPointsOfTurn = 0;
         wordList.forEach((word) => {
             totalPointsOfTurn += this.calculatePointsOfWord(word);
         });
-        this.desactivateMultiplicators(action);
+        this.desactivateMultiplicators(action, grid);
 
         if (action.affectedCoords.length >= MAX_LETTER_IN_RACK) {
             totalPointsOfTurn += BONUS;
@@ -92,7 +85,7 @@ export class PointCalculatorService {
         return sumOfRack;
     }
 
-    desactivateMultiplicators(action: PlaceLetter): void {
+    desactivateMultiplicators(action: PlaceLetter, grid: Tile[][]): void {
         const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
         const direction = action.placement.direction;
         const word = action.word;
@@ -100,15 +93,15 @@ export class PointCalculatorService {
             const y = startCoord.y;
             const wordEnd = startCoord.x + word.length;
             for (let x = startCoord.x; x < wordEnd; x++) {
-                this.grid[y][x].letterMultiplicator = 1;
-                this.grid[y][x].wordMultiplicator = 1;
+                grid[y][x].letterMultiplicator = 1;
+                grid[y][x].wordMultiplicator = 1;
             }
         } else {
             const x = startCoord.x;
             const wordEnd = startCoord.y + word.length;
             for (let y = startCoord.y; y < wordEnd; y++) {
-                this.grid[y][x].letterMultiplicator = 1;
-                this.grid[y][x].wordMultiplicator = 1;
+                grid[y][x].letterMultiplicator = 1;
+                grid[y][x].wordMultiplicator = 1;
             }
         }
     }

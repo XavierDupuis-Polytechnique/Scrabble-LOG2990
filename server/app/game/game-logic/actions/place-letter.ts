@@ -33,13 +33,13 @@ export class PlaceLetter extends Action {
     }
 
     protected perform(game: ServerGame) {
-        const validWordList = this.wordSearcher.listOfValidWord(this);
+        const validWordList = this.wordSearcher.listOfValidWord(this, game.board.grid);
         const words = validWordList.map((validWord) => validWord.letters);
         this.putLettersOnBoard(game);
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
         const wordValid = validWordList.length !== 0;
         if (wordValid) {
-            this.pointCalculator.placeLetterCalculation(this, words);
+            this.pointCalculator.placeLetterCalculation(this, words, game.board.grid);
             this.drawLettersForPlayer(game);
             this.end();
         } else {

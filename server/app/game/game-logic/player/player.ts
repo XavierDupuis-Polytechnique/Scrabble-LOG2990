@@ -8,14 +8,12 @@ export class Player {
     action$: Subject<Action> = new Subject();
 
     points: number = 0;
-    name: string = Player.defaultName;
+    name: string = '';
     isActive: boolean;
     letterRack: Letter[] = [];
 
-    constructor(name?: string) {
-        if (name) {
-            this.name = name;
-        }
+    constructor(name: string) {
+        this.name = name;
     }
 
     play(action: Action) {

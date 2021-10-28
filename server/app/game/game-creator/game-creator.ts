@@ -1,28 +1,28 @@
-import { BoardService } from '@app/game/game-logic/board/board.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
-import { User } from '@app/game/game-logic/player/user';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
-import { TimerService } from '@app/game/game-logic/timer/timer.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
+import { GameCompiler } from '@app/services/game-compiler.service';
+import { Subject } from 'rxjs';
 
 export class GameCreator {
     static defaultOpponentName = 'AZERTY';
 
     constructor(
-        private timer: TimerService,
         private pointCalculator: PointCalculatorService,
-        // private messageService: MessagesService,
-        private boardService: BoardService,
+        private gameCompiler: GameCompiler,
+        private newGameStateSubject: Subject<GameStateToken>,
     ) {}
 
-    createServerGame(onlineGameSettings: OnlineGameSettings): ServerGame {
+    createServerGame(onlineGameSettings: OnlineGameSettings, gameToken: string): ServerGame {
         const newServerGame = new ServerGame(
             onlineGameSettings.randomBonus,
             onlineGameSettings.timePerTurn,
-            this.timer,
+            gameToken,
             this.pointCalculator,
-            this.boardService,
+            this.gameCompiler,
+            this.newGameStateSubject,
             // this.messageService,
         );
 
@@ -33,13 +33,12 @@ export class GameCreator {
         }
         const players = this.createPlayers(firstPlayerName, secondPlayerName);
         newServerGame.players = players;
-        console.log("Game creator");
         return newServerGame;
     }
 
     private createPlayers(firstPlayerName: string, secondPlayerName: string): Player[] {
-        const playerOne = new User(firstPlayerName);
-        const playerTwo = new User(secondPlayerName);
+        const playerOne = new Player(firstPlayerName);
+        const playerTwo = new Player(secondPlayerName);
         return [playerOne, playerTwo];
     }
 

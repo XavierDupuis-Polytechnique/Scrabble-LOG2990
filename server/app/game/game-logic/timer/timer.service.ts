@@ -1,10 +1,8 @@
 import { TIMER_STEP } from '@app/game/game-logic/constants';
 import { BehaviorSubject, Observable, Subject, Subscription, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Service } from 'typedi';
 
-@Service()
-export class TimerService {
+export class Timer {
     source: Observable<number>;
     readonly timePerStep: number = TIMER_STEP;
     private end$$: Subscription;

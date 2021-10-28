@@ -13,7 +13,11 @@ export interface GameState {
     activePlayerIndex: number;
     grid: Tile[][];
     letterBag: LetterBag;
-
     isEndOfGame: boolean;
     winnerIndex: number[];
+}
+
+export interface GameStateToken {
+    gameState: GameState;
+    gameToken: string;
 }
