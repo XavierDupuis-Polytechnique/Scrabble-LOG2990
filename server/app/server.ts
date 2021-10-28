@@ -17,11 +17,11 @@ export class Server {
     private server: http.Server;
     private onlineGameManager: NewOnlineGameSocketHandler;
     private gameSocketsHandler: GameSocketsHandler;
+    private messageHandler: MessagesSocketHandler;
     constructor(
         private readonly application: Application,
         private onlineGameService: NewOnlineGameService,
         private gameManager: GameManagerService,
-        private messageHandler: MessagesSocketHandler,
         private systemMessagesService: SystemMessagesService,
     ) {}
     private static normalizePort(val: number | string): number | string | boolean {

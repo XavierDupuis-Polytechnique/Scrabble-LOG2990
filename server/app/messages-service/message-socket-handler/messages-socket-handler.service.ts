@@ -1,12 +1,12 @@
-import * as io from 'socket.io';
-import * as http from 'http';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
 import { ChatUser } from '@app/messages-service/chat-user.interface';
-import { Room } from '@app/messages-service/room';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Message } from '@app/messages-service/message.interface';
+import { Room } from '@app/messages-service/room';
 import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-service/system-message.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import * as http from 'http';
+import * as io from 'socket.io';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 export const SYSTEM_MESSAGES = 'systemMessages';
 export const NEW_MESSAGE = 'newMessage';

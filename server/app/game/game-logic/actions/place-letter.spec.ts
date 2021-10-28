@@ -3,12 +3,15 @@ import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Tile } from '@app/game/game-logic/board/tile';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { isCharUpperCase } from '@app/game/game-logic/utils';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
+import { GameCompiler } from '@app/services/game-compiler.service';
 import { expect } from 'chai';
+import { Subject } from 'rxjs';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
 describe('PlaceLetter', () => {
@@ -27,6 +30,8 @@ describe('PlaceLetter', () => {
     let pointCalculatorStub: SinonStubbedInstance<PointCalculatorService>;
     let wordSearcherStub: SinonStubbedInstance<WordSearcher>;
     const randomBonus = false;
+    const gameCompiler = new GameCompiler();
+    const mockNewGameState$ = new Subject<GameStateToken>();
     beforeEach(() => {
         wordSearcherStub = createStubInstance(WordSearcher);
         wordSearcherStub.listOfValidWord.returns([{ letters: [new Tile()], index: [0] }]);
@@ -37,7 +42,7 @@ describe('PlaceLetter', () => {
             player.points = points;
             return points;
         });
-        game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculatorStub);
+        game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculatorStub, gameCompiler, mockNewGameState$);
         game.players.push(player1);
         game.players.push(player2);
         game.startGame();
