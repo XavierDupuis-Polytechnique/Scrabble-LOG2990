@@ -1,3 +1,4 @@
+import { GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { OnlineAction } from '@app/game/online-action.interface';
 import * as http from 'http';
@@ -10,11 +11,13 @@ export class GameSocketsHandler {
         this.sio = new io.Server(server, {
             path: '/game',
             cors: { origin: '*', methods: ['GET', 'POST'] },
+            // TODO : forfeit after 5 second timeout
+            // pingTimeout: 5000,
         });
-        this.gameManager.newGameStates$.subscribe((state: string) => {
-            // TODO get game token
-            const gameToken = 'to change';
-            this.emitGameState(state, gameToken);
+        this.gameManager.newGameStates$.subscribe((gameStateToken: GameStateToken) => {
+            const gameToken = gameStateToken.gameToken;
+            const gameState = gameStateToken.gameState;
+            this.emitGameState(gameState, gameToken);
         });
     }
 
@@ -50,7 +53,7 @@ export class GameSocketsHandler {
         });
     }
 
-    private emitGameState(gameState: unknown, gameToken: string) {
+    private emitGameState(gameState: GameState, gameToken: string) {
         // get game state
         this.sio.to(gameToken).emit('gameState', gameState);
     }
@@ -63,7 +66,6 @@ export class GameSocketsHandler {
     private sendPlayerAction(socketId: string, action: OnlineAction) {
         const playerId = socketId;
         this.gameManager.receivePlayerAction(playerId, action);
-        console.log('PLayer action');
     }
 
     private removePlayer(playerId: string) {

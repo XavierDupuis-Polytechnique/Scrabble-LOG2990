@@ -1,36 +1,41 @@
 import { Action } from '@app/game/game-logic/actions/action';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { Board } from '@app/game/game-logic/board/board';
-import { BoardService } from '@app/game/game-logic/board/board.service';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
-import { TimerService } from '@app/game/game-logic/timer/timer.service';
-import { first, mapTo, merge } from 'rxjs';
+import { Timer } from '@app/game/game-logic/timer/timer.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { GameCompiler } from '@app/services/game-compiler.service';
+import { first, mapTo, merge, Subject } from 'rxjs';
 
 export class ServerGame {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
-    board: Board;
     activePlayerIndex: number;
     consecutivePass: number = 0;
+    timer = new Timer();
+    board: Board;
 
     constructor(
         public randomBonus: boolean,
         public timePerTurn: number,
-        private timer: TimerService,
+        public gameToken: string,
         private pointCalculator: PointCalculatorService,
-        private boardService: BoardService, // private messagesService: MessagesService,
+        private gameCompiler: GameCompiler,
+        private messagesService: SystemMessagesService,
+        private newGameStateSubject: Subject<GameStateToken>,
     ) {
         this.board = new Board(randomBonus);
-        this.boardService.board = this.board;
     }
 
     startGame(): void {
+        console.log('Starting a game');
         if (this.players.length < 2) {
-            throw Error('Game started with no players');
+            throw Error('Game started with less than 2 players');
         }
         this.drawGameLetters();
         this.pickFirstPlayer();
@@ -42,6 +47,7 @@ export class ServerGame {
     }
 
     isEndOfGame() {
+        console.log('Consecutive pass ', this.consecutivePass);
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
                 if (player.isLetterRackEmpty) {
@@ -60,8 +66,9 @@ export class ServerGame {
     }
 
     onEndOfGame() {
+        console.log('GAME ENDED');
         this.pointCalculator.endOfGamePointDeduction(this);
-        // this.displayLettersLeft();
+        this.displayLettersLeft();
     }
 
     doAction(action: Action) {
@@ -101,6 +108,8 @@ export class ServerGame {
 
     private startTurn() {
         const activePlayer = this.players[this.activePlayerIndex];
+        console.log(`Start ${activePlayer.name}'s turn`);
+        console.log(activePlayer);
         // activePlayer.setActive();
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$);
@@ -116,18 +125,25 @@ export class ServerGame {
                 return;
             }
             this.nextPlayer();
+            this.emitGameState();
             this.startTurn();
         });
 
         action.execute(this);
     }
 
-    // private displayLettersLeft() {
-    //     let message = 'Fin de partie - lettres restantes';
-    //     this.messagesService.receiveSystemMessage(message);
-    //     for (const player of this.players) {
-    //         message = `${player.name}: ${player.printLetterRack()}`;
-    //         this.messagesService.receiveSystemMessage(message);
-    //     }
-    // }
+    private emitGameState() {
+        const gameState = this.gameCompiler.compile(this);
+        const gameStateToken: GameStateToken = { gameState, gameToken: this.gameToken };
+        this.newGameStateSubject.next(gameStateToken);
+    }
+
+    private displayLettersLeft() {
+        let message = 'Fin de partie - lettres restantes';
+        this.messagesService.sendGlobal(this.gameToken, message);
+        for (const player of this.players) {
+            message = `${player.name}: ${player.printLetterRack()}`;
+            this.messagesService.sendGlobal(this.gameToken, message);
+        }
+    }
 }

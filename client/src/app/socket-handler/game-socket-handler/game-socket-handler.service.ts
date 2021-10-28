@@ -1,21 +1,10 @@
 import { Injectable } from '@angular/core';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
+import { OnlineAction } from '@app/socket-handler/online-action.interface';
 import { Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
-
-export interface OnlineAction {
-    type: OnlineActionType;
-    args?: string[];
-}
-
-export enum OnlineActionType {
-    Place = 'place',
-    Exchange = 'exchange',
-    Pass = 'pass',
-}
-
 export interface GameAuth {
     playerName: string;
     gameToken: string;

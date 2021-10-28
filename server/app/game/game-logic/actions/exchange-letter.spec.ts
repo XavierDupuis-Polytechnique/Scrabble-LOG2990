@@ -1,49 +1,42 @@
-// import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
-// import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-// import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
-// import { BoardService } from '@app/GameLogic/game/board/board.service';
-// import { Letter } from '@app/GameLogic/game/board/letter.interface';
-// import { Game } from '@app/GameLogic/game/games/game';
-// import { TimerService } from '@app/GameLogic/game/timer/timer.service';
-// import { MessagesService } from '@app/GameLogic/messages/messages.service';
-// import { Player } from '@app/GameLogic/player/player';
-// import { User } from '@app/GameLogic/player/user';
-// import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
+import { Letter } from '@app/game/game-logic/board/letter.interface';
+import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { Player } from '@app/game/game-logic/player/player';
+import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { GameCompiler } from '@app/services/game-compiler.service';
+import { expect } from 'chai';
+import { Subject } from 'rxjs';
 
-// describe('ExchangeLetter', () => {
-//     let game: Game;
-//     const player: Player = new User('Tim');
-//     const randomBonus = false;
-//     beforeEach(() => {
-//         const boardService = new BoardService();
-//         game = new Game(
-//             randomBonus,
-//             DEFAULT_TIME_PER_TURN,
-//             new TimerService(),
-//             new PointCalculatorService(boardService),
-//             boardService,
-//             new MessagesService(new CommandParserService()),
-//         );
-//         game.players[0] = player;
-//         game.start();
-//     });
+describe('ExchangeLetter', () => {
+    let game: ServerGame;
+    const player1: Player = new Player('Tim');
+    const player2: Player = new Player('George');
+    const randomBonus = false;
+    let activePlayer: Player;
+    const pointCalculator = new PointCalculatorService();
+    const gameCompiler = new GameCompiler();
+    const mockNewGameState$ = new Subject<GameStateToken>();
 
-//     it('should create an instance', () => {
-//         const letters: Letter[] = [{ char: 'A', value: 1 }];
-//         expect(new ExchangeLetter(new User('Tim'), letters)).toBeTruthy();
-//     });
+    beforeEach(() => {
+        game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculator, gameCompiler, mockNewGameState$);
+        game.players.push(player1);
+        game.players.push(player2);
+        game.startGame();
+        activePlayer = game.getActivePlayer();
+    });
 
-//     it('letter rack should be different when exchanging letters', () => {
-//         const initialLetterRack: Letter[] = [...player.letterRack];
-//         const lettersToExchange: Letter[] = initialLetterRack.slice(0, 3);
-//         const exchangeAction = new ExchangeLetter(player, lettersToExchange);
+    it('letter rack should be different when exchanging letters', () => {
+        const initialLetterRack: Letter[] = [...activePlayer.letterRack];
+        const lettersToExchange: Letter[] = initialLetterRack.slice(0, 3);
+        const exchangeAction = new ExchangeLetter(activePlayer, lettersToExchange);
 
-//         exchangeAction.execute(game);
+        exchangeAction.execute(game);
 
-//         const finalLetterRack: Letter[] = player.letterRack;
-//         initialLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
-//         finalLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
+        const finalLetterRack: Letter[] = activePlayer.letterRack;
+        initialLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
+        finalLetterRack.sort((a, b) => a.char.charCodeAt(0) - b.char.charCodeAt(0));
 
-//         expect(initialLetterRack !== finalLetterRack).toBeTrue();
-//     });
-// });
+        expect(initialLetterRack).not.to.deep.equal(finalLetterRack);
+    });
+});
