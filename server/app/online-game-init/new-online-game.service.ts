@@ -47,6 +47,14 @@ export class NewOnlineGameService {
         this.pendingGames.delete(id);
     }
 
+    getPendingGame(id: string): OnlineGameSettings {
+        if (!this.pendingGames.get(id)) {
+            throw Error('This game does not exist.');
+        }
+        const onlineGameSetting = this.toOnlineGameSettings(id, this.pendingGames.get(id));
+        return onlineGameSetting;
+    }
+
     private startGame(gameToken: string, gameSettings: OnlineGameSettings) {
         this.deletePendingGame(gameSettings.id);
         this.gameMaster.createGame(gameToken, gameSettings);
@@ -62,7 +70,7 @@ export class NewOnlineGameService {
         return gameSetting.id;
     }
 
-    private toOnlineGameSettings(id: string, settings: OnlineGameSettingsUI): OnlineGameSettings {
+    private toOnlineGameSettings(id: string, settings: OnlineGameSettingsUI | undefined): OnlineGameSettings {
         const gameSettings = settings as OnlineGameSettings;
         gameSettings.id = id;
         return gameSettings;

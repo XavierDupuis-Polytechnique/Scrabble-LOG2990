@@ -1,4 +1,4 @@
-import { OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
 import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
@@ -41,7 +41,7 @@ export class NewOnlineGameSocketHandler {
 
             socket.on(joinGame, (id: string, name: string) => {
                 try {
-                    this.joinGame(id, name, socket);
+                    this.joinGame(id, name, this.getPendingGame(id), socket);
                     this.emitPendingGamesToAll();
                     console.log(name, 'joined game', id);
                 } catch (e) {
@@ -67,7 +67,12 @@ export class NewOnlineGameSocketHandler {
         return gameId;
     }
 
-    private joinGame(id: string, name: string, socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
+    private joinGame(
+        id: string,
+        name: string,
+        gameSettings: OnlineGameSettings,
+        socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>,
+    ) {
         if (typeof id !== 'string' && typeof name !== 'string') {
             throw Error('Cannot join game, invalid GameSettings');
         }
@@ -76,9 +81,12 @@ export class NewOnlineGameSocketHandler {
             throw Error('Cannot join game, game does not exist anymore');
         }
         socket.join(id);
-        this.sendGameTokenToPlayers(id, gameToken);
+        this.sendGameTokenToPlayers(id, gameToken, gameSettings);
     }
 
+    private getPendingGame(id: string): OnlineGameSettings {
+        return this.newOnlineGameService.getPendingGame(id);
+    }
     private onDisconnect(gameId: string) {
         if (gameId === undefined) {
             return;
@@ -92,8 +100,9 @@ export class NewOnlineGameSocketHandler {
         console.log(errorMessage);
     }
 
-    private sendGameTokenToPlayers(gameId: string, gameToken: string) {
-        this.ioServer.to(gameId).emit(gameJoined, gameToken);
+    private sendGameTokenToPlayers(gameId: string, gameToken: string, gameSettings: OnlineGameSettings) {
+        gameSettings.id = gameToken;
+        this.ioServer.to(gameId).emit(gameJoined, gameSettings);
         console.log('gametoken: ', gameToken);
     }
 

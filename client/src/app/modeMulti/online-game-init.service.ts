@@ -11,6 +11,7 @@ export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     gameToken$ = new BehaviorSubject<string | undefined>(undefined);
+    gameSettings$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
     private socket: Socket;
 
     resetGameToken() {
@@ -56,9 +57,11 @@ export class OnlineGameInitService {
     }
 
     private listenForGameToken() {
-        this.socket.on('gameJoined', (gameToken: string) => {
+        this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
+            const gameToken = gameSetting.id;
             this.gameToken$.next(gameToken);
-            console.log(gameToken);
+            this.gameSettings$.next(gameSetting);
+            console.log('Game Token: ', gameToken, 'Game Settings:', gameSetting);
             this.socket.disconnect();
             console.log('Disconnect');
         });
