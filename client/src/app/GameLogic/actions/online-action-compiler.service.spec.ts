@@ -7,10 +7,12 @@ import { Game } from '../game/games/game';
 import { TimerService } from '../game/timer/timer.service';
 import { PlacementSetting } from '../interface/placement-setting.interface';
 import { MessagesService } from '../messages/messages.service';
+import { Player } from '../player/player';
 import { User } from '../player/user';
 import { PointCalculatorService } from '../point-calculator/point-calculator.service';
 import { DictionaryService } from '../validator/dictionary.service';
 import { WordSearcher } from '../validator/word-search/word-searcher.service';
+import { Action } from './action';
 import { ActionValidatorService } from './action-validator.service';
 import { ExchangeLetter } from './exchange-letter';
 import { OnlineAction, OnlineActionType } from './online-action-compiler.interface';
@@ -18,14 +20,18 @@ import { OnlineActionCompilerService } from './online-action-compiler.service';
 import { PassTurn } from './pass-turn';
 import { PlaceLetter } from './place-letter';
 
-// class TestPlayer extends Player {
-//     setActive(): void {
-//         throw new Error('Method not implemented.');
-//     }
-//     set value(v: number) {
-//         this.value = v;
-//     }
-// }
+class UnknownAction extends Action {
+    id: number;
+    constructor(readonly player: Player) {
+        super(player);
+    }
+    execute(): void {
+        throw new Error('Method not implemented.');
+    }
+    protected perform(): void {
+        throw new Error('Method not implemented.');
+    }
+}
 describe('Service: OnlineActionCompiler', () => {
     let service: OnlineActionCompilerService;
     let placement: PlacementSetting;
@@ -110,5 +116,11 @@ describe('Service: OnlineActionCompiler', () => {
             type: OnlineActionType.Pass,
         };
         expect(service.compileActionOnline(passTurn)).toEqual(passTurnTest);
+    });
+
+    it('should only call compilePassTurn', () => {
+        const unknownActionTest = new UnknownAction(p1);
+
+        expect(service.compileActionOnline(unknownActionTest)).toEqual(undefined);
     });
 });
