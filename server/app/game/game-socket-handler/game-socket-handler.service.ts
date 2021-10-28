@@ -11,6 +11,8 @@ export class GameSocketsHandler {
         this.sio = new io.Server(server, {
             path: '/game',
             cors: { origin: '*', methods: ['GET', 'POST'] },
+            // TODO : forfeit after 5 second timeout
+            // pingTimeout: 5000,
         });
         this.gameManager.newGameStates$.subscribe((gameStateToken: GameStateToken) => {
             const gameToken = gameStateToken.gameToken;
