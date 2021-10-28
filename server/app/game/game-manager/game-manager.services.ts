@@ -6,6 +6,7 @@ import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { Observable, Subject } from 'rxjs';
@@ -30,11 +31,11 @@ export class GameManagerService {
 
     constructor(
         private pointCalculator: PointCalculatorService,
-        // private messageService: MessagesService,
+        private messagesService: SystemMessagesService,
         private actionCompiler: ActionCompilerService,
         private gameCompiler: GameCompiler,
     ) {
-        this.gameCreator = new GameCreator(this.pointCalculator, this.gameCompiler, this.newGameStateSubject);
+        this.gameCreator = new GameCreator(this.pointCalculator, this.gameCompiler, this.messagesService, this.newGameStateSubject);
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {

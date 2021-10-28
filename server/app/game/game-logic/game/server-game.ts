@@ -7,6 +7,7 @@ import { GameStateToken } from '@app/game/game-logic/interface/game-state.interf
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { Timer } from '@app/game/game-logic/timer/timer.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { first, mapTo, merge, Subject } from 'rxjs';
 
@@ -23,8 +24,9 @@ export class ServerGame {
         public randomBonus: boolean,
         public timePerTurn: number,
         public gameToken: string,
-        private pointCalculator: PointCalculatorService, // private messagesService: MessagesService,
+        private pointCalculator: PointCalculatorService,
         private gameCompiler: GameCompiler,
+        private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
     ) {
         this.board = new Board(randomBonus);
@@ -33,7 +35,7 @@ export class ServerGame {
     startGame(): void {
         console.log('Starting a game');
         if (this.players.length < 2) {
-            throw Error('Game started with no players');
+            throw Error('Game started with less than 2 players');
         }
         this.drawGameLetters();
         this.pickFirstPlayer();
@@ -66,8 +68,7 @@ export class ServerGame {
     onEndOfGame() {
         console.log('GAME ENDED');
         this.pointCalculator.endOfGamePointDeduction(this);
-        // TODO : replace function behavior and uncomment
-        // this.displayLettersLeft();
+        this.displayLettersLeft();
     }
 
     doAction(action: Action) {
@@ -124,11 +125,11 @@ export class ServerGame {
                 return;
             }
             this.nextPlayer();
+            this.emitGameState();
             this.startTurn();
         });
 
         action.execute(this);
-        this.emitGameState();
     }
 
     private emitGameState() {
@@ -137,13 +138,12 @@ export class ServerGame {
         this.newGameStateSubject.next(gameStateToken);
     }
 
-    // TODO : replace core function with new Message Service behavior
-    // private displayLettersLeft() {
-    //     let message = 'Fin de partie - lettres restantes';
-    //     this.messagesService.receiveSystemMessage(message);
-    //     for (const player of this.players) {
-    //         message = `${player.name}: ${player.printLetterRack()}`;
-    //         this.messagesService.receiveSystemMessage(message);
-    //     }
-    // }
+    private displayLettersLeft() {
+        let message = 'Fin de partie - lettres restantes';
+        this.messagesService.sendGlobal(this.gameToken, message);
+        for (const player of this.players) {
+            message = `${player.name}: ${player.printLetterRack()}`;
+            this.messagesService.sendGlobal(this.gameToken, message);
+        }
+    }
 }
