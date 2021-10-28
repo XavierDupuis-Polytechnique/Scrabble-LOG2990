@@ -1,5 +1,6 @@
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { Request, Response, Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
 
 @Service()
@@ -25,8 +26,10 @@ export class ServerGameController {
             const gameId = req.query.gameId?.toString();
             if (gameId) {
                 const game = this.gameManager.activeGames.get(gameId);
-                res.json(game?.letterBag.gameLetters.length);
-            }
+                if (game) {
+                    res.json(game?.letterBag.gameLetters.length);
+                } else res.sendStatus(StatusCodes.NOT_FOUND);
+            } else res.sendStatus(StatusCodes.BAD_REQUEST);
         });
     }
 }
