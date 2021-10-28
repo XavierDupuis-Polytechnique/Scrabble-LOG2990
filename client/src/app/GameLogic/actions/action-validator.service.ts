@@ -131,7 +131,7 @@ export class ActionValidatorService {
         } else {
             concernedAxisValue = action.placement.x;
         }
-        const lastLetterPosition = concernedAxisValue + action.word.length;
+        const lastLetterPosition = concernedAxisValue + action.word.length - 1;
         const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION;
         if (doesLastPositionOverflow) {
             this.sendErrorMessage('Commande impossible à réaliser : Les lettres déboderont de la grille');
@@ -146,14 +146,14 @@ export class ActionValidatorService {
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
+            hasNeighbour = this.boardService.board.hasNeighbour(x, y);
+            if (hasNeighbour) {
+                return true;
+            }
             if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
                 y++;
             } else {
                 x++;
-            }
-            hasNeighbour = this.boardService.board.hasNeighbour(x, y);
-            if (hasNeighbour) {
-                return true;
             }
         }
         this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
