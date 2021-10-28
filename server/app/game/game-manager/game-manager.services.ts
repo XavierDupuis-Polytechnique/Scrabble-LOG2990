@@ -1,11 +1,13 @@
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
+import { GameCompiler } from '@app/services/game-compiler.service';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
 
@@ -19,16 +21,20 @@ export class GameManagerService {
     activeGames = new Map<string, ServerGame>();
     activePlayers = new Map<string, PlayerRef>();
     numberOfPlayers = new Map<string, number>();
-    private newGameStateSubject = new Subject<string>();
     private gameCreator: GameCreator;
+
+    private newGameStateSubject = new Subject<GameStateToken>();
+    get newGameStates$(): Observable<GameStateToken> {
+        return this.newGameStateSubject;
+    }
 
     constructor(
         private pointCalculator: PointCalculatorService,
         // private messageService: MessagesService,
         private actionCompiler: ActionCompilerService,
+        private gameCompiler: GameCompiler,
     ) {
-        this.gameCreator = new GameCreator(this.pointCalculator);
-        this.activeGames.set('1', new ServerGame(false, 60000, '1', this.pointCalculator));
+        this.gameCreator = new GameCreator(this.pointCalculator, this.gameCompiler, this.newGameStateSubject);
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
@@ -54,10 +60,7 @@ export class GameManagerService {
         this.activePlayers.set(playerId, playerRef);
         this.increaseNumberOfPlayers(gameToken);
         console.log('active players', this.activePlayers);
-
-        console.log('number of players in game', this.numberOfPlayers.get(gameToken));
         if (this.numberOfPlayers.get(gameToken) === 2) {
-            console.log('--game will start');
             game.startGame();
         }
     }
@@ -100,9 +103,5 @@ export class GameManagerService {
         }
         numberOfPlayers += 1;
         this.numberOfPlayers.set(gameToken, numberOfPlayers);
-    }
-
-    get newGameStates$(): Observable<string> {
-        return this.newGameStateSubject;
     }
 }

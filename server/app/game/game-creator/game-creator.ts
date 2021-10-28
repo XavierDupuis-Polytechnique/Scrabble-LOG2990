@@ -1,12 +1,19 @@
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
+import { GameCompiler } from '@app/services/game-compiler.service';
+import { Subject } from 'rxjs';
 
 export class GameCreator {
     static defaultOpponentName = 'AZERTY';
 
-    constructor(private pointCalculator: PointCalculatorService) {}
+    constructor(
+        private pointCalculator: PointCalculatorService,
+        private gameCompiler: GameCompiler,
+        private newGameStateSubject: Subject<GameStateToken>,
+    ) {}
 
     createServerGame(onlineGameSettings: OnlineGameSettings, gameToken: string): ServerGame {
         const newServerGame = new ServerGame(
@@ -14,6 +21,8 @@ export class GameCreator {
             onlineGameSettings.timePerTurn,
             gameToken,
             this.pointCalculator,
+            this.gameCompiler,
+            this.newGameStateSubject,
             // this.messageService,
         );
 
