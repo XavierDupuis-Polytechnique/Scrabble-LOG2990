@@ -14,7 +14,7 @@ import { Service } from 'typedi';
 export class WordSearcher {
     letterCreator = new LetterCreator();
 
-    constructor(private dictionaryService: DictionaryService) {}
+    constructor(public dictionaryService: DictionaryService) {}
 
     validateWords(action: PlaceLetter, grid: Tile[][]): boolean {
         const listOfValidWord = this.listOfValidWord(action, grid);
@@ -205,7 +205,7 @@ export class WordSearcher {
         return wordTemp;
     }
 
-    private createTile(char: string, pos: Vec2, grid: Tile[][]): Tile {
+    createTile(char: string, pos: Vec2, grid: Tile[][]): Tile {
         const tile = grid[pos.y][pos.x];
         const letterMultiplicator = tile.letterMultiplicator;
         const wordMultiplicator = tile.wordMultiplicator;
