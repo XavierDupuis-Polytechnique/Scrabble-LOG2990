@@ -6,7 +6,7 @@ import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
-import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
+import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
 import { Container } from 'typedi';
 
@@ -22,21 +22,17 @@ describe('ServerGameController', () => {
     beforeEach(async () => {
         gameManagerService = createStubInstance(GameManagerService);
         const mockActiveGame = new Map<string, SinonStubbedInstance<ServerGame>>();
-
-        const mockGame = createStubInstance(ServerGame);
-        // Est-ce qu'il faut absolument initialiser l'attribue avant de stub
-        mockGame.letterBag = new LetterBag();
         const letter: Letter = { char: 'A', value: 1 };
         const mockLetterBag = {
             gameLetters: [letter, letter, letter],
         };
-        stub(mockGame, 'letterBag').value(mockLetterBag);
+
+        const mockGame = createStubInstance(ServerGame);
+        mockGame.letterBag = mockLetterBag as LetterBag;
 
         mockActiveGame.set('2', mockGame);
-        // Est-ce qu'il faut absolument initialiser l'attribue avant de stub
 
-        gameManagerService.activeGames = new Map<string, ServerGame>();
-        stub(gameManagerService, 'activeGames').value(mockActiveGame);
+        gameManagerService.activeGames = mockActiveGame as unknown as Map<string, ServerGame>;
 
         const app = Container.get(Application);
         // eslint-disable-next-line dot-notation
