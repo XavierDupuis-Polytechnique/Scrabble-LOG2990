@@ -140,6 +140,7 @@ export class UIInputControllerService {
 
     pass(user: User) {
         this.avs.sendAction(new PassTurn(user));
+    }
 
     private discardAction() {
         if (this.activeAction) {
