@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
-import { OnlineSystemMessage } from '@app/GameLogic/messages/online-system-message.interface';
 import { isSocketConnected } from '@app/GameLogic/utils';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -33,8 +32,8 @@ export class OnlineChatHandlerService {
             this.receiveServerMessage(message);
         });
 
-        this.socket.on('systemMessages', (sysMessage: OnlineSystemMessage) => {
-            const content = sysMessage.content;
+        this.socket.on('systemMessages', (content: string) => {
+            // console.log('received sysMessage from server', sysMessage);
             this.receiveSystemMessage(content);
         });
 
