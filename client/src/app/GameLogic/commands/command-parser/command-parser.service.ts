@@ -44,32 +44,29 @@ export class CommandParserService {
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
             const commandType = commandCondition as CommandType;
-            if (Object.values(CommandType).includes(commandType)) {
-                let args: string[] | undefined = toVerify.slice(1, toVerify.length);
-                if (commandType === CommandType.Place) {
-                    if (toVerify.length < 3) {
-                        this.sendErrorMessage('mot ou emplacement manquant');
-                    }
-                    args = this.placeLetterFormatter(args);
-                    if (args === undefined) {
-                        return undefined;
-                    }
-                }
-                if (commandType === CommandType.Exchange) {
-                    this.exchangeLetterArgVerifier(args[0]);
-                }
-                const command = this.createCommand(from, args, commandType);
-                this.sendCommand(command);
-                return commandType;
+            if (!Object.values(CommandType).includes(commandType)) {
+                const errorContent = commandCondition + ' est une entrée invalide';
+                this.sendErrorMessage(errorContent);
             }
-            const errorContent = commandCondition + ' est une entrée invalide';
-            this.sendErrorMessage(errorContent);
+
+            let args: string[] | undefined = toVerify.slice(1, toVerify.length);
+            if (commandType === CommandType.Place) {
+                args = this.placeLetterFormatter(args);
+                if (args === undefined) {
+                    return undefined;
+                }
+            } else if (commandType === CommandType.Exchange) {
+                this.exchangeLetterArgVerifier(args[0]);
+            }
+            const command = this.createCommand(from, args, commandType);
+            this.sendCommand(command);
+            return commandType;
         }
         return undefined;
     }
 
     private placeLetterFormatter(args: string[]): string[] | undefined {
-        if (args[0].length <= MAX_PLACE_LETTER_ARG_SIZE && args[0].length >= MIN_PLACE_LETTER_ARG_SIZE) {
+        if (args !== undefined && args.length === 2) {
             const row = args[0].charCodeAt(0);
             const col = this.colArgVerifier(args[0]);
             const direction = args[0].charCodeAt(args[0].length - 1);
@@ -88,7 +85,7 @@ export class CommandParserService {
     }
 
     private placeLetterArgVerifier(row: number, col: number | undefined, direction: number, word: string): boolean {
-        if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
+        if (row === undefined || row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             this.sendErrorMessage(this.errorSyntax + ': ligne hors champ');
             return false;
         }
@@ -96,11 +93,11 @@ export class CommandParserService {
             this.sendErrorMessage(this.errorSyntax + ': colonne hors champ');
             return false;
         }
-        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
+        if (direction === undefined || (direction !== CHARACTER_H && direction !== CHARACTER_V)) {
             this.sendErrorMessage(this.errorSyntax + ': direction invalide');
             return false;
         }
-        if (word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
+        if (word === undefined || word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
             this.sendErrorMessage(this.errorSyntax + ': mot invalide');
             return false;
         }
@@ -121,7 +118,7 @@ export class CommandParserService {
     }
 
     private exchangeLetterArgVerifier(word: string): boolean {
-        if (INVALID_EXCHANGE_LETTER.test(word) || word === undefined) {
+        if (word === undefined || INVALID_EXCHANGE_LETTER.test(word)) {
             this.sendErrorMessage('les paramètres sont invalides');
             return false;
         }

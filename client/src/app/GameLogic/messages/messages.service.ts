@@ -14,7 +14,7 @@ export class MessagesService {
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
     constructor(private commandParser: CommandParserService) {
-        this.commandParser.errormessage$.subscribe((error) => {
+        this.errorMessages$.subscribe((error) => {
             this.receiveErrorMessage(error);
         });
     }
@@ -47,12 +47,8 @@ export class MessagesService {
             type: MessageType.Player1,
         };
 
+        this.commandParser.parse(content, forwarder);
         this.addMessageToLog(message);
-        try {
-            this.commandParser.parse(content, forwarder);
-        } catch (e) {
-            this.receiveError(e as Error);
-        }
     }
     receiveMessageOpponent(forwarder: string, content: string) {
         const message = {
@@ -61,18 +57,14 @@ export class MessagesService {
             type: MessageType.Player2,
         };
         this.addMessageToLog(message);
-        try {
-            const command = this.commandParser.parse(content, forwarder);
-            if (command === CommandType.Exchange) {
-                const hiddenLetters = content.split(' ');
-                const numberOfLetters = hiddenLetters[1].length;
-                message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
-                if (numberOfLetters > 1) {
-                    message.content += 's';
-                }
+        const command = this.commandParser.parse(content, forwarder);
+        if (command === CommandType.Exchange) {
+            const hiddenLetters = content.split(' ');
+            const numberOfLetters = hiddenLetters[1].length;
+            message.content = hiddenLetters[0] + ' ' + numberOfLetters + ' lettre';
+            if (numberOfLetters > 1) {
+                message.content += 's';
             }
-        } catch (e) {
-            this.receiveError(e as Error);
         }
     }
 
