@@ -15,6 +15,7 @@ export class GameSocketsHandler {
             // pingTimeout: 5000,
         });
         this.gameManager.newGameStates$.subscribe((gameStateToken: GameStateToken) => {
+            console.log('gamestate token', gameStateToken);
             const gameToken = gameStateToken.gameToken;
             const gameState = gameStateToken.gameState;
             this.emitGameState(gameState, gameToken);
@@ -27,10 +28,10 @@ export class GameSocketsHandler {
             socket.on('joinGame', (userAuth: UserAuth) => {
                 console.log('user auth', userAuth);
                 try {
-                    this.addPlayerToGame(socket.id, userAuth);
-                    console.log('player added');
                     const gameToken = userAuth.gameToken;
                     socket.join(gameToken);
+                    this.addPlayerToGame(socket.id, userAuth);
+                    console.log('player added');
                 } catch (e) {
                     console.error(e);
                     socket.disconnect();

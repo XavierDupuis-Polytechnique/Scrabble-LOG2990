@@ -61,14 +61,13 @@ export class GameManagerService {
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
+        // TODO need to stop online game if game started
         if (this.game) {
             this.stopGame();
         }
         if (!gameSettings.opponentName) {
             throw Error('No opponent name was entered');
         }
-        console.log('joinOnline game', userAuth);
-        this.gameSocketHandler.joinGame(userAuth);
         const userName = userAuth.playerName;
         // TODO: maybe find a way to receive timer time perturn
         const timerPerTurn = Number(gameSettings.timePerTurn);
@@ -81,6 +80,8 @@ export class GameManagerService {
         this.info.receiveOnlineGame(this.onlineGame);
 
         this.onlineChat.joinChatRoomWithUser(userAuth.gameToken);
+        console.log('joinOnline game', userAuth);
+        this.gameSocketHandler.joinGame(userAuth);
     }
 
     startGame(): void {
@@ -93,6 +94,7 @@ export class GameManagerService {
     }
 
     stopGame(): void {
+        // TODO implement for online game
         this.timer.stop();
         this.game = {} as Game;
         this.messageService.clearLog();
