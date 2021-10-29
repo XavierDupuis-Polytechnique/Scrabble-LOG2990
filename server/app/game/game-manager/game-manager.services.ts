@@ -90,14 +90,24 @@ export class GameManagerService {
         // TODO set winner to the player still online
         this.activePlayers.delete(playerId);
         const game = this.activeGames.get(gameToken);
-        game?.onEndOfGame();
+        if (!game) {
+            return;
+        }
+        this.onEndOfGame(gameToken, game);
         this.activeGames.delete(gameToken);
         console.log(`Player ${playerId} left the game`);
         console.log('Current active players', this.activePlayers);
         console.log('Current active games', this.activeGames);
     }
 
-    increaseNumberOfPlayers(gameToken: string) {
+    private onEndOfGame(gameToken: string, game: ServerGame) {
+        game.onEndOfGame();
+        const gameState = this.gameCompiler.compile(game);
+        const gameStateToken: GameStateToken = { gameToken, gameState };
+        this.newGameStateSubject.next(gameStateToken);
+    }
+
+    private increaseNumberOfPlayers(gameToken: string) {
         let numberOfPlayers = this.numberOfPlayers.get(gameToken);
         if (numberOfPlayers === undefined) {
             throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
