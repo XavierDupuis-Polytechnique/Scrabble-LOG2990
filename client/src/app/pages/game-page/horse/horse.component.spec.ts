@@ -11,6 +11,7 @@ import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { InputComponent, InputType } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -60,6 +61,15 @@ describe('HorseComponent', () => {
     it('should initialise player rack', () => {
         component.ngAfterContentInit();
         expect(component.playerRack).toBeDefined();
+    });
+
+    it('should detect click on horse letters', () => {
+        spyOn(component.clickLetter, 'emit');
+        const args = getRandomInt(RACK_LETTER_COUNT);
+        const type = InputType.LeftClick;
+        const input = { from: InputComponent.Horse, type, args };
+        component.click(type, args);
+        expect(component.clickLetter.emit).toHaveBeenCalledWith(input);
     });
 
     it('should return the correct boolean for a rackLetter selection depending on the current UIAction', () => {
