@@ -1,4 +1,7 @@
 /* eslint-disable max-classes-per-file */
+import { Action } from '@app/GameLogic/actions/action';
+import { OnlineAction } from '@app/GameLogic/actions/online-action-compiler.interface';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameState } from '@app/GameLogic/game/game-state';
@@ -19,6 +22,7 @@ export class OnlineGame {
         private timer: TimerService,
         private onlineSocket: GameSocketHandlerService,
         private boardService: BoardService,
+        private onlineActionCompiler: OnlineActionCompilerService,
     ) {
         this.boardService.board = new Board();
         this.playerName = playerName;
@@ -30,6 +34,32 @@ export class OnlineGame {
     receiveState(gameState: GameState) {
         this.updateClient(gameState);
         this.startTimer();
+    }
+
+    handleUserActions() {
+        const user = this.players.find((player: Player) => {
+            return player.name === this.playerName;
+        });
+        user?.action$.subscribe((action) => {
+            const activePlayerName = this.players[this.activePlayerIndex].name;
+            if (activePlayerName !== this.playerName) {
+                return;
+            }
+            console.log('action action', action);
+            this.receivePlayerAction(action);
+        });
+    }
+
+    private receivePlayerAction(action: Action) {
+        const onlineAction = this.onlineActionCompiler.compileActionOnline(action);
+        if (!onlineAction) {
+            throw Error('The action received is not supported by the compiler');
+        }
+        this.sendAction(onlineAction);
+    }
+
+    private sendAction(onlineAction: OnlineAction) {
+        this.onlineSocket.playAction(onlineAction);
     }
 
     private startTimer() {

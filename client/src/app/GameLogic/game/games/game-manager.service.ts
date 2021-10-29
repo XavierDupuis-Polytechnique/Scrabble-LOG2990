@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -38,6 +39,7 @@ export class GameManagerService {
         private commandExecuter: CommandExecuterService,
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
+        private onlineActionCompiler: OnlineActionCompilerService,
     ) {}
 
     createGame(gameSettings: GameSettings): void {
@@ -72,11 +74,12 @@ export class GameManagerService {
         const userName = userAuth.playerName;
         // TODO: maybe find a way to receive timer time perturn
         const timerPerTurn = Number(gameSettings.timePerTurn);
-        this.onlineGame = new OnlineGame(timerPerTurn, userName, this.timer, this.gameSocketHandler, this.boardService);
+        this.onlineGame = new OnlineGame(timerPerTurn, userName, this.timer, this.gameSocketHandler, this.boardService, this.onlineActionCompiler);
 
         const opponentName = gameSettings.playerName === userName ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(userName, opponentName);
         this.allocateOnlinePlayers(players);
+        this.onlineGame.handleUserActions();
 
         this.info.receiveOnlineGame(this.onlineGame);
 
