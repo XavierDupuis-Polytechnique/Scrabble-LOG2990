@@ -35,7 +35,9 @@ export class GameSocketHandlerService {
         }
         this.socket = io(environment.serverSocketUrl, { path: '/game' });
         this.socket.emit('joinGame', userAuth);
-        this.socket.on('gameState', this.receiveGameState);
+        this.socket.on('gameState', (gameState: GameState) => {
+            this.receiveGameState(gameState);
+        });
     }
 
     playAction(action: OnlineAction) {
@@ -56,8 +58,7 @@ export class GameSocketHandlerService {
         this.socket?.disconnect();
     }
 
-    private receiveGameState(gameState: unknown) {
-        console.log('game state received', gameState);
-        return gameState;
+    private receiveGameState(gameState: GameState) {
+        this.gameStateSubject.next(gameState);
     }
 }

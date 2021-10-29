@@ -32,39 +32,49 @@ export class OnlineGame {
         this.startTimer();
     }
 
-    updateClient(gameState: GameState) {
+    private startTimer() {
+        // TODO: Get gameSettings from game state (Kinda wasteful since you only need it once tho?)
+        // this.timer.start(this.gameSetting.timePerTurn);
+        if (this.timer.isStarted) {
+            this.timer.stop();
+        }
+        this.timer.start(this.timePerTurn);
+    }
+
+    private updateClient(gameState: GameState) {
         this.updateBoard(gameState);
         this.updateActivePlayer(gameState);
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
         this.updateEndOfGame(gameState);
     }
-    startTimer() {
-        // TODO: Get gameSettings from game state (Kinda wasteful since you only need it once tho?)
-        // this.timer.start(this.gameSetting.timePerTurn);
-        this.timer.start(0);
-    }
 
-    updateBoard(gameState: GameState) {
+    private updateBoard(gameState: GameState) {
+        // TODO: check if buggy if yes create method copy in board
         this.boardService.board.grid = gameState.grid;
     }
 
-    updateActivePlayer(gameState: GameState) {
+    private updateActivePlayer(gameState: GameState) {
         this.activePlayerIndex = gameState.activePlayerIndex;
     }
 
-    updateLettersRemaining(gameState: GameState) {
+    private updateLettersRemaining(gameState: GameState) {
         this.lettersRemaining = gameState.lettersRemaining;
     }
 
-    updatePlayers(gameState: GameState) {
+    private updatePlayers(gameState: GameState) {
+        console.log('update players');
+        // TODO: take into consideration the player orders on client
         for (let i = 0; i < 2; i++) {
             this.players[i].points = gameState.players[i].points;
-            this.players[i].letterRack = gameState.players[i].letterRack;
+            const newLetterRack = gameState.players[i].letterRack;
+            for (let j = 0; j < newLetterRack.length; j++) {
+                this.players[i].letterRack[j] = newLetterRack[j];
+            }
         }
     }
 
-    updateEndOfGame(gameState: GameState) {
+    private updateEndOfGame(gameState: GameState) {
         this.isEndOfGame = gameState.isEndOfGame;
         this.winnerIndex = gameState.winnerIndex;
     }

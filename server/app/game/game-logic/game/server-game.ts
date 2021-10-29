@@ -39,6 +39,7 @@ export class ServerGame {
         }
         this.drawGameLetters();
         this.pickFirstPlayer();
+        this.emitGameState();
         this.startTurn();
     }
 
