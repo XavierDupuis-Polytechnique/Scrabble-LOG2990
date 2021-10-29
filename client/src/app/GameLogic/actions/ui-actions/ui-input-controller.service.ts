@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
@@ -9,6 +10,7 @@ import { ENTER, ESCAPE } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
@@ -135,6 +137,9 @@ export class UIInputControllerService {
         this.avs.sendAction(newAction);
         this.activeComponent = InputComponent.Outside;
     }
+
+    pass(user: User) {
+        this.avs.sendAction(new PassTurn(user));
 
     private discardAction() {
         if (this.activeAction) {
