@@ -303,9 +303,11 @@ describe('UIInputControllerService', () => {
     /// confirm TESTS ///
     it('should throw error if the activeAction is null', () => {
         service.activeAction = null;
-        expect(() => {
-            service.confirm();
-        }).toThrowError('Action couldnt be created : no UIAction is active');
+        const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
+            return;
+        });
+        service.confirm();
+        expect(sendActionSpy).toHaveBeenCalledTimes(0);
     });
 
     it('should throw error if a !canBeExecuted activeAction is confirmed', () => {
@@ -313,9 +315,7 @@ describe('UIInputControllerService', () => {
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
             return;
         });
-        expect(() => {
-            service.confirm();
-        }).toThrowError('Action couldnt be created : requirements for creation are not met');
+        service.confirm();
         expect(service.activeComponent).toBe(InputComponent.Horse);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
         expect(sendActionSpy).toHaveBeenCalledTimes(0);

@@ -387,4 +387,14 @@ describe('UIPlace', () => {
         expect(placeLetterAction.word).toBe(expectedWord);
         expect(placeLetterAction.placement).toEqual({ x, y, direction: action.direction });
     });
+
+    it('should not do anything when receiving a RightClick', () => {
+        action.receiveRightClick();
+        expect().nothing();
+    });
+
+    it('should not do anything when receiving a MouseRoll', () => {
+        action.receiveRoll();
+        expect().nothing();
+    });
 });

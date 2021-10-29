@@ -124,13 +124,13 @@ export class UIInputControllerService {
     }
 
     confirm() {
-        if (this.activeAction === null) {
-            throw Error('Action couldnt be created : no UIAction is active');
+        if (!this.activeAction || !this.canBeExecuted) {
+            return;
         }
-        if (!this.canBeExecuted) {
-            throw Error('Action couldnt be created : requirements for creation are not met');
+        const newAction: Action | null = this.activeAction.create();
+        if (!newAction) {
+            return;
         }
-        const newAction: Action = this.activeAction.create();
         this.discardAction();
         this.avs.sendAction(newAction);
         this.activeComponent = InputComponent.Outside;
@@ -157,7 +157,6 @@ export class UIInputControllerService {
                 this.activeComponent = InputComponent.Outside;
                 break;
             case ENTER:
-                // TODO : IF POSSIBLE, MIGRATE 'ENTER' TO UIPLACE DIRECTLY
                 this.confirm();
                 break;
             default:
