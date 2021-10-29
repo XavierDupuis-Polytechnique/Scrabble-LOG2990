@@ -13,7 +13,11 @@ export class MessagesService {
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
-    constructor(private commandParser: CommandParserService) {}
+    constructor(private commandParser: CommandParserService) {
+        this.commandParser.errormessage$.subscribe((error) => {
+            this.receiveErrorMessage(error);
+        });
+    }
 
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
@@ -34,12 +38,6 @@ export class MessagesService {
     }
     get errorMessages$(): Observable<string> {
         return this.commandParser.errormessage$;
-    }
-
-    receiveErrorMessage2() {
-        this.errorMessages$.subscribe((message) => {
-            this.receiveErrorMessage(message);
-        });
     }
 
     receiveMessagePlayer(forwarder: string, content: string) {

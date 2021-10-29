@@ -45,19 +45,22 @@ export class CommandParserService {
         if (commandCondition[0] === '!') {
             const commandType = commandCondition as CommandType;
             if (Object.values(CommandType).includes(commandType)) {
-                let args = toVerify.slice(1, toVerify.length);
+                let args: string[] | undefined = toVerify.slice(1, toVerify.length);
                 if (commandType === CommandType.Place) {
                     if (toVerify.length < 3) {
                         this.sendErrorMessage('mot ou emplacement manquant');
                     }
                     args = this.placeLetterFormatter(args);
+                    if (args === undefined) {
+                        return undefined;
+                    }
                 }
                 if (commandType === CommandType.Exchange) {
                     this.exchangeLetterArgVerifier(args[0]);
                 }
-                const command = this.createCommand(from, args, commandCondition as CommandType);
+                const command = this.createCommand(from, args, commandType);
                 this.sendCommand(command);
-                return commandCondition as CommandType;
+                return commandType;
             }
             const errorContent = commandCondition + ' est une entrée invalide';
             this.sendErrorMessage(errorContent);
@@ -65,14 +68,16 @@ export class CommandParserService {
         return undefined;
     }
 
-    private placeLetterFormatter(args: string[]): string[] {
+    private placeLetterFormatter(args: string[]): string[] | undefined {
         if (args[0].length <= MAX_PLACE_LETTER_ARG_SIZE && args[0].length >= MIN_PLACE_LETTER_ARG_SIZE) {
             const row = args[0].charCodeAt(0);
             const col = this.colArgVerifier(args[0]);
             const direction = args[0].charCodeAt(args[0].length - 1);
             const word = args[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
-            this.placeLetterArgVerifier(row, col, direction, word);
+            if (!this.placeLetterArgVerifier(row, col, direction, word)) {
+                return undefined;
+            }
 
             args = [];
             args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
@@ -82,19 +87,24 @@ export class CommandParserService {
         return args;
     }
 
-    private placeLetterArgVerifier(row: number, col: number | undefined, direction: number, word: string) {
+    private placeLetterArgVerifier(row: number, col: number | undefined, direction: number, word: string): boolean {
         if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             this.sendErrorMessage(this.errorSyntax + ': ligne hors champ');
+            return false;
         }
         if (col === undefined || col > BOARD_DIMENSION) {
             this.sendErrorMessage(this.errorSyntax + ': colonne hors champ');
+            return false;
         }
         if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
             this.sendErrorMessage(this.errorSyntax + ': direction invalide');
+            return false;
         }
         if (word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
             this.sendErrorMessage(this.errorSyntax + ': mot invalide');
+            return false;
         }
+        return true;
     }
 
     private colArgVerifier(columns: string): number | undefined {
