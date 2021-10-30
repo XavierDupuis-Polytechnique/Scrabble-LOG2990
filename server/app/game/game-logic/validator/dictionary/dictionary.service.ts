@@ -15,16 +15,16 @@ export class DictionaryService {
         this.addWords(dict);
     }
 
-    addWords(dictionary: Dictionary) {
+    isWordInDict(word: string): boolean {
+        return this.dynamicWordList[word.length].has(word.toLowerCase());
+    }
+
+    private addWords(dictionary: Dictionary) {
         dictionary.words.forEach((word) => {
             let wordLength = word.length;
             for (wordLength; wordLength <= MAX_WORD_LENGTH; wordLength++) {
                 this.dynamicWordList[wordLength].add(word);
             }
         });
-    }
-
-    isWordInDict(word: string): boolean {
-        return this.dynamicWordList[word.length].has(word.toLowerCase());
     }
 }
