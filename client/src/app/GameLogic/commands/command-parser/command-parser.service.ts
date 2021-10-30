@@ -78,8 +78,12 @@ export class CommandParserService {
 
             args = [];
             args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
+        } else if (args.length === 1) {
+            this.sendErrorMessage('mot ou emplacement manquant');
+            return undefined;
         } else {
             this.sendErrorMessage(this.errorSyntax + ': les paramètres sont invalides');
+            return undefined;
         }
         return args;
     }

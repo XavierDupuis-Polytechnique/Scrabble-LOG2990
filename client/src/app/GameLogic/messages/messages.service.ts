@@ -47,8 +47,8 @@ export class MessagesService {
             type: MessageType.Player1,
         };
 
-        this.commandParser.parse(content, forwarder);
         this.addMessageToLog(message);
+        this.commandParser.parse(content, forwarder);
     }
     receiveMessageOpponent(forwarder: string, content: string) {
         const message = {

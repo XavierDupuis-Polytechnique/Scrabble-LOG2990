@@ -5,9 +5,13 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 import { EMPTY_CHAR } from '@app/GameLogic/constants';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
 
-describe('CommandParser', () => {
+fdescribe('CommandParser', () => {
     let service: commandParserService.CommandParserService;
     let message: Message;
+    let errorMessage: string;
+    const errormessageTest = (command: string | Command, testArgument: string | Command) => {
+        expect(command).toEqual(testArgument);
+    };
     const syntaxError1 = 'mot ou emplacement manquant';
     const syntaxError2 = 'erreur de syntax: ligne hors champ';
     const syntaxError3 = 'erreur de syntax: mot invalide';
@@ -30,7 +34,7 @@ describe('CommandParser', () => {
         const from = message.from;
         const testCommand: Command = { from, type: CommandType.Debug, args: [] };
         service.parsedCommand$.subscribe((command) => {
-            expect(command).toEqual(testCommand);
+            errormessageTest(command, testCommand);
         });
         service.parse('!debug', message.from);
     });
@@ -42,9 +46,11 @@ describe('CommandParser', () => {
 
     it('should throw !manger est une commande invalide', () => {
         message.content = '!manger duGateau';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError('!manger est une entrée invalide');
+        const testError = '!manger est une entrée invalide';
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, testError);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should be true', () => {
@@ -58,28 +64,35 @@ describe('CommandParser', () => {
 
     it('should throw !PLACER est une commande invalide', () => {
         message.content = '!PLACER a1v bob';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError('!PLACER est une entrée invalide');
+        const testError = '!PLACER est une entrée invalide';
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, testError);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v  ';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError1);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError1);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError3, () => {
-        expect(() => {
-            service['placeLetterFormatter'](['a1v', EMPTY_CHAR]);
-        }).toThrowError(syntaxError3);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError3);
+        });
+        service['placeLetterFormatter'](['a1v', EMPTY_CHAR]);
     });
 
     it('should throw ' + syntaxError3, () => {
-        expect(() => {
-            service['placeLetterFormatter'](['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
-        }).toThrowError(syntaxError3);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError3);
+        });
+        service['placeLetterFormatter'](['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
     });
 
     it('testArg should be equal to expectedArg', () => {
@@ -90,86 +103,105 @@ describe('CommandParser', () => {
 
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1v    ';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError1);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError1);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError3, () => {
         message.content = '!placer a1v a';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError3);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError3);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError3, () => {
         message.content = '!placer a1v abcdefghijklmnop';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError3);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError3);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer a-1v abc';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError7);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError7);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError4, () => {
         message.content = '!placer a16v abc';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError4);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError4);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError1, () => {
         message.content = '!placer a1V';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError1);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError1);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError2, () => {
         message.content = '!placer A1v allo';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError2);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError2);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError5, () => {
         message.content = '!placer a1V allo';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError5);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError5);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError6, () => {
         message.content = '!placer a12vv allo';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError6);
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError6);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError6, () => {
         message.content = '!placer a1 allo';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError6);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError6);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer abh allo';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError7);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError7);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw ' + syntaxError7, () => {
         message.content = '!placer a1bh allo';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError(syntaxError7);
+
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, syntaxError7);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should return type !placer', () => {
@@ -187,9 +219,12 @@ describe('CommandParser', () => {
 
     it("should throw error 'les parametres sont invalide as' upperCases are not accepted", () => {
         message.content = '!échanger aBc';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError('les paramètres sont invalides');
+
+        errorMessage = 'les paramètres sont invalides';
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, errorMessage);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should be of type !échanger as 7 letters is the maximum', () => {
@@ -202,15 +237,20 @@ describe('CommandParser', () => {
 
     it('should throw error as 7 letters is the maximum', () => {
         message.content = '!échanger aaaaaaaaa';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+
+        errorMessage = 'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé';
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, errorMessage);
+        });
+        service.parse(message.content, message.from);
     });
 
     it('should throw error as 7 letters is the maximum', () => {
         message.content = '!échanger baaaaaaaaac';
-        expect(() => {
-            service.parse(message.content, message.from);
-        }).toThrowError('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+        errorMessage = 'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé';
+        service.errormessage$.subscribe((error) => {
+            errormessageTest(error, errorMessage);
+        });
+        service.parse(message.content, message.from);
     });
 });
