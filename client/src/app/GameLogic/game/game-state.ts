@@ -10,8 +10,8 @@ export interface LightPlayer {
 export interface GameState {
     players: LightPlayer[];
     activePlayerIndex: number;
-    lettersRemaining: number;
     grid: Tile[][];
+    lettersRemaining: number;
     isEndOfGame: boolean;
     winnerIndex: number[];
 }
