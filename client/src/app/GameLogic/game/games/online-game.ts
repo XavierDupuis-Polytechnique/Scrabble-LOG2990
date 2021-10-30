@@ -9,6 +9,11 @@ import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 
+interface PlayerWithIndex {
+    index: number;
+    player: Player;
+}
+
 export class OnlineGame {
     players: Player[] = [];
     activePlayerIndex: number = 0;
@@ -16,38 +21,51 @@ export class OnlineGame {
     isEndOfGame: boolean = false;
     winnerIndex: number[] = [];
 
+    playersWithIndex = new Map<string, PlayerWithIndex>();
+
     constructor(
         public timePerTurn: number,
-        public playerName: string,
+        public userName: string,
         private timer: TimerService,
         private onlineSocket: GameSocketHandlerService,
         private boardService: BoardService,
         private onlineActionCompiler: OnlineActionCompilerService,
     ) {
         this.boardService.board = new Board();
-        this.playerName = playerName;
+        this.userName = userName;
         this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });
     }
 
     receiveState(gameState: GameState) {
+        if (this.playersWithIndex.keys.length === 0) {
+            this.setupPlayersWithIndex();
+        }
         this.updateClient(gameState);
         this.startTimer();
     }
 
     handleUserActions() {
         const user = this.players.find((player: Player) => {
-            return player.name === this.playerName;
+            return player.name === this.userName;
         });
         user?.action$.subscribe((action) => {
             const activePlayerName = this.players[this.activePlayerIndex].name;
-            if (activePlayerName !== this.playerName) {
+            if (activePlayerName !== this.userName) {
                 return;
             }
             console.log('action action', action);
             this.receivePlayerAction(action);
         });
+    }
+
+    private setupPlayersWithIndex() {
+        for (let index = 0; index < this.players.length; index++) {
+            const player = this.players[index];
+            const name = player.name;
+            this.playersWithIndex.set(name, { player, index });
+        }
     }
 
     private receivePlayerAction(action: Action) {
@@ -64,7 +82,6 @@ export class OnlineGame {
 
     private startTimer() {
         // TODO: Get gameSettings from game state (Kinda wasteful since you only need it once tho?)
-        // this.timer.start(this.gameSetting.timePerTurn);
         if (this.timer.isStarted) {
             this.timer.stop();
         }
@@ -85,7 +102,15 @@ export class OnlineGame {
     }
 
     private updateActivePlayer(gameState: GameState) {
-        this.activePlayerIndex = gameState.activePlayerIndex;
+        console.log('update active player', gameState);
+        console.log(this.playersWithIndex);
+        const activePlayerIndex = gameState.activePlayerIndex;
+        const activePlayerName = gameState.players[activePlayerIndex].name;
+        const playerWithIndex = this.playersWithIndex.get(activePlayerName);
+        if (playerWithIndex === undefined) {
+            throw Error('Players received with game state are not matching with those of the first turn');
+        }
+        this.activePlayerIndex = playerWithIndex.index;
     }
 
     private updateLettersRemaining(gameState: GameState) {
@@ -93,13 +118,18 @@ export class OnlineGame {
     }
 
     private updatePlayers(gameState: GameState) {
-        console.log('update players');
-        // TODO: take into consideration the player orders on client
-        for (let i = 0; i < 2; i++) {
-            this.players[i].points = gameState.players[i].points;
-            const newLetterRack = gameState.players[i].letterRack;
-            for (let j = 0; j < newLetterRack.length; j++) {
-                this.players[i].letterRack[j] = newLetterRack[j];
+        for (const lightPlayer of gameState.players) {
+            const name = lightPlayer.name;
+            const playerWithIndex = this.playersWithIndex.get(name);
+            if (!playerWithIndex) {
+                throw Error('The players received in game state does not fit with those in the game');
+            }
+            const player = playerWithIndex.player;
+            player.points = lightPlayer.points;
+
+            const newLetterRack = lightPlayer.letterRack;
+            for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
+                player.letterRack[letterIndex] = newLetterRack[letterIndex];
             }
         }
     }
