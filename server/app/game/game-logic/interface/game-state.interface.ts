@@ -1,4 +1,3 @@
-import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
 
@@ -12,7 +11,7 @@ export interface GameState {
     players: LightPlayer[];
     activePlayerIndex: number;
     grid: Tile[][];
-    letterBag: LetterBag;
+    lettersRemaining: number;
     isEndOfGame: boolean;
     winnerIndex: number[];
 }
