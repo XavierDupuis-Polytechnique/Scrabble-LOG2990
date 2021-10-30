@@ -83,4 +83,16 @@ describe('online chat handler', () => {
         service.receiveSystemMessage(message);
         expect(test).toEqual(message);
     });
+
+    it('opponent message should only return message from opponent', () => {
+        let getter: ChatMessage = { content: '', from: '' };
+        const messageOpponent: ChatMessage = { content: 'Hello There', from: 'General Kenobi' };
+        const messageMe: ChatMessage = { content: 'Ho ho', from: 'Tim' };
+        service.opponentMessage$.subscribe((value) => {
+            getter = value;
+        });
+        service.receiveServerMessage(messageOpponent);
+        service.receiveServerMessage(messageMe);
+        expect(getter).toEqual(messageOpponent);
+    });
 });

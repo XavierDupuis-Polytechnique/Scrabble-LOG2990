@@ -1,4 +1,3 @@
-import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { Tile } from '@app/game/game-logic/board/tile';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameState, LightPlayer } from '@app/game/game-logic/interface/game-state.interface';
@@ -13,7 +12,6 @@ export class GameCompiler {
 
         const lightGrid: Tile[][] = game.board.grid;
 
-        const lightLetterBag: LetterBag = game.letterBag;
         let lightEndOfGame = false;
         let lightWinnerIndex: number[] = [];
         if (game.isEndOfGame()) {
@@ -34,7 +32,7 @@ export class GameCompiler {
             activePlayerIndex: activePlayer,
             grid: lightGrid,
             isEndOfGame: lightEndOfGame,
-            letterBag: lightLetterBag,
+            lettersRemaining: game.letterBag.lettersLeft,
             winnerIndex: lightWinnerIndex,
         };
         return lg;
