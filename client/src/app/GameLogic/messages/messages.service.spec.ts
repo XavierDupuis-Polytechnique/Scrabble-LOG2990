@@ -4,13 +4,20 @@ import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
+import { Observable, Subject } from 'rxjs';
 import { MessagesService } from './messages.service';
 
 describe('Service: Messages', () => {
     let service: MessagesService;
     let commandParserSpy: jasmine.SpyObj<CommandParserService>;
+    const mockOfflineErrorMessage$ = new Subject<string>();
+
     beforeEach(() => {
-        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse']);
+        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse', 'sendErrorMessage'], ['errorMessages$']);
+        (Object.getOwnPropertyDescriptor(commandParserSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
+            mockOfflineErrorMessage$,
+        );
+
         TestBed.configureTestingModule({
             providers: [{ provide: CommandParserService, useValue: commandParserSpy }],
         });
@@ -50,8 +57,7 @@ describe('Service: Messages', () => {
 
     it('should receive error', () => {
         const errorContent = 'this is an error';
-        const error = new Error(errorContent);
-        service.receiveError(error);
+        service.receiveErrorMessage(errorContent);
         const log = service.messagesLog;
         const lastMessage = log[log.length - 1];
         const message: Message = {
@@ -64,9 +70,9 @@ describe('Service: Messages', () => {
 
     it('should catch error when not valid command', () => {
         const errorContent = 'this is a parse error';
-        commandParserSpy.parse.and.throwError(errorContent);
         const content = '!notACommand';
         const from = 'tom';
+        commandParserSpy.parse(content, from);
         service.receiveMessagePlayer(from, content);
         const log = service.messagesLog;
         const lastMessage = log[log.length - 1];
@@ -119,7 +125,7 @@ describe('Service: Messages', () => {
         const errorContent = 'mot ou emplacement manquant';
         const message = '?!?@#?!@#?';
         commandParserSpy.parse.and.throwError(errorContent);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 
@@ -130,7 +136,7 @@ describe('Service: Messages', () => {
         const message = 'l l';
 
         commandParserSpy.parse.and.returnValue(CommandType.Exchange);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 
@@ -141,7 +147,7 @@ describe('Service: Messages', () => {
         const message = 'l lasd';
 
         commandParserSpy.parse.and.returnValue(CommandType.Exchange);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 

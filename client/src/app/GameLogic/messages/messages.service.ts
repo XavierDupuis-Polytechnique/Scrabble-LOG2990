@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
 
 @Injectable({
@@ -11,10 +11,10 @@ export class MessagesService {
     static readonly sysName = 'System';
     static readonly sysErrorName = 'SystemError';
     messagesLog: Message[] = [];
-
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
+
     constructor(private commandParser: CommandParserService) {
-        this.errorMessages$.subscribe((error) => {
+        commandParser.errorMessage$.subscribe((error) => {
             this.receiveErrorMessage(error);
         });
     }
@@ -36,9 +36,6 @@ export class MessagesService {
         };
         this.addMessageToLog(errorMessage);
     }
-    get errorMessages$(): Observable<string> {
-        return this.commandParser.errormessage$;
-    }
 
     receiveMessagePlayer(forwarder: string, content: string) {
         const message = {
@@ -50,6 +47,7 @@ export class MessagesService {
         this.addMessageToLog(message);
         this.commandParser.parse(content, forwarder);
     }
+
     receiveMessageOpponent(forwarder: string, content: string) {
         const message = {
             content,
@@ -66,15 +64,6 @@ export class MessagesService {
                 message.content += 's';
             }
         }
-    }
-
-    receiveError(error: Error) {
-        const errorMessage = {
-            content: error.message,
-            from: MessagesService.sysErrorName,
-            type: MessageType.System,
-        };
-        this.addMessageToLog(errorMessage);
     }
 
     clearLog(): void {
