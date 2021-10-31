@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -13,20 +13,18 @@ describe('ConvertToSoloFormComponent', () => {
     const mockDialogRef = {
         close: jasmine.createSpy('close'),
     };
-    beforeEach(
-        waitForAsync(() => {
-            TestBed.configureTestingModule({
-                imports: [FormsModule, ReactiveFormsModule, BrowserAnimationsModule, AppMaterialModule],
+    beforeEach(async () => {
+        await TestBed.configureTestingModule({
+            imports: [FormsModule, ReactiveFormsModule, BrowserAnimationsModule, AppMaterialModule],
 
-                providers: [
-                    { provide: MAT_DIALOG_DATA, useValue: {} },
-                    { provide: MatDialogRef, useValue: mockDialogRef },
-                ],
-                declarations: [ConvertToSoloFormComponent],
-                schemas: [CUSTOM_ELEMENTS_SCHEMA],
-            }).compileComponents();
-        }),
-    );
+            providers: [
+                { provide: MAT_DIALOG_DATA, useValue: {} },
+                { provide: MatDialogRef, useValue: mockDialogRef },
+            ],
+            declarations: [ConvertToSoloFormComponent],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        }).compileComponents();
+    });
 
     beforeEach(() => {
         fixture = TestBed.createComponent(ConvertToSoloFormComponent);
