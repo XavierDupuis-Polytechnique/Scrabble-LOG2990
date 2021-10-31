@@ -7,6 +7,7 @@ import {
     JOKER_CHAR,
     ONE,
     RACK_LETTER_COUNT,
+    SHIFT,
     SIX,
     SPACE,
     TEN,
@@ -49,11 +50,10 @@ describe('UIMove', () => {
         expect(action.canBeCreated).toBeFalsy();
     });
 
-    // it('should throw error when receiving a RightClick', () => {
-    //     expect(() => {
-    //         new UIMove(player).receiveRightClick();
-    //     }).toThrowError('UIMove should not be able to receive a RightClick');
-    // });
+    it('should not do anything when receiving a RightClick', () => {
+        action.receiveRightClick('');
+        expect().nothing();
+    });
 
     it('should update the concernedIndexes (unique) following a receiveLeftClick call', () => {
         const firstIndex = 0;
@@ -220,9 +220,13 @@ describe('UIMove', () => {
         }
     });
 
-    it('should throw error when create method is called', () => {
-        expect(() => {
-            new UIMove(player).create();
-        }).toThrowError('UIMove should not be able to create an Action');
+    it('should not do anything when the create method is called', () => {
+        action.create();
+        expect().nothing();
+    });
+
+    it('should not do anything when the SHIFT key is received', () => {
+        action.receiveKey(SHIFT);
+        expect().nothing();
     });
 });
