@@ -14,6 +14,7 @@ export class TimerService {
     private timeLeftSubject = new BehaviorSubject<number | undefined>(undefined);
 
     start(interval: number) {
+        this.end$$?.unsubscribe();
         const end$: Subject<void> = new Subject();
         const numberOfStep = Math.ceil(interval / TIMER_STEP);
 

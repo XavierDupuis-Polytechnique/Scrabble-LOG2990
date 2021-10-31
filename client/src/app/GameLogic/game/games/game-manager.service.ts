@@ -89,6 +89,8 @@ export class GameManagerService {
     }
 
     startGame(): void {
+        this.messageService.clearLog();
+        this.commandExecuter.resetDebug();
         if (!this.game && !this.onlineGame) {
             throw Error('No game created yet');
         }
