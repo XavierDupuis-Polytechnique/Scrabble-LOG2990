@@ -22,7 +22,7 @@ describe('PassTurn', () => {
         game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculator, gameCompiler, messagesService, mockNewGameState$);
         game.players.push(player1);
         game.players.push(player2);
-        game.startGame();
+        game.start();
     });
 
     it('should pass turn', () => {
