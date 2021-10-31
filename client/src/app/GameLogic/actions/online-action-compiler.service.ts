@@ -19,7 +19,7 @@ export class OnlineActionCompilerService {
         }
 
         if (action instanceof PassTurn) {
-            return this.compilePassTurnOnline();
+            return this.compilePassTurnOnline(action);
         }
         return undefined;
     }
@@ -29,6 +29,7 @@ export class OnlineActionCompilerService {
             type: OnlineActionType.Place,
             placementSettings: action.placement,
             letters: action.word,
+            letterRack: action.player.letterRack,
         };
         return onlinePlaceLetter;
     }
@@ -41,13 +42,15 @@ export class OnlineActionCompilerService {
         const onlineExchangeLetter: OnlineAction = {
             type: OnlineActionType.Exchange,
             letters: lettersToExchange,
+            letterRack: action.player.letterRack,
         };
         return onlineExchangeLetter;
     }
 
-    private compilePassTurnOnline(): OnlineAction {
+    private compilePassTurnOnline(action: PassTurn): OnlineAction {
         const passTurn: OnlineAction = {
             type: OnlineActionType.Pass,
+            letterRack: action.player.letterRack,
         };
         return passTurn;
     }

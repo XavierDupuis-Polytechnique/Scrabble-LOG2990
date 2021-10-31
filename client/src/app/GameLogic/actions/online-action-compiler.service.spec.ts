@@ -96,6 +96,7 @@ describe('Service: OnlineActionCompiler', () => {
             type: OnlineActionType.Place,
             placementSettings: placeLetter.placement,
             letters: placeLetter.word,
+            letterRack: p1.letterRack,
         };
         expect(service.compileActionOnline(placeLetter)).toEqual(onlinePlaceLetterTest);
     });
@@ -106,6 +107,7 @@ describe('Service: OnlineActionCompiler', () => {
         const onlineExchangeLetterTest: OnlineAction = {
             type: OnlineActionType.Exchange,
             letters: 'abc',
+            letterRack: p1.letterRack,
         };
         expect(service.compileActionOnline(exchangeLetter)).toEqual(onlineExchangeLetterTest);
     });
@@ -114,6 +116,7 @@ describe('Service: OnlineActionCompiler', () => {
         const passTurn = new PassTurn(p1);
         const passTurnTest: OnlineAction = {
             type: OnlineActionType.Pass,
+            letterRack: p1.letterRack,
         };
         expect(service.compileActionOnline(passTurn)).toEqual(passTurnTest);
     });

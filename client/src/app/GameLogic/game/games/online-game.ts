@@ -2,8 +2,10 @@
 import { Action } from '@app/GameLogic/actions/action';
 import { OnlineAction } from '@app/GameLogic/actions/online-action-compiler.interface';
 import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
+import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
@@ -83,7 +85,6 @@ export class OnlineGame {
     }
 
     private startTimer() {
-        // TODO: Get gameSettings from game state (Kinda wasteful since you only need it once tho?)
         if (this.timer.isStarted) {
             this.timer.stop();
         }
@@ -100,6 +101,7 @@ export class OnlineGame {
 
     private updateBoard(gameState: GameState) {
         // TODO: check if buggy if yes create method copy in board
+        // Seems to be working fine ¯\_(ツ)_/¯
         this.boardService.board.grid = gameState.grid;
     }
 
@@ -130,10 +132,46 @@ export class OnlineGame {
             player.points = lightPlayer.points;
 
             const newLetterRack = lightPlayer.letterRack;
-            for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
-                player.letterRack[letterIndex] = newLetterRack[letterIndex];
+            if (this.isLetterRackChanged(newLetterRack, player)) {
+                for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
+                    player.letterRack[letterIndex] = newLetterRack[letterIndex];
+                }
             }
         }
+    }
+
+    private isLetterRackChanged(newLetterRack: Letter[], player: Player): boolean {
+        const mapRack = this.makeLetterRackMap(newLetterRack);
+        let isChanged = false;
+        if (player.letterRack.length < RACK_LETTER_COUNT) {
+            isChanged = true;
+            return isChanged;
+        }
+
+        for (const letter of player.letterRack) {
+            const letterCount = mapRack.get(letter.char);
+            if (letterCount === undefined) {
+                isChanged = true;
+            } else if (letterCount >= 1) {
+                mapRack.set(letter.char, letterCount - 1);
+            } else if (letterCount === 0) {
+                isChanged = true;
+            }
+        }
+        return isChanged;
+    }
+
+    private makeLetterRackMap(letterRack: Letter[]): Map<string, number> {
+        const mapRack = new Map<string, number>();
+        for (const letter of letterRack) {
+            const letterCount = mapRack.get(letter.char);
+            if (letterCount !== undefined) {
+                mapRack.set(letter.char, letterCount + 1);
+            } else {
+                mapRack.set(letter.char, 1);
+            }
+        }
+        return mapRack;
     }
 
     private updateEndOfGame(gameState: GameState) {
