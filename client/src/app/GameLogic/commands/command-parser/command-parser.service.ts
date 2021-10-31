@@ -54,10 +54,7 @@ export class CommandParserService {
             }
 
             let args: string[] | undefined = toVerify.slice(1, toVerify.length);
-            if (args.length === 0) {
-                this.sendErrorMessage(this.errorSyntax + ': aucun parametre pour la commande ' + commandCondition);
-                return undefined;
-            }
+
             if (commandType === CommandType.Place) {
                 args = this.placeLetterFormatter(args);
                 if (args === undefined) {
@@ -73,32 +70,36 @@ export class CommandParserService {
         return undefined;
     }
 
-    private placeLetterFormatter(args: string[]): string[] | undefined {
+    private placeLetterFormatter(placeLetterParameters: string[]): string[] | undefined {
         const invalidParameters = this.errorSyntax + ': les paramètres sont invalides';
-        if (args[0].length < MIN_PLACE_LETTER_ARG_SIZE || args[0].length > MAX_PLACE_LETTER_ARG_SIZE) {
+        if (placeLetterParameters.length === 0) {
             this.sendErrorMessage(invalidParameters);
             return undefined;
         }
-        if (args !== undefined && args.length === 2) {
-            const row = args[0].charCodeAt(0);
-            const col = this.colArgVerifier(args[0]);
-            const direction = args[0].charCodeAt(args[0].length - 1);
-            const word = args[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
+        if (placeLetterParameters[0].length < MIN_PLACE_LETTER_ARG_SIZE || placeLetterParameters[0].length > MAX_PLACE_LETTER_ARG_SIZE) {
+            this.sendErrorMessage(invalidParameters);
+            return undefined;
+        }
+        if (placeLetterParameters !== undefined && placeLetterParameters.length === 2) {
+            const row = placeLetterParameters[0].charCodeAt(0);
+            const col = this.colArgVerifier(placeLetterParameters[0]);
+            const direction = placeLetterParameters[0].charCodeAt(placeLetterParameters[0].length - 1);
+            const word = placeLetterParameters[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
             if (!this.placeLetterArgVerifier(row, col, direction, word)) {
                 return undefined;
             }
 
-            args = [];
-            args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
-        } else if (args.length === 1) {
+            placeLetterParameters = [];
+            placeLetterParameters = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
+        } else if (placeLetterParameters.length === 1) {
             this.sendErrorMessage('mot ou emplacement manquant');
             return undefined;
         } else {
             this.sendErrorMessage(invalidParameters);
             return undefined;
         }
-        return args;
+        return placeLetterParameters;
     }
 
     private placeLetterArgVerifier(row: number, col: number | undefined, direction: number, word: string): boolean {

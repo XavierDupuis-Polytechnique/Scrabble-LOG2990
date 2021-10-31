@@ -15,7 +15,7 @@ import {
     FIVE,
     MIDDLE_OF_BOARD,
     RACK_LETTER_COUNT,
-    TEN,
+    TEN
 } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -94,9 +94,8 @@ describe('ActionValidatorService', () => {
     /// INVALID ACTION TYPE TESTS ///
     it('should throw error when receiving an unrecognized action type', () => {
         const action = new UnknownAction(currentPlayer);
-        expect(() => {
-            service.validateAction(action);
-        }).toThrowError("Action couldn't be validated");
+        service.validateAction(action);
+        expect(messagesSpy.receiveErrorMessage).toHaveBeenCalledWith("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
     });
     /// ////////////////// ///
 

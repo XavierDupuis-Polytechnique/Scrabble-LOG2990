@@ -13,7 +13,7 @@ describe('Service: Messages', () => {
     const mockOfflineErrorMessage$ = new Subject<string>();
 
     beforeEach(() => {
-        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse', 'sendErrorMessage'], ['errorMessages$']);
+        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse', 'sendErrorMessage'], ['errorMessage$']);
         (Object.getOwnPropertyDescriptor(commandParserSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
             mockOfflineErrorMessage$,
         );
@@ -72,9 +72,12 @@ describe('Service: Messages', () => {
         const errorContent = 'this is a parse error';
         const content = '!notACommand';
         const from = 'tom';
+        // TODO: verifier si les tests font du sens
         commandParserSpy.parse(content, from);
         service.receiveMessagePlayer(from, content);
+
         const log = service.messagesLog;
+        mockOfflineErrorMessage$.next(errorContent);
         const lastMessage = log[log.length - 1];
         const errorMessage: Message = {
             from: 'SystemError',
@@ -123,13 +126,11 @@ describe('Service: Messages', () => {
 
     it('should catch a thrown error because the message is invalid', () => {
         const errorContent = 'mot ou emplacement manquant';
-        const message = '?!?@#?!@#?';
-        commandParserSpy.parse.and.throwError(errorContent);
+        const message = '!placer ?!?@#?!@#?';
         const spyReceiveError = spyOn(service, 'receiveErrorMessage');
-
         service.receiveMessageOpponent('Tim', message);
-
-        expect(spyReceiveError).toHaveBeenCalled();
+        mockOfflineErrorMessage$.next(errorContent);
+        expect(spyReceiveError).toHaveBeenCalledWith(errorContent);
     });
 
     it('should not throw error when message is valid', () => {
