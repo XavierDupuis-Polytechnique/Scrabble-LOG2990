@@ -18,22 +18,23 @@ const GAME_ALREADY_JOINED = 'You have already joined a game';
     providedIn: 'root',
 })
 export class GameSocketHandlerService {
-    private socket: Socket | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socket: Socket | any;
     private gameStateSubject = new Subject<GameState>();
-    private endTurnSubject = new Subject<void>();
+    // private endTurnSubject = new Subject<void>();
     get gameState$(): Observable<GameState> {
         return this.gameStateSubject;
     }
 
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
-    }
+    // get endTurn$(): Observable<void> {
+    //     return this.endTurnSubject;
+    // }
 
     joinGame(userAuth: UserAuth) {
         if (this.socket) {
             throw Error(GAME_ALREADY_JOINED);
         }
-        this.socket = io(environment.serverSocketUrl, { path: '/game' });
+        this.socket = this.connectToSocket();
         this.socket.emit('joinGame', userAuth);
         this.socket.on('gameState', (gameState: GameState) => {
             this.receiveGameState(gameState);
@@ -55,10 +56,14 @@ export class GameSocketHandlerService {
         if (!this.socket) {
             throw Error(HAVE_NOT_JOINED_GAME_ERROR);
         }
-        this.socket?.disconnect();
+        this.socket.disconnect();
     }
 
-    private receiveGameState(gameState: GameState) {
+    connectToSocket() {
+        return io(environment.serverSocketUrl, { path: '/game' });
+    }
+
+    receiveGameState(gameState: GameState) {
         this.gameStateSubject.next(gameState);
     }
 }
