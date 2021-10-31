@@ -20,7 +20,7 @@ describe('GameCreator', () => {
     let randomBonus: boolean;
     let gameToken: string;
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
-    // let gameCompilerStub: SinonStubbedInstance<GameCompiler> = createStubInstance(GameCompiler);
+    // const gameCompilerStub: SinonStubbedInstance<GameCompiler> = createStubInstance(GameCompiler);
     // let systemMessagesServiceStub: SinonStubbedInstance<SystemMessagesService> = createStubInstance(SystemMessagesService);
     const newGameStateSubject = new Subject<GameStateToken>();
 
