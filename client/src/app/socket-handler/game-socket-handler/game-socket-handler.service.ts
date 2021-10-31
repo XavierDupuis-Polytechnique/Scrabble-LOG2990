@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameState } from '@app/GameLogic/game/game-state';
+import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { OnlineAction } from '@app/socket-handler/online-action.interface';
 import { Observable, Subject } from 'rxjs';
@@ -25,6 +26,11 @@ export class GameSocketHandlerService {
         return this.gameStateSubject;
     }
 
+    private timerControlsSubject = new Subject<TimerControls>();
+    get timerControls$(): Observable<TimerControls> {
+        return this.timerControlsSubject;
+    }
+
     get endTurn$(): Observable<void> {
         return this.endTurnSubject;
     }
@@ -37,6 +43,10 @@ export class GameSocketHandlerService {
         this.socket.emit('joinGame', userAuth);
         this.socket.on('gameState', (gameState: GameState) => {
             this.receiveGameState(gameState);
+        });
+
+        this.socket.on('timerControl', (timerControl: TimerControls) => {
+            this.receiveTimerControl(timerControl);
         });
     }
 
@@ -61,5 +71,9 @@ export class GameSocketHandlerService {
 
     private receiveGameState(gameState: GameState) {
         this.gameStateSubject.next(gameState);
+    }
+
+    private receiveTimerControl(timerControl: TimerControls) {
+        this.timerControlsSubject.next(timerControl);
     }
 }

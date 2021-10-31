@@ -5,6 +5,7 @@ import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-actio
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameState } from '@app/GameLogic/game/game-state';
+import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
@@ -35,6 +36,10 @@ export class OnlineGame {
         this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });
+
+        this.onlineSocket.timerControls$.subscribe((timerControl: TimerControls) => {
+            this.receiveTimerControl(timerControl);
+        });
     }
 
     receiveState(gameState: GameState) {
@@ -42,7 +47,6 @@ export class OnlineGame {
             this.setupPlayersWithIndex();
         }
         this.updateClient(gameState);
-        this.startTimer();
     }
 
     handleUserActions() {
@@ -82,12 +86,14 @@ export class OnlineGame {
         this.onlineSocket.playAction(onlineAction);
     }
 
-    private startTimer() {
-        // TODO: Get gameSettings from game state (Kinda wasteful since you only need it once tho?)
-        if (this.timer.isStarted) {
+    private receiveTimerControl(timerControl: TimerControls) {
+        if (timerControl === TimerControls.Start) {
+            this.timer.start(this.timePerTurn);
+        }
+
+        if (timerControl === TimerControls.Stop) {
             this.timer.stop();
         }
-        this.timer.start(this.timePerTurn);
     }
 
     private updateClient(gameState: GameState) {

@@ -6,6 +6,7 @@ import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { Timer } from '@app/game/game-logic/timer/timer.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
@@ -17,17 +18,17 @@ export class ServerGame {
     players: Player[] = [];
     activePlayerIndex: number;
     consecutivePass: number = 0;
-    timer = new Timer();
     board: Board;
+    timer: Timer;
 
     isEnded$ = new Subject<undefined>();
-
     private isEndedValue: boolean = false;
     get isEnded() {
         return this.isEndedValue;
     }
 
     constructor(
+        timerController: TimerController,
         public randomBonus: boolean,
         public timePerTurn: number,
         public gameToken: string,
@@ -36,6 +37,7 @@ export class ServerGame {
         private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
     ) {
+        this.timer = new Timer(gameToken, timerController);
         this.board = new Board(randomBonus);
     }
 

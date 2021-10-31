@@ -4,6 +4,8 @@ import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
+import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
@@ -29,13 +31,24 @@ export class GameManagerService {
         return this.newGameStateSubject;
     }
 
+    get timerControls$(): Observable<TimerGameControl> {
+        return this.timerController.timerControls$;
+    }
+
     constructor(
         private pointCalculator: PointCalculatorService,
         private messagesService: SystemMessagesService,
         private actionCompiler: ActionCompilerService,
         private gameCompiler: GameCompiler,
+        private timerController: TimerController,
     ) {
-        this.gameCreator = new GameCreator(this.pointCalculator, this.gameCompiler, this.messagesService, this.newGameStateSubject);
+        this.gameCreator = new GameCreator(
+            this.pointCalculator,
+            this.gameCompiler,
+            this.messagesService,
+            this.newGameStateSubject,
+            this.timerController,
+        );
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
