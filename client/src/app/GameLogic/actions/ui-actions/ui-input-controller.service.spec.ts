@@ -220,7 +220,7 @@ describe('UIInputControllerService', () => {
             TestBed.inject(WordSearcher),
             TestBed.inject(BoardService),
         );
-        const char = 'a';
+        const char = 'A';
         player.letterRack[0].char = char;
         const pos = BOARD_MAX_POSITION / 2;
         board.grid[pos][pos].letterObject.char = char;
@@ -241,7 +241,7 @@ describe('UIInputControllerService', () => {
             TestBed.inject(WordSearcher),
             TestBed.inject(BoardService),
         );
-        const char = 'a';
+        const char = 'A';
         player.letterRack[0].char = char;
         const pos = BOARD_MAX_POSITION / 2;
         board.grid[pos][pos].letterObject.char = char;
