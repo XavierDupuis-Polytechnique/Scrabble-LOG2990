@@ -62,7 +62,7 @@ export class GameManagerService {
         this.increaseNumberOfPlayers(gameToken);
         console.log('active players', this.activePlayers);
         if (this.numberOfPlayers.get(gameToken) === 2) {
-            game.startGame();
+            game.start();
         }
     }
 
@@ -93,15 +93,15 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-        this.onEndOfGame(gameToken, game);
+        this.endGame(gameToken, game);
         this.activeGames.delete(gameToken);
         console.log(`Player ${playerId} left the game`);
         console.log('Current active players', this.activePlayers);
         console.log('Current active games', this.activeGames);
     }
 
-    private onEndOfGame(gameToken: string, game: ServerGame) {
-        game.onEndOfGame();
+    private endGame(gameToken: string, game: ServerGame) {
+        game.stop();
         const gameState = this.gameCompiler.compile(game);
         const gameStateToken: GameStateToken = { gameToken, gameState };
         this.newGameStateSubject.next(gameStateToken);

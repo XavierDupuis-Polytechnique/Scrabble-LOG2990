@@ -1,9 +1,11 @@
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 
 export interface OnlineAction {
     type: OnlineActionType;
     placementSettings?: PlacementSetting;
     letters?: string;
+    letterRack?: Letter[];
 }
 
 export enum OnlineActionType {

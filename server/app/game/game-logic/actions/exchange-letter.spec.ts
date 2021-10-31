@@ -24,7 +24,7 @@ describe('ExchangeLetter', () => {
         game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculator, gameCompiler, messagesService, mockNewGameState$);
         game.players.push(player1);
         game.players.push(player2);
-        game.startGame();
+        game.start();
         activePlayer = game.getActivePlayer();
     });
 
