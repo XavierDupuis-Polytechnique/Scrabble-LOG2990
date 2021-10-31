@@ -11,8 +11,9 @@ describe('NewOnlineGameFormComponent', () => {
     let fixture: ComponentFixture<NewOnlineGameFormComponent>;
 
     const mockDialog = {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        close: () => {},
+        close: () => {
+            return;
+        },
     };
 
     beforeEach(

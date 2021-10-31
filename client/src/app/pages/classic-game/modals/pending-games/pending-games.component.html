@@ -1,7 +1,7 @@
 <mat-dialog-content>
     <h3>Joindre une partie</h3>
     <div class="table-container">
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="announceSortChange($event)">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="announceSortChange($event)" matSortDisableClear>
             <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header>
                     {{ column.header }}
