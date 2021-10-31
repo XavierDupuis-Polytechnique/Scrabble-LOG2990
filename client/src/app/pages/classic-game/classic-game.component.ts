@@ -10,6 +10,7 @@ import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
+import { Subscription } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -19,7 +20,7 @@ import { takeWhile } from 'rxjs/operators';
 })
 export class ClassicGameComponent {
     gameSettings: GameSettings;
-
+    startGame$$: Subscription;
     constructor(
         private router: Router,
         private gameManager: GameManagerService,
@@ -69,7 +70,8 @@ export class ClassicGameComponent {
 
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterOpened().subscribe(() => {
-            this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
+            this.startGame$$?.unsubscribe();
+            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
                 if (!gameSettings) {
                     return;
                 }
@@ -99,7 +101,8 @@ export class ClassicGameComponent {
         pendingGamesDialogConfig.minWidth = 550;
         const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
         dialogRef.afterClosed().subscribe((name: string) => {
-            this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+            this.startGame$$?.unsubscribe();
+            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
                 if (!onlineGameSettings) {
                     return;
                 }
