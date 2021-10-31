@@ -68,5 +68,4 @@ export class OnlineGameInitService {
             console.log('Cant connect to server.');
         });
     }
-
 }

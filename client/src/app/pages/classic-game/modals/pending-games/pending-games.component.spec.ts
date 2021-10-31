@@ -1,10 +1,12 @@
 /* tslint:disable:no-unused-variable */
+import { CommonModule, DatePipe } from '@angular/common';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { PendingGamesComponent } from './pending-games.component';
 
 const mockDialogRef = {
@@ -13,64 +15,53 @@ const mockDialogRef = {
     }),
 };
 
-class MockOnlineGameInitService {
-    createGameMulti() {
-        return;
-    }
-    listenForPendingGames() {
-        return;
-    }
-
-    joinPendingGame() {
-        return;
-    }
-    disconnect() {
-        return;
-    }
-}
-fdescribe('PendingGamesComponent', () => {
+describe('PendingGamesComponent', () => {
     let component: PendingGamesComponent;
     let fixture: ComponentFixture<PendingGamesComponent>;
-    // let pendingGamesSpy: jasmine.SpyObj<'OnlineGameInitService'>;
+    let onlineSocketHandlerSpy: jasmine.SpyObj<'OnlineGameInitService'>;
+    const testPendingGames$ = new Subject<OnlineGameSettings[]>();
 
     beforeEach(
         waitForAsync(() => {
+            onlineSocketHandlerSpy = jasmine.createSpyObj(
+                'OnlineGameInitService',
+                ['createGameMulti', 'listenForPendingGames', 'disconnect', 'joinPendingGames'],
+                ['pendingGames$'],
+            );
             TestBed.configureTestingModule({
-                imports: [AppMaterialModule],
+                imports: [AppMaterialModule, BrowserAnimationsModule, CommonModule],
 
                 providers: [
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: mockDialogRef },
-                    { provide: OnlineGameInitService, useValue: MockOnlineGameInitService },
+                    { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
                 ],
-                declarations: [PendingGamesComponent],
+                declarations: [PendingGamesComponent, DatePipe],
             }).compileComponents();
-            // pendingGamesSpy = jasmine.createSpyObj('onlineService', ['getPendingGames']);
+
+            (
+                Object.getOwnPropertyDescriptor(onlineSocketHandlerSpy, 'pendingGames$')?.get as jasmine.Spy<() => Observable<OnlineGameSettings[]>>
+            ).and.returnValue(testPendingGames$);
         }),
     );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(PendingGamesComponent);
         component = fixture.componentInstance;
-        const games$ = new BehaviorSubject<OnlineGameSettings[]>([{ id: '', playerName: '', randomBonus: false, timePerTurn: 60000 }]);
-        games$.next([{ id: '4', playerName: 'Max', randomBonus: true, timePerTurn: 60000 }]);
-        // spyOn(component, 'pendingGames$').and.returnValue(games$);
+
         fixture.detectChanges();
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
-    it('JoinGame should close the dialog', () => {
-        spyOn(mockDialogRef, 'close');
-        component.joinGame();
-        expect(mockDialogRef.close).toHaveBeenCalled();
-    });
+
     it('cancel should close the dialog', () => {
         spyOn(component, 'cancel');
         component.cancel();
         expect(component.cancel).toHaveBeenCalled();
     });
+
     it('JoinGame should not be responsive if game not selected', () => {
         const dom = fixture.nativeElement as HTMLElement;
         const buttons = dom.querySelectorAll('button');
@@ -79,12 +70,27 @@ fdescribe('PendingGamesComponent', () => {
         expect(spy.calls.count()).toBe(0);
     });
 
-    // it('selectedrow should return correct row', () => {
-    //     const dom = fixture.nativeElement as HTMLElement;
-    //     const games = dom.querySelectorAll('table');
+    it('should be an empty table ', () => {
+        const dom = fixture.nativeElement as HTMLElement;
+        const tables = dom.querySelectorAll('tr');
+        expect(tables.length).toBe(2);
 
-    //     const spy = spyOn(component, 'joinGame');
+        const numberHeaders = 4;
+        const tableGames = tables[0];
+        expect(tableGames.cells.length).toBe(numberHeaders);
 
-    //     expect(spy.calls.count()).toBe(0);
-    // });
+        const tableAucunePartie = tables[1];
+        expect(tableAucunePartie.cells[0].innerHTML).toBe('Aucune partie en attente');
+    });
+
+    it('should be a full table ', () => {
+        testPendingGames$.next([
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000 },
+        ]);
+        const tableLength = 4; // headers + 2 gameSettings + hiddenNoGameAvailable
+        const dom = fixture.nativeElement as HTMLElement;
+        const tables = dom.querySelectorAll('tr');
+        expect(tables.length).toBe(tableLength);
+    });
 });

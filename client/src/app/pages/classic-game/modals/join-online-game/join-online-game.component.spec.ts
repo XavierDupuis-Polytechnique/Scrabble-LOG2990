@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -29,7 +30,7 @@ describe('JoinOnlineGameComponent', () => {
                     { provide: MatDialogRef, useValue: mockDialogRef },
                     { provide: OnlineGameInitService, useValue: mockOnlineGameService },
                 ],
-                declarations: [JoinOnlineGameComponent],
+                declarations: [JoinOnlineGameComponent, DatePipe],
                 schemas: [CUSTOM_ELEMENTS_SCHEMA],
             }).compileComponents();
         }),
