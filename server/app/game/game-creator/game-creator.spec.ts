@@ -2,6 +2,7 @@ import { GameCreator } from '@app/game/game-creator/game-creator';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { getRandomInt } from '@app/game/game-logic/utils';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
@@ -20,8 +21,6 @@ describe('GameCreator', () => {
     let randomBonus: boolean;
     let gameToken: string;
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
-    // const gameCompilerStub: SinonStubbedInstance<GameCompiler> = createStubInstance(GameCompiler);
-    // let systemMessagesServiceStub: SinonStubbedInstance<SystemMessagesService> = createStubInstance(SystemMessagesService);
     const newGameStateSubject = new Subject<GameStateToken>();
 
     beforeEach(() => {
@@ -31,7 +30,13 @@ describe('GameCreator', () => {
         playerName = 'p1';
         opponentName = 'p2';
         randomBonus = getRandomInt(1) === 0;
-        gameCreator = new GameCreator(pointCalculatorStub, new GameCompiler(), new SystemMessagesService(), newGameStateSubject);
+        gameCreator = new GameCreator(
+            pointCalculatorStub,
+            new GameCompiler(),
+            new SystemMessagesService(),
+            newGameStateSubject,
+            new TimerController(),
+        );
     });
 
     it('should create a server game with requested parameters', () => {

@@ -9,6 +9,7 @@ import { Player } from '@app/game/game-logic/player/player';
 import { MockGame } from '@app/game/game-logic/point-calculator/mock-game';
 import { MockPlaceLetter } from '@app/game/game-logic/point-calculator/mock-place-letter';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
@@ -43,12 +44,22 @@ describe('PointCalculatorService', () => {
     let timePerTurn: number;
     let gameToken: string;
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
+    const timerController: TimerController = new TimerController();
     const gameCompiler: GameCompiler = new GameCompiler();
     const messagesService: SystemMessagesService = new SystemMessagesService();
     let newGameStateSubject: Subject<GameStateToken>;
 
     beforeEach(() => {
-        game = new MockGame(randomBonus, timePerTurn, gameToken, pointCalculatorStub, gameCompiler, messagesService, newGameStateSubject);
+        game = new MockGame(
+            timerController,
+            randomBonus,
+            timePerTurn,
+            gameToken,
+            pointCalculatorStub,
+            gameCompiler,
+            messagesService,
+            newGameStateSubject,
+        );
         player1 = new Player('Tim');
         player2 = new Player('Max');
         listOfWord = [];
@@ -388,7 +399,16 @@ describe('PointCalculatorService', () => {
             { char: 'E', value: 1 },
             { char: 'T', value: 1 },
         ];
-        game = new MockGame(randomBonus, timePerTurn, gameToken, pointCalculatorStub, gameCompiler, messagesService, newGameStateSubject);
+        game = new MockGame(
+            timerController,
+            randomBonus,
+            timePerTurn,
+            gameToken,
+            pointCalculatorStub,
+            gameCompiler,
+            messagesService,
+            newGameStateSubject,
+        );
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;

@@ -3,6 +3,7 @@ import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { expect } from 'chai';
@@ -19,7 +20,16 @@ describe('PassTurn', () => {
     const messagesService = new SystemMessagesService();
 
     beforeEach(() => {
-        game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculator, gameCompiler, messagesService, mockNewGameState$);
+        game = new ServerGame(
+            new TimerController(),
+            randomBonus,
+            60000,
+            'default_gameToken',
+            pointCalculator,
+            gameCompiler,
+            messagesService,
+            mockNewGameState$,
+        );
         game.players.push(player1);
         game.players.push(player2);
         game.start();

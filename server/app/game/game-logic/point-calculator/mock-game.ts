@@ -4,6 +4,7 @@ import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { Subject } from 'rxjs';
@@ -17,6 +18,7 @@ export class MockGame extends ServerGame {
     board: Board;
 
     constructor(
+        timerController: TimerController,
         randomBonus: boolean,
         timePerTurn: number,
         gameToken: string,
@@ -25,7 +27,7 @@ export class MockGame extends ServerGame {
         messagesService: SystemMessagesService,
         newGameStateSubject: Subject<GameStateToken>,
     ) {
-        super(randomBonus, timePerTurn, gameToken, pointCalculatorService, gameCompiler, messagesService, newGameStateSubject);
+        super(timerController, randomBonus, timePerTurn, gameToken, pointCalculatorService, gameCompiler, messagesService, newGameStateSubject);
         this.players = [this.activePlayer, this.otherPlayer];
         this.board = new Board();
     }
