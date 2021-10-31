@@ -57,6 +57,7 @@ export class GameSocketHandlerService {
             throw Error(HAVE_NOT_JOINED_GAME_ERROR);
         }
         this.socket.disconnect();
+        this.socket = undefined;
     }
 
     connectToSocket() {
