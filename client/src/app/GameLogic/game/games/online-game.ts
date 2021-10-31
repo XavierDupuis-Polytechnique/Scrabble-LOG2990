@@ -22,7 +22,7 @@ export class OnlineGame {
     activePlayerIndex: number = 0;
     lettersRemaining: number = 0;
     isEndOfGame: boolean = false;
-    winnerIndex: number[] = [];
+    winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
 
     constructor(
@@ -66,6 +66,17 @@ export class OnlineGame {
 
     forfeit() {
         this.onlineSocket.forfeit();
+    }
+
+    getWinner() {
+        const winners = this.winnerNames.map((name) => {
+            const playerWithIndex = this.playersWithIndex.get(name);
+            if (!playerWithIndex) {
+                throw Error('Winner names does not fit with the player names');
+            }
+            return playerWithIndex.player;
+        });
+        return winners;
     }
 
     private setupPlayersWithIndex() {
@@ -181,6 +192,9 @@ export class OnlineGame {
 
     private updateEndOfGame(gameState: GameState) {
         this.isEndOfGame = gameState.isEndOfGame;
-        this.winnerIndex = gameState.winnerIndex;
+        this.winnerNames = gameState.winnerIndex.map((index: number) => {
+            return gameState.players[index].name;
+        });
+        // this.winnerIndex = gameState.winnerIndex;
     }
 }

@@ -103,11 +103,7 @@ export class GameInfoService {
 
     get winner(): Player[] {
         if (!this.game) {
-            const winner: Player[] = [];
-            for (const winnerIndex of this.onlineGame.winnerIndex) {
-                winner.push(this.onlineGame.players[winnerIndex]);
-            }
-            return winner;
+            return this.onlineGame.getWinner();
         }
         return this.game.getWinner();
     }
