@@ -46,6 +46,14 @@ describe('JoinOnlineGameComponent', () => {
         expect(component).toBeTruthy();
     });
 
+    it('should display data in correct form of bonus', () => {
+        const dom = fixture.nativeElement as HTMLElement;
+        const bonus = dom.querySelectorAll('mat-label')[1];
+        expect(bonus?.innerHTML).toBe('Bonus aléatoire est désactivé ');
+        component.data.randomBonus = true;
+        expect(component.randomBonusType).toBe('est activé');
+    });
+
     it('cancel', () => {
         const dom = fixture.nativeElement as HTMLElement;
         const cancelButton = dom.querySelectorAll('button')[0];

@@ -53,7 +53,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         return this.oppName.valid;
     }
 
-    get timePerTurn() {
+    get randomBonusType() {
         return this.data.randomBonus === true ? 'est activé' : 'est désactivé';
     }
 }
