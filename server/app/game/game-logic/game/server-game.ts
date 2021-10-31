@@ -20,6 +20,13 @@ export class ServerGame {
     timer = new Timer();
     board: Board;
 
+    isEnded$ = new Subject<undefined>();
+
+    private isEndedValue: boolean = false;
+    get isEnded() {
+        return this.isEndedValue;
+    }
+
     constructor(
         public randomBonus: boolean,
         public timePerTurn: number,
@@ -32,7 +39,7 @@ export class ServerGame {
         this.board = new Board(randomBonus);
     }
 
-    startGame(): void {
+    start(): void {
         console.log('Starting a game');
         if (this.players.length < 2) {
             throw Error('Game started with less than 2 players');
@@ -43,11 +50,20 @@ export class ServerGame {
         this.startTurn();
     }
 
+    stop() {
+        console.log(`game ${this.gameToken} stopped`);
+        this.isEndedValue = true;
+        this.isEnded$.next(undefined);
+    }
+
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
     isEndOfGame() {
+        if (this.isEnded) {
+            return true;
+        }
         console.log('Consecutive pass ', this.consecutivePass);
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
@@ -108,17 +124,30 @@ export class ServerGame {
     }
 
     private startTurn() {
+        if (this.isEnded) {
+            this.onEndOfGame();
+            return;
+        }
         const activePlayer = this.players[this.activePlayerIndex];
         console.log(`Start ${activePlayer.name}'s turn`);
-        console.log(activePlayer);
+        // console.log(activePlayer);
         // activePlayer.setActive();
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
-        const turnEnds$ = merge(activePlayer.action$, timerEnd$);
+        const turnEnds$ = merge(activePlayer.action$, timerEnd$, this.isEnded$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
     }
 
-    private endOfTurn(action: Action) {
+    private endOfTurn(action: Action | undefined) {
         this.timer.stop();
+        if (!action) {
+            this.onEndOfGame();
+            return;
+        }
+
+        if (this.isEnded) {
+            this.onEndOfGame();
+            return;
+        }
 
         action.end$.subscribe(() => {
             if (this.isEndOfGame()) {
