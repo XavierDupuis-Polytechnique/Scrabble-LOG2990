@@ -10,7 +10,7 @@ import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
-import { filter, takeWhile } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
     selector: 'app-classic-game',
@@ -59,12 +59,6 @@ export class ClassicGameComponent {
             this.socketHandler.createGameMulti(formOnline);
             const username = formOnline.playerName;
             this.openWaitingForPlayer(username);
-            this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
-                if (!onlineGameSettings) {
-                    return;
-                }
-                // this.startOnlineGame(name, onlineGameSettings);
-            });
         });
     }
 
@@ -75,12 +69,11 @@ export class ClassicGameComponent {
 
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterOpened().subscribe(() => {
-            this.socketHandler.startGame$.pipe(filter((val) => val !== undefined)).subscribe((gameSettings) => {
-                console.log('ClassicGame');
-                this.dialog.closeAll();
+            this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
                 if (!gameSettings) {
                     return;
                 }
+                this.dialog.closeAll();
                 this.startOnlineGame(username, gameSettings);
             });
         });

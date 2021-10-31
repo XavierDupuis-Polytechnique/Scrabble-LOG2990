@@ -20,7 +20,6 @@ export class OnlineGame {
     lettersRemaining: number = 0;
     isEndOfGame: boolean = false;
     winnerIndex: number[] = [];
-
     playersWithIndex = new Map<string, PlayerWithIndex>();
 
     constructor(
@@ -39,7 +38,7 @@ export class OnlineGame {
     }
 
     receiveState(gameState: GameState) {
-        if (this.playersWithIndex.keys.length === 0) {
+        if (this.playersWithIndex.size === 0) {
             this.setupPlayersWithIndex();
         }
         this.updateClient(gameState);
@@ -55,9 +54,12 @@ export class OnlineGame {
             if (activePlayerName !== this.userName) {
                 return;
             }
-            console.log('action action', action);
             this.receivePlayerAction(action);
         });
+    }
+
+    forfeit() {
+        this.onlineSocket.forfeit();
     }
 
     private setupPlayersWithIndex() {
