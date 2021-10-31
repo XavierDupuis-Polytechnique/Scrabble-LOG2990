@@ -123,6 +123,7 @@ export class GameManagerService {
     private stopOnlineGame() {
         this.timer.stop();
         this.onlineGame?.forfeit();
+        this.onlineGame?.close();
         this.onlineGame = undefined;
         this.onlineChat.leaveChatRoom();
     }

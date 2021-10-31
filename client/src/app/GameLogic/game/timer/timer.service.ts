@@ -34,7 +34,7 @@ export class TimerService {
     }
 
     stop() {
-        this.end$$.unsubscribe();
+        this.end$$?.unsubscribe();
         this.source = new Subject();
     }
 

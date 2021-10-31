@@ -11,6 +11,7 @@ import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { Subscription } from 'rxjs';
 
 interface PlayerWithIndex {
     index: number;
@@ -25,6 +26,9 @@ export class OnlineGame {
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
 
+    private gameState$$ : Subscription;
+    private timerControls$$ : Subscription;
+
     constructor(
         public timePerTurn: number,
         public userName: string,
@@ -35,13 +39,18 @@ export class OnlineGame {
     ) {
         this.boardService.board = new Board();
         this.userName = userName;
-        this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
+        this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });
 
-        this.onlineSocket.timerControls$.subscribe((timerControl: TimerControls) => {
+        this.timerControls$$ = this.onlineSocket.timerControls$.subscribe((timerControl: TimerControls) => {
             this.receiveTimerControl(timerControl);
         });
+    }
+
+    close() {
+        this.gameState$$.unsubscribe();
+        this.timerControls$$?.unsubscribe();
     }
 
     receiveState(gameState: GameState) {
@@ -122,12 +131,11 @@ export class OnlineGame {
     }
 
     private updateActivePlayer(gameState: GameState) {
-        console.log('update active player', gameState);
-        console.log(this.playersWithIndex);
         const activePlayerIndex = gameState.activePlayerIndex;
         const activePlayerName = gameState.players[activePlayerIndex].name;
         const playerWithIndex = this.playersWithIndex.get(activePlayerName);
         if (playerWithIndex === undefined) {
+            console.log('CRASH', this.playersWithIndex, gameState);
             throw Error('Players received with game state are not matching with those of the first turn');
         }
         this.activePlayerIndex = playerWithIndex.index;
