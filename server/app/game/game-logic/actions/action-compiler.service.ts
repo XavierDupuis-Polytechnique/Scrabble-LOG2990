@@ -25,10 +25,12 @@ export class ActionCompilerService {
                 }
                 const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters.split(''));
                 console.log(letters, ' became ', lettersToExchange);
+                this.letterRackUpdateValidator(command, player);
                 return new ExchangeLetter(player, lettersToExchange);
             }
 
             case OnlineActionType.Pass:
+                this.letterRackUpdateValidator(command, player);
                 return new PassTurn(player);
 
             case OnlineActionType.Place: {
@@ -40,11 +42,52 @@ export class ActionCompilerService {
                 if (!settings) {
                     throw Error('Argument of Action Invalid. Cant compile.');
                 }
+                this.letterRackUpdateValidator(command, player);
                 return new PlaceLetter(player, letters, settings, this.pointCalculator, this.wordSearcher);
             }
 
             default:
                 throw Error('this command dont generate an action');
         }
+    }
+    letterRackUpdateValidator(command: OnlineAction, player: Player) {
+        console.log(command);
+        console.log(player);
+        const newLetterRack = command.letterRack as Letter[];
+        if (!this.isLetterRackChanged(newLetterRack, player)) {
+            for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
+                player.letterRack[letterIndex] = newLetterRack[letterIndex];
+            }
+        }
+    }
+
+    private isLetterRackChanged(newLetterRack: Letter[], player: Player): boolean {
+        const mapRack = this.makeLetterRackMap(newLetterRack);
+        let isChanged = false;
+
+        for (const letter of player.letterRack) {
+            const letterCount = mapRack.get(letter.char);
+            if (letterCount === undefined) {
+                isChanged = true;
+            } else if (letterCount >= 1) {
+                mapRack.set(letter.char, letterCount - 1);
+            } else if (letterCount === 0) {
+                isChanged = true;
+            }
+        }
+        return isChanged;
+    }
+
+    private makeLetterRackMap(letterRack: Letter[]): Map<string, number> {
+        const mapRack = new Map<string, number>();
+        for (const letter of letterRack) {
+            const letterCount = mapRack.get(letter.char);
+            if (letterCount !== undefined) {
+                mapRack.set(letter.char, letterCount + 1);
+            } else {
+                mapRack.set(letter.char, 1);
+            }
+        }
+        return mapRack;
     }
 }

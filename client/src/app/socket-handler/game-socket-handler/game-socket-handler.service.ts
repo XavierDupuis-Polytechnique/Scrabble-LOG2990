@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameState } from '@app/GameLogic/game/game-state';
+import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { OnlineAction } from '@app/socket-handler/online-action.interface';
 import { Observable, Subject } from 'rxjs';
@@ -18,11 +19,17 @@ const GAME_ALREADY_JOINED = 'You have already joined a game';
     providedIn: 'root',
 })
 export class GameSocketHandlerService {
-    private socket: Socket | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socket: Socket | any;
     private gameStateSubject = new Subject<GameState>();
     private endTurnSubject = new Subject<void>();
     get gameState$(): Observable<GameState> {
         return this.gameStateSubject;
+    }
+
+    private timerControlsSubject = new Subject<TimerControls>();
+    get timerControls$(): Observable<TimerControls> {
+        return this.timerControlsSubject;
     }
 
     get endTurn$(): Observable<void> {
@@ -33,10 +40,14 @@ export class GameSocketHandlerService {
         if (this.socket) {
             throw Error(GAME_ALREADY_JOINED);
         }
-        this.socket = io(environment.serverSocketUrl, { path: '/game' });
+        this.socket = this.connectToSocket();
         this.socket.emit('joinGame', userAuth);
         this.socket.on('gameState', (gameState: GameState) => {
             this.receiveGameState(gameState);
+        });
+
+        this.socket.on('timerControl', (timerControl: TimerControls) => {
+            this.receiveTimerControl(timerControl);
         });
     }
 
@@ -55,10 +66,19 @@ export class GameSocketHandlerService {
         if (!this.socket) {
             throw Error(HAVE_NOT_JOINED_GAME_ERROR);
         }
-        this.socket?.disconnect();
+        this.socket.disconnect();
+        this.socket = undefined;
     }
 
-    private receiveGameState(gameState: GameState) {
+    connectToSocket() {
+        return io(environment.serverSocketUrl, { path: '/game' });
+    }
+
+    receiveGameState(gameState: GameState) {
         this.gameStateSubject.next(gameState);
+    }
+
+    private receiveTimerControl(timerControl: TimerControls) {
+        this.timerControlsSubject.next(timerControl);
     }
 }

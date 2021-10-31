@@ -6,6 +6,7 @@ import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { Timer } from '@app/game/game-logic/timer/timer.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
@@ -17,10 +18,17 @@ export class ServerGame {
     players: Player[] = [];
     activePlayerIndex: number;
     consecutivePass: number = 0;
-    timer = new Timer();
     board: Board;
+    timer: Timer;
+
+    isEnded$ = new Subject<undefined>();
+    private isEndedValue: boolean = false;
+    get isEnded() {
+        return this.isEndedValue;
+    }
 
     constructor(
+        timerController: TimerController,
         public randomBonus: boolean,
         public timePerTurn: number,
         public gameToken: string,
@@ -29,10 +37,11 @@ export class ServerGame {
         private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
     ) {
+        this.timer = new Timer(gameToken, timerController);
         this.board = new Board(randomBonus);
     }
 
-    startGame(): void {
+    start(): void {
         console.log('Starting a game');
         if (this.players.length < 2) {
             throw Error('Game started with less than 2 players');
@@ -43,11 +52,20 @@ export class ServerGame {
         this.startTurn();
     }
 
+    stop() {
+        console.log(`game ${this.gameToken} stopped`);
+        this.isEndedValue = true;
+        this.isEnded$.next(undefined);
+    }
+
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
     isEndOfGame() {
+        if (this.isEnded) {
+            return true;
+        }
         console.log('Consecutive pass ', this.consecutivePass);
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
@@ -108,17 +126,30 @@ export class ServerGame {
     }
 
     private startTurn() {
+        if (this.isEnded) {
+            this.onEndOfGame();
+            return;
+        }
         const activePlayer = this.players[this.activePlayerIndex];
         console.log(`Start ${activePlayer.name}'s turn`);
-        console.log(activePlayer);
+        // console.log(activePlayer);
         // activePlayer.setActive();
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
-        const turnEnds$ = merge(activePlayer.action$, timerEnd$);
+        const turnEnds$ = merge(activePlayer.action$, timerEnd$, this.isEnded$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
     }
 
-    private endOfTurn(action: Action) {
+    private endOfTurn(action: Action | undefined) {
         this.timer.stop();
+        if (!action) {
+            this.onEndOfGame();
+            return;
+        }
+
+        if (this.isEnded) {
+            this.onEndOfGame();
+            return;
+        }
 
         action.end$.subscribe(() => {
             if (this.isEndOfGame()) {

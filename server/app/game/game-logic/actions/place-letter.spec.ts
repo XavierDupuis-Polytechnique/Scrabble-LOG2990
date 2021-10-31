@@ -48,7 +48,7 @@ describe('PlaceLetter', () => {
         game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculatorStub, gameCompiler, messagesService, mockNewGameState$);
         game.players.push(player1);
         game.players.push(player2);
-        game.startGame();
+        game.start();
         letterCreator = new LetterCreator();
         const letterObjects = letterCreator.createLetters(lettersToPlace.split(''));
         activePlayer = game.getActivePlayer();

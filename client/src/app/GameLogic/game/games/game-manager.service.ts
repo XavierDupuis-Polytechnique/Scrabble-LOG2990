@@ -22,8 +22,8 @@ import { GameSettings } from './game-settings.interface';
     providedIn: 'root',
 })
 export class GameManagerService {
-    private game: Game;
-    private onlineGame: OnlineGame;
+    private game: Game | undefined;
+    private onlineGame: OnlineGame | undefined;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
@@ -64,7 +64,8 @@ export class GameManagerService {
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
         // TODO need to stop online game if game started
-        if (this.game) {
+        if (this.game || this.onlineGame) {
+            console.log('stop game');
             this.stopGame();
         }
         if (!gameSettings.opponentName) {
@@ -91,17 +92,37 @@ export class GameManagerService {
         if (!this.game && !this.onlineGame) {
             throw Error('No game created yet');
         }
-        if (!this.onlineGame) {
+
+        if (this.game) {
             this.game.start();
         }
     }
 
     stopGame(): void {
+        console.log('stop game');
         // TODO implement for online game
-        this.timer.stop();
-        this.game = {} as Game;
+        if (this.game) {
+            this.stopSoloGame();
+        }
+
+        if (this.onlineGame) {
+            this.stopOnlineGame();
+        }
+
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
+    }
+
+    private stopSoloGame() {
+        this.timer.stop();
+        this.game = undefined;
+    }
+
+    private stopOnlineGame() {
+        this.timer.stop();
+        this.onlineGame?.forfeit();
+        this.onlineGame = undefined;
+        this.onlineChat.leaveChatRoom();
     }
 
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
@@ -112,7 +133,7 @@ export class GameManagerService {
     }
 
     private allocatePlayers(players: Player[]) {
-        this.game.players = players;
+        (this.game as Game).players = players;
     }
 
     private createOnlinePlayers(userName: string, opponentName: string): Player[] {
@@ -123,6 +144,6 @@ export class GameManagerService {
     }
 
     private allocateOnlinePlayers(players: Player[]) {
-        this.onlineGame.players = players;
+        (this.onlineGame as OnlineGame).players = players;
     }
 }
