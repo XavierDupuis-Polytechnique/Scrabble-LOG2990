@@ -67,6 +67,7 @@ export class UIInputControllerService {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
+                    this.discardAction();
                     this.activeAction = new UIPlace(this.info.user, this.pointCalculator, this.wordSearcher, this.boardService);
                     return true;
                 }
@@ -74,12 +75,14 @@ export class UIInputControllerService {
             case InputComponent.Horse:
                 if (inputType === InputType.RightClick) {
                     if (!(this.activeAction instanceof UIExchange)) {
+                        this.discardAction();
                         this.activeAction = new UIExchange(this.info.user);
                         return true;
                     }
                 } else {
                     // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
+                        this.discardAction();
                         this.activeAction = new UIMove(this.info.user);
                         return true;
                     }

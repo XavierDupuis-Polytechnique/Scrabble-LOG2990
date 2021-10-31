@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
@@ -5,7 +6,7 @@ import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
-import { EMPTY_CHAR, ENTER, ESCAPE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { BOARD_MAX_POSITION, EMPTY_CHAR, ENTER, ESCAPE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
@@ -209,6 +210,48 @@ describe('UIInputControllerService', () => {
         expect(wasActionCreated).toBeFalsy();
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
+
+    it('should remove letters temporarily placed on the board after UIPlace switches to UIMove', () => {
+        service.activeComponent = InputComponent.Board;
+        const board = TestBed.inject(BoardService).board;
+        service.activeAction = new UIPlace(
+            player,
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+            TestBed.inject(BoardService),
+        );
+        const char = 'a';
+        player.letterRack[0].char = char;
+        const pos = BOARD_MAX_POSITION / 2;
+        board.grid[pos][pos].letterObject.char = char;
+        (service.activeAction as UIPlace).orderedIndexes.push({ rackIndex: 0, x: pos, y: pos });
+
+        service.activeComponent = InputComponent.Horse;
+        service.updateActiveAction(InputType.LeftClick);
+        expect(service.activeAction instanceof UIMove).toBeTruthy();
+        expect(board.grid[pos][pos].letterObject.char).toBe(EMPTY_CHAR);
+    });
+
+    it('should remove letters temporarily placed on the board after UIPlace switches to UIExchange', () => {
+        service.activeComponent = InputComponent.Board;
+        const board = TestBed.inject(BoardService).board;
+        service.activeAction = new UIPlace(
+            player,
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+            TestBed.inject(BoardService),
+        );
+        const char = 'a';
+        player.letterRack[0].char = char;
+        const pos = BOARD_MAX_POSITION / 2;
+        board.grid[pos][pos].letterObject.char = char;
+        (service.activeAction as UIPlace).orderedIndexes.push({ rackIndex: 0, x: pos, y: pos });
+
+        service.activeComponent = InputComponent.Horse;
+        service.updateActiveAction(InputType.RightClick);
+        expect(service.activeAction instanceof UIExchange).toBeTruthy();
+        expect(board.grid[pos][pos].letterObject.char).toBe(EMPTY_CHAR);
+    });
     /// //////////////////////// ///
 
     /// processInputType TESTS ///
@@ -260,9 +303,9 @@ describe('UIInputControllerService', () => {
     it('should create the Action following the "ENTER" Keypress', () => {
         service.activeAction = new UIPlace(
             player,
-            new PointCalculatorService(new BoardService()),
-            new WordSearcher(new BoardService(), new DictionaryService()),
-            new BoardService(),
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+            TestBed.inject(BoardService),
         );
         service.activeComponent = InputComponent.Board;
         const input1: UIInput = { type: InputType.LeftClick, from: InputComponent.Board, args: { x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD } };
