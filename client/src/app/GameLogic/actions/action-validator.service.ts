@@ -53,7 +53,7 @@ export class ActionValidatorService {
                 return this.validatePassTurn();
             }
 
-            this.messageService.receiveErrorMessage("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
+            this.sendErrorMessage("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
             return false;
         }
         this.sendErrorMessage('Action demandé par ' + action.player.name + " pendant le tour d'un autre joueur");
