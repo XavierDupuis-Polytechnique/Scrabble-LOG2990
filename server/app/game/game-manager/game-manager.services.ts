@@ -1,3 +1,4 @@
+import { NEW_GAME_TIMEOUT } from '@app/constants';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
@@ -56,6 +57,20 @@ export class GameManagerService {
         this.activeGames.set(gameToken, newServerGame);
         this.linkedPlayerNames.set(gameToken, []);
         console.log('active games', this.activeGames);
+        this.startSelfDestructTimer(gameToken);
+    }
+
+    startSelfDestructTimer(gameToken: string) {
+        setTimeout(() => {
+            const serverGame = this.activeGames.get(gameToken);
+            if (this.linkedPlayerNames.get(gameToken)?.length !== 2) {
+                if (serverGame) {
+                    this.endGame(gameToken, serverGame);
+                }
+                this.activeGames.delete(gameToken);
+                this.linkedPlayerNames.delete(gameToken);
+            }
+        }, NEW_GAME_TIMEOUT);
     }
 
     addPlayerToGame(playerId: string, userAuth: UserAuth) {
