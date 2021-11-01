@@ -26,10 +26,10 @@ export class NewOnlineGameService {
         }
         const gameSettings = this.pendingGames.get(id);
         if (!gameSettings) {
-            throw Error("The game you're trying to join doesn't exist.");
+            return undefined;
         }
         if (gameSettings.opponentName !== undefined) {
-            throw Error('This game already has a second player.');
+            return undefined;
         }
         gameSettings.opponentName = name;
         const onlineGameSettingsUI = this.toOnlineGameSettings(id, gameSettings);
