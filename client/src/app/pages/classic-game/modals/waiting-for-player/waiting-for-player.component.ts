@@ -44,7 +44,7 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
     }
 
     cancel() {
-        this.onlineSocketHandler.disconnect();
+        this.onlineSocketHandler.disconnectSocket();
     }
 
     get pendingGameId$(): Observable<string> {

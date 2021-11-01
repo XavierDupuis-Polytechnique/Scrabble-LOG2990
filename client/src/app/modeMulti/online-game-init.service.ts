@@ -11,6 +11,7 @@ export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     gameToken$ = new Subject<string>();
+    isDisconnected$ = new Subject<boolean>();
     private socket: Socket;
 
     createGameMulti(gameSettings: OnlineGameSettingsUI) {
@@ -37,15 +38,11 @@ export class OnlineGameInitService {
         this.listenForGameToken();
     }
 
-    disconnect() {
+    disconnectSocket() {
         if (!this.socket) {
             return;
         }
         this.socket.disconnect();
-    }
-
-    get isConnected() {
-        return this.socket.connected;
     }
 
     private waitForSecondPlayer() {
@@ -58,14 +55,14 @@ export class OnlineGameInitService {
     private listenForGameToken() {
         this.socket.on('gameJoined', (gameToken: string) => {
             this.gameToken$.next(gameToken);
-            this.socket.disconnect();
+            this.disconnectSocket();
         });
     }
 
     private connect() {
         this.socket = io(environment.serverSocketUrl, { path: '/newGame' });
         this.socket.on('connect_error', () => {
-            // this.socket.close();
+            this.isDisconnected$.next(true);
             console.log('Cant connect to server.');
         });
     }
