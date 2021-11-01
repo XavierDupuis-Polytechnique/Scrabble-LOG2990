@@ -29,11 +29,14 @@ class MockGameManagerService {
     };
 }
 
+class MockGameInfoService {
+    user = mockPlayers[0];
+    players = mockPlayers;
+}
+
 class MockUIInputControllerService {
     activeAction: UIAction | null;
 }
-
-const testSpy: jasmine.SpyObj<GameInfoService> = jasmine.createSpyObj('GameInfoService', ['getPlayer'], { user: { letterRack: 3 } });
 
 describe('HorseComponent', () => {
     let component: HorseComponent;
@@ -46,7 +49,7 @@ describe('HorseComponent', () => {
             providers: [
                 { provide: GameManagerService, useClass: MockGameManagerService },
                 { provide: UIInputControllerService, useValue: mockUIInputControllerService },
-                { provide: GameInfoService, useValue: testSpy },
+                { provide: GameInfoService, useClass: MockGameInfoService },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
@@ -88,7 +91,7 @@ describe('HorseComponent', () => {
         expect(component.isLetterSelectedForPlace(index)).toBeFalsy();
 
         mockUIInputControllerService.activeAction = new UIPlace(
-            mockPlayers[0],
+            TestBed.inject(GameInfoService),
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BoardService),
@@ -132,7 +135,7 @@ describe('HorseComponent', () => {
     it('should return the correct boolean for a rackLetter selection (UIPlace)', () => {
         component.ngAfterContentInit();
         mockUIInputControllerService.activeAction = new UIPlace(
-            mockPlayers[0],
+            TestBed.inject(GameInfoService),
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BoardService),
