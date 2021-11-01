@@ -68,7 +68,7 @@ export class UIInputControllerService {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
                     this.discardAction();
-                    this.activeAction = new UIPlace(this.info.user, this.pointCalculator, this.wordSearcher, this.boardService);
+                    this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
                     return true;
                 }
                 break;

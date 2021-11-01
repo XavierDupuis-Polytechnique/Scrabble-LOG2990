@@ -12,9 +12,10 @@ import {
     ONE,
     RACK_LETTER_COUNT,
     THREE,
-    ZERO,
+    ZERO
 } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
@@ -23,21 +24,33 @@ import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { UIPlace } from './ui-place';
 
+class MockGameInfoService {
+    players: Player[];
+    activePlayerIndex: number = 0;
+    user: Player;
+    get activePlayer() {
+        return this.user;
+    }
+}
+
 describe('UIPlace', () => {
     let player: Player;
     let action: UIPlace;
     let boardService: BoardService;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
+    let info: GameInfoService;
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: GameInfoService, useClass: MockGameInfoService },
+            ],
         });
         boardService = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
-
         player = new User('p1');
         player.letterRack = [
             { char: 'A', value: 0 },
@@ -48,7 +61,10 @@ describe('UIPlace', () => {
             { char: 'F', value: 0 },
             { char: 'G', value: 0 },
         ];
-        action = new UIPlace(player, pointCalculator, wordSearcher, boardService);
+        info = TestBed.inject(GameInfoService);
+        info.players = [player];
+        info.user = player;
+        action = new UIPlace(info, pointCalculator, wordSearcher, boardService);
     });
 
     it('should create an instance', () => {

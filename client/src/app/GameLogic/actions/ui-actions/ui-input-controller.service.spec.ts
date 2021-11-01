@@ -8,6 +8,7 @@ import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { BOARD_MAX_POSITION, EMPTY_CHAR, ENTER, ESCAPE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
@@ -17,17 +18,36 @@ import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { UIInputControllerService } from './ui-input-controller.service';
 
+class MockGameInfoService {
+    players: Player[];
+    activePlayerIndex: number = 0;
+    user: Player;
+    get activePlayer() {
+        return this.user;
+    }
+}
+
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
     const dict = new DictionaryService();
+    let info: GameInfoService;
+    let pointCalculator: PointCalculatorService;
+    let wordSearcher: WordSearcher;
+    let boardService: BoardService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: GameInfoService, useClass: MockGameInfoService },
+            ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });
         service = TestBed.inject(UIInputControllerService);
+        pointCalculator = TestBed.inject(PointCalculatorService);
+        wordSearcher = TestBed.inject(WordSearcher);
+        boardService = TestBed.inject(BoardService);
         player = new User('p1');
         player.letterRack = [
             { char: EMPTY_CHAR, value: 0 },
@@ -38,6 +58,9 @@ describe('UIInputControllerService', () => {
             { char: EMPTY_CHAR, value: 0 },
             { char: EMPTY_CHAR, value: 0 },
         ];
+        info = TestBed.inject(GameInfoService);
+        info.players = [player];
+        info.user = player;
     });
 
     it('should be created', () => {
@@ -214,12 +237,7 @@ describe('UIInputControllerService', () => {
     it('should remove letters temporarily placed on the board after UIPlace switches to UIMove', () => {
         service.activeComponent = InputComponent.Board;
         const board = TestBed.inject(BoardService).board;
-        service.activeAction = new UIPlace(
-            player,
-            TestBed.inject(PointCalculatorService),
-            TestBed.inject(WordSearcher),
-            TestBed.inject(BoardService),
-        );
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         const char = 'A';
         player.letterRack[0].char = char;
         const pos = BOARD_MAX_POSITION / 2;
@@ -235,12 +253,7 @@ describe('UIInputControllerService', () => {
     it('should remove letters temporarily placed on the board after UIPlace switches to UIExchange', () => {
         service.activeComponent = InputComponent.Board;
         const board = TestBed.inject(BoardService).board;
-        service.activeAction = new UIPlace(
-            player,
-            TestBed.inject(PointCalculatorService),
-            TestBed.inject(WordSearcher),
-            TestBed.inject(BoardService),
-        );
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         const char = 'A';
         player.letterRack[0].char = char;
         const pos = BOARD_MAX_POSITION / 2;
@@ -301,12 +314,7 @@ describe('UIInputControllerService', () => {
     });
 
     it('should create the Action following the "ENTER" Keypress', () => {
-        service.activeAction = new UIPlace(
-            player,
-            TestBed.inject(PointCalculatorService),
-            TestBed.inject(WordSearcher),
-            TestBed.inject(BoardService),
-        );
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         service.activeComponent = InputComponent.Board;
         const input1: UIInput = { type: InputType.LeftClick, from: InputComponent.Board, args: { x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD } };
         service.processInput(input1);
