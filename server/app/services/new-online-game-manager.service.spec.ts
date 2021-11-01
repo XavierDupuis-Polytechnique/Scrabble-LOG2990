@@ -1,10 +1,16 @@
-import { OnlineGameSettings } from '@app/game-manager/game-settings-multi.interface';
+/* eslint-disable no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-unused-vars */
+import { OnlineGameSettingsUI } from '@app/game-manager/game-settings-multi.interface';
 import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
 import { createServer, Server } from 'http';
+import { beforeEach } from 'mocha';
 import { AddressInfo } from 'net';
+import * as sinon from 'sinon';
 import { Socket } from 'socket.io';
-import { Client } from 'socket.io/dist/client';
+import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 import { NewOnlineGameSocketHandler } from './new-online-game-manager';
 
 describe('New Online Game Service', () => {
@@ -13,6 +19,7 @@ describe('New Online Game Service', () => {
     let serverSocket: Socket;
     let port: number;
     let httpServer: Server;
+    let newOnlineGameService: StubbedClass<NewOnlineGameService>;
     const pendingGames = [
         { id: '1', playerName: 'Max', randomBonus: true, timePerTurn: 61000 },
         { id: '2', playerName: 'Tom', randomBonus: true, timePerTurn: 64000 },
@@ -25,10 +32,11 @@ describe('New Online Game Service', () => {
             process.setMaxListeners(0);
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
-            const newOnlineGameService = createSinonStubInstance<NewOnlineGameService>(NewOnlineGameService);
+            newOnlineGameService = createSinonStubInstance<NewOnlineGameService>(NewOnlineGameService);
+
             handler = new NewOnlineGameSocketHandler(httpServer, newOnlineGameService);
             handler.newGameHandler();
-            handler.ioServer.on('connection', (socket) => {
+            handler.ioServer.on('connection', (socket: Socket) => {
                 serverSocket = socket;
             });
             done();
@@ -39,6 +47,7 @@ describe('New Online Game Service', () => {
         clientSocket.on('connect', done);
     });
     afterEach(() => {
+        sinon.verifyAndRestore();
         clientSocket.close();
     });
 
@@ -48,29 +57,56 @@ describe('New Online Game Service', () => {
 
     it('should create pendingGame', (done) => {
         const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
+        serverSocket.on('createGame', (pendingGameSettings: OnlineGameSettingsUI) => {
+            expect(pendingGameSettings).to.deep.equal(gameSettings);
+            done();
+        });
         clientSocket.emit('createGame', gameSettings);
-        serverSocket.on('createGame', (pendingGameSettings) => {
-            const newPendingGame = {
-                id: '5',
-                playerName: gameSettings.playerName,
-                randomBonus: gameSettings.randomBonus,
-                timePerTurn: gameSettings.timePerTurn,
-            };
-            pendingGames.push(newPendingGame);
-            serverSocket.emit('pendingGames', pendingGames);
-            expect(pendingGameSettings).to.equal(gameSettings);
-        });
-        clientSocket.on('pendingGames', (pendingGamesReceived: OnlineGameSettings) => {
-            expect(pendingGamesReceived).to.equal(pendingGames);
-        });
-        done();
     });
 
-    // it('currentTime should return different dates if called later', async () => {
-    //     const { body: currentTime } = await dateService.currentTime();
-    //     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    //     clock.tick(5000);
-    //     const { body: now } = await dateService.currentTime();
-    //     expect(new Date(currentTime)).to.be.below(new Date(now));
+    it('should receive pendingGameId on create', (done) => {
+        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
+        clientSocket.on('pendingGameId', (pendingId: string) => {
+            expect(pendingId).to.not.be.undefined;
+            done();
+        });
+        clientSocket.emit('createGame', gameSettings);
+    });
+
+    it('should receive pendingGameId on create', (done) => {
+        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
+        clientSocket.on('pendingGameId', (pendingId: string) => {
+            expect(pendingId).to.not.be.undefined;
+            done();
+        });
+        clientSocket.emit('createGame', gameSettings);
+    });
+
+    // it('should receive gameToken on joinGame', (done) => {
+    //     sinon.stub(newOnlineGameService, 'createPendingGame').get(() => {
+    //         return '1';
+    //     });
+    //     sinon.stub(newOnlineGameService, 'getPendingGames').get(() => {
+    //         return pendingGames;
+    //     });
+    //     let id = '';
+    //     let gameTokenPlayer1 = '';
+    //     const playerName = 'Allo';
+    //     const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
+    //     const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
+
+    //     clientSocket2.on('pendingGameId', (pendingId: string) => {
+    //         id = pendingId;
+    //         console.log(pendingId);
+    //         clientSocket.emit('joinGame', id, playerName);
+    //     });
+    //     clientSocket.on('gameJoined', (gameToken: string) => {
+    //         gameTokenPlayer1 = gameToken;
+    //     });
+    //     clientSocket2.on('gameJoined', (gameToken: string) => {
+    //         expect(gameTokenPlayer1).to.deep.equal(gameTokenPlayer1);
+    //         done();
+    //     });
+    //     clientSocket2.emit('createGame', gameSettings);
     // });
 });

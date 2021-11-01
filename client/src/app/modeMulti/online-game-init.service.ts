@@ -63,7 +63,6 @@ export class OnlineGameInitService {
         this.socket = io(environment.serverSocketUrl, { path: '/newGame' });
         this.socket.on('connect_error', () => {
             this.isDisconnected$.next(true);
-            console.log('Cant connect to server.');
         });
     }
 }

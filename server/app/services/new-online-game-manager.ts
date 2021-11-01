@@ -9,7 +9,7 @@ const createGame = 'createGame';
 const joinGame = 'joinGame';
 const gameJoined = 'gameJoined';
 const pendingGameId = 'pendingGameId';
-const disconnect = 'disconnect';
+const disconnect = 'disconnectSocket';
 
 export class NewOnlineGameSocketHandler {
     readonly ioServer: Server;
