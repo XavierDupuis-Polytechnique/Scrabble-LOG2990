@@ -124,7 +124,7 @@ describe('PendingGamesComponent', () => {
         component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
         component.joinGame();
         // expect(dialogStub).toHaveBeenCalled();
-        dialogRefStub.beforeClosed().subscribe((name) => {
+        dialogRefStub.beforeClosed().subscribe((name: string) => {
             expect(name).toBe('name');
         });
         dialogRefStub.close();
@@ -142,12 +142,10 @@ describe('PendingGamesComponent', () => {
         component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
         component.joinGame();
         // expect(dialogStub).toHaveBeenCalled();
-        let nameFromDialog;
         dialogRefStubWithoutName.beforeClosed().subscribe((name) => {
-            nameFromDialog = name;
+            expect(name).toBeUndefined();
         });
         dialogRefStubWithoutName.close();
-        expect(nameFromDialog).toBeUndefined();
     });
 
     it('should be an empty table ', () => {

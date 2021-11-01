@@ -10,21 +10,22 @@ const mockDialogRef = {
     close: jasmine.createSpy('close'),
 };
 
-const dialogRefStub = {
+const convertSoloDialogRefStub = {
     afterClosed: (bot: string) => {
         const botDifficulty = bot;
         return of(botDifficulty);
     },
     close: jasmine.createSpy('close').and.returnValue(() => {
+        mockDialogRef.close();
         return;
     }),
 };
 
-const dialogStub = { open: () => dialogRefStub };
-fdescribe('WaitingForPlayerComponent', () => {
+const dialogStub = { open: () => convertSoloDialogRefStub, close: jasmine.createSpy('close') };
+describe('WaitingForPlayerComponent', () => {
     let component: WaitingForPlayerComponent;
     let fixture: ComponentFixture<WaitingForPlayerComponent>;
-    let onlineSocketHandlerSpy: jasmine.SpyObj<'OnlineGameInitService'>;
+    let onlineSocketHandlerSpy: jasmine.SpyObj<OnlineGameInitService>;
 
     beforeEach(async () => {
         onlineSocketHandlerSpy = jasmine.createSpyObj(
@@ -61,7 +62,10 @@ fdescribe('WaitingForPlayerComponent', () => {
         spyOn(component, 'cancel');
         cancelButton.click();
         expect(component.cancel).toHaveBeenCalled();
-        expect(onlineSocketHandlerSpy).toHaveBeenCalled();
+    });
+    it('should disconnect socket on cancel', () => {
+        component.cancel();
+        expect(onlineSocketHandlerSpy.disconnect).toHaveBeenCalled();
     });
 
     it('converToSolo should call convertToSolo', () => {
@@ -72,14 +76,31 @@ fdescribe('WaitingForPlayerComponent', () => {
         expect(component.convertToModeSolo).toHaveBeenCalled();
     });
 
-    it('converToSolo should open convertToSolo dialog', () => {
+    it('converToSolo should open convertToSolo dialog and get bot difficulty', () => {
         const botDifficulty = 'easy';
         component.convertToModeSolo();
         let botDifficultyFromDialog: string;
-        dialogRefStub.afterClosed(botDifficulty).subscribe((botDifficultyResult) => {
+        convertSoloDialogRefStub.afterClosed(botDifficulty).subscribe((botDifficultyResult) => {
             botDifficultyFromDialog = botDifficultyResult;
             expect(botDifficultyFromDialog).toEqual(botDifficulty);
         });
-        dialogRefStub.close();
+        convertSoloDialogRefStub.close();
+        expect(mockDialogRef.close).toHaveBeenCalled();
+    });
+
+    it('isSoloStrated should be true', () => {
+        component.convertToModeSolo();
+        expect(component.isSoloStarted).toBeTrue();
+    });
+
+    it('converToSolo with no bot difficulty', () => {
+        const botDifficulty = undefined as unknown;
+        component.convertToModeSolo();
+        let botDifficultyFromDialog: string;
+        convertSoloDialogRefStub.afterClosed(botDifficulty as string).subscribe((botDifficultyResult) => {
+            botDifficultyFromDialog = botDifficultyResult;
+            expect(botDifficultyFromDialog).toBeUndefined();
+        });
+        convertSoloDialogRefStub.close();
     });
 });
