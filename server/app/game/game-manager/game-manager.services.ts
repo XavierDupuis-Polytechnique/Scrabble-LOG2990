@@ -131,13 +131,4 @@ export class GameManagerService {
         const gameStateToken: GameStateToken = { gameToken, gameState };
         this.newGameStateSubject.next(gameStateToken);
     }
-
-    // private addPlayerToLinkedPlayers(playerName: string, gameToken: string) {
-    //     const playerNames = this.linkedPlayerNames.get(gameToken);
-    //     if (playerNames === undefined) {
-    //         throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
-    //     }
-    //     playerNames.push(playerName);
-    //     // this.numberOfPlayers.set(gameToken, numberOfPlayers);
-    // }
 }
