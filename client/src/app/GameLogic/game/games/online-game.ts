@@ -1,15 +1,19 @@
 /* eslint-disable max-classes-per-file */
 import { Action } from '@app/GameLogic/actions/action';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { OnlineAction } from '@app/GameLogic/actions/online-action-compiler.interface';
 import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
-import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { EMPTY_CHAR, JOKER_CHAR, NOT_FOUND, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
+import { isCharUpperCase } from '@app/GameLogic/utils';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { Subscription } from 'rxjs';
 
@@ -25,6 +29,7 @@ export class OnlineGame {
     isEndOfGame: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
+    private letterCreator = new LetterCreator();
 
     private gameState$$: Subscription;
     private timerControls$$: Subscription;
@@ -103,6 +108,58 @@ export class OnlineGame {
             throw Error('The action received is not supported by the compiler');
         }
         this.sendAction(onlineAction);
+
+        if (action instanceof PlaceLetter) {
+            this.placeTemporaryLetter(action);
+        }
+    }
+
+    private placeTemporaryLetter(action: PlaceLetter) {
+        const startX = action.placement.x;
+        const startY = action.placement.y;
+        const direction = action.placement.direction;
+        const word = action.word;
+        const grid = this.boardService.board.grid;
+        const player = action.player;
+        for (let wordIndex = 0; wordIndex < word.length; wordIndex++) {
+            let char: string;
+            let x = startX;
+            let y = startY;
+            if (direction === Direction.Horizontal) {
+                x = startX + wordIndex;
+                char = grid[y][x].letterObject.char;
+            } else {
+                y = startY + wordIndex;
+                char = grid[y][x].letterObject.char;
+            }
+
+            if (char === EMPTY_CHAR) {
+                const charToCreate = word[wordIndex];
+                const newLetter = this.createTmpLetter(charToCreate);
+                grid[y][x].letterObject = newLetter;
+                if (isCharUpperCase(charToCreate)) {
+                    this.removeLetter(player.letterRack, JOKER_CHAR);
+                }
+                this.removeLetter(player.letterRack, newLetter.char);
+            }
+        }
+    }
+
+    private createTmpLetter(char: string) {
+        const charToCreate = char.toLowerCase();
+        if (isCharUpperCase(char)) {
+            return this.letterCreator.createBlankLetter(charToCreate);
+        }
+        return this.letterCreator.createLetter(charToCreate);
+    }
+
+    private removeLetter(letterRack: Letter[], newLetter: string) {
+        const index = letterRack.findIndex((letter) => {
+            return letter.char === newLetter;
+        });
+        if (index !== NOT_FOUND) {
+            letterRack.splice(index, 1);
+        }
     }
 
     private sendAction(onlineAction: OnlineAction) {
@@ -132,6 +189,8 @@ export class OnlineGame {
     }
 
     private updateActivePlayer(gameState: GameState) {
+        console.log('update active player', gameState);
+        console.log(this.playersWithIndex);
         const activePlayerIndex = gameState.activePlayerIndex;
         const activePlayerName = gameState.players[activePlayerIndex].name;
         const playerWithIndex = this.playersWithIndex.get(activePlayerName);
@@ -203,6 +262,7 @@ export class OnlineGame {
         this.winnerNames = gameState.winnerIndex.map((index: number) => {
             return gameState.players[index].name;
         });
+        // TODO ?? comment flag
         // this.winnerIndex = gameState.winnerIndex;
     }
 }
