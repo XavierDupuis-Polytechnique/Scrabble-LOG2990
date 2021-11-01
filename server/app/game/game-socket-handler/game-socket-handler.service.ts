@@ -14,7 +14,7 @@ export class GameSocketsHandler {
             path: '/game',
             cors: { origin: '*', methods: ['GET', 'POST'] },
             // TODO : forfeit after 5 second timeout
-            // pingTimeout: 5000,
+            pingTimeout: 5000,
         });
         this.gameManager.newGameStates$.subscribe((gameStateToken: GameStateToken) => {
             console.log('gamestate token', gameStateToken);

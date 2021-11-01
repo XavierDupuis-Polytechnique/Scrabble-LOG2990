@@ -1,5 +1,7 @@
 import { NEW_GAME_TIMEOUT } from '@app/constants';
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
+import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
@@ -7,6 +9,7 @@ import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
+import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
@@ -23,8 +26,8 @@ interface PlayerRef {
 @Service()
 export class GameManagerService {
     activeGames = new Map<string, ServerGame>();
-    activePlayers = new Map<string, PlayerRef>();
-    linkedPlayerNames = new Map<string, string[]>();
+    activePlayers = new Map<string, PlayerRef>(); // gameToken => PlayerRef[]
+    linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
     private gameCreator: GameCreator;
 
     private newGameStateSubject = new Subject<GameStateToken>();
@@ -42,6 +45,7 @@ export class GameManagerService {
         private actionCompiler: ActionCompilerService,
         private gameCompiler: GameCompiler,
         private timerController: TimerController,
+        private gameActionNotifier: GameActionNotifierService,
     ) {
         this.gameCreator = new GameCreator(
             this.pointCalculator,
@@ -55,7 +59,7 @@ export class GameManagerService {
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
         const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
-        this.linkedPlayerNames.set(gameToken, []);
+        this.linkedClients.set(gameToken, []);
         console.log('active games', this.activeGames);
         this.startSelfDestructTimer(gameToken);
     }
@@ -63,12 +67,12 @@ export class GameManagerService {
     startSelfDestructTimer(gameToken: string) {
         setTimeout(() => {
             const serverGame = this.activeGames.get(gameToken);
-            if (this.linkedPlayerNames.get(gameToken)?.length !== 2) {
+            if (this.linkedClients.get(gameToken)?.length !== 2) {
                 if (serverGame) {
                     this.endGame(gameToken, serverGame);
                 }
                 this.activeGames.delete(gameToken);
-                this.linkedPlayerNames.delete(gameToken);
+                // this.linkedClients.delete(gameToken); // TODO Delete linkedClient when game is over
             }
         }, NEW_GAME_TIMEOUT);
     }
@@ -87,20 +91,21 @@ export class GameManagerService {
             throw Error(`Player ${playerName} not created in ${gameToken}`);
         }
 
-        const linkedNames = this.linkedPlayerNames.get(gameToken);
-        if (linkedNames === undefined) {
+        const linkedClientsInGame = this.linkedClients.get(gameToken);
+        if (linkedClientsInGame === undefined) {
             throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
         }
-
-        if (linkedNames.includes(playerName)) {
+        const clientFound = linkedClientsInGame.find((client: BindedSocket) => client.name === playerName);
+        if (clientFound !== undefined) {
             throw Error(`Can't add player, someone else is already linked to ${gameToken} with ${playerName}`);
         }
 
         const playerRef = { gameToken, player: user };
         this.activePlayers.set(playerId, playerRef);
-        linkedNames.push(playerName);
+        const bindedSocket: BindedSocket = { socketID: playerId, name: playerName };
+        linkedClientsInGame.push(bindedSocket);
         console.log('active players', this.activePlayers);
-        if (linkedNames.length === 2) {
+        if (linkedClientsInGame.length === 2) {
             game.start();
         }
     }
@@ -113,6 +118,8 @@ export class GameManagerService {
         const player = playerRef.player;
         try {
             const compiledAction = this.actionCompiler.translate(action, player);
+            const gameToken = playerRef.gameToken;
+            this.notifyAction(compiledAction, gameToken);
             player.play(compiledAction);
             console.log(`${player.name} played ${action.type}.`);
         } catch (e) {
@@ -137,6 +144,14 @@ export class GameManagerService {
         console.log(`Player ${playerId} left the game`);
         console.log('Current active players', this.activePlayers);
         console.log('Current active games', this.activeGames);
+    }
+
+    private notifyAction(action: Action, gameToken: string) {
+        const clientsInGame = this.linkedClients.get(gameToken);
+        if (!clientsInGame) {
+            throw Error(`GameToken ${gameToken} is not in active game`);
+        }
+        this.gameActionNotifier.notify(action, clientsInGame, gameToken);
     }
 
     private endGame(gameToken: string, game: ServerGame) {
