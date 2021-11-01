@@ -27,7 +27,12 @@ export class ServerGameController {
             if (gameId) {
                 const game = this.gameManager.activeGames.get(gameId);
                 if (game) {
-                    res.json(game?.letterBag.gameLetters.length);
+                    const letterOccurence = game.letterBag.countLetters();
+                    const obj = {};
+                    letterOccurence.forEach((value, key) => {
+                        obj[key] = value;
+                    });
+                    res.json(obj);
                 } else res.sendStatus(StatusCodes.NOT_FOUND);
             } else res.sendStatus(StatusCodes.BAD_REQUEST);
         });
