@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, IterableDiffers, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, HostListener, IterableDiffers, Output, ViewChild } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
@@ -26,24 +26,36 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     maxFontSize = MAX_FONT_SIZE;
     fontSize: number;
     canvasDrawer: CanvasDrawer;
-
+    canvasContext: CanvasRenderingContext2D;
+    canvasElement: HTMLElement | null;
     constructor(private boardService: BoardService, private itDiffer: IterableDiffers, private inputController: UIInputControllerService) {
         this.board = this.boardService.board;
         this.fontSize = (this.minFontSize + this.maxFontSize) / 2;
     }
+
+    @HostListener('window:resize', ['$event'])
+    onResize() {
+        this.setupCanvasDrawer();
+    }
+
     ngAfterViewInit() {
         (this.scrabbleBoard.nativeElement as HTMLParagraphElement).style.fontSize = `${this.fontSize}px`;
-        const canvasContext = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        const canvasElement = document.getElementById('canvas');
-        if (canvasElement) {
-            canvasElement.setAttribute('width', canvasElement.clientWidth.toString());
-            canvasElement.setAttribute('height', canvasElement.clientWidth.toString());
-
-            this.canvasDrawer = new CanvasDrawer(canvasContext, canvasElement.clientWidth, canvasElement.clientHeight);
+        this.canvasContext = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.canvasElement = document.getElementById('canvas');
+        if (this.canvasElement) {
+            this.setupCanvasDrawer();
         }
         this.canvasDrawer.drawGrid(this.board, this.fontSize);
     }
 
+    setupCanvasDrawer() {
+        if (this.canvasElement) {
+            this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
+            this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
+
+            this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
+        }
+    }
     ngDoCheck() {
         const changes = this.itDiffer.find([]).create(undefined).diff(this.board.grid);
         if (changes && this.canvasDrawer) {
