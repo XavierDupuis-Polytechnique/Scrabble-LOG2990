@@ -62,7 +62,7 @@ describe('UIPlace', () => {
             { char: 'G', value: 0 },
         ];
         info = TestBed.inject(GameInfoService);
-        info.players = [player];
+        info.players = [player, new User('opponent')];
         info.user = player;
         action = new UIPlace(info, pointCalculator, wordSearcher, boardService);
     });
@@ -412,5 +412,19 @@ describe('UIPlace', () => {
     it('should not do anything when receiving a MouseRoll', () => {
         action.receiveRoll();
         expect().nothing();
+    });
+
+    it('should not allow a player to place letters outside of their turn', () => {
+        player.letterRack[0].char = 'A';
+        const x = MIDDLE_OF_BOARD;
+        const y = MIDDLE_OF_BOARD;
+        action.receiveLeftClick({ x, y });
+        spyOnProperty(info, 'activePlayer').and.returnValue(info.players[1]);
+        const letter = player.letterRack[0].char.toLowerCase();
+        action.receiveKey(letter);
+        expect(action.orderedIndexes.length).toBe(0);
+        expect(action.concernedIndexes.size).toBe(0);
+        expect(action.pointerPosition?.x).toBe(x);
+        expect(action.pointerPosition?.y).toBe(y);
     });
 });
