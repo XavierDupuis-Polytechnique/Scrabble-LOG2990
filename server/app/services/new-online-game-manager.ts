@@ -12,7 +12,7 @@ const pendingGameId = 'pendingGameId';
 const disconnect = 'disconnect';
 
 export class NewOnlineGameSocketHandler {
-    private ioServer: Server;
+    readonly ioServer: Server;
 
     constructor(server: http.Server, private newOnlineGameService: NewOnlineGameService) {
         this.ioServer = new Server(server, {
@@ -51,6 +51,7 @@ export class NewOnlineGameSocketHandler {
 
             socket.on(disconnect, () => {
                 this.onDisconnect(gameId);
+                socket.emit(disconnect);
                 this.emitPendingGamesToAll();
                 console.log('Disconnected: ', socket.id);
             });
