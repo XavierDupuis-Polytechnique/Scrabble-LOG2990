@@ -77,8 +77,7 @@ export class GameManagerService {
             throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
         }
 
-        const isPlayerAlreadyLinked = linkedNames.find((name: string) => playerName === name) !== undefined;
-        if (isPlayerAlreadyLinked) {
+        if (linkedNames.includes(playerName)) {
             throw Error(`Can't add player, someone else is already linked to ${gameToken} with ${playerName}`);
         }
 

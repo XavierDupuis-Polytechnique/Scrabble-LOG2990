@@ -26,8 +26,8 @@ export class OnlineGame {
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
 
-    private gameState$$ : Subscription;
-    private timerControls$$ : Subscription;
+    private gameState$$: Subscription;
+    private timerControls$$: Subscription;
 
     constructor(
         public timePerTurn: number,
@@ -40,6 +40,7 @@ export class OnlineGame {
         this.boardService.board = new Board();
         this.userName = userName;
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
+            console.log('gameState', gameState);
             this.receiveState(gameState);
         });
 
@@ -135,7 +136,6 @@ export class OnlineGame {
         const activePlayerName = gameState.players[activePlayerIndex].name;
         const playerWithIndex = this.playersWithIndex.get(activePlayerName);
         if (playerWithIndex === undefined) {
-            console.log('CRASH', this.playersWithIndex, gameState);
             throw Error('Players received with game state are not matching with those of the first turn');
         }
         this.activePlayerIndex = playerWithIndex.index;
