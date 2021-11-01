@@ -23,7 +23,7 @@ interface PlayerRef {
 export class GameManagerService {
     activeGames = new Map<string, ServerGame>();
     activePlayers = new Map<string, PlayerRef>();
-    numberOfPlayers = new Map<string, number>();
+    linkedPlayerNames = new Map<string, string[]>();
     private gameCreator: GameCreator;
 
     private newGameStateSubject = new Subject<GameStateToken>();
@@ -54,7 +54,7 @@ export class GameManagerService {
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
         const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
-        this.numberOfPlayers.set(gameToken, 0);
+        this.linkedPlayerNames.set(gameToken, []);
         console.log('active games', this.activeGames);
     }
 
@@ -65,16 +65,28 @@ export class GameManagerService {
         if (!game) {
             throw Error(`GameToken ${gameToken} is not in active game`);
         }
+
         const playerName = userAuth.playerName;
         const user = game.players.find((player: Player) => player.name === playerName);
         if (!user) {
             throw Error(`Player ${playerName} not created in ${gameToken}`);
         }
+
+        const linkedNames = this.linkedPlayerNames.get(gameToken);
+        if (linkedNames === undefined) {
+            throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
+        }
+
+        const isPlayerAlreadyLinked = linkedNames.find((name: string) => playerName === name) !== undefined;
+        if (isPlayerAlreadyLinked) {
+            throw Error(`Can't add player, someone else is already linked to ${gameToken} with ${playerName}`);
+        }
+
         const playerRef = { gameToken, player: user };
         this.activePlayers.set(playerId, playerRef);
-        this.increaseNumberOfPlayers(gameToken);
+        linkedNames.push(playerName);
         console.log('active players', this.activePlayers);
-        if (this.numberOfPlayers.get(gameToken) === 2) {
+        if (linkedNames.length === 2) {
             game.start();
         }
     }
@@ -120,12 +132,12 @@ export class GameManagerService {
         this.newGameStateSubject.next(gameStateToken);
     }
 
-    private increaseNumberOfPlayers(gameToken: string) {
-        let numberOfPlayers = this.numberOfPlayers.get(gameToken);
-        if (numberOfPlayers === undefined) {
-            throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
-        }
-        numberOfPlayers += 1;
-        this.numberOfPlayers.set(gameToken, numberOfPlayers);
-    }
+    // private addPlayerToLinkedPlayers(playerName: string, gameToken: string) {
+    //     const playerNames = this.linkedPlayerNames.get(gameToken);
+    //     if (playerNames === undefined) {
+    //         throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
+    //     }
+    //     playerNames.push(playerName);
+    //     // this.numberOfPlayers.set(gameToken, numberOfPlayers);
+    // }
 }
