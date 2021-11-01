@@ -7,7 +7,7 @@ import { WordPlacement } from '@app/GameLogic/actions/ui-actions/word-placement.
 import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
-import { Player } from '@app/GameLogic/player/player';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { convertToProperLetter, isStringALowerCaseLetter, isStringAnUpperCaseLetter } from '@app/GameLogic/utils';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
@@ -20,7 +20,7 @@ export class UIPlace implements UIAction {
     pointerPosition: { x: number; y: number } | null = null;
 
     constructor(
-        private player: Player,
+        private info: GameInfoService,
         private pointCalculator: PointCalculatorService,
         private wordSearcher: WordSearcher,
         private boardService: BoardService,
@@ -50,6 +50,9 @@ export class UIPlace implements UIAction {
     }
 
     receiveKey(key: string): void {
+        if (this.info.activePlayer !== this.info.user) {
+            return;
+        }
         switch (key) {
             case BACKSPACE:
                 this.moveBackwards();
@@ -69,7 +72,7 @@ export class UIPlace implements UIAction {
     create(): Action {
         const wordPlacement = this.getWordFromBoard();
         const createdAction = new PlaceLetter(
-            this.player,
+            this.info.user,
             wordPlacement.word,
             { direction: this.direction, x: wordPlacement.x, y: wordPlacement.y },
             this.pointCalculator,
@@ -166,7 +169,7 @@ export class UIPlace implements UIAction {
         this.concernedIndexes.add(possibleLetterIndex);
         this.orderedIndexes.push(newLetterPlacement);
         const concernedTile = this.boardService.board.grid[this.pointerPosition.y][this.pointerPosition.x];
-        const usedChar = this.player.letterRack[possibleLetterIndex].char;
+        const usedChar = this.info.user.letterRack[possibleLetterIndex].char;
         if (usedChar === JOKER_CHAR) {
             concernedTile.letterObject = this.letterCreator.createBlankLetter(key);
             concernedTile.letterObject.isTemp = true;
@@ -217,8 +220,8 @@ export class UIPlace implements UIAction {
     }
 
     private findUnusedLetterIndex(char: string): number | null {
-        for (let index = 0; index < this.player.letterRack.length; index++) {
-            const rackLetter = this.player.letterRack[index];
+        for (let index = 0; index < this.info.user.letterRack.length; index++) {
+            const rackLetter = this.info.user.letterRack[index];
             if (rackLetter.char.toLowerCase() === char && !this.concernedIndexes.has(index)) {
                 return index;
             }

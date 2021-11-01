@@ -176,7 +176,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'keyboard';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -194,7 +194,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -212,7 +212,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'keyboard';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -230,7 +230,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -248,7 +248,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'attendant';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -266,7 +266,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -283,7 +283,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -301,7 +301,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'houssiner';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -319,7 +319,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -337,7 +337,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -355,7 +355,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 
@@ -373,7 +373,7 @@ describe('DictionaryService', () => {
         ];
         const expected = 'false';
 
-        const result: string = dictionaryService.regexCheck(testWord, testLine, letters);
+        const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
     });
 });
