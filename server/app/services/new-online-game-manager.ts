@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { OnlineGameSettingsUI } from '@app/game-manager/game-settings-multi.interface';
 import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
 import * as http from 'http';

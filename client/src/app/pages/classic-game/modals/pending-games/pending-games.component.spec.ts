@@ -63,8 +63,6 @@ describe('PendingGamesComponent', () => {
             (
                 Object.getOwnPropertyDescriptor(onlineSocketHandlerSpy, 'pendingGames$')?.get as jasmine.Spy<() => Observable<OnlineGameSettings[]>>
             ).and.returnValue(testPendingGames$);
-
-            // matDialog = TestBed.inject(MatDialog);
         }),
     );
 

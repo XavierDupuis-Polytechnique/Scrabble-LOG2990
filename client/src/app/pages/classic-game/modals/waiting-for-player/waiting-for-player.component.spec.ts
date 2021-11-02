@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { of } from 'rxjs';
 import { WaitingForPlayerComponent } from './waiting-for-player.component';
 
 const mockDialogRef = {
@@ -12,9 +13,7 @@ const mockDialogRef = {
 const convertSoloDialogRefStub = {
     afterClosed: (bot: string) => {
         const botDifficulty = bot;
-        return {
-            subscribe: (func: (result: string) => void) => func(botDifficulty),
-        };
+        return of(botDifficulty);
     },
     close: jasmine.createSpy('close').and.returnValue(() => {
         mockDialogRef.close();
@@ -31,7 +30,7 @@ describe('WaitingForPlayerComponent', () => {
     beforeEach(async () => {
         onlineSocketHandlerSpy = jasmine.createSpyObj(
             'OnlineGameInitService',
-            ['createGameMulti', 'listenForPendingGames', 'disconnect', 'joinPendingGames'],
+            ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames'],
             ['pendingGames$'],
         );
         await TestBed.configureTestingModule({
@@ -85,13 +84,6 @@ describe('WaitingForPlayerComponent', () => {
             botDifficultyFromDialog = botDifficultyResult;
             expect(botDifficultyFromDialog).toEqual(botDifficulty);
         });
-        convertSoloDialogRefStub.close();
-        expect(mockDialogRef.close).toHaveBeenCalled();
-    });
-
-    it('isSoloStrated should be true', () => {
-        component.convertToModeSolo();
-        expect(component.isSoloStarted).toBeTrue();
     });
 
     it('converToSolo with no bot difficulty', () => {

@@ -5,7 +5,7 @@ import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { first, take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 
-fdescribe('OnlineGameInitService', () => {
+describe('OnlineGameInitService', () => {
     let service: OnlineGameInitService;
     let createSocketFunction: () => Socket;
 
