@@ -119,6 +119,10 @@ export class GameInfoService {
     }
 
     get gameId(): string {
-        return this.onlineGame.gameToken;
+        if (this.onlineGame) {
+            return this.onlineGame.gameToken;
+        } else {
+            return '';
+        }
     }
 }
