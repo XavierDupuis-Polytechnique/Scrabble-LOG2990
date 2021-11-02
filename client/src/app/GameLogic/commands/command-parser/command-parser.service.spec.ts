@@ -86,20 +86,20 @@ describe('CommandParser', () => {
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError3);
         });
-        service['placeLetterFormatter'](['a1v', EMPTY_CHAR]);
+        service['formatPlaceLetter'](['a1v', EMPTY_CHAR]);
     });
 
     it('should throw ' + syntaxError3, () => {
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError3);
         });
-        service['placeLetterFormatter'](['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
+        service['formatPlaceLetter'](['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
     });
 
     it('testArg should be equal to expectedArg', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
-        expect(service['placeLetterFormatter'](testArg)).toEqual(expectedArg);
+        expect(service['formatPlaceLetter'](testArg)).toEqual(expectedArg);
     });
 
     it('should throw ' + syntaxError1, () => {

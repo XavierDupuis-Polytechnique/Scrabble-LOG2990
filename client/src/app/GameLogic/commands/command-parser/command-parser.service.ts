@@ -6,7 +6,7 @@ import {
     CHARACTER_V,
     MAX_PLACE_LETTER_ARG_SIZE,
     MIN_PLACE_LETTER_ARG_SIZE,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/GameLogic/constants';
 import { Observable, Subject } from 'rxjs';
 
@@ -56,7 +56,7 @@ export class CommandParserService {
             let args: string[] | undefined = toVerify.slice(1, toVerify.length);
 
             if (commandType === CommandType.Place) {
-                args = this.placeLetterFormatter(args);
+                args = this.formatPlaceLetter(args);
                 if (args === undefined) {
                     return undefined;
                 }
@@ -70,7 +70,7 @@ export class CommandParserService {
         return undefined;
     }
 
-    private placeLetterFormatter(placeLetterParameters: string[]): string[] | undefined {
+    private formatPlaceLetter(placeLetterParameters: string[]): string[] | undefined {
         const invalidParameters = this.errorSyntax + ': les paramètres sont invalides';
         if (placeLetterParameters.length === 0) {
             this.sendErrorMessage(invalidParameters);
@@ -82,11 +82,11 @@ export class CommandParserService {
         }
         if (placeLetterParameters !== undefined && placeLetterParameters.length === 2) {
             const row = placeLetterParameters[0].charCodeAt(0);
-            const col = this.colArgVerifier(placeLetterParameters[0]);
+            const col = this.verifyColumns(placeLetterParameters[0]);
             const direction = placeLetterParameters[0].charCodeAt(placeLetterParameters[0].length - 1);
             const word = placeLetterParameters[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
-            if (!this.placeLetterArgVerifier(row, col, direction, word)) {
+            if (!this.verifyPlaceLetterArgParameters(row, col, direction, word)) {
                 return undefined;
             }
 
@@ -102,7 +102,7 @@ export class CommandParserService {
         return placeLetterParameters;
     }
 
-    private placeLetterArgVerifier(row: number, col: number | undefined, direction: number, word: string): boolean {
+    private verifyPlaceLetterArgParameters(row: number, col: number | undefined, direction: number, word: string): boolean {
         if (row === undefined || row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
             this.sendErrorMessage(this.errorSyntax + ': ligne invalide');
             return false;
@@ -122,12 +122,12 @@ export class CommandParserService {
         return true;
     }
 
-    private colArgVerifier(columns: string): number | undefined {
+    private verifyColumns(columns: string): number | undefined {
         let col;
-        if (this.isNumeric(columns[1]) && this.isNumeric(columns[2]) && columns.length === MAX_PLACE_LETTER_ARG_SIZE) {
+        if (this.validColumnsFormat(columns)) {
             col = Number(columns[1] + columns[2]);
             return col;
-        } else if (this.isNumeric(columns[1]) && columns.length === MIN_PLACE_LETTER_ARG_SIZE) {
+        } else if (this.validColumnFormat(columns)) {
             col = Number(columns[1]);
             return col;
         }
@@ -142,6 +142,28 @@ export class CommandParserService {
         }
         if (word.length > RACK_LETTER_COUNT) {
             this.sendErrorMessage('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+            return false;
+        }
+        return true;
+    }
+    private validColumnsFormat(columns: string): boolean {
+        if (!this.isNumeric(columns[1])) {
+            return false;
+        }
+        if (!this.isNumeric(columns[2])) {
+            return false;
+        }
+        if (columns.length !== MAX_PLACE_LETTER_ARG_SIZE) {
+            return false;
+        }
+        return true;
+    }
+
+    private validColumnFormat(columns: string) {
+        if (!this.isNumeric(columns[1])) {
+            return false;
+        }
+        if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
             return false;
         }
         return true;
