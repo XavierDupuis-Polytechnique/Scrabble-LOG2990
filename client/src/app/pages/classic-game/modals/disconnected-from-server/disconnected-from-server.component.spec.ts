@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DisconnectedFromServerComponent } from './disconnected-from-server.component';
 
-
 describe('DisconnectedFromServerComponent', () => {
     let component: DisconnectedFromServerComponent;
     let fixture: ComponentFixture<DisconnectedFromServerComponent>;
