@@ -13,10 +13,11 @@ export class OnlineGameInitService {
     gameToken$ = new Subject<string>();
     isDisconnected$ = new Subject<boolean>();
     error$ = new Subject<string>();
-    private socket: Socket;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socket: Socket | any;
 
     connect() {
-        this.socket = io(environment.serverSocketUrl, { path: '/newGame' });
+        this.socket = this.connectToSocket();
         this.socket.on('connect_error', () => {
             this.isDisconnected$.next(true);
         });
@@ -39,7 +40,7 @@ export class OnlineGameInitService {
     }
 
     listenErrorMessage() {
-        this.socket.on('error', (errorContent) => {
+        this.socket.on('error', (errorContent: string) => {
             this.error$.next(errorContent);
         });
     }
@@ -60,17 +61,21 @@ export class OnlineGameInitService {
         this.socket.disconnect();
     }
 
-    private waitForSecondPlayer() {
+    waitForSecondPlayer() {
         this.socket.on('pendingGameId', (pendingGameid: string) => {
             this.pendingGameId$.next(pendingGameid);
         });
         this.listenForGameToken();
     }
 
-    private listenForGameToken() {
+    listenForGameToken() {
         this.socket.on('gameJoined', (gameToken: string) => {
             this.gameToken$.next(gameToken);
             this.disconnectSocket();
         });
+    }
+
+    connectToSocket() {
+        return io(environment.serverSocketUrl, { path: '/newGame' });
     }
 }

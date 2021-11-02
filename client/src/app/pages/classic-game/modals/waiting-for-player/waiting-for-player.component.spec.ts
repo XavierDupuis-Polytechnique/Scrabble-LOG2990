@@ -3,7 +3,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { of } from 'rxjs';
 import { WaitingForPlayerComponent } from './waiting-for-player.component';
 
 const mockDialogRef = {
@@ -13,7 +12,9 @@ const mockDialogRef = {
 const convertSoloDialogRefStub = {
     afterClosed: (bot: string) => {
         const botDifficulty = bot;
-        return of(botDifficulty);
+        return {
+            subscribe: (func: (result: string) => void) => func(botDifficulty),
+        };
     },
     close: jasmine.createSpy('close').and.returnValue(() => {
         mockDialogRef.close();
@@ -65,7 +66,7 @@ describe('WaitingForPlayerComponent', () => {
     });
     it('should disconnect socket on cancel', () => {
         component.cancel();
-        expect(onlineSocketHandlerSpy.disconnect).toHaveBeenCalled();
+        expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
     });
 
     it('converToSolo should call convertToSolo', () => {

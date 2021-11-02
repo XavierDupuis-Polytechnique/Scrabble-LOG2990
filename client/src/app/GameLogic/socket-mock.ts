@@ -33,6 +33,10 @@ export class SocketMock {
         return;
     }
 
+    get connected() {
+        return true;
+    }
+
     get disconnected() {
         return false;
     }
