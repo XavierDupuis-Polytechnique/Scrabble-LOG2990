@@ -51,6 +51,9 @@ export class GamePageComponent {
 
     get isItMyTurn() {
         try {
+            if (this.isEndOfGame) {
+                return !this.isEndOfGame;
+            }
             return this.info.user === this.info.activePlayer;
         } catch (e) {
             return false;
@@ -66,13 +69,12 @@ export class GamePageComponent {
     }
 
     get canPlace() {
-        return !this.isEndOfGame && this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
+        return this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
     }
 
     get canExchange() {
         return (
             this.isItMyTurn &&
-            !this.isEndOfGame &&
             this.inputController.activeAction instanceof UIExchange &&
             this.inputController.canBeExecuted &&
             this.info.numberOfLettersRemaining > RACK_LETTER_COUNT
@@ -80,9 +82,6 @@ export class GamePageComponent {
     }
 
     get canPass() {
-        if (this.isEndOfGame) {
-            return !this.isEndOfGame;
-        }
         return this.isItMyTurn;
     }
 
