@@ -29,6 +29,11 @@ export class GameManagerService {
         return this.newGameSubject;
     }
 
+    private disconnectedFromServerSubject = new Subject<void>();
+    get disconnectedFromServer$(): Observable<void> {
+        return this.disconnectedFromServerSubject;
+    }
+
     constructor(
         private botService: BotCreatorService,
         private timer: TimerService,
@@ -40,7 +45,11 @@ export class GameManagerService {
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
         private onlineActionCompiler: OnlineActionCompilerService,
-    ) {}
+    ) {
+        this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
+            this.disconnectedFromServerSubject.next();
+        });
+    }
 
     createGame(gameSettings: GameSettings): void {
         if (this.game) {
