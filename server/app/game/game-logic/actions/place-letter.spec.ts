@@ -1,3 +1,4 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
@@ -34,7 +35,7 @@ describe('PlaceLetter', () => {
     const randomBonus = false;
     const gameCompiler = new GameCompiler();
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService();
+    const messagesService = new SystemMessagesService(new GameActionNotifierService());
 
     beforeEach(() => {
         wordSearcherStub = createStubInstance(WordSearcher);

@@ -1,3 +1,4 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -33,7 +34,7 @@ describe('GameCreator', () => {
         gameCreator = new GameCreator(
             pointCalculatorStub,
             new GameCompiler(),
-            new SystemMessagesService(),
+            new SystemMessagesService(new GameActionNotifierService()),
             newGameStateSubject,
             new TimerController(),
         );

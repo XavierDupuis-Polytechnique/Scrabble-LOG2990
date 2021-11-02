@@ -1,3 +1,4 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
@@ -19,7 +20,7 @@ describe('ExchangeLetter', () => {
     const pointCalculator = new PointCalculatorService();
     const gameCompiler = new GameCompiler();
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService();
+    const messagesService = new SystemMessagesService(new GameActionNotifierService());
 
     beforeEach(() => {
         game = new ServerGame(

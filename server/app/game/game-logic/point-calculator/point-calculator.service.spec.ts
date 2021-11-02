@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
@@ -46,7 +47,7 @@ describe('PointCalculatorService', () => {
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
     const timerController: TimerController = new TimerController();
     const gameCompiler: GameCompiler = new GameCompiler();
-    const messagesService: SystemMessagesService = new SystemMessagesService();
+    const messagesService: SystemMessagesService = new SystemMessagesService(new GameActionNotifierService());
     let newGameStateSubject: Subject<GameStateToken>;
 
     beforeEach(() => {

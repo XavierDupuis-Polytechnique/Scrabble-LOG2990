@@ -1,3 +1,4 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
@@ -17,7 +18,7 @@ describe('PassTurn', () => {
     const pointCalculator = new PointCalculatorService();
     const gameCompiler = new GameCompiler();
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService();
+    const messagesService = new SystemMessagesService(new GameActionNotifierService());
 
     beforeEach(() => {
         game = new ServerGame(
