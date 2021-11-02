@@ -188,8 +188,6 @@ export class OnlineGame {
     }
 
     private updateActivePlayer(gameState: GameState) {
-        console.log('update active player', gameState);
-        console.log(this.playersWithIndex);
         const activePlayerIndex = gameState.activePlayerIndex;
         const activePlayerName = gameState.players[activePlayerIndex].name;
         const playerWithIndex = this.playersWithIndex.get(activePlayerName);

@@ -59,7 +59,6 @@ export class GameManagerService {
         const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
-        console.log('active games', this.activeGames);
         this.startSelfDestructTimer(gameToken);
     }
 
@@ -78,7 +77,6 @@ export class GameManagerService {
 
     addPlayerToGame(playerId: string, userAuth: UserAuth) {
         const gameToken = userAuth.gameToken;
-        console.log('User Auth-GameToken:', userAuth.gameToken);
         const game = this.activeGames.get(gameToken);
         if (!game) {
             throw Error(`GameToken ${gameToken} is not in active game`);
@@ -103,7 +101,6 @@ export class GameManagerService {
         this.activePlayers.set(playerId, playerRef);
         const bindedSocket: BindedSocket = { socketID: playerId, name: playerName };
         linkedClientsInGame.push(bindedSocket);
-        console.log('active players', this.activePlayers);
         if (linkedClientsInGame.length === 2) {
             game.start();
         }
@@ -120,10 +117,8 @@ export class GameManagerService {
             const gameToken = playerRef.gameToken;
             this.notifyAction(compiledAction, gameToken);
             player.play(compiledAction);
-            console.log(`${player.name} played ${action.type}.`);
-        } catch (e) {
-            console.log(`Server couldnt translate ${action.type} for ${player.name}`);
-        }
+            // eslint-disable-next-line no-empty
+        } catch (e) {}
     }
 
     removePlayerFromGame(playerId: string) {
@@ -140,9 +135,6 @@ export class GameManagerService {
         }
         this.endForfeitedGame(game, playerRef.player.name);
         this.activeGames.delete(gameToken);
-        console.log(`Player ${playerId} left the game`);
-        console.log('Current active players', this.activePlayers);
-        console.log('Current active games', this.activeGames);
     }
 
     private notifyAction(action: Action, gameToken: string) {

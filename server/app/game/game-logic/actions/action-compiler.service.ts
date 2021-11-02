@@ -24,7 +24,6 @@ export class ActionCompilerService {
                     throw Error('Argument of Action Invalid. Cant compile.');
                 }
                 const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters.split(''));
-                console.log(letters, ' became ', lettersToExchange);
                 this.letterRackUpdateValidator(command, player);
                 return new ExchangeLetter(player, lettersToExchange);
             }

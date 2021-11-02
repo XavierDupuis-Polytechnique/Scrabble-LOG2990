@@ -1,5 +1,6 @@
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
+import { DEFAULT_TIME_PER_TURN } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -24,7 +25,7 @@ describe('PassTurn', () => {
         game = new ServerGame(
             new TimerController(),
             randomBonus,
-            60000,
+            DEFAULT_TIME_PER_TURN,
             'default_gameToken',
             pointCalculator,
             gameCompiler,

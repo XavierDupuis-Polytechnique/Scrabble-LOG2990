@@ -60,12 +60,10 @@ export class GameSocketHandlerService {
         });
 
         this.socket.on('connect_error', () => {
-            console.log('Cant connect to server.');
             this.disconnectedFromServerSubject.next();
             // this.socket.disconnect();
         });
         this.socket.on('disconnected', () => {
-            console.log('Server disconnected');
             this.disconnectedFromServerSubject.next();
             // this.socket.disconnect();
         });

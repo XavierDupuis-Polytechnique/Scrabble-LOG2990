@@ -3,6 +3,7 @@ import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Tile } from '@app/game/game-logic/board/tile';
+import { DEFAULT_TIME_PER_TURN } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
@@ -50,7 +51,7 @@ describe('PlaceLetter', () => {
         game = new ServerGame(
             new TimerController(),
             randomBonus,
-            60000,
+            DEFAULT_TIME_PER_TURN,
             'default_gameToken',
             pointCalculatorStub,
             gameCompiler,

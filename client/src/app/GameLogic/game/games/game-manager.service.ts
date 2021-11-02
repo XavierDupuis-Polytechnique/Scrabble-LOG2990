@@ -74,7 +74,6 @@ export class GameManagerService {
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
         // TODO need to stop online game if game started
         if (this.game || this.onlineGame) {
-            console.log('stop game');
             this.stopGame();
         }
         if (!gameSettings.opponentName) {
@@ -93,7 +92,6 @@ export class GameManagerService {
         this.info.receiveOnlineGame(this.onlineGame);
 
         this.onlineChat.joinChatRoomWithUser(userAuth.gameToken);
-        console.log('joinOnline game', userAuth);
         this.gameSocketHandler.joinGame(userAuth);
     }
 
@@ -110,8 +108,6 @@ export class GameManagerService {
     }
 
     stopGame(): void {
-        console.log('stop game');
-        // TODO implement for online game
         if (this.game) {
             this.stopSoloGame();
         }

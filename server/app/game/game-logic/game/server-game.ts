@@ -43,7 +43,6 @@ export class ServerGame {
     }
 
     start(): void {
-        console.log('Starting a game');
         if (this.players.length < 2) {
             throw Error('Game started with less than 2 players');
         }
@@ -54,7 +53,6 @@ export class ServerGame {
     }
 
     stop() {
-        console.log(`game ${this.gameToken} stopped`);
         this.isEndedValue = true;
         this.isEnded$.next(undefined);
     }
@@ -67,7 +65,6 @@ export class ServerGame {
         if (this.isEnded) {
             return true;
         }
-        console.log('Consecutive pass ', this.consecutivePass);
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
                 if (player.isLetterRackEmpty) {
@@ -75,7 +72,6 @@ export class ServerGame {
                 }
             }
         }
-        console.log(this.consecutivePass >= ServerGame.maxConsecutivePass);
         if (this.consecutivePass >= ServerGame.maxConsecutivePass) {
             return true;
         }
@@ -87,7 +83,6 @@ export class ServerGame {
     }
 
     onEndOfGame() {
-        console.log('END GAME');
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
         this.emitGameState();
@@ -107,7 +102,6 @@ export class ServerGame {
         if (this.winnerByForfeitedIndex !== undefined) {
             const winner = this.players[this.winnerByForfeitedIndex];
             winners = [winner];
-            console.log(`Player ${winners[0].name} won by forfeit`);
             return winners;
         }
 
@@ -127,9 +121,6 @@ export class ServerGame {
         this.winnerByForfeitedIndex = this.players.findIndex((player) => {
             return player.name !== playerName;
         });
-        console.log(`Player ${this.players[0].name} 0`);
-        console.log(`Player ${this.players[1].name} 1`);
-        console.log(`Player ${this.winnerByForfeitedIndex} forfeit`);
     }
 
     private pickFirstPlayer() {
@@ -150,7 +141,6 @@ export class ServerGame {
             return;
         }
         const activePlayer = this.players[this.activePlayerIndex];
-        console.log(`Start ${activePlayer.name}'s turn`);
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$, this.isEnded$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));
