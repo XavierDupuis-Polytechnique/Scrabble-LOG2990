@@ -14,7 +14,6 @@ export class ClickAndClickoutDirective {
 
     @HostListener('click')
     clickInside() {
-        // console.log("clicked inside", this.inputComponent);
         this.wasInside = true;
     }
 
@@ -23,10 +22,8 @@ export class ClickAndClickoutDirective {
         if (!this.wasInside) {
             if (this.inputController.activeComponent === this.inputComponent) {
                 this.inputController.receive({ type: InputType.LeftClick, from: InputComponent.Outside });
-                // console.log("CURRENT WAS", this.inputComponent);
             }
         }
         this.wasInside = false;
-        // console.log("CURRENT : ", this.inputController.activeComponent);
     }
 }

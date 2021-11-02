@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
@@ -9,6 +10,7 @@ import { ENTER, ESCAPE } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
@@ -65,19 +67,22 @@ export class UIInputControllerService {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
-                    this.activeAction = new UIPlace(this.info.user, this.pointCalculator, this.wordSearcher, this.boardService);
+                    this.discardAction();
+                    this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
                     return true;
                 }
                 break;
             case InputComponent.Horse:
                 if (inputType === InputType.RightClick) {
                     if (!(this.activeAction instanceof UIExchange)) {
+                        this.discardAction();
                         this.activeAction = new UIExchange(this.info.user);
                         return true;
                     }
                 } else {
                     // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
+                        this.discardAction();
                         this.activeAction = new UIMove(this.info.user);
                         return true;
                     }
@@ -124,16 +129,20 @@ export class UIInputControllerService {
     }
 
     confirm() {
-        if (this.activeAction === null) {
-            throw Error('Action couldnt be created : no UIAction is active');
+        if (!this.activeAction || !this.canBeExecuted) {
+            return;
         }
-        if (!this.canBeExecuted) {
-            throw Error('Action couldnt be created : requirements for creation are not met');
+        const newAction: Action | null = this.activeAction.create();
+        if (!newAction) {
+            return;
         }
-        const newAction: Action = this.activeAction.create();
         this.discardAction();
         this.avs.sendAction(newAction);
         this.activeComponent = InputComponent.Outside;
+    }
+
+    pass(user: User) {
+        this.avs.sendAction(new PassTurn(user));
     }
 
     private discardAction() {
@@ -157,7 +166,6 @@ export class UIInputControllerService {
                 this.activeComponent = InputComponent.Outside;
                 break;
             case ENTER:
-                // TODO : IF POSSIBLE, MIGRATE 'ENTER' TO UIPLACE DIRECTLY
                 this.confirm();
                 break;
             default:

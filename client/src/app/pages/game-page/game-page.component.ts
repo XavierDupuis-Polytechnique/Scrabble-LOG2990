@@ -2,8 +2,6 @@ import { Component, HostListener } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AbandonButtonComponent } from '@app/components/abandon-button/abandon-button.component';
-import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
-import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
@@ -21,7 +19,6 @@ export class GamePageComponent {
     constructor(
         private gameManager: GameManagerService,
         public info: GameInfoService,
-        private avs: ActionValidatorService,
         private router: Router,
         public matDialog: MatDialog,
         private inputController: UIInputControllerService,
@@ -85,9 +82,8 @@ export class GamePageComponent {
         return this.canPlace || this.canExchange;
     }
 
-    // TODO : REROUTE TO UIINPUTCONTROLLER -> REMOVE AVS -> MIGRATE TESTS
     pass() {
-        this.avs.sendAction(new PassTurn(this.info.user));
+        this.inputController.pass(this.info.user);
     }
 
     confirm() {

@@ -7,7 +7,16 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, FIVE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT, TEN } from '@app/GameLogic/constants';
+import {
+    BOARD_DIMENSION,
+    BOARD_MAX_POSITION,
+    DEFAULT_TIME_PER_TURN,
+    EMPTY_CHAR,
+    FIVE,
+    MIDDLE_OF_BOARD,
+    RACK_LETTER_COUNT,
+    TEN,
+} from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -376,7 +385,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
-    it('should validate placing a "word" with already present letters on the board (horizontal)', () => {
+    it('should validate placing a word with already present letters on the board (horizontal)', () => {
         const horizontalWord = 'abcdefghijk';
         for (let x = 0; x < horizontalWord.length; x++) {
             if (x % 2) {
@@ -391,7 +400,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate placing a "word" with already present letters on the board (vertical)', () => {
+    it('should validate placing a word with already present letters on the board (vertical)', () => {
         const verticalWord = 'abcdefghijk';
         for (let y = 0; y < verticalWord.length; y++) {
             if (y % 2) {
@@ -401,6 +410,34 @@ describe('ActionValidatorService', () => {
             }
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
+        const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
+
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
+    it('should validate placing a word that lands on the last column (horizontal)', () => {
+        const verticalWord = 'abcdefg';
+        const beginPos = BOARD_MAX_POSITION - verticalWord.length + 1;
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        game.board.grid[beginPos][beginPos].letterObject.char = 'a';
+        for (let y = 0; y < verticalWord.length; y++) {
+            currentPlayer.letterRack[y % RACK_LETTER_COUNT].char = verticalWord.charAt(y);
+        }
+        const placement: PlacementSetting = { direction: Direction.Horizontal, x: beginPos, y: beginPos };
+        const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
+
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
+    it('should validate placing a word that lands on the last row (vertical)', () => {
+        const verticalWord = 'abcdefg';
+        const beginPos = BOARD_MAX_POSITION - verticalWord.length + 1;
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        game.board.grid[beginPos][beginPos].letterObject.char = 'a';
+        for (let y = 0; y < verticalWord.length; y++) {
+            currentPlayer.letterRack[y % RACK_LETTER_COUNT].char = verticalWord.charAt(y);
+        }
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: beginPos, y: beginPos };
         const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
         expect(service.validateAction(action)).toBeTruthy();

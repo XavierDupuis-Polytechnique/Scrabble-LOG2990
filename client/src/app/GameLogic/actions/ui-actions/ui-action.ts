@@ -7,6 +7,6 @@ export abstract class UIAction {
     abstract receiveLeftClick(args: unknown): void;
     abstract receiveKey(key: string): void;
     abstract receiveRoll(args: unknown): void;
-    abstract create(): Action;
+    abstract create(): Action | null;
     abstract destroy(): void;
 }
