@@ -106,7 +106,6 @@ export class GamePageComponent {
     }
 
     openDisconnected() {
-        console.log('called open disconnected modal');
         if (this.dialogRef) {
             return;
         }
@@ -120,6 +119,5 @@ export class GamePageComponent {
             this.router.navigate(['/']);
         });
         this.dialogRef.afterClosed().pipe(finalize(() => (this.dialogRef = undefined)));
-        console.log(this.dialogRef);
     }
 }
