@@ -1,14 +1,19 @@
 import { TestBed } from '@angular/core/testing';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
     let service: GameManagerService;
+    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: CommandExecuterService, useValue: commandExecuterMock },
+            ],
         });
         service = TestBed.inject(GameManagerService);
     });
