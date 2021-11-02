@@ -1,6 +1,6 @@
-import { Board } from '@app/GameLogic/game/board/board';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { UrlResolver } from '@angular/compiler';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { Board } from '@app/GameLogic/game/board/board';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -55,10 +55,12 @@ export class CanvasDrawer {
                     if (board.grid[i][j].letterObject.isTemp === true) {
                         this.drawHighlight(j, i);
                     }
-                } else if (board.grid[j][i].letterMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[j][i].letterMultiplicator);
-                } else if (board.grid[j][i].wordMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[j][i].wordMultiplicator);
+                }
+                if (board.grid[i][j].letterMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
+                }
+                if (board.grid[i][j].wordMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
                 }
             }
         }
