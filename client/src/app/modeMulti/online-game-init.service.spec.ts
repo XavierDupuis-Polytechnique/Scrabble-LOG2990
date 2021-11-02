@@ -33,7 +33,7 @@ describe('OnlineGameInitService', () => {
         const gameSettings = { playerName: 'allo', randomBonus: false, timePerTurn: 65000 };
         service.createGameMulti(gameSettings);
         expect(spyWaitingForPlayer).toHaveBeenCalled();
-        service.pendingGameId$.pipe(take(1)).subscribe((value) => {
+        service.pendingGameId$.pipe(first()).subscribe((value) => {
             expect(value[0]).toEqual('aa');
         });
         service.socket.peerSideEmit('pendingGameId', 'aa');
@@ -46,17 +46,20 @@ describe('OnlineGameInitService', () => {
         }).toThrowError();
     });
 
-    it('join pending game should emit joinGame and receive GameToken', () => {
+    it('join pending game should emit joinGame and receive GameSettings', () => {
+        const gameSettings = { id: '1', playerName: 'allo', randomBonus: false, timePerTurn: 65000 };
+
         spyOnProperty(service.socket, 'connected', 'get').and.returnValue(true);
         spyOn(service, 'listenForGameToken').and.callThrough();
         spyOn(service, 'disconnectSocket').and.callThrough();
         service.joinPendingGame('abc', 'allo1');
         expect(service.listenForGameToken).toHaveBeenCalled();
 
-        service.gameToken$.pipe(first()).subscribe((value) => {
-            expect(value[0]).toEqual('aa');
+        service.socket.peerSideEmit('gameJoined', gameSettings);
+        service.listenForGameToken();
+        service.gameToken$.pipe(first()).subscribe((id) => {
+            expect(id).toEqual(gameSettings.id);
         });
-        service.socket.peerSideEmit('gameJoined', 'aa');
         expect(service.disconnectSocket).toHaveBeenCalled();
     });
 
