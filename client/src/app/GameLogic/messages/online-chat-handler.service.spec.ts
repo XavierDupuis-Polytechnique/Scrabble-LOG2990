@@ -33,16 +33,16 @@ describe('OnlineChatHandlerService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should join chat room', (done) => {
-        // soi.on('connection', () => {
-        //     expect(true).toBeFalsy();
-        //     done();
-        // });
-        const roomID = 'abc';
-        const name = 'Tim';
-        service.joinChatRoom(roomID, name);
-        done();
-    });
+    // it('should join chat room', (done) => {
+    //     // soi.on('connection', () => {
+    //     //     expect(true).toBeFalsy();
+    //     //     done();
+    //     // });
+    //     const roomID = 'abc';
+    //     const name = 'Tim';
+    //     service.joinChatRoom(roomID, name);
+    //     done();
+    // });
 
     it('should throw when joining another chat room', () => {
         const roomID = 'abc';
