@@ -20,6 +20,7 @@ export class ServerGame {
     consecutivePass: number = 0;
     board: Board;
     timer: Timer;
+    winnerByForfeitedIndex: number;
 
     isEnded$ = new Subject<undefined>();
     private isEndedValue: boolean = false;
@@ -74,6 +75,7 @@ export class ServerGame {
                 }
             }
         }
+        console.log(this.consecutivePass >= ServerGame.maxConsecutivePass);
         if (this.consecutivePass >= ServerGame.maxConsecutivePass) {
             return true;
         }
@@ -85,8 +87,10 @@ export class ServerGame {
     }
 
     onEndOfGame() {
+        console.log('END GAME');
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
+        this.emitGameState();
     }
 
     doAction(action: Action) {
@@ -100,6 +104,13 @@ export class ServerGame {
     getWinner(): Player[] {
         let highestScore = Number.MIN_SAFE_INTEGER;
         let winners: Player[] = [];
+        if (this.winnerByForfeitedIndex !== undefined) {
+            const winner = this.players[this.winnerByForfeitedIndex];
+            winners = [winner];
+            console.log(`Player ${winners[0].name} won by forfeit`);
+            return winners;
+        }
+
         for (const player of this.players) {
             if (player.points === highestScore) {
                 winners.push(player);
@@ -110,6 +121,15 @@ export class ServerGame {
             }
         }
         return winners;
+    }
+
+    forfeit(playerName: string) {
+        this.winnerByForfeitedIndex = this.players.findIndex((player) => {
+            return player.name !== playerName;
+        });
+        console.log(`Player ${this.players[0].name} 0`);
+        console.log(`Player ${this.players[1].name} 1`);
+        console.log(`Player ${this.winnerByForfeitedIndex} forfeit`);
     }
 
     private pickFirstPlayer() {

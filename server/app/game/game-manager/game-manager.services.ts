@@ -29,7 +29,6 @@ export class GameManagerService {
     activePlayers = new Map<string, PlayerRef>(); // gameToken => PlayerRef[]
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
     private gameCreator: GameCreator;
-
     private newGameStateSubject = new Subject<GameStateToken>();
     get newGameStates$(): Observable<GameStateToken> {
         return this.newGameStateSubject;
@@ -69,7 +68,7 @@ export class GameManagerService {
             const serverGame = this.activeGames.get(gameToken);
             if (this.linkedClients.get(gameToken)?.length !== 2) {
                 if (serverGame) {
-                    this.endGame(gameToken, serverGame);
+                    this.endGame(serverGame);
                 }
                 this.activeGames.delete(gameToken);
                 // this.linkedClients.delete(gameToken); // TODO Delete linkedClient when game is over
@@ -139,7 +138,7 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-        this.endGame(gameToken, game);
+        this.endForfeitedGame(game, playerRef.player.name);
         this.activeGames.delete(gameToken);
         console.log(`Player ${playerId} left the game`);
         console.log('Current active players', this.activePlayers);
@@ -154,10 +153,20 @@ export class GameManagerService {
         this.gameActionNotifier.notify(action, clientsInGame, gameToken);
     }
 
-    private endGame(gameToken: string, game: ServerGame) {
+    private endGame(game: ServerGame) {
         game.stop();
-        const gameState = this.gameCompiler.compile(game);
-        const gameStateToken: GameStateToken = { gameToken, gameState };
-        this.newGameStateSubject.next(gameStateToken);
+        // const gameToken = game.gameToken;
+        // const gameState = this.gameCompiler.compile(game);
+        // const gameStateToken: GameStateToken = { gameToken, gameState };
+        // this.newGameStateSubject.next(gameStateToken);
+    }
+
+    private endForfeitedGame(game: ServerGame, playerName: string) {
+        game.forfeit(playerName);
+        game.stop();
+        // const gameToken = game.gameToken;
+        // const gameState = this.gameCompiler.compile(game);
+        // const gameStateToken: GameStateToken = { gameToken, gameState };
+        // this.newGameStateSubject.next(gameStateToken);
     }
 }
