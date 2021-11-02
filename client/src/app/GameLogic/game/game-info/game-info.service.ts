@@ -56,11 +56,8 @@ export class GameInfoService {
     }
 
     get letterOccurences(): Map<string, number> {
-        if (!this.game && !this.onlineGame) {
-            throw Error('No Game in GameInfo');
-        }
         if (!this.game) {
-            return new Map<string, number>(); // TODO Find a way to get letterBag from the server //this.onlineGame.lettersRemaining;
+            throw Error('No Game in GameInfo');
         }
         return this.game.letterBag.countLetters();
     }
