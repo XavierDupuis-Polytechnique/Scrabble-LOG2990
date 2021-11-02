@@ -22,7 +22,6 @@ export class GameSocketHandlerService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket: Socket | any;
     private gameStateSubject = new Subject<GameState>();
-    private endTurnSubject = new Subject<void>();
     get gameState$(): Observable<GameState> {
         return this.gameStateSubject;
     }
@@ -32,8 +31,14 @@ export class GameSocketHandlerService {
         return this.timerControlsSubject;
     }
 
+    private endTurnSubject = new Subject<void>();
     get endTurn$(): Observable<void> {
         return this.endTurnSubject;
+    }
+
+    private disconnectedFromServerSubject = new Subject<void>();
+    get disconnectedFromServer$(): Observable<void> {
+        return this.disconnectedFromServerSubject;
     }
 
     joinGame(userAuth: UserAuth) {
@@ -48,6 +53,21 @@ export class GameSocketHandlerService {
 
         this.socket.on('timerControl', (timerControl: TimerControls) => {
             this.receiveTimerControl(timerControl);
+        });
+
+        this.socket.on('timerControl', (timerControl: TimerControls) => {
+            this.receiveTimerControl(timerControl);
+        });
+
+        this.socket.on('connect_error', () => {
+            console.log('Cant connect to server.');
+            this.disconnectedFromServerSubject.next();
+            // this.socket.disconnect();
+        });
+        this.socket.on('disconnected', () => {
+            console.log('Server disconnected');
+            this.disconnectedFromServerSubject.next();
+            // this.socket.disconnect();
         });
     }
 
