@@ -45,7 +45,7 @@ describe('CommandParser', () => {
         expect(service.parse(message.content, message.from)).toBe(undefined);
     });
 
-    it('should throw !manger est une commande invalide', () => {
+    it('should send error message !manger est une commande invalide', () => {
         message.content = '!manger duGateau';
         const testError = '!manger est une entrée invalide';
         service.errorMessage$.subscribe((error) => {
@@ -63,7 +63,7 @@ describe('CommandParser', () => {
         expect(service.parse(message.content, message.from)).toBe(CommandType.Debug);
     });
 
-    it('should throw !PLACER est une commande invalide', () => {
+    it('should send error message !PLACER est une commande invalide', () => {
         message.content = '!PLACER a1v bob';
         const testError = '!PLACER est une entrée invalide';
 
@@ -73,7 +73,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError1, () => {
+    it('should send error message ' + syntaxError1, () => {
         message.content = '!placer a1v  ';
 
         service.errorMessage$.subscribe((error) => {
@@ -82,14 +82,14 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError3, () => {
+    it('should send error message ' + syntaxError3, () => {
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError3);
         });
         service['formatPlaceLetter'](['a1v', EMPTY_CHAR]);
     });
 
-    it('should throw ' + syntaxError3, () => {
+    it('should send error message ' + syntaxError3, () => {
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError3);
         });
@@ -102,7 +102,7 @@ describe('CommandParser', () => {
         expect(service['formatPlaceLetter'](testArg)).toEqual(expectedArg);
     });
 
-    it('should throw ' + syntaxError1, () => {
+    it('should send error message ' + syntaxError1, () => {
         message.content = '!placer a1v    ';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError1);
@@ -110,7 +110,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError3, () => {
+    it('should send error message ' + syntaxError3, () => {
         message.content = '!placer a1v a';
 
         service.errorMessage$.subscribe((error) => {
@@ -119,7 +119,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError3, () => {
+    it('should send error message ' + syntaxError3, () => {
         message.content = '!placer a1v abcdefghijklmnop';
 
         service.errorMessage$.subscribe((error) => {
@@ -128,7 +128,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError7, () => {
+    it('should send error message ' + syntaxError7, () => {
         message.content = '!placer a-1v abc';
 
         service.errorMessage$.subscribe((error) => {
@@ -137,7 +137,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError4, () => {
+    it('should send error message ' + syntaxError4, () => {
         message.content = '!placer a16v abc';
 
         service.errorMessage$.subscribe((error) => {
@@ -146,7 +146,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError1, () => {
+    it('should send error message ' + syntaxError1, () => {
         message.content = '!placer a1V';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError1);
@@ -154,7 +154,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError2, () => {
+    it('should send error message ' + syntaxError2, () => {
         message.content = '!placer A1v allo';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError2);
@@ -162,7 +162,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError5, () => {
+    it('should send error message ' + syntaxError5, () => {
         message.content = '!placer a1V allo';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError5);
@@ -170,7 +170,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError6, () => {
+    it('should send error message ' + syntaxError6, () => {
         message.content = '!placer a12vv allo';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError6);
@@ -178,7 +178,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError6, () => {
+    it('should send error message ' + syntaxError6, () => {
         message.content = '!placer a1 allo';
 
         service.errorMessage$.subscribe((error) => {
@@ -187,7 +187,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError7, () => {
+    it('should send error message ' + syntaxError7, () => {
         message.content = '!placer abh allo';
 
         service.errorMessage$.subscribe((error) => {
@@ -196,7 +196,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw ' + syntaxError7, () => {
+    it('should send error message ' + syntaxError7, () => {
         message.content = '!placer a1bh allo';
 
         service.errorMessage$.subscribe((error) => {
@@ -218,7 +218,7 @@ describe('CommandParser', () => {
         }
     });
 
-    it("should throw error 'les parametres sont invalide as' upperCases are not accepted", () => {
+    it("should send error message error 'les parametres sont invalide as' upperCases are not accepted", () => {
         message.content = '!échanger aBc';
 
         errorMessage = 'les paramètres sont invalides';
@@ -236,7 +236,7 @@ describe('CommandParser', () => {
         }
     });
 
-    it('should throw error as 7 letters is the maximum', () => {
+    it('should send error message error as 7 letters is the maximum', () => {
         message.content = '!échanger aaaaaaaaa';
 
         errorMessage = 'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé';
@@ -246,7 +246,7 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should throw error as 7 letters is the maximum', () => {
+    it('should send error message error as 7 letters is the maximum', () => {
         message.content = '!échanger baaaaaaaaac';
         errorMessage = 'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé';
         service.errorMessage$.subscribe((error) => {
