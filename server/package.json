@@ -8,6 +8,7 @@
         "build": "rimraf out && tsc --project tsconfig.app.json",
         "format": "prettier --config ../.prettierrc.yaml --write \"app/**/*\"",
         "lint": "eslint -c .eslintrc.json \"./app/**/*.ts\" --format stylish",
+        "lint:fix": "eslint -c .eslintrc.json \"./app/**/*.ts\" --format stylish --fix",
         "test": "cross-env TS_NODE_PROJECT='./tsconfig.spec.json' mocha --config=.mocharc.json --node-env=test",
         "coverage": "cross-env TS_NODE_PROJECT='./tsconfig.spec.json' nyc mocha --config=.mocharc.json --node-env=test --exit"
     },
@@ -54,7 +55,9 @@
         "morgan": "^1.10.0",
         "prettier": "^2.3.2",
         "reflect-metadata": "^0.1.13",
+        "rxjs": "^7.4.0",
         "serve-favicon": "~2.5.0",
+        "socket-io": "^1.0.0",
         "swagger-jsdoc": "^6.1.0",
         "swagger-ui-express": "^4.1.6",
         "typedi": "^0.10.0"
@@ -90,8 +93,10 @@
         "nodemon": "^2.0.12",
         "nyc": "^15.1.0",
         "rimraf": "3.0.2",
+        "rxjs": "^7.4.0",
         "sinon": "^11.1.2",
         "socket.io": "^4.2.0",
+        "socket.io-client": "^4.3.0",
         "source-map-support": "^0.5.19",
         "supertest": "^6.1.5",
         "ts-node": "^10.2.0",

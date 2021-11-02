@@ -3,7 +3,7 @@
     <mat-card
         class="playerInfo"
         id="{{ i }}"
-        [ngStyle]="{ 'box-shadow': player.name === info.activePlayer.name ? '1px 1px 5px 5px var(--active)' : '0px 0px 0px 0px' }"
+        [ngClass]="{ active: player.name === info.activePlayer.name, inactive: player.name !== info.activePlayer.name }"
     >
         <mat-card-header>
             <span class="name">{{ player.name }} </span>

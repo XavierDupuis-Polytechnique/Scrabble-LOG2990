@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
+import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
 import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -13,9 +14,23 @@ export class MessagesService {
     messagesLog: Message[] = [];
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
 
-    constructor(private commandParser: CommandParserService) {
+    constructor(private commandParser: CommandParserService, private onlineChat: OnlineChatHandlerService) {
+        this.onlineChat.opponentMessage$.subscribe((chatMessage: ChatMessage) => {
+            const forwarder = chatMessage.from;
+            const content = chatMessage.content;
+            this.receiveMessageOpponent(forwarder, content);
+        });
+
         commandParser.errorMessage$.subscribe((error) => {
             this.receiveErrorMessage(error);
+        });
+
+        this.onlineChat.errorMessage$.subscribe((errorContent: string) => {
+            this.receiveErrorMessage(errorContent);
+        });
+
+        this.onlineChat.systemMessage$.subscribe((content: string) => {
+            this.receiveSystemMessage(content);
         });
     }
 
@@ -45,7 +60,11 @@ export class MessagesService {
         };
 
         this.addMessageToLog(message);
-        this.commandParser.parse(content, forwarder);
+        const commandType = this.commandParser.parse(content, forwarder);
+        const messageIsCommand = commandType !== undefined;
+        if (!messageIsCommand && this.onlineChat.connected) {
+            this.onlineChat.sendMessage(content);
+        }
     }
 
     receiveMessageOpponent(forwarder: string, content: string) {
