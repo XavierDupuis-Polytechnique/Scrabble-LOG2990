@@ -3,7 +3,8 @@ import { CommandParserService } from '@app/GameLogic/commands/command-parser/com
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { BehaviorSubject } from 'rxjs';
 import { Message, MessageType } from './message.interface';
-
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
+import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
 @Injectable({
     providedIn: 'root',
 })
@@ -13,7 +14,22 @@ export class MessagesService {
     messagesLog: Message[] = [];
 
     messages$: BehaviorSubject<Message[]> = new BehaviorSubject([] as Message[]);
-    constructor(private commandParser: CommandParserService) {}
+
+    constructor(private commandParser: CommandParserService, private onlineChat: OnlineChatHandlerService) {
+        this.onlineChat.opponentMessage$.subscribe((chatMessage: ChatMessage) => {
+            const forwarder = chatMessage.from;
+            const content = chatMessage.content;
+            this.receiveMessageOpponent(forwarder, content);
+        });
+
+        this.onlineChat.errorMessage$.subscribe((errorContent: string) => {
+            this.receiveErrorMessage(errorContent);
+        });
+
+        this.onlineChat.systemMessage$.subscribe((content: string) => {
+            this.receiveSystemMessage(content);
+        });
+    }
 
     receiveSystemMessage(content: string) {
         const systemMessage: Message = {
@@ -42,11 +58,16 @@ export class MessagesService {
 
         this.addMessageToLog(message);
         try {
-            this.commandParser.parse(content, forwarder);
+            const commandType = this.commandParser.parse(content, forwarder);
+            const messageIsCommand = commandType !== undefined;
+            if (!messageIsCommand && this.onlineChat.connected) {
+                this.onlineChat.sendMessage(content);
+            }
         } catch (e) {
             this.receiveError(e as Error);
         }
     }
+
     receiveMessageOpponent(forwarder: string, content: string) {
         const message = {
             content,

@@ -1,4 +1,7 @@
 import { Application } from '@app/app';
+import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+// import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
@@ -9,8 +12,9 @@ export class Server {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private static readonly baseDix: number = 10;
     private server: http.Server;
+    private messageHandler: MessagesSocketHandler;
 
-    constructor(private readonly application: Application) {}
+    constructor(private readonly application: Application, private systemMessagesService: SystemMessagesService) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
@@ -22,11 +26,13 @@ export class Server {
             return false;
         }
     }
+
     init(): void {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
-
+        this.messageHandler = new MessagesSocketHandler(this.server, this.systemMessagesService);
+        this.messageHandler.handleSockets();
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
