@@ -45,7 +45,6 @@ export class OnlineGame {
         this.boardService.board = new Board();
         this.userName = userName;
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
-            console.log('gameState', gameState);
             this.receiveState(gameState);
         });
 
