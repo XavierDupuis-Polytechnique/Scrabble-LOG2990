@@ -20,13 +20,15 @@ describe('Room', () => {
 
     it('should add user name to usersName', () => {
         const userName = 'test';
-        room.addUser(userName);
+        const userID = 'testID';
+        room.addUser(userName, userID);
         expect(room.userNames.has(userName)).to.equal(true);
     });
 
     it('should delete user from room', () => {
         const userName = 'test';
-        room.addUser(userName);
+        const userID = 'testID';
+        room.addUser(userName, userID);
         room.deleteUser(userName);
         expect(room.userNames.size).to.equal(0);
     });

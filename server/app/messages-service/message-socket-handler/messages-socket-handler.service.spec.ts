@@ -300,7 +300,8 @@ describe('SystemMessagesService', () => {
 
         const sysMessage: IndividualSystemMessage = {
             content: 'allo',
-            playerId: serverSocket.id,
+            gameToken: room,
+            playerName: name,
         };
         clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
             expect(message).to.deep.equal(sysMessage.content);
