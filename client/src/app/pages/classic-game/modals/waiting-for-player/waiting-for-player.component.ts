@@ -34,9 +34,9 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
         dialogConfig.minWidth = 60;
 
         const botDifficultyForm = this.dialog.open(ConvertToSoloFormComponent, dialogConfig);
-        botDifficultyForm.afterClosed().subscribe((result: string) => {
-            if (result) {
-                this.botDifficulty = result;
+        botDifficultyForm.afterClosed().subscribe((botDifficulty: string) => {
+            if (botDifficulty) {
+                this.botDifficulty = botDifficulty;
                 this.isSoloStarted = true;
                 this.dialogRef.close(this.botDifficulty);
             }
@@ -44,7 +44,7 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
     }
 
     cancel() {
-        this.onlineSocketHandler.disconnect();
+        this.onlineSocketHandler.disconnectSocket();
     }
 
     get pendingGameId$(): Observable<string> {

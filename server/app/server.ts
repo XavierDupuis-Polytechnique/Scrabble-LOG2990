@@ -8,7 +8,6 @@ import { NewOnlineGameSocketHandler } from '@app/services/new-online-game-manage
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-// import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');

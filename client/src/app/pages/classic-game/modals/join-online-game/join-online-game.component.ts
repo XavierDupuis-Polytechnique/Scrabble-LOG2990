@@ -1,9 +1,10 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, ValidatorFn, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MAX_NAME_LENGTH, MIN_NAME_LENGTH } from '@app/GameLogic/constants';
 import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
+import { ErrorDialogComponent } from '@app/pages/classic-game/modals/error-dialog/error-dialog.component';
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 @Component({
     selector: 'app-join-online-game',
@@ -16,6 +17,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettings,
         private dialogRef: MatDialogRef<JoinOnlineGameComponent>,
+        private dialog: MatDialog,
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: OnlineGameInitService,
     ) {}
@@ -42,14 +44,23 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
     sendParameter(): void {
         this.dialogRef.close(this.oppName.value);
         this.onlineSocketHandler.joinPendingGame(this.data.id, this.oppName.value);
+        this.onlineSocketHandler.error$.subscribe((error: string) => {
+            if (error) {
+                this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data: error });
+            }
+        });
+    }
+
+    forbiddenNameValidator(): ValidatorFn {
+        return (control: AbstractControl): { [key: string]: unknown } | null =>
+            control.value !== this.playerName ? null : { forbidden: control.value };
     }
 
     get valid() {
         return this.oppName.valid;
     }
 
-    forbiddenNameValidator(): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: unknown } | null =>
-            control.value !== this.playerName ? null : { forbidden: control.value };
+    get randomBonusType() {
+        return this.data.randomBonus === true ? 'est activé' : 'est désactivé';
     }
 }

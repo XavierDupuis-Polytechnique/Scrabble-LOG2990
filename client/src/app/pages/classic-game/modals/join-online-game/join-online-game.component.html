@@ -11,12 +11,10 @@
     </mat-form-field>
     <br />
     <br />
-    <mat-checkbox [disabled]="true" [checked]="data.randomBonus">Bonus aléatoire</mat-checkbox>
+    <mat-label #bonus>Bonus aléatoire {{ randomBonusType }} </mat-label>
     <br />
+    <mat-label>Temps par tour de {{ data.timePerTurn | date: 'm:ss' }} min </mat-label>
     <br />
-    <mat-label>Temps par tour </mat-label>
-    <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
-    <mat-slider #timer [disabled]="true" [value]="data.timePerTurn"></mat-slider><br />
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>

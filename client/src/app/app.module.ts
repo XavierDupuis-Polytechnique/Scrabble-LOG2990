@@ -15,12 +15,14 @@ import { GameLogicModule } from '@app/GameLogic/game-logic.module';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
+import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
+import { ErrorDialogComponent } from '@app/pages/classic-game/modals/error-dialog/error-dialog.component';
 import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
+import { DisconnectedFromServerComponent } from './pages/classic-game/modals/disconnected-from-server/disconnected-from-server.component';
 import { WaitingForPlayerComponent } from './pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
 import { BoardComponent } from './pages/game-page/board/board.component';
 import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
@@ -30,7 +32,7 @@ import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.c
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
-import { DisconnectedFromServerComponent } from './pages/classic-game/modals/disconnected-from-server/disconnected-from-server.component';
+
 
 /**
  * Main module that is used in main.ts.
@@ -64,6 +66,10 @@ import { DisconnectedFromServerComponent } from './pages/classic-game/modals/dis
         PendingGamesComponent,
         JoinOnlineGameComponent,
         DisconnectedFromServerComponent,
+        ErrorDialogComponent,
+        PreventContextMenuDirective,
+        ClickAndClickoutDirective,
+        MouseRollDirective,
     ],
     imports: [
         AppMaterialModule,

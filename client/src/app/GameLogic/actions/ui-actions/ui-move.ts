@@ -48,8 +48,8 @@ export class UIMove implements UIAction {
         }
     }
 
-    create(): Action {
-        throw Error('UIMove should not be able to create an Action');
+    create(): Action | null {
+        return null;
     }
 
     destroy(): void {

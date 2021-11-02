@@ -17,5 +17,14 @@ mat-card {
 .score {
     justify-self: end;
     font-size: 85%;
-    color: var(--white);
+    color: black;
+}
+
+.active {
+    box-shadow: 1px 1px 5px 5px var(--active);
+    background-color: var(--white);
+}
+
+.inactive {
+    box-shadow: 0px 0px 0px 0px;
 }

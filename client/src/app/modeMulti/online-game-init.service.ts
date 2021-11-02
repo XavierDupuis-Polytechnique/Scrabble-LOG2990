@@ -12,10 +12,21 @@ export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     startGame$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
-    private socket: Socket;
+    gameToken$ = new Subject<string>();
+    isDisconnected$ = new Subject<boolean>();
+    error$ = new Subject<string>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socket: Socket | any;
 
     resetGameToken() {
         this.startGame$.next(undefined);
+    }
+
+    connect() {
+        this.socket = this.connectToSocket();
+        this.socket.on('connect_error', () => {
+            this.isDisconnected$.next(true);
+        });
     }
 
     createGameMulti(gameSettings: OnlineGameSettingsUI) {
@@ -34,43 +45,43 @@ export class OnlineGameInitService {
         });
     }
 
+    listenErrorMessage() {
+        this.socket.on('error', (errorContent: string) => {
+            this.error$.next(errorContent);
+        });
+    }
+
     joinPendingGame(id: string, playerName: string) {
         if (!this.socket.connected) {
             throw Error("Can't join game, not connected to server");
         }
         this.socket.emit('joinGame', id, playerName);
         this.listenForGameToken();
+        this.listenErrorMessage();
     }
 
-    disconnect() {
+    disconnectSocket() {
         if (!this.socket) {
-            throw Error('Socket was not connected so cant disconnect');
+            return;
         }
-        this.socket?.disconnect();
+        this.socket.disconnect();
     }
 
-    private waitForSecondPlayer() {
+    waitForSecondPlayer() {
         this.socket.on('pendingGameId', (pendingGameid: string) => {
             this.pendingGameId$.next(pendingGameid);
         });
         this.listenForGameToken();
     }
 
-    private listenForGameToken() {
-        this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
-            const gameToken = gameSetting.id;
-            this.startGame$.next(gameSetting);
-            console.log('Game Token: ', gameToken, 'Game Settings:', gameSetting);
-            this.socket.disconnect();
-            console.log('Disconnect');
+    listenForGameToken() {
+        this.socket.on('gameJoined', (gameToken: string) => {
+            this.gameToken$.next(gameToken);
+            this.disconnectSocket();
         });
     }
 
-    private connect() {
-        this.socket = io(environment.serverSocketUrl, { path: '/newGame' });
-        this.socket.on('connect_error', () => {
-            // this.socket.close();
-            console.log('Cant connect to server.');
-        });
+    connectToSocket() {
+        return io(environment.serverSocketUrl, { path: '/newGame' });
     }
 }

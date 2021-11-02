@@ -35,6 +35,9 @@ describe('GamePageComponent', () => {
         cancel() {
             return;
         }
+        pass() {
+            return;
+        }
     }
     class MatDialogMock {
         open() {
@@ -97,9 +100,9 @@ describe('GamePageComponent', () => {
 
     it('should call function sendAction if button "Passer" is pressed', () => {
         // eslint-disable-next-line dot-notation
-        const actionValidatorSpy = spyOn(component['avs'], 'sendAction');
+        const inputControllerSpy = spyOn(component['inputController'], 'pass');
         component.pass();
-        expect(actionValidatorSpy).toHaveBeenCalled();
+        expect(inputControllerSpy).toHaveBeenCalled();
     });
 
     it('should call confirm', () => {
