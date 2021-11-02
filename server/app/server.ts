@@ -14,8 +14,12 @@ export class Server {
     private static readonly baseDix: number = 10;
     private server: http.Server;
     private onlineGameManager: NewOnlineGameSocketHandler;
-    constructor(private readonly application: Application, private onlineGameService: NewOnlineGameService, private systemMessagesService: SystemMessagesService) {}
     private messageHandler: MessagesSocketHandler;
+    constructor(
+        private readonly application: Application,
+        private onlineGameService: NewOnlineGameService,
+        private systemMessagesService: SystemMessagesService,
+    ) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
