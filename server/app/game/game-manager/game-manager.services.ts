@@ -29,7 +29,6 @@ export class GameManagerService {
     activePlayers = new Map<string, PlayerRef>(); // gameToken => PlayerRef[]
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
     private gameCreator: GameCreator;
-
     private newGameStateSubject = new Subject<GameStateToken>();
     get newGameStates$(): Observable<GameStateToken> {
         return this.newGameStateSubject;
@@ -139,7 +138,6 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-        console.log(playerRef.player.name);
         this.endForfeitedGame(game, playerRef.player.name);
         this.activeGames.delete(gameToken);
         console.log(`Player ${playerId} left the game`);
@@ -157,18 +155,18 @@ export class GameManagerService {
 
     private endGame(game: ServerGame) {
         game.stop();
-        const gameToken = game.gameToken;
-        const gameState = this.gameCompiler.compile(game);
-        const gameStateToken: GameStateToken = { gameToken, gameState };
-        this.newGameStateSubject.next(gameStateToken);
+        // const gameToken = game.gameToken;
+        // const gameState = this.gameCompiler.compile(game);
+        // const gameStateToken: GameStateToken = { gameToken, gameState };
+        // this.newGameStateSubject.next(gameStateToken);
     }
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
         game.stop();
-        const gameToken = game.gameToken;
-        const gameState = this.gameCompiler.compile(game);
-        const gameStateToken: GameStateToken = { gameToken, gameState };
-        this.newGameStateSubject.next(gameStateToken);
+        // const gameToken = game.gameToken;
+        // const gameState = this.gameCompiler.compile(game);
+        // const gameStateToken: GameStateToken = { gameToken, gameState };
+        // this.newGameStateSubject.next(gameStateToken);
     }
 }
