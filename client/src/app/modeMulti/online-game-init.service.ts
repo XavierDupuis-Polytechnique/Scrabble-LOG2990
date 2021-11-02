@@ -76,6 +76,6 @@ export class OnlineGameInitService {
     }
 
     connectToSocket() {
-        return io(environment.serverSocketUrl, { path: '/newGame' });
+        return io(environment.socketServerUrl, { path: '/newGame' });
     }
 }
