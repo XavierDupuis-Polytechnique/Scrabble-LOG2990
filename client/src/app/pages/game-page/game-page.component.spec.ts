@@ -84,7 +84,7 @@ describe('GamePageComponent', () => {
     });
 
     it('confirming to abandon should call method stopgame', () => {
-        const gameManagerSpy = spyOn(component.matDialog, 'open');
+        const gameManagerSpy = spyOn(component.dialog, 'open');
         component.abandon();
         expect(gameManagerSpy).toHaveBeenCalled();
     });
