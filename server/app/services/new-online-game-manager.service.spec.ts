@@ -69,7 +69,7 @@ describe('New Online Game Service', () => {
     it('should throw error if game settings are invalid', (done) => {
         const gameSettings = { playerName: false, randomBonus: true, timePerTurn: 60000 };
         clientSocket.on('error', (errorContent: string) => {
-            expect(errorContent).to.equal('Cannot create game, invalid GameSettings');
+            expect(errorContent).to.equal('Impossible de rejoindre la partie, les paramètres de partie sont invalides.');
             done();
         });
         clientSocket.emit('createGame', gameSettings);
@@ -89,7 +89,7 @@ describe('New Online Game Service', () => {
         const id = true;
         const playerName = 'abc';
         clientSocket.on('error', (errorContent: string) => {
-            expect(errorContent).to.equal('Cannot join game, invalid GameSettings');
+            expect(errorContent).to.equal('Impossible de rejoindre la partie, les paramètres sont invalides.');
             done();
         });
         clientSocket.emit('joinGame', id, playerName);
@@ -100,7 +100,7 @@ describe('New Online Game Service', () => {
         const id = 'aa';
         const playerName = 'abc';
         clientSocket.on('error', (errorContent: string) => {
-            expect(errorContent).to.equal('Cannot join game, game does not exist anymore');
+            expect(errorContent).to.equal("Impossible de rejoindre la partie, elle n'existe pas.");
             done();
         });
         clientSocket.emit('joinGame', id, playerName);

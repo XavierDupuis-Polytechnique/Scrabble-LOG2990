@@ -22,14 +22,14 @@ export class NewOnlineGameService {
 
     joinPendingGame(id: string, name: string): string | undefined {
         if (!this.isPendingGame(id)) {
-            return undefined;
+            return;
         }
         const gameSettings = this.pendingGames.get(id);
         if (!gameSettings) {
-            return undefined;
+            return;
         }
         if (gameSettings.opponentName !== undefined) {
-            return undefined;
+            return;
         }
         gameSettings.opponentName = name;
         const onlineGameSettingsUI = this.toOnlineGameSettings(id, gameSettings);

@@ -59,7 +59,7 @@ export class NewOnlineGameSocketHandler {
 
     private createGame(gameSettings: OnlineGameSettingsUI, socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>): string {
         if (!this.isGameSettings(gameSettings)) {
-            throw Error('Cannot create game, invalid GameSettings');
+            throw Error('Impossible de rejoindre la partie, les paramètres de partie sont invalides.');
         }
         const gameId = this.newOnlineGameService.createPendingGame(gameSettings);
         socket.emit(pendingGameId, gameId);
@@ -69,11 +69,11 @@ export class NewOnlineGameSocketHandler {
 
     private joinGame(id: string, name: string, socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
         if (typeof id !== 'string' || typeof name !== 'string') {
-            throw Error('Cannot join game, invalid GameSettings');
+            throw Error('Impossible de rejoindre la partie, les paramètres sont invalides.');
         }
         const gameToken = this.newOnlineGameService.joinPendingGame(id, name);
         if (gameToken === undefined) {
-            throw Error('Cannot join game, game does not exist anymore');
+            throw Error("Impossible de rejoindre la partie, elle n'existe pas.");
         }
         socket.join(id);
         this.sendGameTokenToPlayers(id, gameToken);
