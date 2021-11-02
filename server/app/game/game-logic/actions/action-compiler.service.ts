@@ -50,9 +50,8 @@ export class ActionCompilerService {
                 throw Error('this command dont generate an action');
         }
     }
+
     letterRackUpdateValidator(command: OnlineAction, player: Player) {
-        console.log(command);
-        console.log(player);
         const newLetterRack = command.letterRack as Letter[];
         if (!this.isLetterRackChanged(newLetterRack, player)) {
             for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
@@ -69,10 +68,12 @@ export class ActionCompilerService {
             const letterCount = mapRack.get(letter.char);
             if (letterCount === undefined) {
                 isChanged = true;
+                return isChanged;
             } else if (letterCount >= 1) {
                 mapRack.set(letter.char, letterCount - 1);
             } else if (letterCount === 0) {
                 isChanged = true;
+                return isChanged;
             }
         }
         return isChanged;

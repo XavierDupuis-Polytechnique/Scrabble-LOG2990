@@ -89,6 +89,8 @@ export class GameManagerService {
     }
 
     startGame(): void {
+        this.messageService.clearLog();
+        this.commandExecuter.resetDebug();
         if (!this.game && !this.onlineGame) {
             throw Error('No game created yet');
         }
@@ -121,6 +123,7 @@ export class GameManagerService {
     private stopOnlineGame() {
         this.timer.stop();
         this.onlineGame?.forfeit();
+        this.onlineGame?.close();
         this.onlineGame = undefined;
         this.onlineChat.leaveChatRoom();
     }

@@ -121,7 +121,7 @@ export class MessagesSocketHandler {
         if (!activeRoom) {
             activeRoom = this.createRoom(roomID);
         }
-        activeRoom.addUser(user.name);
+        activeRoom.addUser(user.name, socketID);
         user.currentRoom = roomID;
         socket.join(roomID);
     }
@@ -172,8 +172,23 @@ export class MessagesSocketHandler {
     }
 
     private sendIndividualSystemMessage(individualMessage: IndividualSystemMessage) {
-        const socketID = individualMessage.playerId;
+        const userName = individualMessage.playerName;
+        const roomID = individualMessage.gameToken;
+        const socketID = this.getSocketId(userName, roomID);
+        if (!socketID) {
+            throw Error(`L'utilisateur ${userName} n'est pas connecté`);
+        }
         const content = individualMessage.content;
         this.sio.to(socketID).emit(SYSTEM_MESSAGES, content);
+    }
+
+    private getSocketId(userName: string, roomID: string) {
+        const room = this.activeRooms.get(roomID);
+        if (!room) {
+            return;
+        }
+
+        const socketID = room.userNameToId.get(userName);
+        return socketID;
     }
 }
