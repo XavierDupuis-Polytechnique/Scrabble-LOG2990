@@ -86,7 +86,6 @@ export class ServerGame {
     }
 
     onEndOfGame() {
-        console.log('GAME ENDED');
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
     }
@@ -145,8 +144,6 @@ export class ServerGame {
         }
         const activePlayer = this.players[this.activePlayerIndex];
         console.log(`Start ${activePlayer.name}'s turn`);
-        // console.log(activePlayer);
-        // activePlayer.setActive();
         const timerEnd$ = this.timer.start(this.timePerTurn).pipe(mapTo(new PassTurn(activePlayer)));
         const turnEnds$ = merge(activePlayer.action$, timerEnd$, this.isEnded$);
         turnEnds$.pipe(first()).subscribe((action) => this.endOfTurn(action));

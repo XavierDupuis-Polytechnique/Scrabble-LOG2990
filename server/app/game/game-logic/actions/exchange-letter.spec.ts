@@ -1,9 +1,11 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { expect } from 'chai';
@@ -18,10 +20,19 @@ describe('ExchangeLetter', () => {
     const pointCalculator = new PointCalculatorService();
     const gameCompiler = new GameCompiler();
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService();
+    const messagesService = new SystemMessagesService(new GameActionNotifierService());
 
     beforeEach(() => {
-        game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculator, gameCompiler, messagesService, mockNewGameState$);
+        game = new ServerGame(
+            new TimerController(),
+            randomBonus,
+            60000,
+            'default_gameToken',
+            pointCalculator,
+            gameCompiler,
+            messagesService,
+            mockNewGameState$,
+        );
         game.players.push(player1);
         game.players.push(player2);
         game.start();

@@ -2,6 +2,7 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
+import { placementSettingsToString } from '@app/game/game-logic/utils';
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
 import { Subject } from 'rxjs';
 import { Service } from 'typedi';
@@ -50,7 +51,9 @@ export class GameActionNotifierService {
     private notifyPlaceLetter(placeLetter: PlaceLetter, linkedClients: BindedSocket[], gameToken: string) {
         const player = placeLetter.player;
         const word = placeLetter.word;
-        const content = `${player.name} place le mot ${word}`;
+        const placement = placeLetter.placement;
+        const placementString = placementSettingsToString(placement);
+        const content = `${player.name} place le mot ${word} en ${placementString}`;
         const to = [this.findOpponentName(player.name, linkedClients)];
         const notification: GameActionNotification = { gameToken, content, to };
         this.notification$.next(notification);

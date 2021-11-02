@@ -12,8 +12,8 @@ import { Observable, Subject } from 'rxjs';
 export class GameInfoService {
     players: Player[];
     user: User;
-    private game: Game;
-    private onlineGame: OnlineGame;
+    private game: Game | undefined;
+    private onlineGame: OnlineGame | undefined;
 
     private endTurnSubject = new Subject<void>();
     get endTurn$(): Observable<void> {
@@ -28,11 +28,13 @@ export class GameInfoService {
         this.game.endTurn$.subscribe(() => {
             this.endTurnSubject.next();
         });
+        this.onlineGame = undefined;
     }
 
     receiveOnlineGame(onlineGame: OnlineGame): void {
         this.players = onlineGame.players;
         this.onlineGame = onlineGame;
+        this.game = undefined;
     }
 
     receiveUser(user: User): void {
@@ -75,7 +77,7 @@ export class GameInfoService {
             throw Error('No Players in GameInfo');
         }
         if (!this.game) {
-            return this.players[this.onlineGame.activePlayerIndex];
+            return this.players[(this.onlineGame as OnlineGame).activePlayerIndex];
         }
         return this.players[this.game.activePlayerIndex];
     }
@@ -89,21 +91,21 @@ export class GameInfoService {
             throw Error('No Game in GameInfo');
         }
         if (!this.game) {
-            return this.onlineGame.lettersRemaining;
+            return (this.onlineGame as OnlineGame).lettersRemaining;
         }
         return this.game.letterBag.lettersLeft;
     }
 
     get isEndOfGame(): boolean {
         if (!this.game) {
-            return this.onlineGame.isEndOfGame;
+            return (this.onlineGame as OnlineGame).isEndOfGame;
         }
         return this.game.isEndOfGame();
     }
 
     get winner(): Player[] {
         if (!this.game) {
-            return this.onlineGame.getWinner();
+            return (this.onlineGame as OnlineGame).getWinner();
         }
         return this.game.getWinner();
     }
