@@ -1,7 +1,6 @@
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Player } from '@app/game/game-logic/player/player';
-import { expect } from 'chai';
-import { assert } from 'console';
+import { assert, expect } from 'chai';
 
 describe('Player', () => {
     let player: Player;
