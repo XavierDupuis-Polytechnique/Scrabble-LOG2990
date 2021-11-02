@@ -29,12 +29,14 @@ export class OnlineGame {
     isEndOfGame: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
+
     private letterCreator = new LetterCreator();
 
     private gameState$$: Subscription;
     private timerControls$$: Subscription;
 
     constructor(
+        public gameToken: string,
         public timePerTurn: number,
         public userName: string,
         private timer: TimerService,

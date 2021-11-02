@@ -101,10 +101,22 @@ export class GameInfoService {
         return this.game.isEndOfGame();
     }
 
+    get isOnlineGame(): boolean {
+        if (!this.game) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     get winner(): Player[] {
         if (!this.game) {
             return this.onlineGame.getWinner();
         }
         return this.game.getWinner();
+    }
+
+    get gameId(): string {
+        return this.onlineGame.gameToken;
     }
 }
