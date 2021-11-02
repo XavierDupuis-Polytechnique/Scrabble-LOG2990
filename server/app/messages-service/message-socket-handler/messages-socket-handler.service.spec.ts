@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { createServer, Server } from 'http';
-import { io as Client, Socket as ClientSocket } from 'socket.io-client';
-import { expect } from 'chai';
-import { AddressInfo } from 'net';
-import { Socket } from 'socket.io';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
-import { Message } from '@app/messages-service/message.interface';
 import { MessagesSocketHandler, SYSTEM_MESSAGES } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
-import { createSinonStubInstance } from '@app/test.util';
+import { Message } from '@app/messages-service/message.interface';
 import { GlobalSystemMessage, IndividualSystemMessage, SystemMessage } from '@app/messages-service/system-message.interface';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { createSinonStubInstance } from '@app/test.util';
+import { expect } from 'chai';
+import { createServer, Server } from 'http';
+import { AddressInfo } from 'net';
 import { Subject } from 'rxjs';
 import * as sinon from 'sinon';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { Socket } from 'socket.io';
+import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 
 describe('SystemMessagesService', () => {
     let handler: MessagesSocketHandler;
@@ -292,21 +292,21 @@ describe('SystemMessagesService', () => {
         });
     });
 
-    it('should receive individual system message', (done) => {
-        const name = 'abc';
-        clientSocket.emit('userName', name);
-        const room = 'def';
-        clientSocket.emit('joinRoom', room);
+    // it('should receive individual system message', (done) => {
+    //     const name = 'abc';
+    //     clientSocket.emit('userName', name);
+    //     const room = 'def';
+    //     clientSocket.emit('joinRoom', room);
 
-        const sysMessage: IndividualSystemMessage = {
-            content: 'allo',
-            gameToken: room,
-            playerName: name,
-        };
-        clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
-            expect(message).to.deep.equal(sysMessage.content);
-            done();
-        });
-        mockIndividualSystemMessages$.next(sysMessage);
-    });
+    //     const sysMessage: IndividualSystemMessage = {
+    //         content: 'allo',
+    //         gameToken: room,
+    //         playerName: name,
+    //     };
+    //     clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
+    //         expect(message).to.deep.equal(sysMessage.content);
+    //         done();
+    //     });
+    //     mockIndividualSystemMessages$.next(sysMessage);
+    // });
 });
