@@ -1,14 +1,21 @@
 import { TestBed } from '@angular/core/testing';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { BotCreatorService } from './bot-creator.service';
 
 describe('BotCreatorService', () => {
     let botCreator: BotCreatorService;
     const dict = new DictionaryService();
-
+    const mockBotMessageService = jasmine.createSpyObj('BotMessagesService', ['sendAction']);
+    const mockCommandExecuter = jasmine.createSpyObj('CommandExecuterService', ['resetDebug']);
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: BotMessagesService, useValue: mockBotMessageService },
+                { provide: CommandExecuterService, useValue: mockCommandExecuter },
+            ],
         });
         botCreator = TestBed.inject(BotCreatorService);
     });
