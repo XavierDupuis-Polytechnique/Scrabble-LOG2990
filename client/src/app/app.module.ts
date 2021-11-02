@@ -16,6 +16,7 @@ import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
+import { ErrorDialogComponent } from '@app/pages/classic-game/modals/error-dialog/error-dialog.component';
 import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
@@ -30,7 +31,6 @@ import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.c
 import { HomepageComponent } from './pages/homepage/homepage.component';
 import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
 import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -59,6 +59,7 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         ConvertToSoloFormComponent,
         PendingGamesComponent,
         JoinOnlineGameComponent,
+        ErrorDialogComponent,
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,

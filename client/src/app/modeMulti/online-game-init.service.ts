@@ -12,7 +12,15 @@ export class OnlineGameInitService {
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     gameToken$ = new Subject<string>();
     isDisconnected$ = new Subject<boolean>();
+    error$ = new Subject<string>();
     private socket: Socket;
+
+    connect() {
+        this.socket = io(environment.serverSocketUrl, { path: '/newGame' });
+        this.socket.on('connect_error', () => {
+            this.isDisconnected$.next(true);
+        });
+    }
 
     createGameMulti(gameSettings: OnlineGameSettingsUI) {
         this.connect();
@@ -30,12 +38,19 @@ export class OnlineGameInitService {
         });
     }
 
+    listenErrorMessage() {
+        this.socket.on('error', (errorContent) => {
+            this.error$.next(errorContent);
+        });
+    }
+
     joinPendingGame(id: string, playerName: string) {
         if (!this.socket.connected) {
             throw Error("Can't join game, not connected to server");
         }
         this.socket.emit('joinGame', id, playerName);
         this.listenForGameToken();
+        this.listenErrorMessage();
     }
 
     disconnectSocket() {
@@ -56,13 +71,6 @@ export class OnlineGameInitService {
         this.socket.on('gameJoined', (gameToken: string) => {
             this.gameToken$.next(gameToken);
             this.disconnectSocket();
-        });
-    }
-
-    private connect() {
-        this.socket = io(environment.serverSocketUrl, { path: '/newGame' });
-        this.socket.on('connect_error', () => {
-            this.isDisconnected$.next(true);
         });
     }
 }
