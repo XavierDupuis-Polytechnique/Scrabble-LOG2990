@@ -9,7 +9,6 @@ const createGame = 'createGame';
 const joinGame = 'joinGame';
 const gameJoined = 'gameJoined';
 const pendingGameId = 'pendingGameId';
-const disconnect = 'disconnectSocket';
 
 export class NewOnlineGameSocketHandler {
     readonly ioServer: Server;
@@ -49,9 +48,9 @@ export class NewOnlineGameSocketHandler {
                 }
             });
 
-            socket.on(disconnect, () => {
+            socket.on('disconnect', () => {
                 this.onDisconnect(gameId);
-                socket.emit(disconnect);
+                // socket.emit("clientDis");
                 this.emitPendingGamesToAll();
                 console.log('Disconnected: ', socket.id);
             });
@@ -69,7 +68,7 @@ export class NewOnlineGameSocketHandler {
     }
 
     private joinGame(id: string, name: string, socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
-        if (typeof id !== 'string' && typeof name !== 'string') {
+        if (typeof id !== 'string' || typeof name !== 'string') {
             throw Error('Cannot join game, invalid GameSettings');
         }
         const gameToken = this.newOnlineGameService.joinPendingGame(id, name);
