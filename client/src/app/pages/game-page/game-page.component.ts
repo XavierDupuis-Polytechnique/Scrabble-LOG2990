@@ -46,8 +46,10 @@ export class GamePageComponent {
     abandon(): void {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
+        this.info.user.isForfeit = true;
         this.matDialog.open(AbandonButtonComponent, dialogConfig);
     }
+
     get isItMyTurn() {
         try {
             return this.info.user === this.info.activePlayer;
@@ -78,6 +80,9 @@ export class GamePageComponent {
     }
 
     get canPass() {
+        if (this.isEndOfGame) {
+            return !this.isEndOfGame;
+        }
         return this.isItMyTurn;
     }
 
