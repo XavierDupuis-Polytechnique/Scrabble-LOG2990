@@ -75,8 +75,9 @@ export class OnlineGameInitService {
     }
 
     listenForGameToken() {
-        this.socket.on('gameJoined', (gameToken: string) => {
-            this.gameToken$.next(gameToken);
+        this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
+            this.startGame$.next(gameSetting);
+            this.gameToken$.next(gameSetting.id);
             this.disconnectSocket();
         });
     }
