@@ -1,11 +1,14 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-service/system-message.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 
 describe('SystemMessagesService', () => {
     let service: SystemMessagesService;
     before(() => {
-        service = new SystemMessagesService();
+        const gameNotifier = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
+        service = new SystemMessagesService(gameNotifier);
     });
 
     it('should emit global system message', (done) => {
@@ -20,13 +23,14 @@ describe('SystemMessagesService', () => {
     });
 
     it('should emit individual system message', (done) => {
-        const playerId = '1';
+        const playerName = '1';
         const content = 'allo';
-        const individualMessage: IndividualSystemMessage = { playerId, content };
+        const gameToken = '1';
+        const individualMessage: IndividualSystemMessage = { gameToken, playerName, content };
         service.individualSystemMessages$.subscribe((message) => {
             expect(message).to.deep.equal(individualMessage);
             done();
         });
-        service.sendIndividual(playerId, content);
+        service.sendIndividual(playerName, gameToken, content);
     });
 });

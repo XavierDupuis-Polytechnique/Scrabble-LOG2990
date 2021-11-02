@@ -1,3 +1,4 @@
+import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
@@ -7,6 +8,7 @@ import { GameStateToken } from '@app/game/game-logic/interface/game-state.interf
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { isCharUpperCase } from '@app/game/game-logic/utils';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
@@ -33,7 +35,7 @@ describe('PlaceLetter', () => {
     const randomBonus = false;
     const gameCompiler = new GameCompiler();
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService();
+    const messagesService = new SystemMessagesService(new GameActionNotifierService());
 
     beforeEach(() => {
         wordSearcherStub = createStubInstance(WordSearcher);
@@ -45,7 +47,16 @@ describe('PlaceLetter', () => {
             player.points = points;
             return points;
         });
-        game = new ServerGame(randomBonus, 60000, 'default_gameToken', pointCalculatorStub, gameCompiler, messagesService, mockNewGameState$);
+        game = new ServerGame(
+            new TimerController(),
+            randomBonus,
+            60000,
+            'default_gameToken',
+            pointCalculatorStub,
+            gameCompiler,
+            messagesService,
+            mockNewGameState$,
+        );
         game.players.push(player1);
         game.players.push(player2);
         game.start();

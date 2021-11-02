@@ -238,4 +238,20 @@ describe('BotCrawler2', () => {
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
+
+    it('should wuShu, a ghost in the machine (rip the ghost named wushu)', () => {
+        const letters: Letter[] = [
+            { char: 'H', value: 1 },
+            { char: '*', value: 1 },
+        ];
+        bot.letterRack = letters;
+        placeTestWords(7, 7, HORIZONTAL, 'z', boardService);
+        placeTestWords(1, 11, HORIZONTAL, 'wu', boardService);
+        placeTestWords(5, 11, HORIZONTAL, 'u', boardService);
+
+        bot.bruteForceStart();
+        const result: ValidWord[] = bot.validWordList;
+        const expected = 'wuShu';
+        expect(result[27].word).toEqual(expected);
+    });
 });

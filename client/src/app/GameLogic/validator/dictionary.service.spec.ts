@@ -246,7 +246,7 @@ describe('DictionaryService', () => {
             { char: 'D', value: 1 },
             { char: 'Z', value: 1 },
         ];
-        const expected = 'attendant';
+        const expected = 'attEndant';
 
         const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
@@ -299,7 +299,7 @@ describe('DictionaryService', () => {
             { char: 'K', value: 1 },
             { char: 'R', value: 1 },
         ];
-        const expected = 'houssiner';
+        const expected = 'Houssiner';
 
         const result: string = dictionaryService.regexValidation(testWord, testLine, letters);
         expect(result).toEqual(expected);
