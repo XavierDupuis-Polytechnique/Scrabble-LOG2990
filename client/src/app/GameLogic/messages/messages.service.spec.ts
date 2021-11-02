@@ -5,25 +5,32 @@ import { CommandParserService } from '@app/GameLogic/commands/command-parser/com
 import { CommandType } from '@app/GameLogic/commands/command.interface';
 import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
 import { Observable, Subject } from 'rxjs';
-import { MessagesService } from './messages.service';
 
 describe('Service: Messages', () => {
     let service: MessagesService;
     let commandParserSpy: jasmine.SpyObj<CommandParserService>;
+    const mockOfflineErrorMessage$ = new Subject<string>();
     let onlineChatSpy: jasmine.SpyObj<OnlineChatHandlerService>;
     const mockOpponentMessage$ = new Subject<ChatMessage>();
     const mockErrorMessage$ = new Subject<string>();
     const mockSystemMessage$ = new Subject<string>();
 
     beforeEach(() => {
-        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse']);
+        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse', 'sendErrorMessage'], ['errorMessage$']);
+
+        (Object.getOwnPropertyDescriptor(commandParserSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
+            mockOfflineErrorMessage$,
+        );
+
         onlineChatSpy = jasmine.createSpyObj(
             'OnlineChatHandler',
             ['sendMessage'],
             ['connected', 'opponentMessage$', 'errorMessage$', 'systemMessage$'],
         );
+
         (Object.getOwnPropertyDescriptor(onlineChatSpy, 'opponentMessage$')?.get as jasmine.Spy<() => Observable<ChatMessage>>).and.returnValue(
             mockOpponentMessage$,
         );
@@ -76,8 +83,7 @@ describe('Service: Messages', () => {
 
     it('should receive error', () => {
         const errorContent = 'this is an error';
-        const error = new Error(errorContent);
-        service.receiveError(error);
+        service.receiveErrorMessage(errorContent);
         const log = service.messagesLog;
         const lastMessage = log[log.length - 1];
         const message: Message = {
@@ -90,11 +96,11 @@ describe('Service: Messages', () => {
 
     it('should catch error when not valid command', () => {
         const errorContent = 'this is a parse error';
-        commandParserSpy.parse.and.throwError(errorContent);
         const content = '!notACommand';
         const from = 'tom';
         service.receiveMessagePlayer(from, content);
         const log = service.messagesLog;
+        mockOfflineErrorMessage$.next(errorContent);
         const lastMessage = log[log.length - 1];
         const errorMessage: Message = {
             from: 'SystemError',
@@ -143,20 +149,18 @@ describe('Service: Messages', () => {
 
     it('should catch a thrown error because the message is invalid', () => {
         const errorContent = 'mot ou emplacement manquant';
-        const message = '?!?@#?!@#?';
-        commandParserSpy.parse.and.throwError(errorContent);
-        const spyReceiveError = spyOn(service, 'receiveError');
-
+        const message = '!placer ?!?@#?!@#?';
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
         service.receiveMessageOpponent('Tim', message);
-
-        expect(spyReceiveError).toHaveBeenCalled();
+        mockOfflineErrorMessage$.next(errorContent);
+        expect(spyReceiveError).toHaveBeenCalledWith(errorContent);
     });
 
     it('should not throw error when message is valid', () => {
         const message = 'l l';
 
         commandParserSpy.parse.and.returnValue(CommandType.Exchange);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 
@@ -167,7 +171,7 @@ describe('Service: Messages', () => {
         const message = 'l lasd';
 
         commandParserSpy.parse.and.returnValue(CommandType.Exchange);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 

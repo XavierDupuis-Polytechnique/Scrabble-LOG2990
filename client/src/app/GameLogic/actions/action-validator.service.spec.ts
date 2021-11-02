@@ -94,9 +94,8 @@ describe('ActionValidatorService', () => {
     /// INVALID ACTION TYPE TESTS ///
     it('should throw error when receiving an unrecognized action type', () => {
         const action = new UnknownAction(currentPlayer);
-        expect(() => {
-            service.validateAction(action);
-        }).toThrowError("Action couldn't be validated");
+        service.validateAction(action);
+        expect(messagesSpy.receiveErrorMessage).toHaveBeenCalledWith("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
     });
     /// ////////////////// ///
 
