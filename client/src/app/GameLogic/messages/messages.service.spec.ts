@@ -72,10 +72,7 @@ describe('Service: Messages', () => {
         const errorContent = 'this is a parse error';
         const content = '!notACommand';
         const from = 'tom';
-        // TODO: verifier si les tests font du sens
-        commandParserSpy.parse(content, from);
         service.receiveMessagePlayer(from, content);
-
         const log = service.messagesLog;
         mockOfflineErrorMessage$.next(errorContent);
         const lastMessage = log[log.length - 1];
