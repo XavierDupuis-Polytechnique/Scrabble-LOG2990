@@ -76,7 +76,7 @@ export class NewOnlineGameSocketHandler {
             throw Error("Impossible de rejoindre la partie, elle n'existe pas.");
         }
         socket.join(id);
-        this.sendGameTokenToPlayers(id, gameToken, gameSettings);
+        this.sendGameSettingsToPlayers(id, gameToken, gameSettings);
     }
 
     private getPendingGame(id: string): OnlineGameSettings {
@@ -94,7 +94,7 @@ export class NewOnlineGameSocketHandler {
         socket.emit('error', errorMessage);
     }
 
-    private sendGameTokenToPlayers(gameId: string, gameToken: string, gameSettings: OnlineGameSettings) {
+    private sendGameSettingsToPlayers(gameId: string, gameToken: string, gameSettings: OnlineGameSettings) {
         gameSettings.id = gameToken;
         this.ioServer.to(gameId).emit(gameJoined, gameSettings);
     }
