@@ -2,6 +2,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/GameLogic/constants';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { OnlineGameSettingsUI } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { Socket } from 'socket.io-client';
 
 export const placementSettingsToString = (placement: PlacementSetting): string => {
     const x = placement.x;
@@ -47,6 +48,10 @@ export const isGameSettings = (obj: unknown) => {
         (obj as OnlineGameSettingsUI).timePerTurn !== undefined &&
         typeof (obj as OnlineGameSettingsUI).timePerTurn === 'number'
     );
+};
+
+export const isSocketConnected = (socket: Socket | undefined): boolean => {
+    return socket ? socket.connected : false;
 };
 
 export const isStringALowerCaseLetter = (string: string): boolean => {

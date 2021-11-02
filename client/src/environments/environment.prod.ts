@@ -1,5 +1,5 @@
 export const environment = {
     production: true,
     serverUrl: 'myServerURL', // TODO: Add remote server URL
-    serverSocketUrl: 'myServerSocket',
+    socketServerUrl: 'mySocketServeURL', // TODO: Add remote server URL
 };

@@ -1,10 +1,11 @@
-import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
+import { TestBed } from '@angular/core/testing';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { Action } from './action';
 
 class TestAction extends Action {
@@ -20,16 +21,14 @@ describe('Action', () => {
     let user: User;
     let gameSpy: jasmine.Spy<(action: Action) => void>;
     const randomBonus = false;
+    const dict = new DictionaryService();
     beforeEach(() => {
-        const boardService = new BoardService();
-        game = new Game(
-            randomBonus,
-            TIME_PER_TURN,
-            new TimerService(),
-            new PointCalculatorService(boardService),
-            boardService,
-            new MessagesService(new CommandParserService()),
-        );
+        TestBed.configureTestingModule({ providers: [{ provide: DictionaryService, useValue: dict }] });
+        const messageService = TestBed.inject(MessagesService);
+        const timerService = TestBed.inject(TimerService);
+        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const boardService = TestBed.inject(BoardService);
+        game = new Game(randomBonus, TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         gameSpy = spyOn(game, 'doAction');
         user = new User('Paul');
         action = new TestAction(user);

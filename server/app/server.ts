@@ -1,5 +1,7 @@
 import { Application } from '@app/app';
 import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { NewOnlineGameSocketHandler } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
@@ -12,7 +14,8 @@ export class Server {
     private static readonly baseDix: number = 10;
     private server: http.Server;
     private onlineGameManager: NewOnlineGameSocketHandler;
-    constructor(private readonly application: Application, private onlineGameService: NewOnlineGameService) {}
+    constructor(private readonly application: Application, private onlineGameService: NewOnlineGameService, private systemMessagesService: SystemMessagesService) {}
+    private messageHandler: MessagesSocketHandler;
 
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
@@ -24,6 +27,7 @@ export class Server {
             return false;
         }
     }
+
     init(): void {
         this.application.app.set('port', Server.appPort);
 
@@ -31,6 +35,8 @@ export class Server {
         this.onlineGameManager = new NewOnlineGameSocketHandler(this.server, this.onlineGameService);
         this.onlineGameManager.newGameHandler();
 
+        this.messageHandler = new MessagesSocketHandler(this.server, this.systemMessagesService);
+        this.messageHandler.handleSockets();
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
