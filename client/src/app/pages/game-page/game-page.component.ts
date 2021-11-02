@@ -52,7 +52,7 @@ export class GamePageComponent {
     get isItMyTurn() {
         try {
             if (this.isEndOfGame) {
-                return !this.isEndOfGame;
+                return false;
             }
             return this.info.user === this.info.activePlayer;
         } catch (e) {
