@@ -10,7 +10,7 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
