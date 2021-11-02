@@ -1,60 +1,61 @@
-// import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-// import { THOUSAND, THREE, TWO } from '@app/GameLogic/constants';
-// import { TimerService } from './timer.service';
+import { THOUSAND, THREE, TWO } from '@app/game/game-logic/constants';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
+import { Timer } from '@app/game/game-logic/timer/timer.service';
+import { expect } from 'chai';
+import { delay } from 'rxjs';
 
-// describe('TimerService', () => {
-//     let service: TimerService;
+describe('TimerService', () => {
+    let service: Timer;
 
-//     beforeEach(() => {
-//         TestBed.configureTestingModule({});
-//         service = TestBed.inject(TimerService);
-//     });
+    beforeEach(() => {
+        service = new Timer('gameToken', new TimerController());
+    });
 
-//     it('should be created', () => {
-//         expect(service).toBeTruthy();
-//     });
+    it('should be created', () => {
+        expect(service).to.be.instanceOf(Timer);
+    });
 
-//     it('should time the interval', fakeAsync(() => {
-//         const time = THOUSAND;
-//         let timerDone = false;
-//         const time$ = service.start(time);
-//         time$.subscribe(() => {
-//             timerDone = true;
-//         });
-//         tick(time / 2);
-//         expect(timerDone).toBeFalsy();
-//         tick(time / 2);
-//         expect(timerDone).toBeTruthy();
-//     }));
+    it('should time the interval', () => {
+        const time = THOUSAND;
+        let timerDone = false;
+        const time$ = service.start(time);
+        time$.subscribe(() => {
+            timerDone = true;
+        });
+        delay(time / 2);
+        expect(timerDone).to.be.equal(false);
+        delay(time / 2);
+        expect(timerDone).to.be.equal(true);
+    });
 
-//     it('should give time left', fakeAsync(() => {
-//         const time = 3000;
-//         let timeLeft: number | undefined;
-//         service.timeLeft$.subscribe((value: number | undefined) => {
-//             timeLeft = value;
-//         });
-//         service.start(time);
-//         expect(timeLeft).toBe(time);
-//         tick(THOUSAND);
-//         expect(timeLeft).toBe(TWO * THOUSAND);
-//         tick(THOUSAND);
-//         expect(timeLeft).toBe(THOUSAND);
-//         tick(THOUSAND);
-//         expect(timeLeft).toBe(0);
-//     }));
+    it('should give time left', () => {
+        const time = 3000;
+        let timeLeft: number | undefined;
+        service.timeLeft$.subscribe((value: number | undefined) => {
+            timeLeft = value;
+        });
+        service.start(time);
+        expect(timeLeft).to.be.equal(time);
+        delay(THOUSAND);
+        expect(timeLeft).to.be.equal(TWO * THOUSAND);
+        delay(THOUSAND);
+        expect(timeLeft).to.be.equal(THOUSAND);
+        delay(THOUSAND);
+        expect(timeLeft).to.be.equal(0);
+    });
 
-//     it('should stop', fakeAsync(() => {
-//         const time = 4000;
-//         let timeLeft: number | undefined;
-//         service.timeLeft$.subscribe((value) => {
-//             timeLeft = value;
-//         });
-//         service.start(time);
-//         expect(timeLeft).toBe(time);
-//         tick(THOUSAND);
-//         expect(timeLeft).toBe(THREE * THOUSAND);
-//         service.stop();
-//         tick(THOUSAND);
-//         expect(timeLeft).toBe(THREE * THOUSAND);
-//     }));
-// });
+    it('should stop', () => {
+        const time = 4000;
+        let timeLeft: number | undefined;
+        service.timeLeft$.subscribe((value: number | undefined) => {
+            timeLeft = value;
+        });
+        service.start(time);
+        expect(timeLeft).to.be.equal(time);
+        delay(THOUSAND);
+        expect(timeLeft).to.be.equal(THREE * THOUSAND);
+        service.stop();
+        delay(THOUSAND);
+        expect(timeLeft).to.be.equal(THREE * THOUSAND);
+    });
+});
