@@ -20,6 +20,7 @@ export class ServerGame {
     consecutivePass: number = 0;
     board: Board;
     timer: Timer;
+    forfeitedIndex: number;
 
     isEnded$ = new Subject<undefined>();
     private isEndedValue: boolean = false;
@@ -101,6 +102,11 @@ export class ServerGame {
     getWinner(): Player[] {
         let highestScore = Number.MIN_SAFE_INTEGER;
         let winners: Player[] = [];
+        if (this.forfeitedIndex) {
+            winners = [this.players[this.forfeitedIndex]];
+            return winners;
+        }
+
         for (const player of this.players) {
             if (player.points === highestScore) {
                 winners.push(player);
@@ -111,6 +117,13 @@ export class ServerGame {
             }
         }
         return winners;
+    }
+
+    forfeit(playerName: string) {
+        const winnerIndex = this.players.findIndex((player) => {
+            return player.name === playerName;
+        });
+        this.forfeitedIndex = Math.abs(winnerIndex - 1);
     }
 
     private pickFirstPlayer() {
