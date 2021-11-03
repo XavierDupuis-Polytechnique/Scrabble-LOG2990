@@ -23,7 +23,7 @@ describe('GameCreator', () => {
     let gameToken: string;
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
     const newGameStateSubject = new Subject<GameStateToken>();
-
+    const endGameSubject = new Subject<string>();
     beforeEach(() => {
         id = getRandomInt(Number.MAX_SAFE_INTEGER).toString();
         gameToken = id + 'token';
@@ -36,6 +36,7 @@ describe('GameCreator', () => {
             new GameCompiler(),
             new SystemMessagesService(new GameActionNotifierService()),
             newGameStateSubject,
+            endGameSubject,
             new TimerController(),
         );
     });

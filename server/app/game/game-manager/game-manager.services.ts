@@ -28,6 +28,9 @@ export class GameManagerService {
     activeGames = new Map<string, ServerGame>();
     activePlayers = new Map<string, PlayerRef>(); // gameToken => PlayerRef[]
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
+
+    private endGame$ = new Subject<string>(); // gameToken
+
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
     get newGameState$(): Observable<GameStateToken> {
@@ -51,8 +54,13 @@ export class GameManagerService {
             this.gameCompiler,
             this.messagesService,
             this.newGameStateSubject,
+            this.endGame$,
             this.timerController,
         );
+
+        this.endGame$.subscribe((gameToken: string) => {
+            this.deleteGame(gameToken);
+        });
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
@@ -104,7 +112,6 @@ export class GameManagerService {
             const gameToken = playerRef.gameToken;
             this.notifyAction(compiledAction, gameToken);
             player.play(compiledAction);
-            // eslint-disable-next-line no-empty
         } catch (e) {
             return;
         }
@@ -120,22 +127,22 @@ export class GameManagerService {
         this.activePlayers.delete(playerId);
         const game = this.activeGames.get(gameToken);
         if (!game) {
-            throw Error(`GameToken ${gameToken} is not in active game`);
+            return;
         }
         this.endForfeitedGame(game, playerRef.player.name);
-        this.activeGames.delete(gameToken);
+        this.deleteGame(gameToken);
     }
 
     private startInactiveGameDestructionTimer(gameToken: string) {
         setTimeout(() => {
             const currentLinkedClient = this.linkedClients.get(gameToken);
             if (currentLinkedClient === undefined) {
-                this.deleteGame(gameToken);
+                this.deleteInactiveGame(gameToken);
                 return;
             }
 
             if (currentLinkedClient.length !== 2) {
-                this.deleteGame(gameToken);
+                this.deleteInactiveGame(gameToken);
                 return;
             }
         }, NEW_GAME_TIMEOUT);
@@ -158,11 +165,15 @@ export class GameManagerService {
         game.stop();
     }
 
-    private deleteGame(gameToken: string) {
+    private deleteInactiveGame(gameToken: string) {
         const serverGame = this.activeGames.get(gameToken);
         if (serverGame) {
             this.endGame(serverGame);
         }
+        this.deleteGame(gameToken);
+    }
+
+    private deleteGame(gameToken: string) {
         this.activeGames.delete(gameToken);
         this.linkedClients.delete(gameToken);
     }

@@ -37,7 +37,7 @@ describe('PlaceLetter', () => {
     const gameCompiler = new GameCompiler();
     const mockNewGameState$ = new Subject<GameStateToken>();
     const messagesService = new SystemMessagesService(new GameActionNotifierService());
-
+    const mockEndGame$ = new Subject<string>();
     beforeEach(() => {
         wordSearcherStub = createStubInstance(WordSearcher);
         wordSearcherStub.listOfValidWord.returns([{ letters: [new Tile()], index: [0] }]);
@@ -57,6 +57,7 @@ describe('PlaceLetter', () => {
             gameCompiler,
             messagesService,
             mockNewGameState$,
+            mockEndGame$,
         );
         game.players.push(player1);
         game.players.push(player2);
