@@ -4,13 +4,14 @@ import { SystemMessagesService } from '@app/messages-service/system-messages.ser
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
+import * as sinon from 'sinon';
 
 describe('SystemMessagesService', () => {
     let service: SystemMessagesService;
     const mockNotification$ = new Subject<GameActionNotification>();
     before(() => {
         const gameNotifier = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
-        gameNotifier.notification$ = mockNotification$;
+        sinon.stub(gameNotifier, 'notification$').get(() => mockNotification$);
         service = new SystemMessagesService(gameNotifier);
     });
 

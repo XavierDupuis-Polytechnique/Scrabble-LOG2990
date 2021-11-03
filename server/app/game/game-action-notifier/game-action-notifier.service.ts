@@ -4,7 +4,7 @@ import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { placementSettingsToString } from '@app/game/game-logic/utils';
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
 
 export interface GameActionNotification {
@@ -15,7 +15,10 @@ export interface GameActionNotification {
 
 @Service()
 export class GameActionNotifierService {
-    notification$: Subject<GameActionNotification> = new Subject<GameActionNotification>();
+    private notificationSubject: Subject<GameActionNotification> = new Subject<GameActionNotification>();
+    get notification$(): Observable<GameActionNotification> {
+        return this.notificationSubject;
+    }
 
     notify(action: Action, linkedClients: BindedSocket[], gameToken: string): void {
         if (action instanceof ExchangeLetter) {
@@ -45,7 +48,7 @@ export class GameActionNotifierService {
         const content = `${player.name} échange ${lettersToExchange.length} lettres`;
         const to = [this.findOpponentName(player.name, linkedClients)];
         const notification: GameActionNotification = { gameToken, content, to };
-        this.notification$.next(notification);
+        this.notificationSubject.next(notification);
     }
 
     private notifyPlaceLetter(placeLetter: PlaceLetter, linkedClients: BindedSocket[], gameToken: string) {
@@ -56,7 +59,7 @@ export class GameActionNotifierService {
         const content = `${player.name} place le mot ${word} en ${placementString}`;
         const to = [this.findOpponentName(player.name, linkedClients)];
         const notification: GameActionNotification = { gameToken, content, to };
-        this.notification$.next(notification);
+        this.notificationSubject.next(notification);
     }
 
     private notifyPassTurn(passTurn: PassTurn, linkedClients: BindedSocket[], gameToken: string) {
@@ -64,6 +67,6 @@ export class GameActionNotifierService {
         const content = `${player.name} passe son tour`;
         const to = [this.findOpponentName(player.name, linkedClients)];
         const notification: GameActionNotification = { gameToken, content, to };
-        this.notification$.next(notification);
+        this.notificationSubject.next(notification);
     }
 }
