@@ -4,8 +4,11 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { NEW_GAME_TIMEOUT } from '@app/constants';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
+import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
+import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
@@ -29,7 +32,7 @@ describe('GameManagerService', () => {
     let stubTimerController: TimerController;
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
-    const clock = sinon.useFakeTimers();
+    let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
         stubMessageService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
@@ -44,6 +47,7 @@ describe('GameManagerService', () => {
     });
 
     beforeEach(() => {
+        clock = sinon.useFakeTimers();
         service = new GameManagerService(
             stubPointCalculator,
             stubMessageService,
@@ -360,8 +364,7 @@ describe('GameManagerService', () => {
         }).to.throw(Error);
     });
 
-    it('should delete game when unjoined for a certain time', async () => {\
-        // TODO: Fix this test
+    it('should delete game when unjoined for a certain time', async () => {
         const gameSettings: OnlineGameSettings = {
             id: '1',
             timePerTurn: 60000,
@@ -370,10 +373,69 @@ describe('GameManagerService', () => {
             opponentName: 'test2',
         };
         service.createGame('1', gameSettings);
-        clock.tick(3 * NEW_GAME_TIMEOUT);
+        clock.tick(NEW_GAME_TIMEOUT);
         await Promise.resolve();
-        service.activeGames.delete('1');
         expect(service.activeGames.size).to.be.equal(0);
+    });
+
+    it('should delete game when linked clients are undefined', async () => {
+        const gameSettings: OnlineGameSettings = {
+            id: '1',
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName: 'test1',
+            opponentName: 'test2',
+        };
+        service.createGame('1', gameSettings);
+        service.linkedClients.clear();
+        clock.tick(NEW_GAME_TIMEOUT);
+        await Promise.resolve();
+        expect(service.activeGames.size).to.be.equal(0);
+    });
+
+    it('should not delete joined game after the inactive time', async () => {
+        // TODO: Fix this test
+        const playerName = 'test1';
+        const opponentName = 'test2';
+        const gameToken = '1';
+        const gameSettings: OnlineGameSettings = {
+            id: gameToken,
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName,
+            opponentName,
+        };
+        service.createGame(gameToken, gameSettings);
+
+        const userAuth1: UserAuth = {
+            gameToken,
+            playerName,
+        };
+        service.addPlayerToGame(gameToken, userAuth1);
+
+        const userAuth2: UserAuth = {
+            gameToken,
+            playerName: opponentName,
+        };
+        service.addPlayerToGame(gameToken, userAuth2);
+        clock.tick(NEW_GAME_TIMEOUT);
+        await Promise.resolve();
+        expect(service.activeGames.size).to.be.equal(1);
+    });
+
+    it('should not delete linked clients when game is deleted before the time runs out', async () => {
+        const gameSettings: OnlineGameSettings = {
+            id: '1',
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName: 'test1',
+            opponentName: 'test2',
+        };
+        service.createGame('1', gameSettings);
+        service.activeGames.delete('1');
+        clock.tick(NEW_GAME_TIMEOUT);
+        await Promise.resolve();
+        expect(service.linkedClients.size).to.be.equal(0);
     });
 
     it('should get newGameState$ properly', () => {
@@ -406,8 +468,12 @@ describe('GameManagerService', () => {
         const onlineAction: OnlineAction = {
             type: OnlineActionType.Pass,
         };
+        const player = service.activePlayers.get(userId) as unknown as Player;
+        // eslint-disable-next-line no-unused-vars
+        stubActionCompiler.translate = (action: OnlineAction): Action => {
+            return new PassTurn(player);
+        };
         expect(() => {
-            // TODO: fix this
             service.linkedClients.clear();
             service.receivePlayerAction(userId, onlineAction);
         }).to.not.throw(Error);
