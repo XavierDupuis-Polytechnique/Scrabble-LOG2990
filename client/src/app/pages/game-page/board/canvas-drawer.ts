@@ -60,6 +60,7 @@ export class CanvasDrawer {
                 } else if (board.grid[i][j].wordMultiplicator !== 1) {
                     this.drawBonus(j, i, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
                 }
+                // logs
             }
         }
 
