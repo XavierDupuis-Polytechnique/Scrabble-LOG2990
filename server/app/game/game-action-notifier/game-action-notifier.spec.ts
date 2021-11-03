@@ -10,6 +10,7 @@ import { PointCalculatorService } from '@app/game/game-logic/point-calculator/po
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
+import * as sinon from 'sinon';
 
 describe('GameActionNotifier', () => {
     let gameActionNotifierService: GameActionNotifierService;
@@ -41,6 +42,8 @@ describe('GameActionNotifier', () => {
     });
 
     it('should throw Error if notification with exchangeLetter action', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const findOppName = sinon.spy(gameActionNotifierService, 'findOpponentName' as any);
         const linkedClients = [
             { socketID: 'aaa', name: 'Joueur1' },
             { socketID: 'aaa', name: 'Joueur1' },
@@ -52,7 +55,7 @@ describe('GameActionNotifier', () => {
             expect(message).to.be.undefined;
         });
         // eslint-disable-next-line dot-notation
-        expect(gameActionNotifierService['findOpponentName']).to.throw();
+        expect(findOppName).to.throw();
     });
 
     it('should send notification with passTurn action', () => {
