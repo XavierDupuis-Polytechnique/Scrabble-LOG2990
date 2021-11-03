@@ -9,9 +9,12 @@ import * as sinon from 'sinon';
 describe('SystemMessagesService', () => {
     let service: SystemMessagesService;
     const mockNotification$ = new Subject<GameActionNotification>();
+    const gameNotifier = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
     before(() => {
-        const gameNotifier = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
         sinon.stub(gameNotifier, 'notification$').get(() => mockNotification$);
+    });
+
+    beforeEach(() => {
         service = new SystemMessagesService(gameNotifier);
     });
 

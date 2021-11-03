@@ -15,7 +15,7 @@ import * as sinon from 'sinon';
 import { Socket } from 'socket.io';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
 
-describe('SystemMessagesService', () => {
+describe('MessagesService', () => {
     let handler: MessagesSocketHandler;
     let clientSocket: ClientSocket;
     let serverSocket: Socket;
@@ -23,7 +23,6 @@ describe('SystemMessagesService', () => {
     let httpServer: Server;
     const mockGlobalSystemMessages$ = new Subject<GlobalSystemMessage>();
     const mockIndividualSystemMessages$ = new Subject<IndividualSystemMessage>();
-
     before((done) => {
         httpServer = createServer();
         httpServer.listen(() => {
