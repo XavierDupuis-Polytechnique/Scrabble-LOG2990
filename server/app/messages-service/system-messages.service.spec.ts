@@ -3,7 +3,7 @@ import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-serv
 import { SystemMessagesService } from '@app/messages-service/system-messages.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
-import { Subject } from 'rxjs';
+import { first, Subject } from 'rxjs';
 import * as sinon from 'sinon';
 
 describe('SystemMessagesService', () => {
@@ -19,7 +19,7 @@ describe('SystemMessagesService', () => {
         const gameToken = '1';
         const content = 'allo';
         const globalMessage: GlobalSystemMessage = { gameToken, content };
-        service.globalSystemMessages$.subscribe((message) => {
+        service.globalSystemMessages$.pipe(first()).subscribe((message) => {
             expect(message).to.deep.equal(globalMessage);
             done();
         });
@@ -31,7 +31,7 @@ describe('SystemMessagesService', () => {
         const content = 'allo';
         const gameToken = '1';
         const individualMessage: IndividualSystemMessage = { gameToken, playerName, content };
-        service.individualSystemMessages$.subscribe((message) => {
+        service.individualSystemMessages$.pipe(first()).subscribe((message) => {
             expect(message).to.deep.equal(individualMessage);
             done();
         });
@@ -44,8 +44,13 @@ describe('SystemMessagesService', () => {
             content: 'allo',
             to: ['test1'],
         };
-        service.individualSystemMessages$.subscribe((message) => {
-            expect(message).to.deep.equal(notification);
+        const individualMessage = {
+            gameToken: '1',
+            content: 'allo',
+            playerName: 'test1',
+        };
+        service.individualSystemMessages$.pipe(first()).subscribe((message) => {
+            expect(message).to.deep.equal(individualMessage);
         });
         mockNotification$.next(notification);
     });
