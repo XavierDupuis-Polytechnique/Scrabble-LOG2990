@@ -13,31 +13,28 @@ describe('NewOnlineGameService', () => {
         service = new NewOnlineGameService(gameManagerStub);
     });
 
-    it('should createGame', (done) => {
+    it('should createGame', () => {
         const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
         service.createPendingGame(gameSettings);
         expect(service.pendingGames.size).to.equal(1);
-        done();
     });
 
-    it('on JoinGame should update gameSetting and delete pendingGame', (done) => {
+    it('on JoinGame should update gameSetting and delete pendingGame', () => {
         const id = service.getPendingGames()[0].id;
         const playerName = 'Sim';
         service.joinPendingGame(id, playerName);
         expect(service.pendingGames.size).to.equal(0);
-        done();
     });
 
-    it('on JoinGame should not delete pending game if player join not existing game', (done) => {
+    it('on JoinGame should not delete pending game if player join not existing game', () => {
         service.pendingGames.clear();
         const id = 'abc';
         const playerName = 'Sim';
         const confirmedId = service.joinPendingGame(id, playerName);
         expect(confirmedId).to.be.undefined;
-        done();
     });
 
-    it('on JoinGame should not delete pending game if gameSetting of game are not defined', (done) => {
+    it('on JoinGame should not delete pending game if gameSetting of game are not defined', () => {
         service.pendingGames.clear();
         const gameSetting = undefined as unknown;
         service.pendingGames.set('abc', gameSetting as OnlineGameSettings);
@@ -45,10 +42,9 @@ describe('NewOnlineGameService', () => {
         const playerName = 'Sim';
         const confirmedId = service.joinPendingGame(id, playerName);
         expect(confirmedId).to.be.undefined;
-        done();
     });
 
-    it('on JoinGame should not delete pending game if two players are already in gameSetting', (done) => {
+    it('on JoinGame should not delete pending game if two players are already in gameSetting', () => {
         service.pendingGames.clear();
         const gameSettings = { playerName: 'Max', opponentName: 'Allo', randomBonus: true, timePerTurn: 60000 };
         service.pendingGames.set('abc', gameSettings);
@@ -56,6 +52,23 @@ describe('NewOnlineGameService', () => {
         const playerName = 'Sim';
         const confirmedId = service.joinPendingGame(id, playerName);
         expect(confirmedId).to.be.undefined;
-        done();
+    });
+
+    it('getPendingGame should return correct pending game', () => {
+        service.pendingGames.clear();
+        const gameSettings = { playerName: 'Max', opponentName: 'Allo', randomBonus: true, timePerTurn: 60000 };
+        service.pendingGames.set('abc', gameSettings);
+        const id = 'abc';
+        expect(service.getPendingGame(id)).to.deep.equal(gameSettings);
+    });
+
+    it('getPendingGame should throw if game does not exist', () => {
+        service.pendingGames.clear();
+        const id = 'abc';
+        try {
+            service.getPendingGame(id);
+        } catch (error) {
+            expect(error.message).to.equal('This game does not exist.');
+        }
     });
 });
