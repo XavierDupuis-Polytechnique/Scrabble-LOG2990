@@ -1,5 +1,5 @@
-/* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-unused-expressions */
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
@@ -10,13 +10,11 @@ import { PointCalculatorService } from '@app/game/game-logic/point-calculator/po
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
-import * as sinon from 'sinon';
 
 describe('GameActionNotifier', () => {
     let gameActionNotifierService: GameActionNotifierService;
     let pointCalculatorService: PointCalculatorService;
     let wordSearcher: WordSearcher;
-    // const mockNotification$ = new Subject<GameActionNotification>();
     const lettersToExchange = [
         { char: 'm', value: 3 },
         { char: 'a', value: 1 },
@@ -42,20 +40,20 @@ describe('GameActionNotifier', () => {
     });
 
     it('should throw Error if notification with exchangeLetter action', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const findOppName = sinon.spy(gameActionNotifierService, 'findOpponentName' as any);
         const linkedClients = [
             { socketID: 'aaa', name: 'Joueur1' },
             { socketID: 'aaa', name: 'Joueur1' },
         ];
-        const exchangeAction = new ExchangeLetter(new Player('allo'), lettersToExchange);
+        const exchangeAction = new ExchangeLetter(new Player('Joueur1'), lettersToExchange);
         const gameToken = '1';
-        gameActionNotifierService.notify(exchangeAction, linkedClients, gameToken);
-        gameActionNotifierService.notification$.subscribe((message) => {
-            expect(message).to.be.undefined;
-        });
-        // eslint-disable-next-line dot-notation
-        expect(findOppName).to.throw();
+        try {
+            gameActionNotifierService.notify(exchangeAction, linkedClients, gameToken);
+            gameActionNotifierService.notification$.subscribe((message) => {
+                expect(message).to.be.undefined;
+            });
+        } catch (e) {
+            expect(e.message).to.equal('No opponent found for Joueur1');
+        }
     });
 
     it('should send notification with passTurn action', () => {
