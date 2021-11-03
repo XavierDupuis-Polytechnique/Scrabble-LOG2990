@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { RACK_LETTER_COUNT } from '@app/game/game-logic/constants';
@@ -11,6 +12,7 @@ import { GameCompiler } from '@app/services/game-compiler.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
+import { spy } from 'sinon';
 
 const TIME_PER_TURN = 10;
 
@@ -154,4 +156,20 @@ describe('ServerGame', () => {
         expect(game.getWinner().length).to.be.equal(1);
         expect(game.getWinner()[0]).to.be.deep.equal(p2);
     });
+
+    it('endOfTurn should return true and call onEndOfGame if the isEnded is true', () => {
+        game.stop();
+        const gameSpy = spy(game, 'onEndOfGame');
+        const result = game['startTurn']();
+        expect(result).to.be.equal(true);
+        expect(gameSpy.called).to.be.equal(true);
+    });
+
+    it('isEndOfGame should return true if isEnded is true', () => {
+        game.stop();
+        const result = game['startTurn']();
+        expect(result).to.be.equal(true);
+    });
+
+    it('endOfTurn should return if isEnded is true', () => {});
 });
