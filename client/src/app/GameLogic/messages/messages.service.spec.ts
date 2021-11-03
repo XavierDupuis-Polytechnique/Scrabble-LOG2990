@@ -3,16 +3,49 @@
 import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
+import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
 import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
-import { MessagesService } from './messages.service';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
+import { Observable, Subject } from 'rxjs';
 
 describe('Service: Messages', () => {
     let service: MessagesService;
     let commandParserSpy: jasmine.SpyObj<CommandParserService>;
+    const mockOfflineErrorMessage$ = new Subject<string>();
+    let onlineChatSpy: jasmine.SpyObj<OnlineChatHandlerService>;
+    const mockOpponentMessage$ = new Subject<ChatMessage>();
+    const mockErrorMessage$ = new Subject<string>();
+    const mockSystemMessage$ = new Subject<string>();
+
     beforeEach(() => {
-        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse']);
+        commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse', 'sendErrorMessage'], ['errorMessage$']);
+
+        (Object.getOwnPropertyDescriptor(commandParserSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
+            mockOfflineErrorMessage$,
+        );
+
+        onlineChatSpy = jasmine.createSpyObj(
+            'OnlineChatHandler',
+            ['sendMessage'],
+            ['connected', 'opponentMessage$', 'errorMessage$', 'systemMessage$'],
+        );
+
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'opponentMessage$')?.get as jasmine.Spy<() => Observable<ChatMessage>>).and.returnValue(
+            mockOpponentMessage$,
+        );
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
+            mockErrorMessage$,
+        );
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'systemMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
+            mockSystemMessage$,
+        );
+
         TestBed.configureTestingModule({
-            providers: [{ provide: CommandParserService, useValue: commandParserSpy }],
+            providers: [
+                { provide: CommandParserService, useValue: commandParserSpy },
+                { provide: OnlineChatHandlerService, useValue: onlineChatSpy },
+            ],
         });
         service = TestBed.inject(MessagesService);
     });
@@ -50,8 +83,7 @@ describe('Service: Messages', () => {
 
     it('should receive error', () => {
         const errorContent = 'this is an error';
-        const error = new Error(errorContent);
-        service.receiveError(error);
+        service.receiveErrorMessage(errorContent);
         const log = service.messagesLog;
         const lastMessage = log[log.length - 1];
         const message: Message = {
@@ -64,11 +96,11 @@ describe('Service: Messages', () => {
 
     it('should catch error when not valid command', () => {
         const errorContent = 'this is a parse error';
-        commandParserSpy.parse.and.throwError(errorContent);
         const content = '!notACommand';
         const from = 'tom';
         service.receiveMessagePlayer(from, content);
         const log = service.messagesLog;
+        mockOfflineErrorMessage$.next(errorContent);
         const lastMessage = log[log.length - 1];
         const errorMessage: Message = {
             from: 'SystemError',
@@ -117,20 +149,18 @@ describe('Service: Messages', () => {
 
     it('should catch a thrown error because the message is invalid', () => {
         const errorContent = 'mot ou emplacement manquant';
-        const message = '?!?@#?!@#?';
-        commandParserSpy.parse.and.throwError(errorContent);
-        const spyReceiveError = spyOn(service, 'receiveError');
-
+        const message = '!placer ?!?@#?!@#?';
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
         service.receiveMessageOpponent('Tim', message);
-
-        expect(spyReceiveError).toHaveBeenCalled();
+        mockOfflineErrorMessage$.next(errorContent);
+        expect(spyReceiveError).toHaveBeenCalledWith(errorContent);
     });
 
     it('should not throw error when message is valid', () => {
         const message = 'l l';
 
         commandParserSpy.parse.and.returnValue(CommandType.Exchange);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 
@@ -141,10 +171,44 @@ describe('Service: Messages', () => {
         const message = 'l lasd';
 
         commandParserSpy.parse.and.returnValue(CommandType.Exchange);
-        const spyReceiveError = spyOn(service, 'receiveError');
+        const spyReceiveError = spyOn(service, 'receiveErrorMessage');
 
         service.receiveMessageOpponent('Tim', message);
 
         expect(spyReceiveError).not.toHaveBeenCalled();
+    });
+
+    it('should not send command to chat server', () => {
+        const userName = 'Tim';
+        const command = '!placer h8h hello';
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'connected')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
+        commandParserSpy.parse.and.returnValue(CommandType.Place);
+        service.receiveMessagePlayer(userName, command);
+        expect(onlineChatSpy.sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('should send message to chat server', () => {
+        const userName = 'Tim';
+        const message = 'hello';
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'connected')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
+        commandParserSpy.parse.and.returnValue(undefined);
+        service.receiveMessagePlayer(userName, message);
+        expect(onlineChatSpy.sendMessage).toHaveBeenCalledOnceWith(message);
+    });
+
+    it('should receive opponent message from chat server', () => {
+        const from = 'Paul';
+        const content = 'Hi';
+        const chatMessage = { from, content };
+        const spy = spyOn(service, 'receiveMessageOpponent');
+        mockOpponentMessage$.next(chatMessage);
+        expect(spy).toHaveBeenCalledOnceWith(from, content);
+    });
+
+    it('should receive error message from chat server', () => {
+        const errorContent = 'Error error error';
+        const spy = spyOn(service, 'receiveErrorMessage');
+        mockErrorMessage$.next(errorContent);
+        expect(spy).toHaveBeenCalledOnceWith(errorContent);
     });
 });

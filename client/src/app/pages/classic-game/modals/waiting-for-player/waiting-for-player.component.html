@@ -1,0 +1,13 @@
+<mat-dialog-content #waitingForPlayer *ngIf="!isSoloStarted">
+    <div class="title">
+        <div>
+            <h3>En attente d'un joueur...</h3>
+            <p>Id de la partie: {{ pendingGameId$ | async }}</p>
+        </div>
+        <mat-spinner color="accent" [diameter]="spinnerDiameter" [strokeWidth]="spinnerStrokeWidth"></mat-spinner>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close] (click)="cancel()">Annuler</button>
+    <button mat-button color="primary" (click)="convertToModeSolo()">Convertir en mode solo</button>
+</mat-dialog-actions>
