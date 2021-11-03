@@ -1,4 +1,4 @@
-import { THOUSAND, THREE, TWO } from '@app/game/game-logic/constants';
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { Timer } from '@app/game/game-logic/timer/timer.service';
 import { expect } from 'chai';
@@ -18,7 +18,7 @@ describe('TimerService', () => {
     });
 
     it('should time the interval', async () => {
-        const time = THOUSAND;
+        const time = 1000;
         let timerDone = false;
         const time$ = service.start(time);
         time$.subscribe(() => {
@@ -39,11 +39,11 @@ describe('TimerService', () => {
         });
         service.start(time);
         expect(timeLeft).to.be.equal(time);
-        clock.tick(THOUSAND);
-        expect(timeLeft).to.be.equal(TWO * THOUSAND);
-        clock.tick(THOUSAND);
-        expect(timeLeft).to.be.equal(THOUSAND);
-        clock.tick(THOUSAND);
+        clock.tick(1000);
+        expect(timeLeft).to.be.equal(2000);
+        clock.tick(1000);
+        expect(timeLeft).to.be.equal(1000);
+        clock.tick(1000);
         expect(timeLeft).to.be.equal(0);
     });
 
@@ -55,10 +55,10 @@ describe('TimerService', () => {
         });
         service.start(time);
         expect(timeLeft).to.be.equal(time);
-        clock.tick(THOUSAND);
-        expect(timeLeft).to.be.equal(THREE * THOUSAND);
+        clock.tick(1000);
+        expect(timeLeft).to.be.equal(3);
         service.stop();
-        clock.tick(THOUSAND);
-        expect(timeLeft).to.be.equal(THREE * THOUSAND);
+        clock.tick(1000);
+        expect(timeLeft).to.be.equal(3000);
     });
 });
