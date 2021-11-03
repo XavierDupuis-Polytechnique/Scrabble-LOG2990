@@ -143,4 +143,15 @@ describe('ServerGame', () => {
         const isSamePlayer = currentPlayer.name === nextPlayer.name;
         expect(isSamePlayer).to.be.equal(false);
     });
+
+    it('should update the winnerByForfeitedIndex when a player forfeits', () => {
+        game.forfeit(p1.name);
+        expect(game.players[game.winnerByForfeitedIndex]).to.be.deep.equal(p2);
+    });
+
+    it('should get the correct winner when a player has forfeited', () => {
+        game.forfeit(p1.name);
+        expect(game.getWinner().length).to.be.equal(1);
+        expect(game.getWinner()[0]).to.be.deep.equal(p2);
+    });
 });

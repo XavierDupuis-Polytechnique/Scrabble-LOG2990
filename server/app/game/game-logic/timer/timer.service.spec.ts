@@ -56,7 +56,7 @@ describe('TimerService', () => {
         service.start(time);
         expect(timeLeft).to.be.equal(time);
         clock.tick(1000);
-        expect(timeLeft).to.be.equal(3);
+        expect(timeLeft).to.be.equal(3000);
         service.stop();
         clock.tick(1000);
         expect(timeLeft).to.be.equal(3000);
