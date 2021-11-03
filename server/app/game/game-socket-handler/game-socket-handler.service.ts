@@ -60,7 +60,6 @@ export class GameSocketsHandler {
     }
 
     private emitGameState(gameState: GameState, gameToken: string) {
-        // TODO? : get game state
         this.sio.to(gameToken).emit('gameState', gameState);
     }
 

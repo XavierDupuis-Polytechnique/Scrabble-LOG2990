@@ -26,7 +26,6 @@ describe('MessagesService', () => {
     before((done) => {
         httpServer = createServer();
         httpServer.listen(() => {
-            process.setMaxListeners(0);
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
             const systemMessagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
