@@ -128,20 +128,21 @@ export class GameManagerService {
 
     private startInactiveGameDestructionTimer(gameToken: string) {
         setTimeout(() => {
-            const serverGame = this.activeGames.get(gameToken);
-            if (this.linkedClients.get(gameToken)?.length !== 2) {
-                if (serverGame) {
-                    this.endGame(serverGame);
-                }
-                this.activeGames.delete(gameToken);
-                this.linkedClients.delete(gameToken);
+            const currentLinkedClient = this.linkedClients.get(gameToken);
+            if (currentLinkedClient === undefined) {
+                this.deleteGame(gameToken);
+                return;
+            }
+
+            if (currentLinkedClient.length !== 2) {
+                this.deleteGame(gameToken);
+                return;
             }
         }, NEW_GAME_TIMEOUT);
     }
 
     private notifyAction(action: Action, gameToken: string) {
         const clientsInGame = this.linkedClients.get(gameToken);
-        console.log(clientsInGame);
         if (!clientsInGame) {
             throw Error(`GameToken ${gameToken} is not in active game`);
         }
@@ -155,5 +156,14 @@ export class GameManagerService {
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
         game.stop();
+    }
+
+    private deleteGame(gameToken: string) {
+        const serverGame = this.activeGames.get(gameToken);
+        if (serverGame) {
+            this.endGame(serverGame);
+        }
+        this.activeGames.delete(gameToken);
+        this.linkedClients.delete(gameToken);
     }
 }
