@@ -10,7 +10,6 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { DisconnectedFromServerComponent } from '@app/pages/classic-game/modals/disconnected-from-server/disconnected-from-server.component';
-import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'app-game-page',
@@ -115,8 +114,8 @@ export class GamePageComponent {
         disconnectedDialogConfig.minWidth = 550;
         this.dialogRef = this.dialog.open(DisconnectedFromServerComponent, disconnectedDialogConfig);
         this.dialogRef.afterClosed().subscribe(() => {
+            this.dialogRef = undefined;
             this.router.navigate(['/']);
         });
-        this.dialogRef.afterClosed().pipe(finalize(() => (this.dialogRef = undefined)));
     }
 }
