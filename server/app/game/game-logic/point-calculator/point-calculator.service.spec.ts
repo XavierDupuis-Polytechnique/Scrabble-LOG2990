@@ -48,7 +48,7 @@ describe('PointCalculatorService', () => {
     const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     let newGameStateSubject: Subject<GameStateToken>;
-
+    let endGameSubject: Subject<string>;
     beforeEach(() => {
         game = new MockGame(
             timerController,
@@ -59,6 +59,7 @@ describe('PointCalculatorService', () => {
             gameCompiler,
             messagesService,
             newGameStateSubject,
+            endGameSubject,
         );
         player1 = new Player('Tim');
         player2 = new Player('Max');
@@ -408,6 +409,7 @@ describe('PointCalculatorService', () => {
             gameCompiler,
             messagesService,
             newGameStateSubject,
+            endGameSubject,
         );
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;

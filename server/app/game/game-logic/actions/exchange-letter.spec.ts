@@ -23,7 +23,7 @@ describe('ExchangeLetter', () => {
     const mockNewGameState$ = new Subject<GameStateToken>();
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerController = createSinonStubInstance<TimerController>(TimerController);
-
+    const mockEndGame$ = new Subject<string>();
     beforeEach(() => {
         game = new ServerGame(
             timerController,
@@ -34,6 +34,7 @@ describe('ExchangeLetter', () => {
             gameCompiler,
             messagesService,
             mockNewGameState$,
+            mockEndGame$,
         );
         game.players.push(player1);
         game.players.push(player2);
