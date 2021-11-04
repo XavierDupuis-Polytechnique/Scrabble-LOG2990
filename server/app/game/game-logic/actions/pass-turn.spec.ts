@@ -1,4 +1,3 @@
-import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { DEFAULT_TIME_PER_TURN } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
@@ -8,6 +7,7 @@ import { PointCalculatorService } from '@app/game/game-logic/point-calculator/po
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
+import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
 
@@ -16,14 +16,15 @@ describe('PassTurn', () => {
     const player1: Player = new Player('Tim');
     const player2: Player = new Player('George');
     const randomBonus = false;
-    const pointCalculator = new PointCalculatorService();
-    const gameCompiler = new GameCompiler();
+    const pointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
+    const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService(new GameActionNotifierService());
+    const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
+    const timerController = createSinonStubInstance<TimerController>(TimerController);
 
     beforeEach(() => {
         game = new ServerGame(
-            new TimerController(),
+            timerController,
             randomBonus,
             DEFAULT_TIME_PER_TURN,
             'default_gameToken',

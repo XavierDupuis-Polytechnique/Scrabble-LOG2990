@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
@@ -15,9 +14,9 @@ import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dic
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
+import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
 describe('PointCalculatorService', () => {
     const pointCalculator: PointCalculatorService = new PointCalculatorService();
@@ -44,10 +43,10 @@ describe('PointCalculatorService', () => {
     let randomBonus: boolean;
     let timePerTurn: number;
     let gameToken: string;
-    const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
-    const timerController: TimerController = new TimerController();
-    const gameCompiler: GameCompiler = new GameCompiler();
-    const messagesService: SystemMessagesService = new SystemMessagesService(new GameActionNotifierService());
+    const pointCalculatorStub = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
+    const timerController = createSinonStubInstance<TimerController>(TimerController);
+    const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
+    const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     let newGameStateSubject: Subject<GameStateToken>;
 
     beforeEach(() => {

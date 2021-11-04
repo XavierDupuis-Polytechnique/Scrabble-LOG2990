@@ -1,4 +1,3 @@
-import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
@@ -14,9 +13,10 @@ import { isCharUpperCase } from '@app/game/game-logic/utils';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
+import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
+import { SinonFakeTimers, useFakeTimers } from 'sinon';
 
 describe('PlaceLetter', () => {
     const lettersToPlace = 'bateau';
@@ -31,17 +31,18 @@ describe('PlaceLetter', () => {
     let placeLetter: PlaceLetter;
     let activePlayer: Player;
     let letterCreator: LetterCreator;
-    let pointCalculatorStub: SinonStubbedInstance<PointCalculatorService>;
-    let wordSearcherStub: SinonStubbedInstance<WordSearcher>;
+    const pointCalculatorStub = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
+    const wordSearcherStub = createSinonStubInstance<WordSearcher>(WordSearcher);
     const randomBonus = false;
-    const gameCompiler = new GameCompiler();
+    const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const mockNewGameState$ = new Subject<GameStateToken>();
-    const messagesService = new SystemMessagesService(new GameActionNotifierService());
+    const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
+    const timerController = createSinonStubInstance<TimerController>(TimerController);
+    let clock: SinonFakeTimers;
 
     beforeEach(() => {
-        wordSearcherStub = createStubInstance(WordSearcher);
+        clock = useFakeTimers();
         wordSearcherStub.listOfValidWord.returns([{ letters: [new Tile()], index: [0] }]);
-        pointCalculatorStub = createStubInstance(PointCalculatorService);
         pointCalculatorStub.placeLetterCalculation.callsFake((action, listOfWord) => {
             const points = action.word.length + listOfWord.length;
             const player = action.player;
@@ -49,7 +50,7 @@ describe('PlaceLetter', () => {
             return points;
         });
         game = new ServerGame(
-            new TimerController(),
+            timerController,
             randomBonus,
             DEFAULT_TIME_PER_TURN,
             'default_gameToken',
@@ -77,15 +78,15 @@ describe('PlaceLetter', () => {
         }
     });
 
-    // it('should have proper revert behavior', async () => {
-    //     const TIME_BEFORE_REVERT = 3000;
-    //     (wordSearcher as MockwordSearcherStub).validity = false;
-    //     placeLetter.execute(game);
-    //     tick(TIME_BEFORE_REVERT);
-    //     for (let i = 0; i < lettersToPlace.length; i++) {
-    //         expect(game.board.grid[i][0].letterObject.char).to.equal(' ');
-    //     }
-    // });
+    it('should have proper revert behavior', async () => {
+        wordSearcherStub.listOfValidWord.returns([]);
+        const TIME_BEFORE_REVERT = 3000;
+        placeLetter.execute(game);
+        clock.tick(TIME_BEFORE_REVERT);
+        for (let i = 0; i < lettersToPlace.length; i++) {
+            expect(game.board.grid[i][0].letterObject.char).to.equal(' ');
+        }
+    });
 
     it('should add points when action valid', () => {
         const LIST_OF_WORD_LENGTH = 1;
