@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, HostListener, IterableDiffers, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
@@ -28,7 +28,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     canvasDrawer: CanvasDrawer;
     canvasContext: CanvasRenderingContext2D;
     canvasElement: HTMLElement | null;
-    constructor(private boardService: BoardService, private itDiffer: IterableDiffers, private inputController: UIInputControllerService) {
+    constructor(private boardService: BoardService, private inputController: UIInputControllerService) {
         this.board = this.boardService.board;
         this.fontSize = (this.minFontSize + this.maxFontSize) / 2;
     }
@@ -57,8 +57,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         }
     }
     ngDoCheck() {
-        const changes = this.itDiffer.find([]).create(undefined).diff(this.board.grid);
-        if (changes && this.canvasDrawer) {
+        if (this.canvasDrawer) {
             if (this.inputController.activeAction instanceof UIPlace) {
                 if (this.inputController.activeAction.pointerPosition) {
                     this.canvasDrawer.setIndicator(
