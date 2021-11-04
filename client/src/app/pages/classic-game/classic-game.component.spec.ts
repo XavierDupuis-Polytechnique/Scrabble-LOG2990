@@ -24,12 +24,8 @@ describe('ClassicGameComponent', () => {
     const mockStartGame$ = new Subject<OnlineGameSettings>();
     let matDialog: jasmine.SpyObj<MatDialog>;
     let onlineSocketHandlerSpy: jasmine.SpyObj<OnlineGameInitService>;
+    let gameManagerSpy: jasmine.SpyObj<GameManagerService>;
     let router: Router;
-    const gameManager = {
-        createGame: () => {
-            return;
-        },
-    };
 
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
@@ -38,23 +34,15 @@ describe('ClassicGameComponent', () => {
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames', 'resetGameToken'],
             ['isDisconnected$', 'startGame$'],
         );
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame']);
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {},
-                },
-                {
-                    provide: MatDialog,
-                    useValue: matDialog,
-                },
-                {
-                    provide: GameManagerService,
-                    useValue: gameManager,
-                },
+                { provide: MAT_DIALOG_DATA, useValue: {} },
+                { provide: MatDialog, useValue: matDialog },
                 { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
+                { provide: GameManagerService, useValue: gameManagerSpy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
@@ -87,13 +75,15 @@ describe('ClassicGameComponent', () => {
                     randomBonus: false,
                 });
             },
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            close: () => {},
+            close: () => {
+                return;
+            },
         } as MatDialogRef<NewSoloGameFormComponent>);
         component.openSoloGameForm();
         expect(component.gameSettings).toBeDefined();
         expect(component.startSoloGame).toHaveBeenCalled();
     });
+
     it('dialog should not set game setting and start game if form is undefined', () => {
         spyOn(component, 'startSoloGame');
         matDialog.open.and.returnValue({
@@ -118,10 +108,10 @@ describe('ClassicGameComponent', () => {
     });
 
     it('start solo game should create a game', () => {
-        spyOn(gameManager, 'createGame');
         spyOn(router, 'navigate');
         component.startSoloGame();
-        expect(gameManager.createGame).toHaveBeenCalled();
+        expect(gameManagerSpy.createGame).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalled();
     });
 
     it('Creer partie multijoueur should call openMultiGameForm', () => {
@@ -143,7 +133,7 @@ describe('ClassicGameComponent', () => {
         component.openMultiGameForm();
         expect(matDialog.open).toHaveBeenCalled();
         expect(onlineSocketHandlerSpy.createGameMulti).toHaveBeenCalledOnceWith(gameSettings);
-        expect(component.openWaitingForPlayer).toHaveBeenCalled();
+        expect(component.openWaitingForPlayer).toHaveBeenCalledWith(gameSettings.playerName);
     });
 
     it('Creer partie multijoueur should call openMultiGameForm and return if form is undefined', () => {
@@ -183,17 +173,17 @@ describe('ClassicGameComponent', () => {
                 return;
             },
         } as MatDialogRef<WaitingForPlayerComponent>);
-        component.openWaitingForPlayer();
+        component.openWaitingForPlayer('Sam');
         const soloGameSettings = component.gameSettings;
         soloGameSettings.botDifficulty = 'easy';
         expect(matDialog.open).toHaveBeenCalled();
-
         expect(component.gameSettings).toEqual(soloGameSettings);
         expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
         expect(component.startSoloGame).toHaveBeenCalled();
     });
 
     it('openWaitingForPlayer should disconnectSocket if player is disconnected from server and should not startOnlineGame', () => {
+        spyOn(component, 'startOnlineGame');
         component.gameSettings = {
             playerName: 'Sam',
             botDifficulty: '',
@@ -214,13 +204,16 @@ describe('ClassicGameComponent', () => {
         component.openWaitingForPlayer('Sam');
         mockIsDisconnect$.next(true);
         mockStartGame$.next(undefined);
+        expect(component.startOnlineGame).not.toHaveBeenCalled();
         expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
     });
 
-    it('openWaitingForPlayer should receive game Token  from server', () => {
-        component.gameSettings = {
+    it('openWaitingForPlayer should start onlineGame', () => {
+        spyOn(component, 'openWaitingForPlayer').and.callThrough();
+        spyOn(component, 'startOnlineGame');
+        const gameSettings = {
+            id: 'abc',
             playerName: 'Sam',
-            botDifficulty: '',
             timePerTurn: 3000,
             randomBonus: false,
         };
@@ -270,9 +263,19 @@ describe('ClassicGameComponent', () => {
         expect(component.openPendingGames).toHaveBeenCalledTimes(2);
     });
 
-    it('openPendingGames should open dialog', () => {
+    it('openPendingGames should open dialog and return if name was not provided', () => {
+        spyOn(component, 'startOnlineGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of('name');
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<WaitingForPlayerComponent>);
         component.openPendingGames();
         mockStartGame$.next(undefined);
         expect(matDialog.open).toHaveBeenCalled();
+        expect(component.startOnlineGame).not.toHaveBeenCalled();
     });
 });

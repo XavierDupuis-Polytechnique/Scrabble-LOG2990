@@ -1,12 +1,12 @@
-import * as io from 'socket.io';
-import * as http from 'http';
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
 import { ChatUser } from '@app/messages-service/chat-user.interface';
-import { Room } from '@app/messages-service/room';
-import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { Message } from '@app/messages-service/message.interface';
+import { Room } from '@app/messages-service/room/room';
 import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-service/system-message.interface';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
+import * as http from 'http';
+import * as io from 'socket.io';
+import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 export const SYSTEM_MESSAGES = 'systemMessages';
 export const NEW_MESSAGE = 'newMessage';
@@ -121,7 +121,7 @@ export class MessagesSocketHandler {
         if (!activeRoom) {
             activeRoom = this.createRoom(roomID);
         }
-        activeRoom.addUser(user.name);
+        activeRoom.addUser(user.name, socketID);
         user.currentRoom = roomID;
         socket.join(roomID);
     }
@@ -172,8 +172,24 @@ export class MessagesSocketHandler {
     }
 
     private sendIndividualSystemMessage(individualMessage: IndividualSystemMessage) {
-        const socketID = individualMessage.playerId;
+        const userName = individualMessage.playerName;
+        const roomID = individualMessage.gameToken;
+        const socketID = this.getSocketId(userName, roomID);
+        if (!socketID) {
+            return;
+            // throw Error(`L'utilisateur ${userName} n'est pas connecté`);
+        }
         const content = individualMessage.content;
         this.sio.to(socketID).emit(SYSTEM_MESSAGES, content);
+    }
+
+    private getSocketId(userName: string, roomID: string) {
+        const room = this.activeRooms.get(roomID);
+        if (!room) {
+            return;
+        }
+
+        const socketID = room.userNameToId.get(userName);
+        return socketID;
     }
 }

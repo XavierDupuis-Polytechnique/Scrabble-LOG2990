@@ -4,6 +4,7 @@ import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/modeMulti/interfa
 import { BehaviorSubject, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
+
 @Injectable({
     providedIn: 'root',
 })
@@ -15,6 +16,10 @@ export class OnlineGameInitService {
     error$ = new Subject<string>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket: Socket | any;
+
+    resetGameToken() {
+        this.startGame$.next(undefined);
+    }
 
     connect() {
         this.socket = this.connectToSocket();
@@ -76,6 +81,6 @@ export class OnlineGameInitService {
     }
 
     connectToSocket() {
-        return io(environment.socketServerUrl, { path: '/newGame' });
+        return io(environment.serverSocketUrl, { path: '/newGame' });
     }
 }

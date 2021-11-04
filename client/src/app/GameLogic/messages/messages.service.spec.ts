@@ -14,11 +14,15 @@ describe('Service: Messages', () => {
     let commandParserSpy: jasmine.SpyObj<CommandParserService>;
     const mockOfflineErrorMessage$ = new Subject<string>();
     let onlineChatSpy: jasmine.SpyObj<OnlineChatHandlerService>;
-    const mockOpponentMessage$ = new Subject<ChatMessage>();
-    const mockErrorMessage$ = new Subject<string>();
-    const mockSystemMessage$ = new Subject<string>();
+    let mockOpponentMessage$: Subject<ChatMessage>;
+    let mockErrorMessage$: Subject<string>;
+    let mockSystemMessage$: Subject<string>;
 
     beforeEach(() => {
+        mockOpponentMessage$ = new Subject<ChatMessage>();
+        mockErrorMessage$ = new Subject<string>();
+        mockSystemMessage$ = new Subject<string>();
+
         commandParserSpy = jasmine.createSpyObj('CommandParserService', ['parse', 'sendErrorMessage'], ['errorMessage$']);
 
         (Object.getOwnPropertyDescriptor(commandParserSpy, 'errorMessage$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
@@ -200,6 +204,7 @@ describe('Service: Messages', () => {
         const from = 'Paul';
         const content = 'Hi';
         const chatMessage = { from, content };
+        commandParserSpy.parse.and.returnValue(undefined);
         const spy = spyOn(service, 'receiveMessageOpponent');
         mockOpponentMessage$.next(chatMessage);
         expect(spy).toHaveBeenCalledOnceWith(from, content);

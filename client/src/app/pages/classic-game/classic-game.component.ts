@@ -4,10 +4,14 @@ import { Router } from '@angular/router';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
 import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
+import { Subscription } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
     selector: 'app-classic-game',
@@ -16,7 +20,7 @@ import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waitin
 })
 export class ClassicGameComponent {
     gameSettings: GameSettings;
-
+    startGame$$: Subscription;
     constructor(
         private router: Router,
         private gameManager: GameManagerService,
@@ -47,18 +51,18 @@ export class ClassicGameComponent {
         dialogConfig.minWidth = 60;
 
         const dialogRef = this.dialog.open(NewOnlineGameFormComponent, dialogConfig);
-        dialogRef.afterClosed().subscribe((formOnline) => {
+        dialogRef.afterClosed().subscribe((formOnline: GameSettings) => {
             if (!formOnline) {
                 return;
             }
-            // TODO:Socket validator
             this.gameSettings = formOnline;
             this.socketHandler.createGameMulti(formOnline);
-            this.openWaitingForPlayer();
+            const username = formOnline.playerName;
+            this.openWaitingForPlayer(username);
         });
     }
 
-    openWaitingForPlayer() {
+    openWaitingForPlayer(username: string) {
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
         secondDialogConfig.disableClose = true;
@@ -71,8 +75,13 @@ export class ClassicGameComponent {
                     this.socketHandler.disconnectSocket();
                 }
             });
-            this.socketHandler.gameToken$.subscribe(() => {
+            this.startGame$$?.unsubscribe();
+            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
+                if (!gameSettings) {
+                    return;
+                }
                 secondDialogRef.close();
+                this.startOnlineGame(username, gameSettings);
             });
         });
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
@@ -94,7 +103,24 @@ export class ClassicGameComponent {
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
         pendingGamesDialogConfig.minWidth = 550;
-        this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
+        const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
+        dialogRef.afterClosed().subscribe((name: string) => {
+            this.startGame$$?.unsubscribe();
+            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+                if (!onlineGameSettings) {
+                    return;
+                }
+                this.startOnlineGame(name, onlineGameSettings);
+            });
+        });
+    }
+
+    startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
+        const gameToken = onlineGameSettings.id;
+        const userAuth: UserAuth = { playerName: userName, gameToken };
+        this.socketHandler.resetGameToken();
+        this.gameManager.joinOnlineGame(userAuth, onlineGameSettings);
+        this.router.navigate(['/game']);
     }
 
     startSoloGame() {

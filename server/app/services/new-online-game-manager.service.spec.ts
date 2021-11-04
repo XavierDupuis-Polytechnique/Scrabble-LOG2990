@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
-import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
+import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
 import { createServer, Server } from 'http';
@@ -106,27 +107,25 @@ describe('New Online Game Service', () => {
         clientSocket.emit('joinGame', id, playerName);
     });
 
-    it('should send gameToken to players on joinGame', (done) => {
+    it('should send gameSettings to players on joinGame', (done) => {
+        const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
+        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000 };
+
         newOnlineGameService.createPendingGame.returns('a');
-        newOnlineGameService.joinPendingGame.returns('token');
+        newOnlineGameService.joinPendingGame.returns('id'); // ?
+        newOnlineGameService.getPendingGame.returns(gameSettings);
 
         const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
-        const gameSettings = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
         const playerName = 'abc';
-        let id = '';
-        let gameTokenPlayer1 = '';
-        clientSocket2.emit('createGame', gameSettings);
-        clientSocket2.on('pendingGameId', (idGame: string) => {
-            id = idGame;
-            clientSocket.emit('joinGame', id, playerName);
-        });
-        clientSocket.on('gameJoined', (gameToken) => {
-            gameTokenPlayer1 = gameToken;
-        });
-        clientSocket2.on('gameJoined', (gameToken) => {
-            expect(gameToken).to.equal(gameTokenPlayer1);
-            done();
+
+        clientSocket2.on('gameJoined', (gameSettingServer: OnlineGameSettings) => {
+            expect(gameSettingServer).to.deep.equal(gameSettings);
             clientSocket2.close();
+            done();
+        });
+        clientSocket2.emit('createGame', gameSettingsUI);
+        clientSocket2.on('pendingGameId', (idGame: string) => {
+            clientSocket.emit('joinGame', idGame, playerName);
         });
     });
 });
