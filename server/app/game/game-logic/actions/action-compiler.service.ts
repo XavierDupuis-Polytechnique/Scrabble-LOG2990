@@ -52,6 +52,9 @@ export class ActionCompilerService {
 
     letterRackUpdateValidator(command: OnlineAction, player: Player) {
         const newLetterRack = command.letterRack as Letter[];
+        if (newLetterRack === undefined) {
+            return;
+        }
         if (!this.isLetterRackChanged(newLetterRack, player)) {
             for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
                 player.letterRack[letterIndex] = newLetterRack[letterIndex];

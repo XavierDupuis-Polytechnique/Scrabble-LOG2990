@@ -1,4 +1,3 @@
-import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/game/game-logic/constants';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
 import { OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
@@ -15,9 +14,9 @@ export const placementSettingsToString = (placement: PlacementSetting): string =
         throw Error('Y value not between 0-14');
     }
 
-    if (!Object.values(Direction).includes(direction as Direction)) {
-        throw Error('Invalid direction');
-    }
+    // if (!Object.values(Direction).includes(direction as Direction)) {
+    //     throw Error('Invalid direction');
+    // }
 
     const rowCode = 'a'.charCodeAt(0) + y;
     const row = String.fromCharCode(rowCode);
