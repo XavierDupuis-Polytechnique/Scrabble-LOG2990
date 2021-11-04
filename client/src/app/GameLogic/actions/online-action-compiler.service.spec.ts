@@ -98,7 +98,7 @@ describe('Service: OnlineActionCompiler', () => {
             letters: placeLetter.word,
             letterRack: p1.letterRack,
         };
-        expect(service.compileActionOnline(placeLetter)).toEqual(onlinePlaceLetterTest);
+        expect(service.compileActionOnline(placeLetter) as OnlineAction).toEqual(onlinePlaceLetterTest);
     });
 
     it('should only call compileExchangeLetter', () => {
@@ -109,7 +109,7 @@ describe('Service: OnlineActionCompiler', () => {
             letters: 'abc',
             letterRack: p1.letterRack,
         };
-        expect(service.compileActionOnline(exchangeLetter)).toEqual(onlineExchangeLetterTest);
+        expect(service.compileActionOnline(exchangeLetter) as OnlineAction).toEqual(onlineExchangeLetterTest);
     });
 
     it('should only call compilePassTurn', () => {
@@ -118,7 +118,7 @@ describe('Service: OnlineActionCompiler', () => {
             type: OnlineActionType.Pass,
             letterRack: p1.letterRack,
         };
-        expect(service.compileActionOnline(passTurn)).toEqual(passTurnTest);
+        expect(service.compileActionOnline(passTurn) as OnlineAction).toEqual(passTurnTest);
     });
 
     it('should only call compilePassTurn', () => {
