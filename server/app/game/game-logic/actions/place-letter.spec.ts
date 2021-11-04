@@ -15,7 +15,8 @@ import { SystemMessagesService } from '@app/messages-service/system-messages.ser
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
-import { delay, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
+import { SinonFakeTimers, useFakeTimers } from 'sinon';
 
 describe('PlaceLetter', () => {
     const lettersToPlace = 'bateau';
@@ -37,8 +38,10 @@ describe('PlaceLetter', () => {
     const mockNewGameState$ = new Subject<GameStateToken>();
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerController = createSinonStubInstance<TimerController>(TimerController);
+    let clock: SinonFakeTimers;
 
     beforeEach(() => {
+        clock = useFakeTimers();
         wordSearcherStub.listOfValidWord.returns([{ letters: [new Tile()], index: [0] }]);
         pointCalculatorStub.placeLetterCalculation.callsFake((action, listOfWord) => {
             const points = action.word.length + listOfWord.length;
@@ -76,10 +79,10 @@ describe('PlaceLetter', () => {
     });
 
     it('should have proper revert behavior', async () => {
+        wordSearcherStub.listOfValidWord.returns([]);
         const TIME_BEFORE_REVERT = 3000;
         placeLetter.execute(game);
-        placeLetter.revert(game);
-        delay(TIME_BEFORE_REVERT);
+        clock.tick(TIME_BEFORE_REVERT);
         for (let i = 0; i < lettersToPlace.length; i++) {
             expect(game.board.grid[i][0].letterObject.char).to.equal(' ');
         }
