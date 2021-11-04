@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { of } from 'rxjs';
 import { WaitingForPlayerComponent } from './waiting-for-player.component';
 
@@ -10,24 +11,14 @@ const mockDialogRef = {
     close: jasmine.createSpy('close'),
 };
 
-const convertSoloDialogRefStub = {
-    afterClosed: (bot: string) => {
-        const botDifficulty = bot;
-        return of(botDifficulty);
-    },
-    close: jasmine.createSpy('close').and.returnValue(() => {
-        mockDialogRef.close();
-        return;
-    }),
-};
-
-const dialogStub = { open: () => convertSoloDialogRefStub, close: jasmine.createSpy('close') };
 describe('WaitingForPlayerComponent', () => {
     let component: WaitingForPlayerComponent;
     let fixture: ComponentFixture<WaitingForPlayerComponent>;
     let onlineSocketHandlerSpy: jasmine.SpyObj<OnlineGameInitService>;
+    let matDialog: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async () => {
+        matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         onlineSocketHandlerSpy = jasmine.createSpyObj(
             'OnlineGameInitService',
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames'],
@@ -39,7 +30,7 @@ describe('WaitingForPlayerComponent', () => {
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: mockDialogRef },
-                { provide: MatDialog, useValue: dialogStub },
+                { provide: MatDialog, useValue: matDialog },
                 { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
             ],
             declarations: [WaitingForPlayerComponent],
@@ -77,23 +68,34 @@ describe('WaitingForPlayerComponent', () => {
     });
 
     it('converToSolo should open convertToSolo dialog and get bot difficulty', () => {
-        const botDifficulty = 'easy';
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of('easy');
+            },
+            close: () => {
+                mockDialogRef.close();
+                return;
+            },
+        } as MatDialogRef<ConvertToSoloFormComponent>);
+
         component.convertToModeSolo();
-        let botDifficultyFromDialog: string;
-        convertSoloDialogRefStub.afterClosed(botDifficulty).subscribe((botDifficultyResult) => {
-            botDifficultyFromDialog = botDifficultyResult;
-            expect(botDifficultyFromDialog).toEqual(botDifficulty);
-        });
+        expect(component.botDifficulty).toEqual('easy');
+        expect(component.isSoloStarted).toBeTrue();
+        expect(mockDialogRef.close).toHaveBeenCalledWith('easy');
     });
 
     it('converToSolo with no bot difficulty', () => {
-        const botDifficulty = undefined as unknown;
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of(undefined);
+            },
+            close: () => {
+                mockDialogRef.close();
+                return;
+            },
+        } as MatDialogRef<ConvertToSoloFormComponent>);
         component.convertToModeSolo();
-        let botDifficultyFromDialog: string;
-        convertSoloDialogRefStub.afterClosed(botDifficulty as string).subscribe((botDifficultyResult) => {
-            botDifficultyFromDialog = botDifficultyResult;
-            expect(botDifficultyFromDialog).toBeUndefined();
-        });
-        convertSoloDialogRefStub.close();
+        expect(component.botDifficulty).toBeUndefined();
+        expect(component.isSoloStarted).toBeFalse();
     });
 });
