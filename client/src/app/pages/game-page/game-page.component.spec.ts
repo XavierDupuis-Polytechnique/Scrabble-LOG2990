@@ -92,10 +92,15 @@ describe('GamePageComponent', () => {
         expect(inputControllerSpy).toBeTruthy();
     });
 
-    it('confirming to abandon should call method stopgame', () => {
-        const gameManagerSpy = spyOn(component.dialog, 'open');
+    it('confirming to abandon should open dialog', () => {
+        const dialogSpy = spyOn(component.dialog, 'open');
         component.abandon();
-        expect(gameManagerSpy).toHaveBeenCalled();
+        expect(dialogSpy).toHaveBeenCalled();
+    });
+
+    it('confirming to quit should call method stopgame', () => {
+        component.quit();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalled();
     });
 
     it('should call function sendAction if button "Passer" is pressed', () => {

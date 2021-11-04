@@ -320,7 +320,7 @@ describe('GameManagerService', () => {
         expect(service.activePlayers.size).to.be.equal(0);
     });
 
-    it('should throw when removing an inexisting player', () => {
+    it('should not throw when removing an inexisting player', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
@@ -336,7 +336,7 @@ describe('GameManagerService', () => {
         const userId = 'abc';
         expect(() => {
             service.removePlayerFromGame(userId);
-        }).to.throw(Error);
+        }).to.not.throw(Error);
     });
 
     it('should not throw when removing a player from a removed game', () => {

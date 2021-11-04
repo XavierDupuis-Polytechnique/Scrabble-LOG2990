@@ -1,6 +1,6 @@
-import { Board } from '@app/GameLogic/game/board/board';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { UrlResolver } from '@angular/compiler';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { Board } from '@app/GameLogic/game/board/board';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -55,11 +55,12 @@ export class CanvasDrawer {
                     if (board.grid[i][j].letterObject.isTemp === true) {
                         this.drawHighlight(j, i);
                     }
-                } else if (board.grid[j][i].letterMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[j][i].letterMultiplicator);
-                } else if (board.grid[j][i].wordMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[j][i].wordMultiplicator);
+                } else if (board.grid[i][j].letterMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
+                } else if (board.grid[i][j].wordMultiplicator !== 1) {
+                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
                 }
+                // logs
             }
         }
 
@@ -70,36 +71,12 @@ export class CanvasDrawer {
         }
     }
 
-    // checkFontSize(fontSize: number): boolean {
-    //     this.canvas.font = `${fontSize}px ${this.font}`;
-    //     const temp1 = this.canvas.measureText('W').width;
-    //     this.canvas.font = `${fontSize * this.scale}px ${this.font}`;
-    //     const temp2 = this.canvas.measureText('10').width;
-    //     const width = temp1 + temp2;
-    //     if (width > this.tileSize) {
-    //         return false;
-    //     } else {
-    //         return true;
-    //     }
-    // }
-
     coordToTilePosition(x: number, y: number) {
         const i = Math.floor((x - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
         const j = Math.floor((y - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
 
         return { indexI: i, indexJ: j };
     }
-
-    // click(i: number, j: number) {
-    //     if (this.indicatorPos.x !== i || this.indicatorPos.y !== j) {
-    //         this.indicatorDir = Direction.Horizontal;
-    //     } else if (this.indicatorDir === Direction.Horizontal) {
-    //         this.indicatorDir = Direction.Vertical;
-    //     } else {
-    //         this.indicatorDir = Direction.Horizontal;
-    //     }
-    //     this.setIndicator(i, j);
-    // }
 
     setIndicator(i: number, j: number) {
         this.indicatorPos = { x: i, y: j };
@@ -212,7 +189,6 @@ export class CanvasDrawer {
     }
 
     private drawIndicator() {
-        // TODO afficher une fleche
         const pos = this.tilePositionToCoord(this.indicatorPos.x, this.indicatorPos.y);
         const img = new Image();
         const t = new UrlResolver();
