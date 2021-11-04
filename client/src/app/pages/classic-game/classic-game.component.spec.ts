@@ -33,7 +33,6 @@ describe('ClassicGameComponent', () => {
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         onlineSocketHandlerSpy = jasmine.createSpyObj(
-            'OnlineGameInitService',
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames'],
             ['isDisconnected$', 'gameToken$'],
         );
