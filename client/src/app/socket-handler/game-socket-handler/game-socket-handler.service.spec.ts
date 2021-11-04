@@ -8,7 +8,7 @@ import { take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 import { GameSocketHandlerService } from './game-socket-handler.service';
 
-fdescribe('GameSocketHandlerService', () => {
+describe('GameSocketHandlerService', () => {
     let service: GameSocketHandlerService;
     let tempSocket: Socket;
     beforeEach(() => {

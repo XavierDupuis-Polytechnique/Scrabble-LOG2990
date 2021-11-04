@@ -57,7 +57,7 @@ export class OnlineGame {
 
     close() {
         this.gameState$$.unsubscribe();
-        this.timerControls$$?.unsubscribe();
+        this.timerControls$$.unsubscribe();
     }
 
     receiveState(gameState: GameState) {
@@ -71,7 +71,7 @@ export class OnlineGame {
         const user = this.players.find((player: Player) => {
             return player.name === this.userName;
         });
-        user?.action$.subscribe((action) => {
+        (user as Player).action$.subscribe((action) => {
             const activePlayerName = this.players[this.activePlayerIndex].name;
             if (activePlayerName !== this.userName) {
                 return;
@@ -190,8 +190,6 @@ export class OnlineGame {
     }
 
     private updateActivePlayer(gameState: GameState) {
-        console.log('update active player', gameState);
-        console.log(this.playersWithIndex);
         const activePlayerIndex = gameState.activePlayerIndex;
         const activePlayerName = gameState.players[activePlayerIndex].name;
         const playerWithIndex = this.playersWithIndex.get(activePlayerName);
@@ -234,13 +232,11 @@ export class OnlineGame {
 
         for (const letter of player.letterRack) {
             const letterCount = mapRack.get(letter.char);
-            if (letterCount === undefined) {
+            if (letterCount === 0 || letterCount === undefined) {
                 isChanged = true;
-            } else if (letterCount >= 1) {
-                mapRack.set(letter.char, letterCount - 1);
-            } else if (letterCount === 0) {
-                isChanged = true;
+                return isChanged;
             }
+            mapRack.set(letter.char, letterCount - 1);
         }
         return isChanged;
     }
@@ -263,7 +259,5 @@ export class OnlineGame {
         this.winnerNames = gameState.winnerIndex.map((index: number) => {
             return gameState.players[index].name;
         });
-        // TODO ?? comment flag
-        // this.winnerIndex = gameState.winnerIndex;
     }
 }

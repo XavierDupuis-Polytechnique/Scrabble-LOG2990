@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
 import { DEFAULT_TIME_PER_TURN, THOUSAND } from '@app/GameLogic/constants';
@@ -157,13 +158,25 @@ describe('GameInfoService', () => {
         expect(result).toEqual(expected);
     });
 
-    // it('should test the endTurn$ .next function', () => {
-    //     const aaa = new Subject<void>();
-    //     (Object.getOwnPropertyDescriptor(game, 'endTurnSubject')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(aaa);
-    //     service.receiveGame(game);
-    //     service.endTurnSubject.subscribe();
-    //     expect().nothing();
-    // });
+    it('should return that the game is not online', () => {
+        service.receiveGame(game);
+        const result = service.isOnlineGame;
+        expect(result).toBeFalsy();
+    });
+
+    it('should get the gameId offline', () => {
+        service.receiveGame(game);
+        const result = service.gameId;
+        const expected = '';
+        expect(result).toEqual(expected);
+    });
+
+    it('should test the endTurn$ arrow function', () => {
+        service.receiveGame(game);
+        game['endTurnSubject'].next();
+        const result = service.endTurn$.subscribe();
+        expect(result).toBeTruthy();
+    });
 });
 
 describe('GameInfoService Online Edition', () => {
@@ -179,6 +192,7 @@ describe('GameInfoService Online Edition', () => {
         board = TestBed.inject(BoardService);
 
         onlineGame = new OnlineGame(
+            '0',
             DEFAULT_TIME_PER_TURN,
             'QWERTY',
             timer,
@@ -221,9 +235,16 @@ describe('GameInfoService Online Edition', () => {
         expect(result).toEqual(expected);
     });
 
-    // it('should test the endTurn$', () => {
-    //     service.receiveOnlineGame(onlineGame);
-    //     const result = service.endTurn$.subscribe();
-    //     expect(result).toBeTruthy();
-    // });
+    it('should return that the game is online', () => {
+        service.receiveOnlineGame(onlineGame);
+        const result = service.isOnlineGame;
+        expect(result).toBeTruthy();
+    });
+
+    it('should get the gameId online', () => {
+        service.receiveOnlineGame(onlineGame);
+        const result = service.gameId;
+        const expected = '0';
+        expect(result).toEqual(expected);
+    });
 });
