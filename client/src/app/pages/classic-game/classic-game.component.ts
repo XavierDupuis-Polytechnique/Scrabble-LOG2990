@@ -80,7 +80,7 @@ export class ClassicGameComponent {
                 if (!gameSettings) {
                     return;
                 }
-                secondDialogRef.close(); // Changed
+                secondDialogRef.close();
                 this.startOnlineGame(username, gameSettings);
             });
         });
