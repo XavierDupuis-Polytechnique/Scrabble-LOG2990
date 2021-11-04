@@ -1,12 +1,13 @@
 import { Application } from '@app/app';
-import { NewOnlineGameService } from '@app/game-manager/new-online-game.service';
+import { GameManagerService } from '@app/game/game-manager/game-manager.services';
+import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
 import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
+import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
 import { NewOnlineGameSocketHandler } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
-
 @Service()
 export class Server {
     private static readonly appPort: string | number | boolean = Server.normalizePort(process.env.PORT || '3000');
@@ -14,13 +15,14 @@ export class Server {
     private static readonly baseDix: number = 10;
     private server: http.Server;
     private onlineGameManager: NewOnlineGameSocketHandler;
+    private gameSocketsHandler: GameSocketsHandler;
     private messageHandler: MessagesSocketHandler;
     constructor(
         private readonly application: Application,
         private onlineGameService: NewOnlineGameService,
+        private gameManager: GameManagerService,
         private systemMessagesService: SystemMessagesService,
     ) {}
-
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
         if (isNaN(port)) {
@@ -36,8 +38,12 @@ export class Server {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
+
         this.onlineGameManager = new NewOnlineGameSocketHandler(this.server, this.onlineGameService);
         this.onlineGameManager.newGameHandler();
+
+        this.gameSocketsHandler = new GameSocketsHandler(this.server, this.gameManager);
+        this.gameSocketsHandler.handleSockets();
 
         this.messageHandler = new MessagesSocketHandler(this.server, this.systemMessagesService);
         this.messageHandler.handleSockets();

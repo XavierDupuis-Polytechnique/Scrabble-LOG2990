@@ -263,8 +263,8 @@ export class DictionaryService {
         let index: number;
         while (indexOfDot !== NOT_FOUND) {
             const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
-            const leftOfDot = regexSettings.placedWord.substring(0, indexOfDot).toLowerCase();
-            let regex = new RegExp(leftOfDot + '(?=[' + lettersLeft + '])');
+            const leftOfDot = regexSettings.placedWord.substring(0, indexOfDot);
+            let regex = new RegExp(leftOfDot.toLowerCase() + '(?=[' + lettersLeft + '])');
             index = regexSettings.dictWord.word.search(regex);
             const rightOfDot = regexSettings.placedWord.substring(indexOfDot + 1);
             if (index === NOT_FOUND || index > 0) {

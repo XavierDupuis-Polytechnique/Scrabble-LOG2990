@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AbandonButtonComponent } from '@app/components/abandon-button/abandon-button.component';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
@@ -9,6 +9,7 @@ import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { DisconnectedFromServerComponent } from '@app/pages/classic-game/modals/disconnected-from-server/disconnected-from-server.component';
 
 @Component({
     selector: 'app-game-page',
@@ -16,11 +17,12 @@ import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
     styleUrls: ['./game-page.component.scss'],
 })
 export class GamePageComponent {
+    dialogRef: MatDialogRef<DisconnectedFromServerComponent> | undefined;
     constructor(
         private gameManager: GameManagerService,
         public info: GameInfoService,
         private router: Router,
-        public matDialog: MatDialog,
+        public dialog: MatDialog,
         private inputController: UIInputControllerService,
     ) {
         try {
@@ -28,6 +30,9 @@ export class GamePageComponent {
         } catch (e) {
             this.router.navigate(['/']);
         }
+        this.gameManager.disconnectedFromServer$.subscribe(() => {
+            this.openDisconnected();
+        });
     }
 
     @HostListener('window:keyup', ['$event'])
@@ -40,13 +45,22 @@ export class GamePageComponent {
         this.inputController.receive(input);
     }
 
-    abandon(): void {
+    abandon() {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
-        this.matDialog.open(AbandonButtonComponent, dialogConfig);
+        this.dialog.open(AbandonButtonComponent, dialogConfig);
     }
+
+    quit() {
+        this.gameManager.stopGame();
+        this.router.navigate(['/']);
+    }
+
     get isItMyTurn() {
         try {
+            if (this.isEndOfGame) {
+                return false;
+            }
             return this.info.user === this.info.activePlayer;
         } catch (e) {
             return false;
@@ -92,5 +106,21 @@ export class GamePageComponent {
 
     cancel() {
         this.inputController.cancel();
+    }
+
+    openDisconnected() {
+        if (this.dialogRef) {
+            return;
+        }
+        this.gameManager.stopGame();
+        const disconnectedDialogConfig = new MatDialogConfig();
+        disconnectedDialogConfig.autoFocus = true;
+        disconnectedDialogConfig.disableClose = true;
+        disconnectedDialogConfig.minWidth = 550;
+        this.dialogRef = this.dialog.open(DisconnectedFromServerComponent, disconnectedDialogConfig);
+        this.dialogRef.afterClosed().subscribe(() => {
+            this.dialogRef = undefined;
+            this.router.navigate(['/']);
+        });
     }
 }

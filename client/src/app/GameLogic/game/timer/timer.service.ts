@@ -8,20 +8,24 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class TimerService {
     source: Observable<number>;
+    isStarted = false;
     readonly timePerStep: number = TIMER_STEP;
     private end$$: Subscription;
     private timeLeftSubject = new BehaviorSubject<number | undefined>(undefined);
 
     start(interval: number) {
+        this.end$$?.unsubscribe();
         const end$: Subject<void> = new Subject();
         const numberOfStep = Math.ceil(interval / TIMER_STEP);
 
+        this.isStarted = true;
         this.timeLeftSubject.next(interval);
         this.source = timer(TIMER_STEP, TIMER_STEP);
         this.end$$ = this.source.pipe(takeUntil(end$)).subscribe((step) => {
             const timeLeft = interval - (step + 1) * this.timePerStep;
             this.timeLeftSubject.next(timeLeft);
             if (step >= numberOfStep - 1) {
+                this.isStarted = false;
                 end$.next();
                 end$.complete();
             }
@@ -30,7 +34,7 @@ export class TimerService {
     }
 
     stop() {
-        this.end$$.unsubscribe();
+        this.end$$?.unsubscribe();
         this.source = new Subject();
     }
 

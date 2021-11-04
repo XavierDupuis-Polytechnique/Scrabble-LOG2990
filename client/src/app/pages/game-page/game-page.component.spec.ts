@@ -10,7 +10,7 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
@@ -19,6 +19,7 @@ describe('GamePageComponent', () => {
     let gameManagerServiceSpy: jasmine.SpyObj<GameManagerService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
     let uiInput: UIInput;
+    let mockObservableDisconnect: Subject<void>;
     class ActionValidatorServiceMock {
         sendAction() {
             return;
@@ -45,10 +46,10 @@ describe('GamePageComponent', () => {
             };
         }
     }
-
     beforeEach(async () => {
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
+        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
+        mockObservableDisconnect = new Subject<void>();
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
@@ -61,6 +62,11 @@ describe('GamePageComponent', () => {
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
+
+        (
+            Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'disconnectedFromServer$')?.get as jasmine.Spy<() => Observable<void>>
+        ).and.returnValue(mockObservableDisconnect);
+
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
         component = fixture.componentInstance;
@@ -86,10 +92,15 @@ describe('GamePageComponent', () => {
         expect(inputControllerSpy).toBeTruthy();
     });
 
-    it('confirming to abandon should call method stopgame', () => {
-        const gameManagerSpy = spyOn(component.matDialog, 'open');
+    it('confirming to abandon should open dialog', () => {
+        const dialogSpy = spyOn(component.dialog, 'open');
         component.abandon();
-        expect(gameManagerSpy).toHaveBeenCalled();
+        expect(dialogSpy).toHaveBeenCalled();
+    });
+
+    it('confirming to quit should call method stopgame', () => {
+        component.quit();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalled();
     });
 
     it('should call function sendAction if button "Passer" is pressed', () => {
@@ -110,6 +121,6 @@ describe('GamePageComponent', () => {
         // eslint-disable-next-line dot-notation
         const inputControllerSpy = spyOn(component['inputController'], 'cancel');
         component.cancel();
-        expect(inputControllerSpy).toBeTruthy();
+        expect(inputControllerSpy).toHaveBeenCalled();
     });
 });

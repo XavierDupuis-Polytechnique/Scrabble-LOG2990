@@ -1,49 +1,46 @@
 import { Injectable } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
-import { OnlineSystemMessage } from '@app/GameLogic/messages/online-system-message.interface';
 import { isSocketConnected } from '@app/GameLogic/utils';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { io, Socket } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
 })
 export class OnlineChatHandlerService {
-    private socket: Socket | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    socket: Socket | any;
     private newRoomMessageSubject = new Subject<ChatMessage>();
     private errorSubject = new Subject<string>();
     private sysMessageSubject = new Subject<string>();
-
     constructor(private gameInfo: GameInfoService) {}
 
     joinChatRoom(roomID: string, userName: string) {
         if (this.socket) {
-            throw Error('Already connected to a chat room');
+            this.socket.on('error', (errorContent: string) => {
+                this.receiveChatServerError(errorContent);
+            });
+
+            this.socket.on('roomMessages', (message: ChatMessage) => {
+                this.receiveServerMessage(message);
+            });
+
+            this.socket.on('systemMessages', (content: string) => {
+                // console.log('received sysMessage from server', sysMessage);
+                this.receiveSystemMessage(content);
+            });
+
+            this.socket.emit('userName', userName);
+            this.socket.emit('joinRoom', roomID);
         }
-        this.socket = io(environment.socketServerUrl, { path: '/messages' });
-
-        this.socket.on('error', (errorContent: string) => {
-            this.receiveChatServerError(errorContent);
-        });
-
-        this.socket.on('roomMessages', (message: ChatMessage) => {
-            this.receiveServerMessage(message);
-        });
-
-        this.socket.on('systemMessages', (sysMessage: OnlineSystemMessage) => {
-            const content = sysMessage.content;
-            this.receiveSystemMessage(content);
-        });
-
-        this.socket.emit('userName', userName);
-        this.socket.emit('joinRoom', roomID);
     }
 
     joinChatRoomWithUser(roomID: string) {
         const userName = this.gameInfo.user.name;
+        this.socket = this.connectToSocket();
         this.joinChatRoom(roomID, userName);
     }
 
@@ -60,6 +57,22 @@ export class OnlineChatHandlerService {
             throw Error('No socket to send message from');
         }
         this.socket.emit('newMessage', content);
+    }
+
+    connectToSocket() {
+        return io(environment.serverSocketUrl, { path: '/messages' });
+    }
+
+    receiveChatServerError(content: string) {
+        this.errorSubject.next(content);
+    }
+
+    receiveServerMessage(message: ChatMessage) {
+        this.newRoomMessageSubject.next(message);
+    }
+
+    receiveSystemMessage(content: string) {
+        this.sysMessageSubject.next(content);
     }
 
     get connected(): boolean {
@@ -86,17 +99,5 @@ export class OnlineChatHandlerService {
 
     get systemMessage$(): Observable<string> {
         return this.sysMessageSubject;
-    }
-
-    private receiveServerMessage(message: ChatMessage) {
-        this.newRoomMessageSubject.next(message);
-    }
-
-    private receiveChatServerError(content: string) {
-        this.errorSubject.next(content);
-    }
-
-    private receiveSystemMessage(content: string) {
-        this.sysMessageSubject.next(content);
     }
 }
