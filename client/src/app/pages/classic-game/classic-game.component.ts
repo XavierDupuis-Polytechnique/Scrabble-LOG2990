@@ -55,7 +55,6 @@ export class ClassicGameComponent {
             if (!formOnline) {
                 return;
             }
-            // TODO:Socket validator
             this.gameSettings = formOnline;
             this.socketHandler.createGameMulti(formOnline);
             const username = formOnline.playerName;
@@ -70,12 +69,18 @@ export class ClassicGameComponent {
 
         const secondDialogRef = this.dialog.open(WaitingForPlayerComponent, secondDialogConfig);
         secondDialogRef.afterOpened().subscribe(() => {
+            this.socketHandler.isDisconnected$.subscribe((isDisconnected) => {
+                if (isDisconnected) {
+                    secondDialogRef.close();
+                    this.socketHandler.disconnectSocket();
+                }
+            });
             this.startGame$$?.unsubscribe();
             this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
                 if (!gameSettings) {
                     return;
                 }
-                this.dialog.closeAll();
+                secondDialogRef.close(); // Changed
                 this.startOnlineGame(username, gameSettings);
             });
         });
