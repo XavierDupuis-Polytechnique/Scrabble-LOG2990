@@ -5,7 +5,7 @@ import { MAX_MESSAGE_LENGTH } from '@app/constants';
 import { MessagesSocketHandler, SYSTEM_MESSAGES } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
 import { Message } from '@app/messages-service/message.interface';
 import { GlobalSystemMessage, IndividualSystemMessage, SystemMessage } from '@app/messages-service/system-message.interface';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { createServer, Server } from 'http';

@@ -1,9 +1,9 @@
 import { MAX_MESSAGE_LENGTH } from '@app/constants';
 import { ChatUser } from '@app/messages-service/chat-user.interface';
 import { Message } from '@app/messages-service/message.interface';
-import { Room } from '@app/messages-service/room';
+import { Room } from '@app/messages-service/room/room';
 import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-service/system-message.interface';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
