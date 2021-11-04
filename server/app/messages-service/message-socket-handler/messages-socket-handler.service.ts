@@ -176,7 +176,8 @@ export class MessagesSocketHandler {
         const roomID = individualMessage.gameToken;
         const socketID = this.getSocketId(userName, roomID);
         if (!socketID) {
-            throw Error(`L'utilisateur ${userName} n'est pas connecté`);
+            return;
+            // throw Error(`L'utilisateur ${userName} n'est pas connecté`);
         }
         const content = individualMessage.content;
         this.sio.to(socketID).emit(SYSTEM_MESSAGES, content);
