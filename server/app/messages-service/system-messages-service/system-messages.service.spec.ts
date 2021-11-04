@@ -1,6 +1,6 @@
 import { GameActionNotification, GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GlobalSystemMessage, IndividualSystemMessage } from '@app/messages-service/system-message.interface';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { first, Subject } from 'rxjs';

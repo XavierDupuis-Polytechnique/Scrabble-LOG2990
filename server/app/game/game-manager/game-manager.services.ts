@@ -12,7 +12,7 @@ import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { Observable, Subject } from 'rxjs';
