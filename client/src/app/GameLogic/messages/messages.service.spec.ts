@@ -9,7 +9,7 @@ import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
 import { Observable, Subject } from 'rxjs';
 
-fdescribe('Service: Messages', () => {
+describe('Service: Messages', () => {
     let service: MessagesService;
     let commandParserSpy: jasmine.SpyObj<CommandParserService>;
     const mockOfflineErrorMessage$ = new Subject<string>();
