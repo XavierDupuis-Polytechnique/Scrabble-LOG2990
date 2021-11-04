@@ -72,7 +72,6 @@ export class GameManagerService {
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
-        // TODO need to stop online game if game started
         if (this.game || this.onlineGame) {
             this.stopGame();
         }

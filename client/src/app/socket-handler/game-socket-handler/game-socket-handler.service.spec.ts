@@ -42,7 +42,7 @@ describe('GameSocketHandlerService', () => {
         const spy = spyOn(service, 'receiveTimerControl');
         const mockTimerControl: TimerControls = TimerControls.Start;
         service.socket.peerSideEmit('timerControl', mockTimerControl);
-        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalled();
     });
 
     it('receiveTimerControl should set next subject', () => {

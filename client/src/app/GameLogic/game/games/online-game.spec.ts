@@ -11,6 +11,7 @@ import { Tile } from '@app/GameLogic/game/board/tile';
 import { GameState, LightPlayer } from '@app/GameLogic/game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -23,9 +24,9 @@ describe('OnlineGame', () => {
     let boardService: BoardService;
     let gameSocketHandlerService: GameSocketHandlerService;
     let timer: TimerService;
+    let player1: Player;
+    let player2: Player;
     const dict = new DictionaryService();
-    const player1 = new User('p1');
-    const player2 = new User('p2');
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -44,6 +45,8 @@ describe('OnlineGame', () => {
             boardService,
             TestBed.inject(OnlineActionCompilerService),
         );
+        player1 = new User('p1');
+        player2 = new User('p2');
         onlineGame.players = [player1, player2];
     });
 
@@ -80,7 +83,7 @@ describe('OnlineGame', () => {
             isEndOfGame: false,
             winnerIndex: [],
         };
-
+        spyOn(gameSocketHandlerService, 'playAction');
         gameSocketHandlerService['gameStateSubject'].next(gameState);
         onlineGame.receiveState(gameState);
         const result = onlineGame.players[0].letterRack;
