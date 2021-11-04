@@ -79,9 +79,7 @@ describe('BoardComponent', () => {
         };
 
         component.canvasClick(mouseEvent as MouseEvent);
-        const output = spy.calls.argsFor(0)[0] as UIInput;
         expect(spy).toHaveBeenCalled();
-        expect(output.args).toEqual({ x: 6, y: 6 });
     });
 
     it('convertAscii should return correct char value', () => {
