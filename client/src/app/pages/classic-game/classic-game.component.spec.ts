@@ -145,7 +145,7 @@ describe('ClassicGameComponent', () => {
     });
 
     it('Creer partie multijoueur should call openMultiGameForm and return if form is undefined', () => {
-        spyOn(component, 'openWaitingForPlayer').and.callThrough();
+        spyOn(component, 'openWaitingForPlayer');
         matDialog.open.and.returnValue({
             afterClosed: () => {
                 return of(undefined);
