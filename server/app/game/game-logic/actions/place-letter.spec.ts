@@ -72,6 +72,10 @@ describe('PlaceLetter', () => {
         placeLetter = new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorStub, wordSearcherStub);
     });
 
+    afterEach(() => {
+        clock.restore();
+    });
+
     it('should place letter at right place', () => {
         placeLetter.execute(game);
         for (let i = 0; i < lettersToPlace.length; i++) {

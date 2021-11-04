@@ -13,6 +13,10 @@ describe('TimerService', () => {
         clock = useFakeTimers();
     });
 
+    afterEach(() => {
+        clock.restore();
+    });
+
     it('should be created', () => {
         expect(service).to.be.instanceOf(Timer);
     });

@@ -5,7 +5,7 @@ export interface OnlineAction {
     type: OnlineActionType;
     placementSettings?: PlacementSetting;
     letters?: string;
-    letterRack?: Letter[];
+    letterRack: Letter[];
 }
 
 export enum OnlineActionType {
