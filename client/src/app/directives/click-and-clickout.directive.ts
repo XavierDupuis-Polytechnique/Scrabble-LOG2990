@@ -18,7 +18,7 @@ export class ClickAndClickoutDirective {
     }
 
     @HostListener('document:click')
-    clickout() {
+    clickOutside() {
         if (!this.wasInside) {
             if (this.inputController.activeComponent === this.inputComponent) {
                 this.inputController.receive({ type: InputType.LeftClick, from: InputComponent.Outside });
