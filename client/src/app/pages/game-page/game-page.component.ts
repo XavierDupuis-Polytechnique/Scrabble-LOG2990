@@ -45,10 +45,15 @@ export class GamePageComponent {
         this.inputController.receive(input);
     }
 
-    abandon(): void {
+    abandon() {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         this.dialog.open(AbandonButtonComponent, dialogConfig);
+    }
+
+    quit() {
+        this.gameManager.stopGame();
+        this.router.navigate(['/']);
     }
 
     get isItMyTurn() {

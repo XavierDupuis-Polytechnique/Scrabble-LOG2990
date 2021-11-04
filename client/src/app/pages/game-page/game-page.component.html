@@ -14,7 +14,7 @@
         </div>
         <div class="abandonner">
             <button mat-raised-button (click)="abandon()" *ngIf="!isEndOfGame">Abandonner la partie</button>
-            <button mat-raised-button [routerLink]="['/home']" *ngIf="isEndOfGame">Quitter</button>
+            <button mat-raised-button (click)="quit()" *ngIf="isEndOfGame">Quitter</button>
         </div>
     </div>
 </div>
