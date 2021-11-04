@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
 import { Observable, of, Subject } from 'rxjs';
 import { PendingGamesComponent } from './pending-games.component';
 
@@ -14,34 +15,22 @@ const mockDialogRef = {
     close: jasmine.createSpy('close').and.returnValue(() => {
         return;
     }),
-    closeAll: () => {
-        return;
-    },
 };
 
 const mockLiveAnnouncer = {
     announce: jasmine.createSpy('announce'),
 };
 
-const dialogRefStub = {
-    beforeClosed: () => {
-        return of('name');
-    },
-    close: jasmine.createSpy('close').and.returnValue(() => {
-        return;
-    }),
-};
-
-const dialogStub = { open: () => dialogRefStub };
 describe('PendingGamesComponent', () => {
     let component: PendingGamesComponent;
     let fixture: ComponentFixture<PendingGamesComponent>;
     let onlineSocketHandlerSpy: jasmine.SpyObj<'OnlineGameInitService'>;
     const testPendingGames$ = new Subject<OnlineGameSettings[]>();
-    // let matDialog: MatDialog;
+    let matDialog: jasmine.SpyObj<MatDialog>;
 
     beforeEach(
         waitForAsync(() => {
+            matDialog = jasmine.createSpyObj('MatDialog', ['open']);
             onlineSocketHandlerSpy = jasmine.createSpyObj(
                 'OnlineGameInitService',
                 ['createGameMulti', 'listenForPendingGames', 'disconnect', 'joinPendingGames'],
@@ -54,7 +43,7 @@ describe('PendingGamesComponent', () => {
                 providers: [
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: mockDialogRef },
-                    { provide: MatDialog, useValue: dialogStub },
+                    { provide: MatDialog, useValue: matDialog },
                     { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
                     { provide: LiveAnnouncer, useValue: mockLiveAnnouncer },
                 ],
@@ -119,31 +108,31 @@ describe('PendingGamesComponent', () => {
     });
 
     it('JoinGame should open JoinOnline dialog and get name value', () => {
+        matDialog.open.and.returnValue({
+            beforeClosed: () => {
+                return of('name');
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<JoinOnlineGameComponent>);
         component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
         component.joinGame();
-        // expect(dialogStub).toHaveBeenCalled();
-        dialogRefStub.beforeClosed().subscribe((name: string) => {
-            expect(name).toBe('name');
-        });
-        dialogRefStub.close();
+        expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
-    it('JoinGame should open JoinOnline dialog and not get name value', () => {
-        const dialogRefStubWithoutName = {
+    it('JoinGame should close if name was not returned', () => {
+        matDialog.open.and.returnValue({
             beforeClosed: () => {
                 return of(undefined);
             },
             close: () => {
                 return;
             },
-        };
+        } as MatDialogRef<JoinOnlineGameComponent>);
         component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
         component.joinGame();
-        // expect(dialogStub).toHaveBeenCalled();
-        dialogRefStubWithoutName.beforeClosed().subscribe((name) => {
-            expect(name).toBeUndefined();
-        });
-        dialogRefStubWithoutName.close();
+        expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
     it('should be an empty table ', () => {
@@ -164,7 +153,7 @@ describe('PendingGamesComponent', () => {
             { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 },
             { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000 },
         ]);
-        const tableLength = 4; // headers + 2 gameSettings + hiddenNoGameAvailable
+        const tableLength = 4;
         const dom = fixture.nativeElement as HTMLElement;
         const tables = dom.querySelectorAll('tr');
         expect(tables.length).toBe(tableLength);
