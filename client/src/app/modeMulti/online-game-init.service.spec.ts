@@ -97,6 +97,13 @@ describe('OnlineGameInitService', () => {
         expect(spyDisconnect).not.toHaveBeenCalled();
     });
 
+    it('should resetGameToken ', () => {
+        service.startGame$.subscribe((value) => {
+            expect(value).toBeUndefined();
+        });
+        service.resetGameToken();
+    });
+
     it('connectToSocket should create socket', () => {
         expect(createSocketFunction().disconnected).toBeTrue();
     });
