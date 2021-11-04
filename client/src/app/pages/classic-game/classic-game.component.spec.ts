@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
@@ -21,38 +22,28 @@ describe('ClassicGameComponent', () => {
     let fixture: ComponentFixture<ClassicGameComponent>;
     const mockIsDisconnect$ = new Subject<boolean>();
     const mockGameToken$ = new Subject<string>();
+    const mockStartGame$ = new Subject<OnlineGameSettings>();
     let matDialog: jasmine.SpyObj<MatDialog>;
     let onlineSocketHandlerSpy: jasmine.SpyObj<OnlineGameInitService>;
+    let gameManagerSpy: jasmine.SpyObj<GameManagerService>;
     let router: Router;
-    const gameManager = {
-        createGame: () => {
-            return;
-        },
-    };
 
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         onlineSocketHandlerSpy = jasmine.createSpyObj(
-            ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames'],
-            ['isDisconnected$', 'gameToken$'],
+            'OnlineGameInitService',
+            ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames', 'resetGameToken'],
+            ['isDisconnected$', 'gameToken$', 'startGame$'],
         );
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame']);
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [
-                {
-                    provide: MAT_DIALOG_DATA,
-                    useValue: {},
-                },
-                {
-                    provide: MatDialog,
-                    useValue: matDialog,
-                },
-                {
-                    provide: GameManagerService,
-                    useValue: gameManager,
-                },
+                { provide: MAT_DIALOG_DATA, useValue: {} },
+                { provide: MatDialog, useValue: matDialog },
                 { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
+                { provide: GameManagerService, useValue: gameManagerSpy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
@@ -63,6 +54,10 @@ describe('ClassicGameComponent', () => {
         (Object.getOwnPropertyDescriptor(onlineSocketHandlerSpy, 'gameToken$')?.get as jasmine.Spy<() => Observable<string>>).and.returnValue(
             mockGameToken$,
         );
+        (
+            Object.getOwnPropertyDescriptor(onlineSocketHandlerSpy, 'startGame$')?.get as jasmine.Spy<() => Observable<OnlineGameSettings>>
+        ).and.returnValue(mockStartGame$);
+
         fixture = TestBed.createComponent(ClassicGameComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -84,13 +79,15 @@ describe('ClassicGameComponent', () => {
                     randomBonus: false,
                 });
             },
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            close: () => {},
+            close: () => {
+                return;
+            },
         } as MatDialogRef<NewSoloGameFormComponent>);
         component.openSoloGameForm();
         expect(component.gameSettings).toBeDefined();
         expect(component.startSoloGame).toHaveBeenCalled();
     });
+
     it('dialog should not set game setting and start game if form is undefined', () => {
         spyOn(component, 'startSoloGame');
         matDialog.open.and.returnValue({
@@ -115,10 +112,10 @@ describe('ClassicGameComponent', () => {
     });
 
     it('start solo game should create a game', () => {
-        spyOn(gameManager, 'createGame');
         spyOn(router, 'navigate');
         component.startSoloGame();
-        expect(gameManager.createGame).toHaveBeenCalled();
+        expect(gameManagerSpy.createGame).toHaveBeenCalled();
+        expect(router.navigate).toHaveBeenCalled();
     });
 
     it('Creer partie multijoueur should call openMultiGameForm', () => {
@@ -140,7 +137,7 @@ describe('ClassicGameComponent', () => {
         component.openMultiGameForm();
         expect(matDialog.open).toHaveBeenCalled();
         expect(onlineSocketHandlerSpy.createGameMulti).toHaveBeenCalledOnceWith(gameSettings);
-        expect(component.openWaitingForPlayer).toHaveBeenCalled();
+        expect(component.openWaitingForPlayer).toHaveBeenCalledWith(gameSettings.playerName);
     });
 
     it('Creer partie multijoueur should call openMultiGameForm and return if form is undefined', () => {
@@ -180,17 +177,17 @@ describe('ClassicGameComponent', () => {
                 return;
             },
         } as MatDialogRef<WaitingForPlayerComponent>);
-        component.openWaitingForPlayer();
+        component.openWaitingForPlayer('Sam');
         const soloGameSettings = component.gameSettings;
         soloGameSettings.botDifficulty = 'easy';
         expect(matDialog.open).toHaveBeenCalled();
-
         expect(component.gameSettings).toEqual(soloGameSettings);
         expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
         expect(component.startSoloGame).toHaveBeenCalled();
     });
 
-    it('openWaitingForPlayer should disconnectSocket if player is disconnected from server', () => {
+    it('openWaitingForPlayer should disconnectSocket if player is disconnected from server and should not startOnlineGame', () => {
+        spyOn(component, 'startOnlineGame');
         component.gameSettings = {
             playerName: 'Sam',
             botDifficulty: '',
@@ -208,15 +205,19 @@ describe('ClassicGameComponent', () => {
                 return;
             },
         } as MatDialogRef<WaitingForPlayerComponent>);
-        component.openWaitingForPlayer();
+        component.openWaitingForPlayer('Sam');
         onlineSocketHandlerSpy.isDisconnected$.next(true);
+        onlineSocketHandlerSpy.startGame$.next(undefined);
+        expect(component.startOnlineGame).not.toHaveBeenCalled();
         expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
     });
 
-    it('openWaitingForPlayer should receive game Token  from server', () => {
-        component.gameSettings = {
+    it('openWaitingForPlayer should start onlineGame', () => {
+        spyOn(component, 'openWaitingForPlayer').and.callThrough();
+        spyOn(component, 'startOnlineGame');
+        const gameSettings = {
+            id: 'abc',
             playerName: 'Sam',
-            botDifficulty: '',
             timePerTurn: 3000,
             randomBonus: false,
         };
@@ -231,16 +232,54 @@ describe('ClassicGameComponent', () => {
                 return;
             },
         } as MatDialogRef<WaitingForPlayerComponent>);
-        const dialog = matDialog.open(WaitingForPlayerComponent);
-        spyOn(dialog, 'close');
-        component.openWaitingForPlayer();
+
+        component.openWaitingForPlayer('Sam');
         onlineSocketHandlerSpy.isDisconnected$.next(false);
-        onlineSocketHandlerSpy.gameToken$.next('abc');
-        expect(dialog.close).toHaveBeenCalled();
+        onlineSocketHandlerSpy.startGame$.next(gameSettings);
+        expect(component.startOnlineGame).toHaveBeenCalledWith('Sam', gameSettings);
+        component.openWaitingForPlayer('Sam');
+        expect(component.openWaitingForPlayer).toHaveBeenCalledTimes(2);
     });
 
-    it('openPendingGames should open dialog', () => {
+    it('openPendingGames should open dialog unsubscribe and if name start onlineGame', () => {
+        spyOn(component, 'openPendingGames').and.callThrough();
+        spyOn(component, 'startOnlineGame').and.callThrough();
+        const onlineGameSettings = {
+            id: 'abc',
+            playerName: 'Sam',
+            timePerTurn: 3000,
+            randomBonus: false,
+        };
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of('name');
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<WaitingForPlayerComponent>);
         component.openPendingGames();
+        onlineSocketHandlerSpy.startGame$.next(onlineGameSettings);
         expect(matDialog.open).toHaveBeenCalled();
+        expect(gameManagerSpy.joinOnlineGame).toHaveBeenCalled();
+        expect(component.startOnlineGame).toHaveBeenCalledWith('name', onlineGameSettings);
+        component.openPendingGames();
+        expect(component.openPendingGames).toHaveBeenCalledTimes(2);
+    });
+
+    it('openPendingGames should open dialog and return if name was not provided', () => {
+        spyOn(component, 'startOnlineGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of('name');
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<WaitingForPlayerComponent>);
+        component.openPendingGames();
+        onlineSocketHandlerSpy.startGame$.next(undefined);
+        expect(matDialog.open).toHaveBeenCalled();
+        expect(component.startOnlineGame).not.toHaveBeenCalled();
     });
 });
