@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
-    gameToken$ = new Subject<string>();
+    startGame$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
     isDisconnected$ = new Subject<boolean>();
     error$ = new Subject<string>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,8 +69,8 @@ export class OnlineGameInitService {
     }
 
     listenForGameToken() {
-        this.socket.on('gameJoined', (gameToken: string) => {
-            this.gameToken$.next(gameToken);
+        this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
+            this.startGame$.next(gameSetting);
             this.disconnectSocket();
         });
     }

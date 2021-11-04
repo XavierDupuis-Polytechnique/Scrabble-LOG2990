@@ -53,8 +53,10 @@ describe('OnlineGameInitService', () => {
         service.joinPendingGame('abc', 'allo1');
         expect(service.listenForGameToken).toHaveBeenCalled();
 
-        service.gameToken$.pipe(first()).subscribe((value) => {
-            expect(value[0]).toEqual('aa');
+        service.socket.peerSideEmit('gameJoined', gameSettings);
+        service.listenForGameToken();
+        service.startGame$.pipe(first()).subscribe((gameSettingsServer) => {
+            expect(gameSettingsServer).toEqual(gameSettings);
         });
         service.socket.peerSideEmit('gameJoined', 'aa');
         expect(service.disconnectSocket).toHaveBeenCalled();
