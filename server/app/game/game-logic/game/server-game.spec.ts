@@ -159,17 +159,34 @@ describe('ServerGame', () => {
 
     it('endOfTurn should return true and call onEndOfGame if the isEnded is true', () => {
         game.stop();
+        expect(game.isEnded).to.be.equal(true);
         const gameSpy = spy(game, 'onEndOfGame');
-        const result = game['startTurn']();
-        expect(result).to.be.equal(true);
+        game['startTurn']();
         expect(gameSpy.called).to.be.equal(true);
     });
 
     it('isEndOfGame should return true if isEnded is true', () => {
         game.stop();
-        const result = game['startTurn']();
+        expect(game.isEnded).to.be.equal(true);
+        const result = game['isEndOfGame']();
         expect(result).to.be.equal(true);
     });
 
-    it('endOfTurn should return if isEnded is true', () => {});
+    it('endOfTurn should return and call onEndOfGame if the isEnded is true', () => {
+        const action = new PassTurn(p1);
+        const actionSpy = spy(action, 'execute');
+        game.start();
+        game['isEndedValue'] = true;
+        const gameSpy = spy(game, 'onEndOfGame');
+        game['endOfTurn'](action);
+        expect(gameSpy.called).to.be.equal(true);
+        expect(actionSpy.called).to.be.equal(false);
+    });
+
+    it('should call the onEndOfGame if the action passed to onEndOfTurn is undefined', () => {
+        game.start();
+        const gameSpy = spy(game, 'onEndOfGame');
+        game['endOfTurn'](undefined);
+        expect(gameSpy.called).to.be.equal(true);
+    });
 });
