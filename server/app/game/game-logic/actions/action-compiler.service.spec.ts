@@ -47,25 +47,24 @@ describe('ActionCompilerService', () => {
     });
 
     it('should create ExchangeLetter object', () => {
-        const char: string[] = [''];
+        const expectedPlayer: Player = new Player('p1');
         const playerLetters: Letter[] = [
             { char: 'A', value: 1 },
             { char: 'B', value: 3 },
             { char: 'B', value: 3 },
         ];
-        const letters: Letter[] = [
-            { char: 'C', value: 3 },
-            { char: char[2], value: 3 },
-        ];
+
+        expectedPlayer.letterRack = playerLetters;
         player.letterRack = playerLetters;
 
         const command: OnlineAction = {
             type: OnlineActionType.Exchange,
-            letters: 'abc',
-            letterRack: letters,
+            letters: 'abb',
+            letterRack: playerLetters,
         };
-        const expectedAction = new ExchangeLetter(player, letters);
+        const expectedAction = new ExchangeLetter(expectedPlayer, playerLetters);
         const exchangeLetterTest = actionCompiler.translate(command, player) as ExchangeLetter;
+
         expect(actionCompiler.translate(command, player)).to.be.instanceOf(ExchangeLetter);
         expect(exchangeLetterTest.lettersToExchange).to.deep.equal(expectedAction.lettersToExchange);
         expect(exchangeLetterTest.player).to.deep.equal(expectedAction.player);
@@ -73,14 +72,14 @@ describe('ActionCompilerService', () => {
 
     it('should create PlaceLetter object', () => {
         const playerLetters: Letter[] = [
-            { char: 'A', value: 1 },
-            { char: 'B', value: 3 },
-            { char: 'B', value: 3 },
+            { char: 'D', value: 1 },
+            { char: 'E', value: 3 },
+            { char: 'F', value: 3 },
         ];
         const letters: Letter[] = [
             { char: 'A', value: 1 },
             { char: 'B', value: 3 },
-            { char: 'B', value: 3 },
+            { char: 'C', value: 3 },
         ];
         player.letterRack = playerLetters;
         const placement: PlacementSetting = {
@@ -107,22 +106,23 @@ describe('ActionCompilerService', () => {
     it('should reattribute the rack', () => {
         const letters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'B', value: 3 },
-            { char: 'B', value: 3 },
+            { char: 'A', value: 1 },
         ];
+
         const playerLetters: Letter[] = [
             { char: 'A', value: 1 },
-            { char: 'B', value: 3 },
-            { char: 'B', value: 3 },
+            { char: 'A', value: 1 },
+            { char: 'A', value: 1 },
         ];
         player.letterRack = playerLetters;
+
         const command: OnlineAction = {
             type: OnlineActionType.Pass,
             letterRack: letters,
         };
 
         actionCompiler.letterRackUpdateValidator(command, player);
-        expect(player.letterRack).to.be.equal(letters);
+        expect(player.letterRack).to.be.equal(playerLetters);
     });
 
     it('should throw error when invalid command exchange', () => {
@@ -204,5 +204,4 @@ describe('ActionCompilerService', () => {
             actionCompiler.translate(command, player);
         }).to.throw();
     });
-    s;
 });
