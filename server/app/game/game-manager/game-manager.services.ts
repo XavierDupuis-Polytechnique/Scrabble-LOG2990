@@ -120,11 +120,11 @@ export class GameManagerService {
     removePlayerFromGame(playerId: string) {
         const playerRef = this.activePlayers.get(playerId);
         if (!playerRef) {
-            throw Error(`Player ${playerId} is not active anymore`);
+            return;
         }
-        const gameToken = playerRef.gameToken;
-        // TODO set winner to the player still online
         this.activePlayers.delete(playerId);
+
+        const gameToken = playerRef.gameToken;
         const game = this.activeGames.get(gameToken);
         if (!game) {
             return;
