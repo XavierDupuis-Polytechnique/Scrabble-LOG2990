@@ -22,7 +22,6 @@ export class GameSocketHandlerService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket: Socket | any;
     private gameStateSubject = new Subject<GameState>();
-    private endTurnSubject = new Subject<void>();
     get gameState$(): Observable<GameState> {
         return this.gameStateSubject;
     }
@@ -31,11 +30,6 @@ export class GameSocketHandlerService {
     get timerControls$(): Observable<TimerControls> {
         return this.timerControlsSubject;
     }
-
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
-    }
-
     joinGame(userAuth: UserAuth) {
         if (this.socket) {
             throw Error(GAME_ALREADY_JOINED);
@@ -78,7 +72,7 @@ export class GameSocketHandlerService {
         this.gameStateSubject.next(gameState);
     }
 
-    private receiveTimerControl(timerControl: TimerControls) {
+    receiveTimerControl(timerControl: TimerControls) {
         this.timerControlsSubject.next(timerControl);
     }
 }

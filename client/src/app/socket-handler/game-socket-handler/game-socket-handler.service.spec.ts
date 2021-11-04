@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { GameState } from '@app/GameLogic/game/game-state';
+import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { SocketMock } from '@app/GameLogic/socket-mock';
 import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/socket-handler/online-action.interface';
@@ -7,7 +8,7 @@ import { take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 import { GameSocketHandlerService } from './game-socket-handler.service';
 
-describe('GameSocketHandlerService', () => {
+fdescribe('GameSocketHandlerService', () => {
     let service: GameSocketHandlerService;
     let tempSocket: Socket;
     beforeEach(() => {
@@ -35,6 +36,21 @@ describe('GameSocketHandlerService', () => {
         const mockGameState = {};
         service.socket.peerSideEmit('gameState', mockGameState);
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('on timerControl should call receiveTimerControl', () => {
+        const spy = spyOn(service, 'receiveTimerControl');
+        const mockTimerControl: TimerControls = TimerControls.Start;
+        service.socket.peerSideEmit('timerControl', mockTimerControl);
+        expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('receiveTimerControl should set next subject', () => {
+        const timerControl = TimerControls.Start;
+        service.receiveTimerControl(timerControl);
+        service.timerControls$.subscribe((value: TimerControls) => {
+            expect(value).toEqual(timerControl);
+        });
     });
 
     it('playAction should emit nextAction', () => {

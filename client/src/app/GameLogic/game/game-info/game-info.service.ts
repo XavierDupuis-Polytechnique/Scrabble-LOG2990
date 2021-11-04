@@ -100,10 +100,26 @@ export class GameInfoService {
         return this.game.isEndOfGame();
     }
 
+    get isOnlineGame(): boolean {
+        if (!this.game) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     get winner(): Player[] {
         if (!this.game) {
             return (this.onlineGame as OnlineGame).getWinner();
         }
         return this.game.getWinner();
+    }
+
+    get gameId(): string {
+        if (this.onlineGame) {
+            return this.onlineGame.gameToken;
+        } else {
+            return '';
+        }
     }
 }
