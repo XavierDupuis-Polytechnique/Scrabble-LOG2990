@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
@@ -13,11 +12,11 @@ import { PointCalculatorService } from '@app/game/game-logic/point-calculator/po
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
+import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
 describe('PointCalculatorService', () => {
     const pointCalculator: PointCalculatorService = new PointCalculatorService();
@@ -44,12 +43,12 @@ describe('PointCalculatorService', () => {
     let randomBonus: boolean;
     let timePerTurn: number;
     let gameToken: string;
-    const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
-    const timerController: TimerController = new TimerController();
-    const gameCompiler: GameCompiler = new GameCompiler();
-    const messagesService: SystemMessagesService = new SystemMessagesService(new GameActionNotifierService());
+    const pointCalculatorStub = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
+    const timerController = createSinonStubInstance<TimerController>(TimerController);
+    const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
+    const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     let newGameStateSubject: Subject<GameStateToken>;
-
+    let endGameSubject: Subject<string>;
     beforeEach(() => {
         game = new MockGame(
             timerController,
@@ -60,6 +59,7 @@ describe('PointCalculatorService', () => {
             gameCompiler,
             messagesService,
             newGameStateSubject,
+            endGameSubject,
         );
         player1 = new Player('Tim');
         player2 = new Player('Max');
@@ -409,6 +409,7 @@ describe('PointCalculatorService', () => {
             gameCompiler,
             messagesService,
             newGameStateSubject,
+            endGameSubject,
         );
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;

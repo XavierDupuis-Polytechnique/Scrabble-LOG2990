@@ -51,10 +51,10 @@ describe('LetterCreator', () => {
         }).to.throw('No chars were given');
     });
 
-    it('should throw error null char were given', () => {
+    it('should properly create a blank letter from char', () => {
         const newBlankLetter = { char: 'A', value: 0 };
-        expect(letterCreator.createBlankLetter('a')).to.be.equal(newBlankLetter);
-        expect(letterCreator.createBlankLetter('a')).not.to.be.equal(letterCreator.createLetter('A'));
+        expect(letterCreator.createBlankLetter('a')).to.be.deep.equal(newBlankLetter);
+        expect(letterCreator.createBlankLetter('a')).not.to.be.deep.equal(letterCreator.createLetter('A'));
     });
 
     it('should throw error null char were given', () => {
@@ -76,6 +76,6 @@ describe('LetterCreator', () => {
             lettersToBeCreated.push(newLetter);
         }
         const letterCreated = letterCreator.createLetters(lettersToCreate);
-        expect(letterCreated).to.be.equal(lettersToBeCreated);
+        expect(letterCreated).to.be.deep.equal(lettersToBeCreated);
     });
 });

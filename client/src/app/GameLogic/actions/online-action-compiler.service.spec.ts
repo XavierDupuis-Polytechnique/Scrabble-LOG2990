@@ -1,24 +1,24 @@
 import { TestBed } from '@angular/core/testing';
-import { DEFAULT_TIME_PER_TURN } from '../constants';
-import { BoardService } from '../game/board/board.service';
-import { Letter } from '../game/board/letter.interface';
-import { GameInfoService } from '../game/game-info/game-info.service';
-import { Game } from '../game/games/game';
-import { TimerService } from '../game/timer/timer.service';
-import { PlacementSetting } from '../interface/placement-setting.interface';
-import { MessagesService } from '../messages/messages.service';
-import { Player } from '../player/player';
-import { User } from '../player/user';
-import { PointCalculatorService } from '../point-calculator/point-calculator.service';
-import { DictionaryService } from '../validator/dictionary.service';
-import { WordSearcher } from '../validator/word-search/word-searcher.service';
-import { Action } from './action';
-import { ActionValidatorService } from './action-validator.service';
-import { ExchangeLetter } from './exchange-letter';
-import { OnlineAction, OnlineActionType } from './online-action-compiler.interface';
-import { OnlineActionCompilerService } from './online-action-compiler.service';
-import { PassTurn } from './pass-turn';
-import { PlaceLetter } from './place-letter';
+import { Action } from '@app/GameLogic/actions/action';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { Letter } from '@app/GameLogic/game/board/letter.interface';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { Game } from '@app/GameLogic/game/games/game';
+import { TimerService } from '@app/GameLogic/game/timer/timer.service';
+import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { Player } from '@app/GameLogic/player/player';
+import { User } from '@app/GameLogic/player/user';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
+import { OnlineAction, OnlineActionType } from '@app/socket-handler/online-action.interface';
 
 class UnknownAction extends Action {
     id: number;
@@ -98,7 +98,7 @@ describe('Service: OnlineActionCompiler', () => {
             letters: placeLetter.word,
             letterRack: p1.letterRack,
         };
-        expect(service.compileActionOnline(placeLetter)).toEqual(onlinePlaceLetterTest);
+        expect(service.compileActionOnline(placeLetter) as OnlineAction).toEqual(onlinePlaceLetterTest);
     });
 
     it('should only call compileExchangeLetter', () => {
@@ -109,7 +109,7 @@ describe('Service: OnlineActionCompiler', () => {
             letters: 'abc',
             letterRack: p1.letterRack,
         };
-        expect(service.compileActionOnline(exchangeLetter)).toEqual(onlineExchangeLetterTest);
+        expect(service.compileActionOnline(exchangeLetter) as OnlineAction).toEqual(onlineExchangeLetterTest);
     });
 
     it('should only call compilePassTurn', () => {
@@ -118,7 +118,7 @@ describe('Service: OnlineActionCompiler', () => {
             type: OnlineActionType.Pass,
             letterRack: p1.letterRack,
         };
-        expect(service.compileActionOnline(passTurn)).toEqual(passTurnTest);
+        expect(service.compileActionOnline(passTurn) as OnlineAction).toEqual(passTurnTest);
     });
 
     it('should only call compilePassTurn', () => {

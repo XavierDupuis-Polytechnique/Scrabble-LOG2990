@@ -30,6 +30,17 @@ export class GameSocketHandlerService {
     get timerControls$(): Observable<TimerControls> {
         return this.timerControlsSubject;
     }
+
+    private endTurnSubject = new Subject<void>();
+    get endTurn$(): Observable<void> {
+        return this.endTurnSubject;
+    }
+
+    private disconnectedFromServerSubject = new Subject<void>();
+    get disconnectedFromServer$(): Observable<void> {
+        return this.disconnectedFromServerSubject;
+    }
+
     joinGame(userAuth: UserAuth) {
         if (this.socket) {
             throw Error(GAME_ALREADY_JOINED);
@@ -42,6 +53,19 @@ export class GameSocketHandlerService {
 
         this.socket.on('timerControl', (timerControl: TimerControls) => {
             this.receiveTimerControl(timerControl);
+        });
+
+        this.socket.on('timerControl', (timerControl: TimerControls) => {
+            this.receiveTimerControl(timerControl);
+        });
+
+        this.socket.on('connect_error', () => {
+            this.disconnectedFromServerSubject.next();
+            // this.socket.disconnect();
+        });
+        this.socket.on('disconnected', () => {
+            this.disconnectedFromServerSubject.next();
+            // this.socket.disconnect();
         });
     }
 

@@ -24,7 +24,6 @@ export class ActionCompilerService {
                     throw Error('Argument of Action Invalid. Cant compile.');
                 }
                 const lettersToExchange: Letter[] = this.letterFactory.createLetters(letters.split(''));
-                console.log(letters, ' became ', lettersToExchange);
                 this.letterRackUpdateValidator(command, player);
                 return new ExchangeLetter(player, lettersToExchange);
             }
@@ -53,6 +52,9 @@ export class ActionCompilerService {
 
     letterRackUpdateValidator(command: OnlineAction, player: Player) {
         const newLetterRack = command.letterRack as Letter[];
+        if (newLetterRack === undefined) {
+            return;
+        }
         if (!this.isLetterRackChanged(newLetterRack, player)) {
             for (let letterIndex = 0; letterIndex < newLetterRack.length; letterIndex++) {
                 player.letterRack[letterIndex] = newLetterRack[letterIndex];
@@ -66,16 +68,13 @@ export class ActionCompilerService {
 
         for (const letter of player.letterRack) {
             const letterCount = mapRack.get(letter.char);
-            if (letterCount === undefined) {
-                isChanged = true;
-                return isChanged;
-            } else if (letterCount >= 1) {
-                mapRack.set(letter.char, letterCount - 1);
-            } else if (letterCount === 0) {
+            if (letterCount === 0 || letterCount === undefined) {
                 isChanged = true;
                 return isChanged;
             }
+            mapRack.set(letter.char, letterCount - 1);
         }
+
         return isChanged;
     }
 

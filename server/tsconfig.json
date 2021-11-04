@@ -20,6 +20,7 @@
         "allowSyntheticDefaultImports": true,
         "paths": {
             "@app/*": ["./app/*"]
-        }
+        },
+        "lib": ["es2018", "dom"]
     }
 }

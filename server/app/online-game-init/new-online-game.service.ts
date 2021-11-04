@@ -24,14 +24,14 @@ export class NewOnlineGameService {
 
     joinPendingGame(id: string, name: string): string | undefined {
         if (!this.isPendingGame(id)) {
-            return undefined;
+            return;
         }
         const gameSettings = this.pendingGames.get(id);
         if (!gameSettings) {
-            throw Error("The game you're trying to join doesn't exist.");
+            return;
         }
         if (gameSettings.opponentName !== undefined) {
-            throw Error('This game already has a second player.');
+            return;
         }
         gameSettings.opponentName = name;
         const onlineGameSettingsUI = this.toOnlineGameSettings(id, gameSettings);

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// eslint-disable-next-line @typescript-eslint/ban-types
 type CallbackSignature = (...params: any) => {};
 export class SocketMock {
     private callbacks = new Map<string, CallbackSignature[]>();
@@ -31,6 +32,10 @@ export class SocketMock {
 
     disconnect() {
         return;
+    }
+
+    get connected() {
+        return true;
     }
 
     get disconnected() {

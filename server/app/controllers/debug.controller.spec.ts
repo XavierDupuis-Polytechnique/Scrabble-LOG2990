@@ -25,6 +25,11 @@ describe('ServerGameController', () => {
         const letter: Letter = { char: 'A', value: 1 };
         const mockLetterBag = {
             gameLetters: [letter, letter, letter],
+            countLetters: () => {
+                const map = new Map<string, number>();
+                map.set('A', 3);
+                return map;
+            },
         };
 
         const mockGame = createStubInstance(ServerGame);
@@ -45,7 +50,8 @@ describe('ServerGameController', () => {
             .get('/api/servergame/letterbag?gameId=2')
             .expect(HTTP_STATUS_OK)
             .then((res) => {
-                expect(res.body).to.equal(3);
+                const answer = Object.entries(res.body);
+                expect(answer[0][1]).to.equal(3);
             });
     });
 

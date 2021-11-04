@@ -58,18 +58,23 @@ export class OnlineChatHandlerService {
         }
         this.socket.emit('newMessage', content);
     }
+
     connectToSocket() {
         return io(environment.serverSocketUrl, { path: '/messages' });
     }
+
     receiveChatServerError(content: string) {
         this.errorSubject.next(content);
     }
+
     receiveServerMessage(message: ChatMessage) {
         this.newRoomMessageSubject.next(message);
     }
+
     receiveSystemMessage(content: string) {
         this.sysMessageSubject.next(content);
     }
+
     get connected(): boolean {
         return isSocketConnected(this.socket);
     }

@@ -101,10 +101,6 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
     }
 
     announceSortChange(sortState: Sort) {
-        if (sortState.direction) {
-            this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-        } else {
-            this.liveAnnouncer.announce('Sorting cleared');
-        }
+        this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
     }
 }

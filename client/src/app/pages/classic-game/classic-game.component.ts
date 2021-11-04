@@ -81,8 +81,7 @@ export class ClassicGameComponent {
         });
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
             if (botDifficulty) {
-                this.socketHandler.disconnect();
-
+                this.socketHandler.disconnectSocket();
                 this.gameSettings = {
                     playerName: this.gameSettings.playerName,
                     botDifficulty,

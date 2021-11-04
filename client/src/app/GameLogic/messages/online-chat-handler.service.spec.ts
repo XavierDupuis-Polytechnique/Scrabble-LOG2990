@@ -95,4 +95,25 @@ describe('online chat handler', () => {
         service.receiveServerMessage(messageMe);
         expect(getter).toEqual(messageOpponent);
     });
+
+    it('should throw error when leaving chat room when not connected', () => {
+        service.socket = undefined;
+        expect(() => {
+            service.leaveChatRoom();
+        }).toThrowError();
+    });
+
+    it('should throw error when leaving chat room when not connected', () => {
+        service.socket = undefined;
+        expect(() => {
+            service.sendMessage('allo');
+        }).toThrowError();
+    });
+
+    it('should not throw when joining two time a game', () => {
+        service.socket = undefined;
+        expect(() => {
+            service.joinChatRoom('1', 'bob');
+        }).not.toThrowError();
+    });
 });
