@@ -68,16 +68,13 @@ export class ActionCompilerService {
 
         for (const letter of player.letterRack) {
             const letterCount = mapRack.get(letter.char);
-            if (letterCount === undefined) {
-                isChanged = true;
-                return isChanged;
-            } else if (letterCount >= 1) {
-                mapRack.set(letter.char, letterCount - 1);
-            } else if (letterCount === 0) {
+            if (letterCount === 0 || letterCount === undefined) {
                 isChanged = true;
                 return isChanged;
             }
+            mapRack.set(letter.char, letterCount - 1);
         }
+
         return isChanged;
     }
 

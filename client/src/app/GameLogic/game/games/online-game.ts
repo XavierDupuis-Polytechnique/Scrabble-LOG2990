@@ -230,13 +230,11 @@ export class OnlineGame {
 
         for (const letter of player.letterRack) {
             const letterCount = mapRack.get(letter.char);
-            if (letterCount === undefined) {
+            if (letterCount === 0 || letterCount === undefined) {
                 isChanged = true;
-            } else if (letterCount >= 1) {
-                mapRack.set(letter.char, letterCount - 1);
-            } else if (letterCount === 0) {
-                isChanged = true;
+                return isChanged;
             }
+            mapRack.set(letter.char, letterCount - 1);
         }
         return isChanged;
     }
