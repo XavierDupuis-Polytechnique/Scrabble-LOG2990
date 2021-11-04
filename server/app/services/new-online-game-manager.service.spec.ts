@@ -117,13 +117,9 @@ describe('New Online Game Service', () => {
 
         const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
         const playerName = 'abc';
-        let gameSettingsPlayer1: OnlineGameSettings;
 
-        clientSocket.on('gameJoined', (gameSettingsServer: OnlineGameSettings) => {
-            gameSettingsPlayer1 = gameSettingsServer;
-        });
         clientSocket2.on('gameJoined', (gameSettingServer: OnlineGameSettings) => {
-            expect(gameSettingServer).to.deep.equal(gameSettingsPlayer1);
+            expect(gameSettingServer).to.deep.equal(gameSettings);
             clientSocket2.close();
             done();
         });

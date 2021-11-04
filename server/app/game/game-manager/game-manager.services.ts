@@ -12,13 +12,13 @@ import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
 
-interface PlayerRef {
+export interface PlayerRef {
     gameToken: string;
     player: Player;
 }
@@ -30,12 +30,12 @@ export class GameManagerService {
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
-    get newGameStates$(): Observable<GameStateToken> {
+    get newGameState$(): Observable<GameStateToken> {
         return this.newGameStateSubject;
     }
 
-    get timerControls$(): Observable<TimerGameControl> {
-        return this.timerController.timerControls$;
+    get timerControl$(): Observable<TimerGameControl> {
+        return this.timerController.timerControl$;
     }
 
     constructor(
@@ -59,20 +59,7 @@ export class GameManagerService {
         const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
-        this.startSelfDestructTimer(gameToken);
-    }
-
-    startSelfDestructTimer(gameToken: string) {
-        setTimeout(() => {
-            const serverGame = this.activeGames.get(gameToken);
-            if (this.linkedClients.get(gameToken)?.length !== 2) {
-                if (serverGame) {
-                    this.endGame(serverGame);
-                }
-                this.activeGames.delete(gameToken);
-                // this.linkedClients.delete(gameToken); // TODO Delete linkedClient when game is over
-            }
-        }, NEW_GAME_TIMEOUT);
+        this.startInactiveGameDestructionTimer(gameToken);
     }
 
     addPlayerToGame(playerId: string, userAuth: UserAuth) {
@@ -118,23 +105,40 @@ export class GameManagerService {
             this.notifyAction(compiledAction, gameToken);
             player.play(compiledAction);
             // eslint-disable-next-line no-empty
-        } catch (e) {}
+        } catch (e) {
+            return;
+        }
     }
 
     removePlayerFromGame(playerId: string) {
         const playerRef = this.activePlayers.get(playerId);
         if (!playerRef) {
-            return;
+            throw Error(`Player ${playerId} is not active anymore`);
         }
         const gameToken = playerRef.gameToken;
         // TODO set winner to the player still online
         this.activePlayers.delete(playerId);
         const game = this.activeGames.get(gameToken);
         if (!game) {
-            return;
+            throw Error(`GameToken ${gameToken} is not in active game`);
         }
         this.endForfeitedGame(game, playerRef.player.name);
         this.activeGames.delete(gameToken);
+    }
+
+    private startInactiveGameDestructionTimer(gameToken: string) {
+        setTimeout(() => {
+            const currentLinkedClient = this.linkedClients.get(gameToken);
+            if (currentLinkedClient === undefined) {
+                this.deleteGame(gameToken);
+                return;
+            }
+
+            if (currentLinkedClient.length !== 2) {
+                this.deleteGame(gameToken);
+                return;
+            }
+        }, NEW_GAME_TIMEOUT);
     }
 
     private notifyAction(action: Action, gameToken: string) {
@@ -147,18 +151,19 @@ export class GameManagerService {
 
     private endGame(game: ServerGame) {
         game.stop();
-        // const gameToken = game.gameToken;
-        // const gameState = this.gameCompiler.compile(game);
-        // const gameStateToken: GameStateToken = { gameToken, gameState };
-        // this.newGameStateSubject.next(gameStateToken);
     }
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
         game.stop();
-        // const gameToken = game.gameToken;
-        // const gameState = this.gameCompiler.compile(game);
-        // const gameStateToken: GameStateToken = { gameToken, gameState };
-        // this.newGameStateSubject.next(gameStateToken);
+    }
+
+    private deleteGame(gameToken: string) {
+        const serverGame = this.activeGames.get(gameToken);
+        if (serverGame) {
+            this.endGame(serverGame);
+        }
+        this.activeGames.delete(gameToken);
+        this.linkedClients.delete(gameToken);
     }
 }

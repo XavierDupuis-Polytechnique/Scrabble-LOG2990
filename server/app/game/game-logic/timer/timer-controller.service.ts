@@ -6,7 +6,7 @@ import { Service } from 'typedi';
 @Service()
 export class TimerController {
     private timerControlSubject = new Subject<TimerGameControl>();
-    get timerControls$(): Observable<TimerGameControl> {
+    get timerControl$(): Observable<TimerGameControl> {
         return this.timerControlSubject;
     }
 

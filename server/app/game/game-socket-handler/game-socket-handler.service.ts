@@ -16,13 +16,13 @@ export class GameSocketsHandler {
             // TODO : forfeit after 5 second timeout
             pingTimeout: 5000,
         });
-        this.gameManager.newGameStates$.subscribe((gameStateToken: GameStateToken) => {
+        this.gameManager.newGameState$.subscribe((gameStateToken: GameStateToken) => {
             const gameToken = gameStateToken.gameToken;
             const gameState = gameStateToken.gameState;
             this.emitGameState(gameState, gameToken);
         });
 
-        this.gameManager.timerControls$.subscribe((timerGameControl: TimerGameControl) => {
+        this.gameManager.timerControl$.subscribe((timerGameControl: TimerGameControl) => {
             const gameToken = timerGameControl.gameToken;
             const timerControl = timerGameControl.control;
             this.emitTimerControl(timerControl, gameToken);
@@ -60,7 +60,6 @@ export class GameSocketsHandler {
     }
 
     private emitGameState(gameState: GameState, gameToken: string) {
-        // TODO? : get game state
         this.sio.to(gameToken).emit('gameState', gameState);
     }
 
