@@ -7,7 +7,7 @@ import { GameStateToken } from '@app/game/game-logic/interface/game-state.interf
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
-import { SystemMessagesService } from '@app/messages-service/system-messages.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { GameCompiler } from '@app/services/game-compiler.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
@@ -27,6 +27,7 @@ describe('ServerGame', () => {
     const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const newGameStateSubject = new Subject<GameStateToken>();
+    const endGameSubject = new Subject<string>();
 
     beforeEach(() => {
         game = new ServerGame(
@@ -38,6 +39,7 @@ describe('ServerGame', () => {
             gameCompiler,
             messagesService,
             newGameStateSubject,
+            endGameSubject,
         );
         p1 = new Player('Tim');
         p2 = new Player('Paul');
