@@ -26,8 +26,19 @@ export class MockGame extends ServerGame {
         gameCompiler: GameCompiler,
         messagesService: SystemMessagesService,
         newGameStateSubject: Subject<GameStateToken>,
+        endGameSubject: Subject<string>,
     ) {
-        super(timerController, randomBonus, timePerTurn, gameToken, pointCalculatorService, gameCompiler, messagesService, newGameStateSubject);
+        super(
+            timerController,
+            randomBonus,
+            timePerTurn,
+            gameToken,
+            pointCalculatorService,
+            gameCompiler,
+            messagesService,
+            newGameStateSubject,
+            endGameSubject,
+        );
         this.players = [this.activePlayer, this.otherPlayer];
         this.board = new Board();
     }

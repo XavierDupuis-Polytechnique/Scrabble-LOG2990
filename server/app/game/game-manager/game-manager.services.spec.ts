@@ -339,7 +339,7 @@ describe('GameManagerService', () => {
         }).to.throw(Error);
     });
 
-    it('should throw when removing a player from a removed game', () => {
+    it('should not throw when removing a player from a removed game', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
@@ -361,7 +361,8 @@ describe('GameManagerService', () => {
         service.activeGames.delete('1');
         expect(() => {
             service.removePlayerFromGame(userId);
-        }).to.throw(Error);
+        }).to.not.throw(Error);
+        expect(service.activePlayers.size).to.be.equal(0);
     });
 
     it('should delete game when unjoined for a certain time', async () => {
@@ -477,5 +478,21 @@ describe('GameManagerService', () => {
             service.linkedClients.clear();
             service.receivePlayerAction(userId, onlineAction);
         }).to.not.throw(Error);
+    });
+
+    it('should remove game when it finishes', () => {
+        const playerName = 'test1';
+        const gameToken = '1';
+        const gameSettings: OnlineGameSettings = {
+            id: gameToken,
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName,
+            opponentName: 'test2',
+        };
+        service.createGame(gameToken, gameSettings);
+        // eslint-disable-next-line dot-notation
+        service['endGame$'].next(gameToken);
+        expect(service.activeGames.size).to.be.equal(0);
     });
 });

@@ -39,7 +39,7 @@ describe('PlaceLetter', () => {
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerController = createSinonStubInstance<TimerController>(TimerController);
     let clock: SinonFakeTimers;
-
+    const mockEndGame$ = new Subject<string>();
     beforeEach(() => {
         clock = useFakeTimers();
         wordSearcherStub.listOfValidWord.returns([{ letters: [new Tile()], index: [0] }]);
@@ -58,6 +58,7 @@ describe('PlaceLetter', () => {
             gameCompiler,
             messagesService,
             mockNewGameState$,
+            mockEndGame$,
         );
         game.players.push(player1);
         game.players.push(player2);
@@ -69,6 +70,10 @@ describe('PlaceLetter', () => {
             activePlayer.letterRack[i] = letterObjects[i];
         }
         placeLetter = new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorStub, wordSearcherStub);
+    });
+
+    afterEach(() => {
+        clock.restore();
     });
 
     it('should place letter at right place', () => {

@@ -16,6 +16,7 @@ export class GameCreator {
         private gameCompiler: GameCompiler,
         private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
+        private endGameSubject: Subject<string>,
         private timerController: TimerController,
     ) {}
 
@@ -29,6 +30,7 @@ export class GameCreator {
             this.gameCompiler,
             this.messagesService,
             this.newGameStateSubject,
+            this.endGameSubject,
         );
 
         const firstPlayerName = onlineGameSettings.playerName;
@@ -46,18 +48,4 @@ export class GameCreator {
         const playerTwo = new Player(secondPlayerName);
         return [playerOne, playerTwo];
     }
-
-    // startGame(): void {
-    //     if (!this.game) {
-    //         throw Error('No game created yet');
-    //     }
-    //     this.game.start();
-    // }
-
-    // stopGame(): void {
-    //     this.timer.stop();
-    //     this.game = {} as ServerGame;
-    //     this.messageService.clearLog();
-    //     this.commandExecuter.resetDebug();
-    // }
 }

@@ -290,21 +290,41 @@ describe('MessagesService', () => {
         });
     });
 
-    // it('should receive individual system message', (done) => {
-    //     const name = 'abc';
-    //     clientSocket.emit('userName', name);
-    //     const room = 'def';
-    //     clientSocket.emit('joinRoom', room);
+    it('should send individual system message', (done) => {
+        const playerName = 'abc';
+        clientSocket.emit('userName', playerName);
+        const gameToken = 'def';
+        clientSocket.emit('joinRoom', gameToken);
+        serverSocket.on('joinRoom', () => {
+            mockIndividualSystemMessages$.next(sysMessage);
+        });
+        const sysMessage: IndividualSystemMessage = {
+            content: 'allo',
+            gameToken,
+            playerName,
+        };
+        clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
+            expect(message).to.deep.equal(sysMessage.content);
+            done();
+        });
+    });
 
-    //     const sysMessage: IndividualSystemMessage = {
-    //         content: 'allo',
-    //         gameToken: room,
-    //         playerName: name,
-    //     };
-    //     clientSocket.on(SYSTEM_MESSAGES, (message: SystemMessage) => {
-    //         expect(message).to.deep.equal(sysMessage.content);
-    //         done();
-    //     });
-    //     mockIndividualSystemMessages$.next(sysMessage);
-    // });
+    it('should throws when sending individual system message to unconnected client', (done) => {
+        const playerName = 'abc';
+        clientSocket.emit('userName', playerName);
+        const sysMessage: IndividualSystemMessage = {
+            content: 'allo',
+            gameToken: '3',
+            playerName,
+        };
+        mockIndividualSystemMessages$.next(sysMessage);
+        clientSocket.on(SYSTEM_MESSAGES, () => {
+            expect.fail();
+        });
+
+        setTimeout(() => {
+            expect(true).be.true;
+            done();
+        }, 20);
+    });
 });

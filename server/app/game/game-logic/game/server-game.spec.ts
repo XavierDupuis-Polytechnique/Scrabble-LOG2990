@@ -27,6 +27,7 @@ describe('ServerGame', () => {
     const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const newGameStateSubject = new Subject<GameStateToken>();
+    const endGameSubject = new Subject<string>();
 
     beforeEach(() => {
         game = new ServerGame(
@@ -38,6 +39,7 @@ describe('ServerGame', () => {
             gameCompiler,
             messagesService,
             newGameStateSubject,
+            endGameSubject,
         );
         p1 = new Player('Tim');
         p2 = new Player('Paul');

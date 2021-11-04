@@ -37,6 +37,7 @@ export class ServerGame {
         private gameCompiler: GameCompiler,
         private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
+        private endGameSubject: Subject<string>,
     ) {
         this.timer = new Timer(gameToken, timerController);
         this.board = new Board(randomBonus);
@@ -86,6 +87,7 @@ export class ServerGame {
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
         this.emitGameState();
+        this.endGameSubject.next(this.gameToken);
     }
 
     doAction(action: Action) {
