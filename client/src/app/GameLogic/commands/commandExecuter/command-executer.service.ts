@@ -82,10 +82,6 @@ export class CommandExecuterService {
     }
 
     private sendAction(action: Action) {
-        try {
-            this.actionValidator.sendAction(action);
-        } catch (e) {
-            this.messageService.receiveError(e as Error);
-        }
+        this.actionValidator.sendAction(action);
     }
 }
