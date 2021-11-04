@@ -8,7 +8,6 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { NOT_FOUND } from '@app/GameLogic/constants';
-import { UIInput } from '@app/GameLogic/interface/ui-input';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
