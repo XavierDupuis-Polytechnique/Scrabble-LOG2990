@@ -1,5 +1,5 @@
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
-import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/online-game.interface';
 import { Service } from 'typedi';
 
 @Service()

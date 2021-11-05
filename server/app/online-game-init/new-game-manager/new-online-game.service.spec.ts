@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
+import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
-import { OnlineGameSettings } from './game-settings-multi.interface';
 import { NewOnlineGameService } from './new-online-game.service';
 
 describe('NewOnlineGameService', () => {

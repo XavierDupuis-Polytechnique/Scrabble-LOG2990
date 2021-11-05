@@ -1,6 +1,6 @@
 import { isGameSettings } from '@app/game/game-logic/utils';
-import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
-import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/online-game.interface';
+import { NewOnlineGameService } from '@app/online-game-init/new-game-manager/new-online-game.service';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';

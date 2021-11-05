@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
-import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
-import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
+import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
+import { NewOnlineGameService } from '@app/online-game-init/new-game-manager/new-online-game.service';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
 import { createServer, Server } from 'http';

@@ -1,7 +1,7 @@
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/game/game-logic/constants';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
-import { OnlineGameSettingsUI } from '@app/online-game-init/game-settings-multi.interface';
+import { OnlineGameSettingsUI } from '@app/online-game-init/online-game.interface';
 
 export const placementSettingsToString = (placement: PlacementSetting): string => {
     const x = placement.x;
