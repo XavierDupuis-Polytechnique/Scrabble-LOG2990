@@ -57,8 +57,8 @@ describe('OnlineGameInitService', () => {
 
         service.socket.peerSideEmit('gameJoined', gameSettings);
         service.listenForGameToken();
-        service.gameToken$.pipe(first()).subscribe((id) => {
-            expect(id).toEqual(gameSettings.id);
+        service.startGame$.pipe(first()).subscribe((gameSettingsServer) => {
+            expect(gameSettingsServer).not.toBeUndefined();
         });
         expect(service.disconnectSocket).toHaveBeenCalled();
     });

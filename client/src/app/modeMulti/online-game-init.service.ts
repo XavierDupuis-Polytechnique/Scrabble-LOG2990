@@ -12,7 +12,6 @@ export class OnlineGameInitService {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     startGame$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
-    gameToken$ = new Subject<string>();
     isDisconnected$ = new Subject<boolean>();
     error$ = new Subject<string>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,7 +76,6 @@ export class OnlineGameInitService {
     listenForGameToken() {
         this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
             this.startGame$.next(gameSetting);
-            this.gameToken$.next(gameSetting.id);
             this.disconnectSocket();
         });
     }
