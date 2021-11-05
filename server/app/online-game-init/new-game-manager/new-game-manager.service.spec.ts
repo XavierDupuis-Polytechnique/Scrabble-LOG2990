@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
+import { NewOnlineGameService } from '@app/online-game-init/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
-import { NewOnlineGameService } from './new-online-game.service';
 
 describe('NewOnlineGameService', () => {
     const gameManagerStub = createSinonStubInstance<GameManagerService>(GameManagerService);
