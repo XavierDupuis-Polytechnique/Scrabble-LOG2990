@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { PlaceLetterParameters } from '@app/game-logic/commands/command-parser/place-letter-parameters';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
 import {
     BOARD_DIMENSION,
