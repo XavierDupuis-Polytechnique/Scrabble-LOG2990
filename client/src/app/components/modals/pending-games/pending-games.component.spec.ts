@@ -121,19 +121,19 @@ describe('PendingGamesComponent', () => {
         expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
-    // it('JoinGameDialog should close if name was not returned', () => {
-    //     matDialog.open.and.returnValue({
-    //         beforeClosed: () => {
-    //             return of(undefined);
-    //         },
-    //         close: () => {
-    //             return;
-    //         },
-    //     } as MatDialogRef<JoinOnlineGameComponent>);
-    //     component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
-    //     component.joinGame();
-    //     expect(matDialog.open).toHaveBeenCalled();
-    // });
+    it('JoinGameDialog should close if name was not returned', () => {
+        matDialog.open.and.returnValue({
+            beforeClosed: () => {
+                return of(undefined);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<JoinOnlineGameComponent>);
+        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
+        component.joinGame();
+        expect(matDialog.open).toHaveBeenCalled();
+    });
 
     it('should be an empty table ', () => {
         const dom = fixture.nativeElement as HTMLElement;
