@@ -1,6 +1,6 @@
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
-import { JOKER_CHAR, RACK_LETTER_COUNT, TWO } from '@app/GameLogic/constants';
+import { JOKER_CHAR, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { getRandomInt } from '@app/GameLogic/utils';
@@ -46,7 +46,7 @@ describe('UIExchange', () => {
         action.receiveRightClick(secondIndex);
         expect(action.concernedIndexes.has(firstIndex)).toBeTruthy();
         expect(action.concernedIndexes.has(secondIndex)).toBeTruthy();
-        expect(action.concernedIndexes.size).toBe(TWO);
+        expect(action.concernedIndexes.size).toBe(2);
     });
 
     it('should not do anything when receiving a LeftClick', () => {
