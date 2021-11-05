@@ -10,13 +10,25 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { placementSettingsToString } from '@app/game-logic/utils';
+
 @Injectable({
     providedIn: 'root',
 })
 export class ActionValidatorService {
     constructor(private boardService: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
 
-    sendActionArgsMessage(action: Action) {
+    sendAction(action: Action): boolean {
+        const isActionValid = this.validateAction(action);
+        if (!isActionValid) {
+            return false;
+        }
+        this.sendActionArgsMessage(action);
+        const player = action.player;
+        player.play(action);
+        return true;
+    }
+
+    private sendActionArgsMessage(action: Action) {
         if (action instanceof PlaceLetter) {
             this.sendPlaceLetterMessage(action);
         }
@@ -30,33 +42,25 @@ export class ActionValidatorService {
         }
     }
 
-    sendAction(action: Action) {
-        const actionValid = this.validateAction(action);
-        if (actionValid) {
-            this.sendActionArgsMessage(action);
-            const player = action.player;
-            player.play(action);
-        }
-    }
-
-    validateAction(action: Action): boolean {
-        if (this.validateTurn(action)) {
-            if (action instanceof PlaceLetter) {
-                return this.validatePlaceLetter(action as PlaceLetter);
-            }
-
-            if (action instanceof ExchangeLetter) {
-                return this.validateExchangeLetter(action as ExchangeLetter);
-            }
-
-            if (action instanceof PassTurn) {
-                return this.validatePassTurn();
-            }
-
-            this.sendErrorMessage("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
+    private validateAction(action: Action): boolean {
+        if (!this.validateTurn(action)) {
+            this.sendErrorMessage('Action demandé par ' + action.player.name + " pendant le tour d'un autre joueur");
             return false;
         }
-        this.sendErrorMessage('Action demandé par ' + action.player.name + " pendant le tour d'un autre joueur");
+
+        if (action instanceof PlaceLetter) {
+            return this.validatePlaceLetter(action as PlaceLetter);
+        }
+
+        if (action instanceof ExchangeLetter) {
+            return this.validateExchangeLetter(action as ExchangeLetter);
+        }
+
+        if (action instanceof PassTurn) {
+            return this.validatePassTurn();
+        }
+
+        this.sendErrorMessage("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
         return false;
     }
 

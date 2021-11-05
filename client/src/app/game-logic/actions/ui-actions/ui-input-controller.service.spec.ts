@@ -324,7 +324,7 @@ describe('UIInputControllerService', () => {
         const args = ENTER;
         const input3: UIInput = { type: InputType.KeyPress, args };
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
-            return;
+            return false;
         });
         service.processInputType(input3);
         expect(sendActionSpy).toHaveBeenCalled();
@@ -355,7 +355,7 @@ describe('UIInputControllerService', () => {
     /// pass TESTS ///
     it('should pass', () => {
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
-            return;
+            return false;
         });
         service.confirm();
         service.pass(player);
@@ -367,7 +367,7 @@ describe('UIInputControllerService', () => {
     it('should throw error if the activeAction is null', () => {
         service.activeAction = null;
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
-            return;
+            return false;
         });
         service.confirm();
         expect(sendActionSpy).toHaveBeenCalledTimes(0);
@@ -376,7 +376,7 @@ describe('UIInputControllerService', () => {
     it('should throw error if a !canBeExecuted activeAction is confirmed', () => {
         service.activeAction = new UIExchange(player);
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
-            return;
+            return false;
         });
         service.confirm();
         expect(service.activeComponent).toBe(InputComponent.Horse);
@@ -388,7 +388,7 @@ describe('UIInputControllerService', () => {
         service.activeAction = new UIExchange(player);
         service.activeAction.concernedIndexes.add(0);
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
-            return;
+            return false;
         });
         service.confirm();
         expect(service.activeComponent).toBe(InputComponent.Outside);

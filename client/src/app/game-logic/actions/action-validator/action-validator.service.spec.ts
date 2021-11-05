@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
@@ -13,7 +14,7 @@ import {
     DEFAULT_TIME_PER_TURN,
     EMPTY_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -93,7 +94,7 @@ describe('ActionValidatorService', () => {
     /// INVALID ACTION TYPE TESTS ///
     it('should throw error when receiving an unrecognized action type', () => {
         const action = new UnknownAction(currentPlayer);
-        service.validateAction(action);
+        service['validateAction'](action);
         expect(messagesSpy.receiveErrorMessage).toHaveBeenCalledWith("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
     });
     /// ////////////////// ///
@@ -110,19 +111,19 @@ describe('ActionValidatorService', () => {
     /// TURN + PASSTURN TESTS ///
     it('should validate a valid PassTurn', () => {
         const action = new PassTurn(currentPlayer);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PassTurn because the player tried to perform an action outside of its turn', () => {
         const otherPlayer = currentPlayer === p1 ? p2 : p1;
         const action = new PassTurn(otherPlayer);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because the player tried to perform an action outside of its turn', () => {
         const otherPlayer = currentPlayer === p1 ? p2 : p1;
         const action = new ExchangeLetter(otherPlayer, []);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the player tried to perform an action outside of its turn', () => {
@@ -134,45 +135,45 @@ describe('ActionValidatorService', () => {
             pointCalculator,
             wordSearcher,
         );
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
     /// ////////////////// ///
 
     /// EXCHANGELETTER TESTS ///
     it('should validate a valid ExchangeLetter because 7 letters from the player rack can be exchanged', () => {
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate a valid ExchangeLetter because less than 7 letters from the player rack can be exchanged', () => {
         const lettersToExchange = [currentPlayer.letterRack[4], currentPlayer.letterRack[6]];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate a valid ExchangeLetter because the game letterBag has enough letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 10);
         const lettersToExchange = [...currentPlayer.letterRack].splice(0, 1);
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have enough letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 2);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 5));
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because the LetterBag has less than 7 letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - (RACK_LETTER_COUNT - 1));
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 1));
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should validate a valid ExchangeLetter because a player can exchange many of the same letter', () => {
@@ -189,7 +190,7 @@ describe('ActionValidatorService', () => {
             { char: 'a', value: 1 },
         ];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because a player cannot exchange more of the same letter he/she has', () => {
@@ -208,13 +209,13 @@ describe('ActionValidatorService', () => {
             { char: 'd', value: 1 },
         ];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid ExchangeLetter because a player cannot exchange letters not in its letterRack', () => {
         const lettersToExchange = [{ char: '!NOT_A_LETTER', value: 666 }];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
     /// ////////////////// ///
 
@@ -224,7 +225,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: centerPosition, y: centerPosition };
         currentPlayer.letterRack[0].char = word.charAt(0);
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the letter Tile is empty (vertical)', () => {
@@ -232,7 +233,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         currentPlayer.letterRack[0].char = word.charAt(0);
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should not change the letterRack after an invalid PlaceLetter', () => {
@@ -251,7 +252,7 @@ describe('ActionValidatorService', () => {
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
         for (let i = 0; i < initialRack.length; i++) {
             expect(initialRack[i].char).toBe(currentPlayer.letterRack[i].char);
         }
@@ -269,7 +270,7 @@ describe('ActionValidatorService', () => {
         const word = 'abacada';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the player has some of the missing letters and a joker', () => {
@@ -285,7 +286,7 @@ describe('ActionValidatorService', () => {
         const word = 'abacAda';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the player has jokers ', () => {
@@ -297,7 +298,7 @@ describe('ActionValidatorService', () => {
         const word = 'aBACADA';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the player has jokers but uses them incorrectly', () => {
@@ -309,7 +310,7 @@ describe('ActionValidatorService', () => {
         const word = 'abacada';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it("should invalidate an invalid PlaceLetter because the player doesn't have enough jokers", () => {
@@ -322,7 +323,7 @@ describe('ActionValidatorService', () => {
         const word = 'AAAAAAAA';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition + 1, y: centerPosition - 1 };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the player has all missing letters from the word', () => {
@@ -337,7 +338,7 @@ describe('ActionValidatorService', () => {
         const word = 'abacad';
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the center Tile remains Empty', () => {
@@ -345,7 +346,7 @@ describe('ActionValidatorService', () => {
         const word = 'b';
         currentPlayer.letterRack[0].char = word.charAt(0);
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should validate a valid PlaceLetter because the letter Tile next to it is empty', () => {
@@ -354,7 +355,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: centerPosition };
         currentPlayer.letterRack[0].char = word.charAt(1);
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the word has no neighbours on the grid', () => {
@@ -367,7 +368,7 @@ describe('ActionValidatorService', () => {
             currentPlayer.letterRack[i].char = word.charAt(i);
         }
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter because the Tile is occupied and there no Tile next to it', () => {
@@ -380,7 +381,7 @@ describe('ActionValidatorService', () => {
         game.board.grid[y][x].letterObject.char = word.charAt(0);
         currentPlayer.letterRack[0].char = word.charAt(1);
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
     });
 
     it('should validate placing a word with already present letters on the board (horizontal)', () => {
@@ -395,7 +396,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 0, y: centerPosition };
         const action = new PlaceLetter(currentPlayer, horizontalWord, placement, pointCalculator, wordSearcher);
 
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate placing a word with already present letters on the board (vertical)', () => {
@@ -410,7 +411,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
         const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate placing a word that lands on the last column (horizontal)', () => {
@@ -424,7 +425,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: beginPos, y: beginPos };
         const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should validate placing a word that lands on the last row (vertical)', () => {
@@ -438,7 +439,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: beginPos, y: beginPos };
         const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
-        expect(service.validateAction(action)).toBeTruthy();
+        expect(service['validateAction'](action)).toBeTruthy();
     });
 
     it('should invalidate an invalid PlaceLetter if word overflow the board', () => {
@@ -457,7 +458,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: beginPos, y: 0 };
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
 
-        expect(service.validateAction(action)).not.toBeTruthy();
+        expect(service['validateAction'](action)).not.toBeTruthy();
 
         expect(game.board.grid[0][beginPos + 3].letterObject.char).toBe(EMPTY_CHAR);
     });
@@ -466,7 +467,7 @@ describe('ActionValidatorService', () => {
     /// ACTIONS SYSTEM/ERROR MESSAGES ///
     it('should send correct message format for PassTurn action', () => {
         const action = new PassTurn(currentPlayer);
-        service.sendActionArgsMessage(action);
+        service['sendActionArgsMessage'](action);
         const expected = currentPlayer.name + ' passe son tour';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
@@ -476,7 +477,7 @@ describe('ActionValidatorService', () => {
         info.receiveUser(self);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         const chars = currentPlayer.letterRack.map((letter) => letter.char);
-        service.sendActionArgsMessage(action);
+        service['sendActionArgsMessage'](action);
         const expected = currentPlayer.name + ' échange les lettres ' + chars;
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
@@ -486,7 +487,7 @@ describe('ActionValidatorService', () => {
         info.receiveUser(self);
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         const chars = currentPlayer.letterRack.map((letter) => letter.char);
-        service.sendActionArgsMessage(action);
+        service['sendActionArgsMessage'](action);
         const expected = currentPlayer.name + ' échange ' + chars.length + ' lettres';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
@@ -495,7 +496,7 @@ describe('ActionValidatorService', () => {
         const placement: PlacementSetting = { direction: Direction.Vertical, x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD };
         const word = 'avion';
         const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
-        service.sendActionArgsMessage(action);
+        service['sendActionArgsMessage'](action);
         const expected = currentPlayer.name + ' place le mot ' + word + ' en h8v';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
