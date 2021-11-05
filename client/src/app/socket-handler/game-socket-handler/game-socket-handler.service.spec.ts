@@ -47,10 +47,10 @@ describe('GameSocketHandlerService', () => {
 
     it('receiveTimerControl should set next subject', () => {
         const timerControl = TimerControls.Start;
-        service.receiveTimerControl(timerControl);
         service.timerControls$.subscribe((value: TimerControls) => {
             expect(value).toEqual(timerControl);
         });
+        service.receiveTimerControl(timerControl);
     });
 
     it('playAction should emit nextAction', () => {
