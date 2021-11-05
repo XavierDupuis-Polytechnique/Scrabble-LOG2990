@@ -4,7 +4,7 @@ import { ASCII_CODE, BOARD_DIMENSION } from '@app/game-logic/constants';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { isCharUpperCase } from '@app/game-logic/utils';
-import { Board, multiplicators, MultiType } from './board';
+import { Board, MULTIPLICATORS, MultiType } from './board';
 
 class MockLetterCreator extends LetterCreator {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
@@ -38,7 +38,7 @@ describe('Board test', () => {
     });
 
     it('Board default value at right place', () => {
-        multiplicators.forEach((elem) => {
+        MULTIPLICATORS.forEach((elem) => {
             if (elem.type === MultiType.Letter) {
                 expect(board.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator).toBe(elem.v);
             } else {

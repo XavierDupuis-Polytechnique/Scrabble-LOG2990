@@ -11,7 +11,7 @@ export interface BoardSettingPosition {
     type: MultiType;
 }
 
-export const multiplicators: BoardSettingPosition[] = [
+export const MULTIPLICATORS: BoardSettingPosition[] = [
     { x: 1, y: 'A', v: 3, type: MultiType.Word },
     { x: 8, y: 'A', v: 3, type: MultiType.Word },
     { x: 15, y: 'A', v: 3, type: MultiType.Word },
@@ -139,7 +139,7 @@ export class Board {
     private randomMultiplicators(): BoardSettingPosition[] {
         const newMultiplicators: BoardSettingPosition[] = [];
         const values: number[] = [];
-        for (const multiplicator of multiplicators) {
+        for (const multiplicator of MULTIPLICATORS) {
             newMultiplicators.push({ ...multiplicator });
             values.push(multiplicator.v);
         }
@@ -152,10 +152,10 @@ export class Board {
     }
 
     private generateMultiplicators(randomBonus: boolean): void {
-        let listMultiplicator = multiplicators;
+        let listMultiplicator = MULTIPLICATORS;
         if (randomBonus) {
             listMultiplicator = this.randomMultiplicators();
-            while (listMultiplicator === multiplicators) {
+            while (listMultiplicator === MULTIPLICATORS) {
                 listMultiplicator = this.randomMultiplicators();
             }
         }

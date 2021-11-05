@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 
-import { Board, multiplicators, MultiType } from '@app/game/game-logic/board/board';
+import { Board, MULTIPLICATORS, MultiType } from '@app/game/game-logic/board/board';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { ASCII_CODE, BOARD_DIMENSION } from '@app/game/game-logic/constants';
@@ -40,7 +40,7 @@ describe('Board', () => {
     });
 
     it('Board default value at right place', () => {
-        multiplicators.forEach((elem) => {
+        MULTIPLICATORS.forEach((elem) => {
             if (elem.type === MultiType.Letter) {
                 expect(board.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator).to.be.equal(elem.v);
             } else {
