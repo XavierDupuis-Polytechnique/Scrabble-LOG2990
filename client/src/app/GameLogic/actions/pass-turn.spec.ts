@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';

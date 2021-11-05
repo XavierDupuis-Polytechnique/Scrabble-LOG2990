@@ -7,7 +7,7 @@ import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Tile } from '@app/GameLogic/game/board/tile';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';

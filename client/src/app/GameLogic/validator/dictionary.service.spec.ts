@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { ValidWord } from '@app/GameLogic/player/bot/valid-word';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 
 describe('DictionaryService', () => {

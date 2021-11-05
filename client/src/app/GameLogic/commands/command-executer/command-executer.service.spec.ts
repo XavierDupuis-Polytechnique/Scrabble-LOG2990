@@ -6,7 +6,7 @@ import { CommandParserService } from '@app/GameLogic/commands/command-parser/com
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { END_LINE, RESERVE_NOT_ACCESSIBLE } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Observable, Subject } from 'rxjs';
 import { CommandExecuterService } from './command-executer.service';

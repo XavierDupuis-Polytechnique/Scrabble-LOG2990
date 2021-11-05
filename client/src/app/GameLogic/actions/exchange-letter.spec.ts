@@ -3,7 +3,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';

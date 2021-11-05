@@ -6,7 +6,7 @@ import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/con
 import { Direction } from '@app/GameLogic/direction.enum';
 import { LetterBag } from '@app/GameLogic/game/board/letter-bag';
 import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { ValidWord } from '@app/GameLogic/player/bot/valid-word';
 import { timer } from 'rxjs';
 import { Bot } from './bot';
 

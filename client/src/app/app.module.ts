@@ -16,7 +16,6 @@ import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.di
 import { MouseRollDirective } from '@app/directives/mouse-roll.directive';
 import { PreventContextMenuDirective } from '@app/directives/prevent-context-menu.directive';
 import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
-import { GameLogicModule } from '@app/GameLogic/game-logic.module';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
@@ -64,16 +63,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
         ClickAndClickoutDirective,
         MouseRollDirective,
     ],
-    imports: [
-        AppMaterialModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        BrowserModule,
-        FormsModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        GameLogicModule,
-    ],
+    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [
         {
             provide: APP_INITIALIZER,

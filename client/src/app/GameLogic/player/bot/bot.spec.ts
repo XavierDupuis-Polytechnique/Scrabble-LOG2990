@@ -4,8 +4,8 @@ import { CommandExecuterService } from '@app/GameLogic/commands/command-executer
 import { TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
-import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { BotMessagesService } from '@app/GameLogic/player/bot-message/bot-messages.service';
+import { EasyBot } from '@app/GameLogic/player/bot/easy-bot';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';

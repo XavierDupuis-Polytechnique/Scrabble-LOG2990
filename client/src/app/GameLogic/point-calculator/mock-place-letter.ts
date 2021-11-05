@@ -1,5 +1,5 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';

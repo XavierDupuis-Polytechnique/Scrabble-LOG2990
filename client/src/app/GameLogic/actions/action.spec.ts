@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { User } from '@app/GameLogic/player/user';

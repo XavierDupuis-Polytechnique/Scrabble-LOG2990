@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
-import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-actions/online-action-compiler.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
-import { Game } from '@app/GameLogic/game/games/game';
-import { OnlineGame } from '@app/GameLogic/game/games/online-game';
+import { OnlineGame } from '@app/GameLogic/game/games/online-game/online-game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';

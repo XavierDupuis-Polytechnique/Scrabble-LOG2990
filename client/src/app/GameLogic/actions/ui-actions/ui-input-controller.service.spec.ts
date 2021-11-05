@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator/action-validator.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
 import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';

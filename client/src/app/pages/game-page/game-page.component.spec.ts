@@ -6,14 +6,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
-import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator/action-validator.service';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
 import { InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { Observable, Subject } from 'rxjs';
-import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
     let component: GamePageComponent;

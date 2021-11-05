@@ -11,7 +11,7 @@ import { BOARD_DIMENSION, BOARD_MAX_POSITION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR,
 import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';

@@ -1,7 +1,7 @@
 /* tslint:disable:no-unused-variable */
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { PlayerInfoComponent } from './player-info.component';
 

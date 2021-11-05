@@ -9,11 +9,11 @@ import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TI
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { BotMessagesService } from '@app/GameLogic/player/bot-message/bot-messages.service';
+import { ValidWord } from '@app/GameLogic/player/bot/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';

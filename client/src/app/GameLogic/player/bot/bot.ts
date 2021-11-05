@@ -6,14 +6,14 @@ import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Vec2 } from '@app/GameLogic/interfaces/vec2';
-import { BotCrawler } from '@app/GameLogic/player/bot-crawler';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-message/bot-messages.service';
+import { BotCrawler } from '@app/GameLogic/player/bot/bot-crawler';
+import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 import { BehaviorSubject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { Player } from './player';
 import { HORIZONTAL, ValidWord } from './valid-word';
 
 export abstract class Bot extends Player {

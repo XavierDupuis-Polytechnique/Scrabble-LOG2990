@@ -1,6 +1,6 @@
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { User } from '@app/GameLogic/player/user';
 import { first } from 'rxjs/operators';
-import { User } from './user';
 
 describe('User', () => {
     let user: User;

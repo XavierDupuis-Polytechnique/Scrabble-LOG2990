@@ -10,7 +10,7 @@ import { HeaderBarComponent } from '@app/components/header-bar/header-bar.compon
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';

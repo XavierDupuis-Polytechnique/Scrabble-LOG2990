@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { NewOnlineGameSocketHandler } from '@app/socket-handler/mode-multi/new-online-game-socket-handler.service';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { JoinOnlineGameComponent } from './join-online-game.component';

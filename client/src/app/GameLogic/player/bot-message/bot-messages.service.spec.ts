@@ -9,9 +9,9 @@ import { Direction } from '@app/GameLogic/direction.enum';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-message/bot-messages.service';
+import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/bot/valid-word';
 import { Player } from '@app/GameLogic/player/player';
-import { HORIZONTAL, ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 

@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { NewOnlineGameSocketHandler } from '@app/socket-handler/mode-multi/new-online-game-socket-handler.service';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { of } from 'rxjs';
 import { WaitingForPlayerComponent } from './waiting-for-player.component';
 

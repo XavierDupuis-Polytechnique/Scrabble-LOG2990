@@ -9,7 +9,7 @@ import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler/online-chat-handler.service';
-import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { BotCreatorService } from '@app/GameLogic/player/bot/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';

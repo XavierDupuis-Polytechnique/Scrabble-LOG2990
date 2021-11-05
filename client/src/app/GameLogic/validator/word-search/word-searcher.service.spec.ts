@@ -8,8 +8,8 @@ import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { MockBoard } from '@app/GameLogic/validator/word-search/mock-board';
-import { MockDictionaryService } from '@app/GameLogic/validator/word-search/mock-dictionary-service';
+import { MockBoard } from '@app/GameLogic/validator/word-search/mocks/mock-board';
+import { MockDictionaryService } from '@app/GameLogic/validator/word-search/mocks/mock-dictionary-service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('WordSearcher', () => {

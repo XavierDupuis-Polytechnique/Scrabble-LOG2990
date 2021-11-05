@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ARRAY_BEGIN, FIRST_LETTER_INDEX, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { ValidWord } from '@app/GameLogic/player/bot/valid-word';
 import { DictInitialSearchSettings, DictRegexSettings, DictSubSearchSettings, DictWholeSearchSettings } from '@app/GameLogic/validator/dict-settings';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';

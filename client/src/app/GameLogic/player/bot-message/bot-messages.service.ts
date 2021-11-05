@@ -9,8 +9,8 @@ import { BINGO_MESSAGE, DEBUG_ALTERNATIVE_WORDS_COUNT, END_LINE } from '@app/Gam
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { Bot } from '@app/GameLogic/player/bot';
-import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { Bot } from '@app/GameLogic/player/bot/bot';
+import { ValidWord } from '@app/GameLogic/player/bot/valid-word';
 import { placementSettingsToString } from '@app/GameLogic/utils';
 
 @Injectable({

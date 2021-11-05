@@ -3,7 +3,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { AbandonButtonComponent } from './abandon-button.component';
 
