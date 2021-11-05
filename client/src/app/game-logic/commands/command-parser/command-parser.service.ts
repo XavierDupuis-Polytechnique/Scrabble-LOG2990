@@ -6,7 +6,7 @@ import {
     CHARACTER_V,
     MAX_PLACE_LETTER_ARG_SIZE,
     MIN_PLACE_LETTER_ARG_SIZE,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Observable, Subject } from 'rxjs';
 
@@ -26,19 +26,6 @@ export class CommandParserService {
 
     get errorMessage$() {
         return this.errorMessageContent$;
-    }
-
-    createCommand(from: string, args: string[], commandType: CommandType): Command {
-        const command = { from, type: commandType, args } as Command;
-        return command;
-    }
-
-    sendCommand(command: Command) {
-        this.command$.next(command);
-    }
-
-    sendErrorMessage(message: string) {
-        this.errorMessageContent$.next(message);
     }
 
     parse(message: string, from: string): CommandType | undefined {
@@ -68,6 +55,19 @@ export class CommandParserService {
             return commandType;
         }
         return undefined;
+    }
+
+    private createCommand(from: string, args: string[], commandType: CommandType): Command {
+        const command = { from, type: commandType, args } as Command;
+        return command;
+    }
+
+    private sendCommand(command: Command) {
+        this.command$.next(command);
+    }
+
+    private sendErrorMessage(message: string) {
+        this.errorMessageContent$.next(message);
     }
 
     private formatPlaceLetter(placeLetterParameters: string[]): string[] | undefined {
