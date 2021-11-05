@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { ActionCompilerService } from '@app/GameLogic/commands/action-compiler/action-compiler.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
@@ -21,6 +22,8 @@ describe('CommandExecuterService', () => {
     let mockNewGame$: Subject<void>;
     let mockParsedCommand$: Subject<Command>;
     let fakeLetterOccurences: Map<string, number>;
+
+    let mockHttpClient: HttpTestingController;
     beforeEach(() => {
         messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'receiveMessage', 'receiveErrorMessage', 'clearLog']);
         actionCompilerServiceSpy = jasmine.createSpyObj('ActionCompilerService', ['translate']);
@@ -32,7 +35,7 @@ describe('CommandExecuterService', () => {
         (Object.getOwnPropertyDescriptor(commandParserService, 'parsedCommand$')?.get as jasmine.Spy<() => Observable<Command>>).and.returnValue(
             mockParsedCommand$,
         );
-        gameInfoSpy = jasmine.createSpyObj('GameInfoService', [], ['letterOccurences']);
+        gameInfoSpy = jasmine.createSpyObj('GameInfoService', [], ['letterOccurences', 'isOnlineGame', 'gameId']);
         fakeLetterOccurences = new Map([
             ['A', 4],
             ['B', 3],
@@ -53,6 +56,7 @@ describe('CommandExecuterService', () => {
             ],
         });
         service = TestBed.inject(CommandExecuterService);
+        mockHttpClient = TestBed.inject(HttpTestingController);
     });
 
     it('should be created', () => {
@@ -180,5 +184,23 @@ describe('CommandExecuterService', () => {
         const expectedMessage = `Reserve:${END_LINE}A : 4${END_LINE}B : 3${END_LINE}C : 1${END_LINE}`;
         // const expectedCalls: string[] = ['affichages de débogage activés', expectedMessage];
         expect(messageServiceSpy.receiveSystemMessage).toHaveBeenCalledOnceWith(expectedMessage);
+    });
+
+    it('showOnlineLetter should show correct format', () => {
+        const commandReserve: Command = { type: CommandType.Reserve, from: 'test' };
+        const commandDebug: Command = { type: CommandType.Debug, from: 'test' };
+
+        service.execute(commandDebug);
+        (Object.getOwnPropertyDescriptor(gameInfoSpy, 'isOnlineGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
+        (Object.getOwnPropertyDescriptor(gameInfoSpy, 'gameId')?.get as jasmine.Spy<() => string>).and.returnValue('1');
+
+        service.execute(commandReserve);
+        const req = mockHttpClient.expectOne('http://localhost:3000/api/servergame/letterbag?gameId=1');
+        const obj = {
+            A: 2,
+            B: 3,
+        };
+        req.flush(obj);
+        expect(messageServiceSpy.receiveSystemMessage.calls.argsFor(1)[0]).toEqual('Reserve:\\nA : 2\\nB : 3\\n');
     });
 });
