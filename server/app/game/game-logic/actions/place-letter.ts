@@ -13,8 +13,8 @@ import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-se
 import { timer } from 'rxjs';
 
 export class PlaceLetter extends Action {
-    lettersToRemoveInRack: Letter[];
     affectedCoords: Vec2[];
+    lettersToRemoveInRack: Letter[];
     private letterFactory = new LetterCreator();
 
     constructor(
@@ -25,11 +25,6 @@ export class PlaceLetter extends Action {
         private wordSearcher: WordSearcher,
     ) {
         super(player);
-    }
-
-    revert(game: ServerGame) {
-        this.removeLetterFromBoard(game);
-        this.giveBackLettersToPlayer();
     }
 
     protected perform(game: ServerGame) {
@@ -48,6 +43,11 @@ export class PlaceLetter extends Action {
                 this.end();
             });
         }
+    }
+
+    private revert(game: ServerGame) {
+        this.removeLetterFromBoard(game);
+        this.giveBackLettersToPlayer();
     }
 
     private removeLetterFromBoard(game: ServerGame) {
