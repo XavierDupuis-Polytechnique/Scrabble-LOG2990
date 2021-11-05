@@ -27,7 +27,6 @@ export class PlaceLetter extends Action {
         super(player);
     }
 
-
     protected perform(game: ServerGame) {
         const validWordList = this.wordSearcher.listOfValidWord(this, game.board.grid);
         const words = validWordList.map((validWord) => validWord.letters);

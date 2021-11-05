@@ -6,7 +6,7 @@ import {
     CHARACTER_V,
     MAX_PLACE_LETTER_ARG_SIZE,
     MIN_PLACE_LETTER_ARG_SIZE,
-    RACK_LETTER_COUNT
+    RACK_LETTER_COUNT,
 } from '@app/game-logic/constants';
 import { Observable, Subject } from 'rxjs';
 
