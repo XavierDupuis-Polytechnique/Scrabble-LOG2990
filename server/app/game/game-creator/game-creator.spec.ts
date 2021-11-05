@@ -1,4 +1,5 @@
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -7,7 +8,6 @@ import { TimerController } from '@app/game/game-logic/timer/timer-controller.ser
 import { getRandomInt } from '@app/game/game-logic/utils';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
-import { GameCompiler } from '@app/services/game-compiler.service';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';

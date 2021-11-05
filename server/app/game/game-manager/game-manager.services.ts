@@ -1,5 +1,6 @@
 import { NEW_GAME_TIMEOUT } from '@app/constants';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
@@ -14,7 +15,6 @@ import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
-import { GameCompiler } from '@app/services/game-compiler.service';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
 
