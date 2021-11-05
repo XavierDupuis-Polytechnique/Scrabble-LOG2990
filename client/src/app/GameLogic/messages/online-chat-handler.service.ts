@@ -4,7 +4,7 @@ import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
 import { isSocketConnected } from '@app/GameLogic/utils';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { Socket, io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -29,7 +29,6 @@ export class OnlineChatHandlerService {
             });
 
             this.socket.on('systemMessages', (content: string) => {
-                // console.log('received sysMessage from server', sysMessage);
                 this.receiveSystemMessage(content);
             });
 
