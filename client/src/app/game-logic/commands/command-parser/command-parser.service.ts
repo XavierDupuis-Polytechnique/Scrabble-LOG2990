@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { PlaceLetterParameters } from '@app/game-logic/commands/command-parser/place-letter-parameters';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
 import {
     BOARD_DIMENSION,
@@ -48,7 +49,9 @@ export class CommandParserService {
                     return undefined;
                 }
             } else if (commandType === CommandType.Exchange) {
-                this.exchangeLetterArgVerifier(args[0]);
+                if (!this.verifyExchangeLetterArgr(args[0])) {
+                    return undefined;
+                }
             }
             const command = this.createCommand(from, args, commandType);
             this.sendCommand(command);
@@ -81,17 +84,22 @@ export class CommandParserService {
             return undefined;
         }
         if (placeLetterParameters !== undefined && placeLetterParameters.length === 2) {
-            const row = placeLetterParameters[0].charCodeAt(0);
-            const col = this.verifyColumns(placeLetterParameters[0]);
-            const direction = placeLetterParameters[0].charCodeAt(placeLetterParameters[0].length - 1);
-            const word = placeLetterParameters[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
-
-            if (!this.verifyPlaceLetterArgParameters(row, col, direction, word)) {
+            const parameters: PlaceLetterParameters = {
+                row: placeLetterParameters[0].charCodeAt(0),
+                col: this.getColumns(placeLetterParameters[0]),
+                direction: placeLetterParameters[0].charCodeAt(placeLetterParameters[0].length - 1),
+                word: placeLetterParameters[1].normalize('NFD').replace(/\p{Diacritic}/gu, ''),
+            };
+            if (!this.verifyPlaceLetterArgParameters(parameters)) {
                 return undefined;
             }
 
-            placeLetterParameters = [];
-            placeLetterParameters = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
+            placeLetterParameters = [
+                String.fromCharCode(parameters.row),
+                String(parameters.col),
+                String.fromCharCode(parameters.direction),
+                parameters.word,
+            ];
         } else if (placeLetterParameters.length === 1) {
             this.sendErrorMessage('mot ou emplacement manquant');
             return undefined;
@@ -102,32 +110,32 @@ export class CommandParserService {
         return placeLetterParameters;
     }
 
-    private verifyPlaceLetterArgParameters(row: number, col: number | undefined, direction: number, word: string): boolean {
-        if (row === undefined || row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
+    private verifyPlaceLetterArgParameters(placeLetterParameters: PlaceLetterParameters): boolean {
+        if (!this.isValidRow(placeLetterParameters.row)) {
             this.sendErrorMessage(this.errorSyntax + ': ligne invalide');
             return false;
         }
-        if (col === undefined || col > BOARD_DIMENSION) {
+        if (!this.isValidColumn(placeLetterParameters.col)) {
             this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
             return false;
         }
-        if (direction === undefined || (direction !== CHARACTER_H && direction !== CHARACTER_V)) {
+        if (!this.isValidDirection(placeLetterParameters.direction)) {
             this.sendErrorMessage(this.errorSyntax + ': direction invalide');
             return false;
         }
-        if (word === undefined || word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
+        if (!this.isValidWord(placeLetterParameters.word)) {
             this.sendErrorMessage(this.errorSyntax + ': mot invalide');
             return false;
         }
         return true;
     }
 
-    private verifyColumns(columns: string): number | undefined {
+    private getColumns(columns: string): number | undefined {
         let col;
-        if (this.validColumnsFormat(columns)) {
+        if (this.isValidColumnsFormat(columns)) {
             col = Number(columns[1] + columns[2]);
             return col;
-        } else if (this.validColumnFormat(columns)) {
+        } else if (this.isValidColumnFormat(columns)) {
             col = Number(columns[1]);
             return col;
         }
@@ -135,7 +143,7 @@ export class CommandParserService {
         return undefined;
     }
 
-    private exchangeLetterArgVerifier(word: string): boolean {
+    private verifyExchangeLetterArgr(word: string): boolean {
         if (word === undefined || INVALID_EXCHANGE_LETTER.test(word)) {
             this.sendErrorMessage('les paramètres sont invalides');
             return false;
@@ -146,7 +154,8 @@ export class CommandParserService {
         }
         return true;
     }
-    private validColumnsFormat(columns: string): boolean {
+
+    private isValidColumnsFormat(columns: string): boolean {
         if (!this.isNumeric(columns[1])) {
             return false;
         }
@@ -159,11 +168,60 @@ export class CommandParserService {
         return true;
     }
 
-    private validColumnFormat(columns: string) {
+    private isValidColumnFormat(columns: string): boolean {
         if (!this.isNumeric(columns[1])) {
             return false;
         }
         if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidRow(row: number): boolean {
+        if (row === undefined) {
+            return false;
+        }
+        if (row > 'o'.charCodeAt(0)) {
+            return false;
+        }
+        if (row < 'a'.charCodeAt(0)) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidColumn(columns: number | undefined): boolean {
+        if (columns === undefined) {
+            return false;
+        }
+        if (columns > BOARD_DIMENSION) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidDirection(direction: number): boolean {
+        if (direction === undefined) {
+            return false;
+        }
+        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidWord(word: string): boolean {
+        if (word === undefined) {
+            return false;
+        }
+        if (word.length < 2) {
+            return false;
+        }
+        if (word.length > BOARD_DIMENSION) {
+            return false;
+        }
+        if (INVALID_PLACE_LETTER.test(word)) {
             return false;
         }
         return true;
