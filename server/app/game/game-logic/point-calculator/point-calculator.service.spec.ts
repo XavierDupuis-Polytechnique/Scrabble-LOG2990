@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
@@ -13,7 +14,6 @@ import { TimerController } from '@app/game/game-logic/timer/timer-controller.ser
 import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { GameCompiler } from '@app/services/game-compiler.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';

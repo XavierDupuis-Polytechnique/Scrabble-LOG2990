@@ -6,8 +6,8 @@ import { Sort } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable, of, Subject } from 'rxjs';
 import { PendingGamesComponent } from './pending-games.component';
 
@@ -24,7 +24,7 @@ const mockLiveAnnouncer = {
 describe('PendingGamesComponent', () => {
     let component: PendingGamesComponent;
     let fixture: ComponentFixture<PendingGamesComponent>;
-    let onlineSocketHandlerSpy: jasmine.SpyObj<'OnlineGameInitService'>;
+    let onlineSocketHandlerSpy: jasmine.SpyObj<'NewOnlineGameSocketHandler'>;
     const testPendingGames$ = new Subject<OnlineGameSettings[]>();
     let matDialog: jasmine.SpyObj<MatDialog>;
 
@@ -32,7 +32,7 @@ describe('PendingGamesComponent', () => {
         waitForAsync(() => {
             matDialog = jasmine.createSpyObj('MatDialog', ['open']);
             onlineSocketHandlerSpy = jasmine.createSpyObj(
-                'OnlineGameInitService',
+                'NewOnlineGameSocketHandler',
                 ['createGameMulti', 'listenForPendingGames', 'disconnect', 'joinPendingGames'],
                 ['pendingGames$'],
             );
@@ -44,7 +44,7 @@ describe('PendingGamesComponent', () => {
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: mockDialogRef },
                     { provide: MatDialog, useValue: matDialog },
-                    { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
+                    { provide: NewOnlineGameSocketHandler, useValue: onlineSocketHandlerSpy },
                     { provide: LiveAnnouncer, useValue: mockLiveAnnouncer },
                 ],
                 declarations: [PendingGamesComponent],

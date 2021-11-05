@@ -8,8 +8,8 @@ import {
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
     STEP_TIME_PER_TURN,
-} from '@app/GameLogic/constants';
-import { OnlineGameSettingsUI } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+} from '@app/game-logic/constants';
+import { OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 

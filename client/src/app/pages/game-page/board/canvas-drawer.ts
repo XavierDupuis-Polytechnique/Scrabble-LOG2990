@@ -1,6 +1,5 @@
-import { UrlResolver } from '@angular/compiler';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { Board } from '@app/GameLogic/game/board/board';
+import { Direction } from '@app/game-logic/direction.enum';
+import { Board } from '@app/game-logic/game/board/board';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -190,19 +189,23 @@ export class CanvasDrawer {
 
     private drawIndicator() {
         const pos = this.tilePositionToCoord(this.indicatorPos.x, this.indicatorPos.y);
-        const img = new Image();
-        const t = new UrlResolver();
         this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
-        if (this.indicatorDir === Direction.Horizontal) {
-            img.src = t.resolve(window.location.origin, 'assets/img/ArrowRight.png');
-        } else {
-            this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
-            img.src = t.resolve(window.location.origin, 'assets/img/ArrowDown.png');
-        }
         this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
 
-        this.canvas.drawImage(img, pos.x, pos.y, this.tileSize, this.tileSize);
-        this.canvas.restore();
+        this.canvas.fillStyle = '#90FF00';
+        if (this.indicatorDir === Direction.Horizontal) {
+            this.canvas.beginPath();
+            this.canvas.moveTo(pos.x, pos.y);
+            this.canvas.lineTo(pos.x, pos.y + this.tileSize);
+            this.canvas.lineTo(pos.x + this.tileSize, pos.y + 0.5 * this.tileSize);
+            this.canvas.fill();
+        } else {
+            this.canvas.beginPath();
+            this.canvas.moveTo(pos.x, pos.y);
+            this.canvas.lineTo(pos.x + this.tileSize, pos.y);
+            this.canvas.lineTo(pos.x + 0.5 * this.tileSize, pos.y + this.tileSize);
+            this.canvas.fill();
+        }
     }
 
     private drawHighlight(i: number, j: number) {

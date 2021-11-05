@@ -1,3 +1,4 @@
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { Board } from '@app/game/game-logic/board/board';
@@ -9,7 +10,6 @@ import { PointCalculatorService } from '@app/game/game-logic/point-calculator/po
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { Timer } from '@app/game/game-logic/timer/timer.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { GameCompiler } from '@app/services/game-compiler.service';
 import { first, mapTo, merge, Subject } from 'rxjs';
 
 export class ServerGame {

@@ -8,13 +8,13 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
+import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
-import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
+import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
-import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable, of, Subject } from 'rxjs';
 
 describe('ClassicGameComponent', () => {
@@ -23,14 +23,14 @@ describe('ClassicGameComponent', () => {
     const mockIsDisconnect$ = new Subject<boolean>();
     const mockStartGame$ = new Subject<OnlineGameSettings>();
     let matDialog: jasmine.SpyObj<MatDialog>;
-    let onlineSocketHandlerSpy: jasmine.SpyObj<OnlineGameInitService>;
+    let onlineSocketHandlerSpy: jasmine.SpyObj<NewOnlineGameSocketHandler>;
     let gameManagerSpy: jasmine.SpyObj<GameManagerService>;
     let router: Router;
 
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         onlineSocketHandlerSpy = jasmine.createSpyObj(
-            'OnlineGameInitService',
+            'NewOnlineGameSocketHandler',
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames', 'resetGameToken'],
             ['isDisconnected$', 'startGame$'],
         );
@@ -41,7 +41,7 @@ describe('ClassicGameComponent', () => {
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialog, useValue: matDialog },
-                { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
+                { provide: NewOnlineGameSocketHandler, useValue: onlineSocketHandlerSpy },
                 { provide: GameManagerService, useValue: gameManagerSpy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],

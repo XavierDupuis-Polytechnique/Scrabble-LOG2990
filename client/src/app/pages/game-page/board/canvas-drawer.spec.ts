@@ -1,5 +1,5 @@
-import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { Board } from '@app/GameLogic/game/board/board';
+import { Direction } from '@app/game-logic/direction.enum';
+import { Board } from '@app/game-logic/game/board/board';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 describe('Canvas drawer test', () => {
     const CANVAS_WIDTH = 500;
@@ -57,11 +57,11 @@ describe('Canvas drawer test', () => {
         expect(afterSize).toBeGreaterThan(beforeSize);
     });
 
-    it('if indicator, should call drawImage', () => {
+    it('if indicator, should call fill', () => {
         canvasDrawer.setIndicator(0, 0);
         canvasDrawer.setDirection(Direction.Horizontal);
 
-        const drawImageSpy = spyOn(canvasDrawer.canvas, 'drawImage');
+        const drawImageSpy = spyOn(canvasDrawer.canvas, 'fill');
         canvasDrawer.drawGrid(board, FONT_SIZE);
 
         canvasDrawer.setDirection(Direction.Vertical);

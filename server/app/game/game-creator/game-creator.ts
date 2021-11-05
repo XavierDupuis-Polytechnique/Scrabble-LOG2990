@@ -1,11 +1,11 @@
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
-import { GameCompiler } from '@app/services/game-compiler.service';
+import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { Subject } from 'rxjs';
 
 export class GameCreator {

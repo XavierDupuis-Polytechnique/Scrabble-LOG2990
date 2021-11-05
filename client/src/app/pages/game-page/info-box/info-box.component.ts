@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 

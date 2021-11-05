@@ -1,7 +1,7 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable } from 'rxjs';
 
 const SPINNER_WIDTH_STROKE = 7;
@@ -21,7 +21,7 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
         private dialogRef: MatDialogRef<WaitingForPlayerComponent>,
         private dialog: MatDialog,
         private cdref: ChangeDetectorRef,
-        private onlineSocketHandler: OnlineGameInitService,
+        private onlineSocketHandler: NewOnlineGameSocketHandler,
     ) {}
 
     ngAfterContentChecked() {

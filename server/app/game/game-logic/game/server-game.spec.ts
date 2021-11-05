@@ -1,4 +1,5 @@
 /* eslint-disable dot-notation */
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { RACK_LETTER_COUNT } from '@app/game/game-logic/constants';
@@ -8,7 +9,6 @@ import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { GameCompiler } from '@app/services/game-compiler.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';

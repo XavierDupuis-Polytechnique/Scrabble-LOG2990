@@ -1,10 +1,10 @@
-// import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-// import { BoardService } from '@app/GameLogic/game/board/board.service';
-// import { Game } from '@app/GameLogic/game/games/game';
-// import { TimerService } from '@app/GameLogic/game/timer/timer.service';
-// import { MessagesService } from '@app/GameLogic/messages/messages.service';
-// import { User } from '@app/GameLogic/player/user';
-// import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+// import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
+// import { BoardService } from '@app/game-logic/game/board/board.service';
+// import { Game } from '@app/game-logic/game/games/game';
+// import { TimerService } from '@app/game-logic/game/timer/timer.service';
+// import { MessagesService } from '@app/game-logic/messages/messages.service';
+// import { User } from '@app/game-logic/player/user';
+// import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 // import { Action } from './action';
 
 // class TestAction extends Action {

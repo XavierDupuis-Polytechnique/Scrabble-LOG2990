@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InputComponent } from '@app/GameLogic/interface/ui-input';
+import { InputComponent } from '@app/game-logic/interfaces/ui-input';
 import { PreventContextMenuDirective } from './prevent-context-menu.directive';
 
 describe('PreventContextMenuDirective', () => {
