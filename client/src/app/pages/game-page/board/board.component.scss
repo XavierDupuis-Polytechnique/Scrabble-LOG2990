@@ -21,11 +21,15 @@ mat-slider {
 
 .boardContainer {
     max-width: 66vmin;
-    padding-left: 15%;
-    padding-right: 15%;
+    // padding-left: 15%;
+    // padding-right: 15%;
     width: 100%;
     background-color: transparent;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
+
 .zoomPolice {
     display: flex;
     flex-direction: row;

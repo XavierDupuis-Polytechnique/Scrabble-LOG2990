@@ -29,12 +29,14 @@ export class OnlineGame {
     isEndOfGame: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
+
     private letterCreator = new LetterCreator();
 
     private gameState$$: Subscription;
     private timerControls$$: Subscription;
 
     constructor(
+        public gameToken: string,
         public timePerTurn: number,
         public userName: string,
         private timer: TimerService,
@@ -55,7 +57,7 @@ export class OnlineGame {
 
     close() {
         this.gameState$$.unsubscribe();
-        this.timerControls$$?.unsubscribe();
+        this.timerControls$$.unsubscribe();
     }
 
     receiveState(gameState: GameState) {
@@ -69,7 +71,7 @@ export class OnlineGame {
         const user = this.players.find((player: Player) => {
             return player.name === this.userName;
         });
-        user?.action$.subscribe((action) => {
+        (user as Player).action$.subscribe((action) => {
             const activePlayerName = this.players[this.activePlayerIndex].name;
             if (activePlayerName !== this.userName) {
                 return;
@@ -257,7 +259,5 @@ export class OnlineGame {
         this.winnerNames = gameState.winnerIndex.map((index: number) => {
             return gameState.players[index].name;
         });
-        // TODO ?? comment flag
-        // this.winnerIndex = gameState.winnerIndex;
     }
 }

@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
@@ -7,6 +8,7 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 import { DEBUG_MESSAGE_ACTIVATED, DEBUG_MESSAGE_DEACTIVATED, END_LINE, RESERVE_NOT_ACCESSIBLE } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -23,6 +25,7 @@ export class CommandExecuterService {
         private actionValidator: ActionValidatorService,
         private messageService: MessagesService,
         private gameInfo: GameInfoService,
+        private http: HttpClient,
     ) {
         this.commandParser.parsedCommand$.subscribe((command) => {
             this.execute(command);
@@ -42,7 +45,7 @@ export class CommandExecuterService {
 
         if (type === CommandType.Reserve) {
             if (this.debugMode) {
-                this.showLetterBag();
+                this.executeReserve();
             } else {
                 this.messageService.receiveErrorMessage(RESERVE_NOT_ACCESSIBLE);
             }
@@ -60,7 +63,13 @@ export class CommandExecuterService {
             } catch (e) {}
         }
     }
-
+    private executeReserve() {
+        if (this.gameInfo.isOnlineGame) {
+            this.showLetterBagOnline();
+        } else {
+            this.showLetterBag();
+        }
+    }
     private showLetterBag() {
         const letterOccurences = this.gameInfo.letterOccurences;
         let stringOccurences = '';
@@ -70,6 +79,19 @@ export class CommandExecuterService {
             stringOccurences = stringOccurences.concat(`${letter} : ${occurence}${END_LINE}`);
         }
         this.messageService.receiveSystemMessage(`Reserve:${END_LINE}${stringOccurences}`);
+    }
+
+    private showLetterBagOnline() {
+        this.http.get(`${environment.serverUrl}/servergame/letterbag?gameId=${this.gameInfo.gameId}`).subscribe((data) => {
+            const letterOccurences = Object.entries(data);
+            let stringOccurences = '';
+            for (const letterOccurence of letterOccurences) {
+                const letter = letterOccurence[0];
+                const occurence = letterOccurence[1];
+                stringOccurences = stringOccurences.concat(`${letter} : ${occurence}${END_LINE}`);
+            }
+            this.messageService.receiveSystemMessage(`Reserve:${END_LINE}${stringOccurences}`);
+        });
     }
 
     private executeDebug() {

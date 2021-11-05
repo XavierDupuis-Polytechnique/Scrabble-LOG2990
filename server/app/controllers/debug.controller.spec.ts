@@ -41,7 +41,7 @@ describe('ServerGameController', () => {
 
         const app = Container.get(Application);
         // eslint-disable-next-line dot-notation
-        Object.defineProperty(app['serverGameController'], 'gameManager', { value: gameManagerService });
+        Object.defineProperty(app['debugController'], 'gameManager', { value: gameManagerService });
         expressApp = app.app;
     });
 

@@ -56,11 +56,8 @@ export class GameInfoService {
     }
 
     get letterOccurences(): Map<string, number> {
-        if (!this.game && !this.onlineGame) {
-            throw Error('No Game in GameInfo');
-        }
         if (!this.game) {
-            return new Map<string, number>(); // TODO Find a way to get letterBag from the server //this.onlineGame.lettersRemaining;
+            throw Error('No Game in GameInfo');
         }
         return this.game.letterBag.countLetters();
     }
@@ -103,10 +100,26 @@ export class GameInfoService {
         return this.game.isEndOfGame();
     }
 
+    get isOnlineGame(): boolean {
+        if (!this.game) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     get winner(): Player[] {
         if (!this.game) {
             return (this.onlineGame as OnlineGame).getWinner();
         }
         return this.game.getWinner();
+    }
+
+    get gameId(): string {
+        if (this.onlineGame) {
+            return this.onlineGame.gameToken;
+        } else {
+            return '';
+        }
     }
 }

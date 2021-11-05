@@ -4,7 +4,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
 
 @Service()
-export class ServerGameController {
+export class DebugController {
     router: Router;
 
     constructor(private readonly gameManager: GameManagerService) {

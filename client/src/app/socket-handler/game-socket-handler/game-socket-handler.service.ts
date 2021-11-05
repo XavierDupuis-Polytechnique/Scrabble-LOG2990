@@ -96,7 +96,7 @@ export class GameSocketHandlerService {
         this.gameStateSubject.next(gameState);
     }
 
-    private receiveTimerControl(timerControl: TimerControls) {
+    receiveTimerControl(timerControl: TimerControls) {
         this.timerControlsSubject.next(timerControl);
     }
 }

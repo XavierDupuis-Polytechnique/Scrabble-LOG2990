@@ -1,5 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
 import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
@@ -7,15 +8,15 @@ import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { HardBot } from '@app/GameLogic/player/hard-bot';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('HardBot', () => {
     let hardBot: HardBot;
     let boardService: BoardService;
-    let botCreatorService: BotCreatorService;
     let timer: TimerService;
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
@@ -23,20 +24,34 @@ describe('HardBot', () => {
     const dict = new DictionaryService();
     let newGame: Game;
     const randomBonus = false;
+    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
+    const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: CommandExecuterService, useValue: commandExecuterMock },
+                { provide: BotMessagesService, useValue: botMessageMock },
+            ],
         });
         boardService = TestBed.inject(BoardService);
-        botCreatorService = TestBed.inject(BotCreatorService);
         timer = TestBed.inject(TimerService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
         newGame = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
         gameInfo.receiveGame(newGame);
-        hardBot = botCreatorService.createBot('Tim', 'hard') as HardBot;
+        hardBot = new HardBot(
+            'test',
+            boardService,
+            dict,
+            pointCalculator,
+            TestBed.inject(WordSearcher),
+            TestBed.inject(BotMessagesService),
+            gameInfo,
+            TestBed.inject(CommandExecuterService),
+        );
     });
 
     it('should create an instance', () => {

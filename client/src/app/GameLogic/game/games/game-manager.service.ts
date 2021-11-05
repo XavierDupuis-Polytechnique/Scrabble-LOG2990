@@ -72,7 +72,6 @@ export class GameManagerService {
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
-        // TODO need to stop online game if game started
         if (this.game || this.onlineGame) {
             this.stopGame();
         }
@@ -82,7 +81,15 @@ export class GameManagerService {
         const userName = userAuth.playerName;
         // TODO: maybe find a way to receive timer time perturn
         const timerPerTurn = Number(gameSettings.timePerTurn);
-        this.onlineGame = new OnlineGame(timerPerTurn, userName, this.timer, this.gameSocketHandler, this.boardService, this.onlineActionCompiler);
+        this.onlineGame = new OnlineGame(
+            gameSettings.id,
+            timerPerTurn,
+            userName,
+            this.timer,
+            this.gameSocketHandler,
+            this.boardService,
+            this.onlineActionCompiler,
+        );
 
         const opponentName = gameSettings.playerName === userName ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(userName, opponentName);

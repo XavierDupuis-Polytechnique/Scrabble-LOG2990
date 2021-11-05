@@ -1,14 +1,25 @@
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
+import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { OnlineGame } from '@app/GameLogic/game/games/online-game';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
+import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
     let service: GameManagerService;
+    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: CommandExecuterService, useValue: commandExecuterMock },
+            ],
         });
         service = TestBed.inject(GameManagerService);
     });
@@ -52,5 +63,156 @@ describe('GameManagerService', () => {
         });
         service.createGame(gameSettings);
         expect(gameSpy).toHaveBeenCalled();
+    });
+
+    it('should not start a game if its an online game', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p1',
+            opponentName: 'p2',
+            randomBonus: false,
+            id: '0',
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+        service.startGame();
+        expect().nothing();
+    });
+});
+
+describe('GameManagerService Online Edition', () => {
+    let service: GameManagerService;
+    let gameSocketHandler: GameSocketHandlerService;
+    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
+    const dict = new DictionaryService();
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: CommandExecuterService, useValue: commandExecuterMock },
+            ],
+        });
+        service = TestBed.inject(GameManagerService);
+        gameSocketHandler = TestBed.inject(GameSocketHandlerService);
+    });
+
+    it('should join an online game', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p1',
+            opponentName: 'p2',
+            randomBonus: false,
+            id: '0',
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+        const result = service['onlineGame'];
+        expect(result).toBeInstanceOf(OnlineGame);
+    });
+
+    it('should stop game if offline game exist on join an online game', () => {
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+            randomBonus: false,
+        };
+
+        service.createGame(gameSettings);
+        const gameSpy = spyOn(service, 'stopGame').and.callThrough();
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p1',
+            opponentName: 'p2',
+            randomBonus: false,
+            id: '0',
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+        expect(gameSpy).toHaveBeenCalled();
+    });
+
+    it('should stop game if online game exist on join an online game', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p1',
+            opponentName: 'p2',
+            randomBonus: false,
+            id: '0',
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        const gameSpy = spyOn(service, 'stopGame').and.callThrough();
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+        expect(gameSpy).toHaveBeenCalled();
+    });
+
+    it('should throw error if there is no opponent', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p1',
+            randomBonus: false,
+            id: '0',
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        expect(() => service.joinOnlineGame(userAuth, onlineGameSettings)).toThrowError('No opponent name was entered');
+    });
+
+    it('should test the disconnectedFromServerSubject subject', () => {
+        gameSocketHandler['disconnectedFromServerSubject'].next();
+        const result = service.disconnectedFromServer$.subscribe();
+        expect(result).toBeTruthy();
+    });
+
+    it('should join an online game when you are the opponent', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p2',
+            opponentName: 'p1',
+            randomBonus: false,
+            id: '0',
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+        const result = service['onlineGame'];
+        expect(result).toBeInstanceOf(OnlineGame);
+    });
+
+    it('should stopOnlineGame when onlineGame is undefined', () => {
+        const spy = spyOn(service['onlineChat'], 'leaveChatRoom');
+        service['stopOnlineGame']();
+        expect(spy).toHaveBeenCalled();
     });
 });
