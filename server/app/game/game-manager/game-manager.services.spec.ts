@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { NEW_GAME_TIMEOUT } from '@app/constants';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
@@ -16,8 +17,7 @@ import { GameManagerService, PlayerRef } from '@app/game/game-manager/game-manag
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { OnlineGameSettings } from '@app/online-game-init/game-settings-multi.interface';
-import { GameCompiler } from '@app/services/game-compiler.service';
+import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { before } from 'mocha';

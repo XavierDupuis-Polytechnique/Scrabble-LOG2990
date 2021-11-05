@@ -1,16 +1,16 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
+import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
+import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
-import { OnlineGameSettings } from './game-settings-multi.interface';
-import { NewOnlineGameService } from './new-online-game.service';
 
-describe('NewOnlineGameService', () => {
+describe('NewGameManagerService', () => {
     const gameManagerStub = createSinonStubInstance<GameManagerService>(GameManagerService);
-    let service: NewOnlineGameService;
+    let service: NewGameManagerService;
     before(() => {
-        service = new NewOnlineGameService(gameManagerStub);
+        service = new NewGameManagerService(gameManagerStub);
     });
 
     it('should createGame', () => {

@@ -1,3 +1,4 @@
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
@@ -12,7 +13,6 @@ import { TimerController } from '@app/game/game-logic/timer/timer-controller.ser
 import { isCharUpperCase } from '@app/game/game-logic/utils';
 import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-searcher.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { GameCompiler } from '@app/services/game-compiler.service';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
