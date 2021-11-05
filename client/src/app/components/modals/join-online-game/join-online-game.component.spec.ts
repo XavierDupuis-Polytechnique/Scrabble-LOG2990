@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { JoinOnlineGameComponent } from './join-online-game.component';
@@ -41,7 +41,7 @@ describe('JoinOnlineGameComponent', () => {
                 providers: [
                     { provide: MAT_DIALOG_DATA, useValue: {} },
                     { provide: MatDialogRef, useValue: mockDialogRef },
-                    { provide: OnlineGameInitService, useValue: mockOnlineGameService },
+                    { provide: NewOnlineGameSocketHandler, useValue: mockOnlineGameService },
                     { provide: MatDialog, useValue: mockDialog },
                 ],
                 declarations: [JoinOnlineGameComponent, DatePipe],

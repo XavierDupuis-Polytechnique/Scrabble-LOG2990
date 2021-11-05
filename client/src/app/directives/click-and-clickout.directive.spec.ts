@@ -2,8 +2,8 @@
 /* eslint-disable max-classes-per-file */
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
+import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 import { ClickAndClickoutDirective } from './click-and-clickout.directive';
 
 class MockUIInputControllerService {

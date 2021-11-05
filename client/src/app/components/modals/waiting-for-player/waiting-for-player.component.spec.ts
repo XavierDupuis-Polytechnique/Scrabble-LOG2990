@@ -3,7 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { of } from 'rxjs';
 import { WaitingForPlayerComponent } from './waiting-for-player.component';
 
@@ -14,13 +14,13 @@ const mockDialogRef = {
 describe('WaitingForPlayerComponent', () => {
     let component: WaitingForPlayerComponent;
     let fixture: ComponentFixture<WaitingForPlayerComponent>;
-    let onlineSocketHandlerSpy: jasmine.SpyObj<OnlineGameInitService>;
+    let onlineSocketHandlerSpy: jasmine.SpyObj<NewOnlineGameSocketHandler>;
     let matDialog: jasmine.SpyObj<MatDialog>;
 
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         onlineSocketHandlerSpy = jasmine.createSpyObj(
-            'OnlineGameInitService',
+            'NewOnlineGameSocketHandler',
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames'],
             ['pendingGames$'],
         );
@@ -31,7 +31,7 @@ describe('WaitingForPlayerComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: mockDialogRef },
                 { provide: MatDialog, useValue: matDialog },
-                { provide: OnlineGameInitService, useValue: onlineSocketHandlerSpy },
+                { provide: NewOnlineGameSocketHandler, useValue: onlineSocketHandlerSpy },
             ],
             declarations: [WaitingForPlayerComponent],
         }).compileComponents();
