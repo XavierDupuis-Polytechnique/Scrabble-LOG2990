@@ -57,11 +57,11 @@ describe('Canvas drawer test', () => {
         expect(afterSize).toBeGreaterThan(beforeSize);
     });
 
-    it('if indicator, should call drawImage', () => {
+    it('if indicator, should call fill', () => {
         canvasDrawer.setIndicator(0, 0);
         canvasDrawer.setDirection(Direction.Horizontal);
 
-        const drawImageSpy = spyOn(canvasDrawer.canvas, 'drawImage');
+        const drawImageSpy = spyOn(canvasDrawer.canvas, 'fill');
         canvasDrawer.drawGrid(board, FONT_SIZE);
 
         canvasDrawer.setDirection(Direction.Vertical);
