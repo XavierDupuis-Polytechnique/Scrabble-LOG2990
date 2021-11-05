@@ -86,7 +86,7 @@ export class CommandParserService {
         if (placeLetterParameters !== undefined && placeLetterParameters.length === 2) {
             const parameters: PlaceLetterParameters = {
                 row: placeLetterParameters[0].charCodeAt(0),
-                col: this.verifyColumns(placeLetterParameters[0]),
+                col: this.getColumns(placeLetterParameters[0]),
                 direction: placeLetterParameters[0].charCodeAt(placeLetterParameters[0].length - 1),
                 word: placeLetterParameters[1].normalize('NFD').replace(/\p{Diacritic}/gu, ''),
             };
@@ -111,22 +111,15 @@ export class CommandParserService {
     }
 
     private verifyPlaceLetterArgParameters(placeLetterParameters: PlaceLetterParameters): boolean {
-        if (
-            placeLetterParameters.row === undefined ||
-            placeLetterParameters.row > 'o'.charCodeAt(0) ||
-            placeLetterParameters.row < 'a'.charCodeAt(0)
-        ) {
+        if (!this.isValidRow(placeLetterParameters.row)) {
             this.sendErrorMessage(this.errorSyntax + ': ligne invalide');
             return false;
         }
-        if (placeLetterParameters.col === undefined || placeLetterParameters.col > BOARD_DIMENSION) {
+        if (!this.isValidColumn(placeLetterParameters.col)) {
             this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
             return false;
         }
-        if (
-            placeLetterParameters.direction === undefined ||
-            (placeLetterParameters.direction !== CHARACTER_H && placeLetterParameters.direction !== CHARACTER_V)
-        ) {
+        if (!this.isValidDirection(placeLetterParameters.direction)) {
             this.sendErrorMessage(this.errorSyntax + ': direction invalide');
             return false;
         }
@@ -137,7 +130,7 @@ export class CommandParserService {
         return true;
     }
 
-    private verifyColumns(columns: string): number | undefined {
+    private getColumns(columns: string): number | undefined {
         let col;
         if (this.isValidColumnsFormat(columns)) {
             col = Number(columns[1] + columns[2]);
@@ -161,6 +154,7 @@ export class CommandParserService {
         }
         return true;
     }
+
     private isValidColumnsFormat(columns: string): boolean {
         if (!this.isNumeric(columns[1])) {
             return false;
@@ -174,11 +168,44 @@ export class CommandParserService {
         return true;
     }
 
-    private isValidColumnFormat(columns: string) {
+    private isValidColumnFormat(columns: string): boolean {
         if (!this.isNumeric(columns[1])) {
             return false;
         }
         if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidRow(row: number): boolean {
+        if (row === undefined) {
+            return false;
+        }
+        if (row > 'o'.charCodeAt(0)) {
+            return false;
+        }
+        if (row < 'a'.charCodeAt(0)) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidColumn(columns: number | undefined): boolean {
+        if (columns === undefined) {
+            return false;
+        }
+        if (columns > BOARD_DIMENSION) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidDirection(direction: number): boolean {
+        if (direction === undefined) {
+            return false;
+        }
+        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
             return false;
         }
         return true;
