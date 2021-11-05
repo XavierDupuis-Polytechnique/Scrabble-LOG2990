@@ -4,7 +4,7 @@ import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, Injec
 import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
+import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
 import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
 import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
 import { BehaviorSubject } from 'rxjs';

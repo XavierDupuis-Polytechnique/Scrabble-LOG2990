@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
+import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
-import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
-import { PendingGamesComponent } from '@app/pages/classic-game/modals/pending-games/pending-games.component';
-import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
 import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/mode-multi/interface/user-auth.interface';
 import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';

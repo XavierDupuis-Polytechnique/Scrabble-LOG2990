@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { ConvertToSoloFormComponent } from '@app/pages/classic-game/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
 import { of } from 'rxjs';
 import { WaitingForPlayerComponent } from './waiting-for-player.component';
