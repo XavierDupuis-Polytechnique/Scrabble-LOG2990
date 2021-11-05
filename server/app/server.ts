@@ -3,8 +3,8 @@ import { GameManagerService } from '@app/game/game-manager/game-manager.services
 import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
 import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { NewGameManagerService } from '@app/online-game-init/new-online-game.service';
-import { NewGameSocketHandler } from '@app/services/new-online-game-manager';
+import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
+import { NewGameSocketHandler } from '@app/new-game/new-game-socket-handler/new-game-socket-handler';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
