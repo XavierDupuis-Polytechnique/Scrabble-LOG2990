@@ -56,6 +56,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
             this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
         }
     }
+
     ngDoCheck() {
         if (this.canvasDrawer) {
             if (this.inputController.activeAction instanceof UIPlace) {
@@ -88,14 +89,8 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         }
     }
 
-    // click(x: number, y: number) {
-    //     const input: UIInput = { from: InputComponent.Board, type: InputType.LeftClick, args: { x, y } };
-    //     this.clickTile.emit(input);
-    // }
-
     canvasClick(event: MouseEvent): void {
         const pos = this.canvasDrawer.coordToTilePosition(event.offsetX, event.offsetY);
-        // this.canvasDrawer.click(pos.indexI, pos.indexJ);
         const input: UIInput = { from: this.self, type: InputType.LeftClick, args: { x: pos.indexI, y: pos.indexJ } };
         this.clickTile.emit(input);
     }
