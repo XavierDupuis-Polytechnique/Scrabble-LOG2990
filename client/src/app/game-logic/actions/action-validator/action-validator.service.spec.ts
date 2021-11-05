@@ -7,7 +7,14 @@ import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
-import { BOARD_DIMENSION, BOARD_MAX_POSITION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/game-logic/constants';
+import {
+    BOARD_DIMENSION,
+    BOARD_MAX_POSITION,
+    DEFAULT_TIME_PER_TURN,
+    EMPTY_CHAR,
+    MIDDLE_OF_BOARD,
+    RACK_LETTER_COUNT,
+} from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
