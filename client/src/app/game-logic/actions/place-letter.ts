@@ -12,8 +12,8 @@ import { isCharUpperCase } from '@app/game-logic/utils';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { timer } from 'rxjs';
 export class PlaceLetter extends Action {
-    lettersToRemoveInRack: Letter[];
     affectedCoords: Vec2[];
+    private lettersToRemoveInRack: Letter[];
     private letterFactory = new LetterCreator();
 
     constructor(
@@ -24,11 +24,6 @@ export class PlaceLetter extends Action {
         private wordSearcher: WordSearcher,
     ) {
         super(player);
-    }
-
-    revert(game: Game) {
-        this.removeLetterFromBoard(game);
-        this.giveBackLettersToPlayer();
     }
 
     protected perform(game: Game) {
@@ -47,6 +42,11 @@ export class PlaceLetter extends Action {
                 this.end();
             });
         }
+    }
+
+    private revert(game: Game) {
+        this.removeLetterFromBoard(game);
+        this.giveBackLettersToPlayer();
     }
 
     private removeLetterFromBoard(game: Game) {

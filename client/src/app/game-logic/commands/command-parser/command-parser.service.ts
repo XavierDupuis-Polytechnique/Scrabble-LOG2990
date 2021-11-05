@@ -28,19 +28,6 @@ export class CommandParserService {
         return this.errorMessageContent$;
     }
 
-    createCommand(from: string, args: string[], commandType: CommandType): Command {
-        const command = { from, type: commandType, args } as Command;
-        return command;
-    }
-
-    sendCommand(command: Command) {
-        this.command$.next(command);
-    }
-
-    sendErrorMessage(message: string) {
-        this.errorMessageContent$.next(message);
-    }
-
     parse(message: string, from: string): CommandType | undefined {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
@@ -68,6 +55,19 @@ export class CommandParserService {
             return commandType;
         }
         return undefined;
+    }
+
+    private createCommand(from: string, args: string[], commandType: CommandType): Command {
+        const command = { from, type: commandType, args } as Command;
+        return command;
+    }
+
+    private sendCommand(command: Command) {
+        this.command$.next(command);
+    }
+
+    private sendErrorMessage(message: string) {
+        this.errorMessageContent$.next(message);
     }
 
     private formatPlaceLetter(placeLetterParameters: string[]): string[] | undefined {
