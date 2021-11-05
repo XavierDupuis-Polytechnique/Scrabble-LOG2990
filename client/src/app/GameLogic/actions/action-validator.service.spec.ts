@@ -15,7 +15,7 @@ import {
     FIVE,
     MIDDLE_OF_BOARD,
     RACK_LETTER_COUNT,
-    TEN,
+    TEN
 } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -51,10 +51,10 @@ describe('ActionValidatorService', () => {
             super(player);
         }
         execute(): void {
-            throw new Error('Method not implemented.');
+            return;
         }
         protected perform(): void {
-            throw new Error('Method not implemented.');
+            return;
         }
     }
 

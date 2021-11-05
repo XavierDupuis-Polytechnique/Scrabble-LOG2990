@@ -79,7 +79,6 @@ export class GameManagerService {
             throw Error('No opponent name was entered');
         }
         const userName = userAuth.playerName;
-        // TODO: maybe find a way to receive timer time perturn
         const timerPerTurn = Number(gameSettings.timePerTurn);
         this.onlineGame = new OnlineGame(
             gameSettings.id,

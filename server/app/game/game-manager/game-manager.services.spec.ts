@@ -395,7 +395,6 @@ describe('GameManagerService', () => {
     });
 
     it('should not delete joined game after the inactive time', async () => {
-        // TODO: Fix this test
         const playerName = 'test1';
         const opponentName = 'test2';
         const gameToken = '1';
