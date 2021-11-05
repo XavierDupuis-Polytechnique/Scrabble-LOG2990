@@ -3,17 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
-import { LeaderboardComponent } from '@app/pages/leaderboard/leaderboard.component';
-import { Log2990GameComponent } from '@app/pages/log2990-game/log2990-game.component';
-import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomepageComponent },
     { path: 'classic', component: ClassicGameComponent },
-    { path: 'log2990', component: Log2990GameComponent },
-    { path: 'leaderboard', component: LeaderboardComponent },
-    { path: 'material', component: MaterialPageComponent },
+    { path: 'log2990', component: HomepageComponent },
+    { path: 'leaderboard', component: HomepageComponent },
     { path: 'game', component: GamePageComponent },
     { path: '**', redirectTo: '/home' },
 ];

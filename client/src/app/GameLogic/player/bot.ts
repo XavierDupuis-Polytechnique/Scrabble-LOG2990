@@ -1,6 +1,7 @@
+import { Vec2 } from '@app/classes/vec2';
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { MIDDLE_OF_BOARD, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
@@ -31,7 +32,7 @@ export abstract class Bot extends Player {
         protected wordValidator: WordSearcher,
         protected botMessage: BotMessagesService,
         protected gameInfo: GameInfoService,
-        protected commandeExecuter: CommandExecuterService,
+        protected commandExecuter: CommandExecuterService,
     ) {
         super('PlaceholderName');
         this.name = this.generateBotName(name);
@@ -77,6 +78,7 @@ export abstract class Bot extends Player {
         const grid = this.boardService.board.grid;
         const startingX = 0;
         const startingY = 0;
+        const startingPosition: Vec2 = { x: startingX, y: startingY };
         const startingDirection = HORIZONTAL;
         this.validWordList = [];
         const letterInMiddleBox = grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char;
@@ -84,7 +86,7 @@ export abstract class Bot extends Player {
         if (letterInMiddleBox === ' ') {
             this.botCrawler.botFirstTurn();
         } else {
-            this.botCrawler.boardCrawler(startingX, startingY, grid, startingDirection);
+            this.botCrawler.boardCrawler(startingPosition, grid, startingDirection);
         }
         return this.validWordList;
     }

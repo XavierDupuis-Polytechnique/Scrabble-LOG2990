@@ -1,17 +1,24 @@
 <div class="bg-img">
-    <div class="container">
+    <div class="container" appMouseRoll>
         <img src="assets/img/logoWhite.png" width="200" height="50" alt="Logo Scrabble" />
         <app-player-info></app-player-info>
         <app-info-box></app-info-box>
-        <app-chat-box></app-chat-box>
-        <app-board></app-board>
-        <app-horse></app-horse>
+        <app-chat-box (clickChatbox)="receiveInput($event)"></app-chat-box>
+        <app-board (clickTile)="receiveInput($event)" style="height: 100%"></app-board>
+        <app-horse appPreventContextMenu (clickLetter)="receiveInput($event)"></app-horse>
         <div class="actions">
-            <button mat-raised-button color="accent" [disabled]="!isItMyTurn" (click)="passer()">Passer</button>
+            <div>
+                <button mat-raised-button color="accent" [disabled]="!canPass" (click)="pass()">Passer</button>
+                <button mat-raised-button color="accent" [disabled]="!canExchange" (click)="confirm()">Échanger</button>
+            </div>
+            <div>
+                <button mat-raised-button color="accent" [disabled]="!canPlace" (click)="confirm()">Placer</button>
+                <button mat-raised-button color="accent" [disabled]="!canCancel" (click)="cancel()">Annuler</button>
+            </div>
         </div>
         <div class="abandonner">
-            <button mat-raised-button [routerLink]="['/home']" (click)="abandonner()" *ngIf="!isEndOfGame">Abandonner la partie</button>
-            <button mat-raised-button [routerLink]="['/home']" (click)="abandonner()" *ngIf="isEndOfGame">Quitter</button>
+            <button mat-raised-button (click)="abandon()" *ngIf="!isEndOfGame">Abandonner la partie</button>
+            <button mat-raised-button (click)="quit()" *ngIf="isEndOfGame">Quitter</button>
         </div>
     </div>
 </div>

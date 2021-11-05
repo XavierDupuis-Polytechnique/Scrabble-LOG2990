@@ -1,24 +1,39 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
-import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
+import { BoardService } from '@app/GameLogic/game/board/board.service';
+import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { EasyBot } from '@app/GameLogic/player/easy-bot';
+import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
+import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';
 
 describe('Bot', () => {
-    TestBed.configureTestingModule({
-        providers: [BotCreatorService, BotMessagesService],
-    });
+    const dict = new DictionaryService();
     let bot: EasyBot;
-    let botCreator: BotCreatorService;
-    let botMessage: BotMessagesService;
-    let spySendAction: jasmine.Spy;
+    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
+    const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
 
     beforeEach(() => {
-        botCreator = TestBed.inject(BotCreatorService);
-        botMessage = TestBed.inject(BotMessagesService);
-        spySendAction = spyOn(botMessage, 'sendAction');
-        bot = botCreator.createBot('testBot', 'easy') as EasyBot;
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                { provide: CommandExecuterService, useValue: commandExecuterMock },
+                { provide: BotMessagesService, useValue: botMessageMock },
+            ],
+        });
+        bot = new EasyBot(
+            'test',
+            TestBed.inject(BoardService),
+            TestBed.inject(DictionaryService),
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+            TestBed.inject(BotMessagesService),
+            TestBed.inject(GameInfoService),
+            TestBed.inject(CommandExecuterService),
+        );
     });
 
     it('should create an instance', () => {
@@ -36,25 +51,28 @@ describe('Bot', () => {
     });
 
     it('should play before 3 seconds', fakeAsync(() => {
+        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         bot.chooseAction(new PassTurn(bot));
         tick(TIME_BEFORE_PICKING_ACTION);
-        expect(spySendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
+        expect(botMessageMock.sendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
         tick(TIME_BEFORE_PASS);
     }));
 
     it('should play after 3 seconds', fakeAsync(() => {
+        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         bot.chooseAction(new PassTurn(bot));
-        expect(spySendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
+        expect(botMessageMock.sendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
         tick(TIME_BEFORE_PASS);
     }));
 
     it('should pass turn after 20 seconds', fakeAsync(() => {
+        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         tick(TIME_BEFORE_PASS);
-        expect(spySendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
+        expect(botMessageMock.sendAction.calls.argsFor(0)[0]).toBeInstanceOf(PassTurn);
     }));
 });

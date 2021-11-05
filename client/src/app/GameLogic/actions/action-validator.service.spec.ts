@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
@@ -7,7 +8,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-import { BOARD_DIMENSION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, FIVE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT, TEN } from '@app/GameLogic/constants';
+import { BOARD_DIMENSION, BOARD_MAX_POSITION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -32,6 +33,8 @@ describe('ActionValidatorService', () => {
     let info: GameInfoService;
     let messagesSpy: MessagesService;
     let wordSearcher: WordSearcher;
+    const dict = new DictionaryService();
+    const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 
     class UnknownAction extends Action {
@@ -40,10 +43,10 @@ describe('ActionValidatorService', () => {
             super(player);
         }
         execute(): void {
-            throw new Error('Method not implemented.');
+            return;
         }
         protected perform(): void {
-            throw new Error('Method not implemented.');
+            return;
         }
     }
 
@@ -51,11 +54,11 @@ describe('ActionValidatorService', () => {
         messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
         TestBed.configureTestingModule({
             providers: [
+                { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesSpy },
                 CommandParserService,
                 PointCalculatorService,
                 BoardService,
-                DictionaryService,
                 TimerService,
                 GameInfoService,
                 PointCalculatorService,
@@ -66,8 +69,7 @@ describe('ActionValidatorService', () => {
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
-
-        game = new Game(DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
+        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
         p1 = new User('p1');
         p2 = new User('p2');
         game.players.push(p1);
@@ -84,9 +86,8 @@ describe('ActionValidatorService', () => {
     /// INVALID ACTION TYPE TESTS ///
     it('should throw error when receiving an unrecognized action type', () => {
         const action = new UnknownAction(currentPlayer);
-        expect(() => {
-            service.validateAction(action);
-        }).toThrowError("Action couldn't be validated");
+        service.validateAction(action);
+        expect(messagesSpy.receiveErrorMessage).toHaveBeenCalledWith("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
     });
     /// ////////////////// ///
 
@@ -143,7 +144,7 @@ describe('ActionValidatorService', () => {
     });
 
     it('should validate a valid ExchangeLetter because the game letterBag has enough letters', () => {
-        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - TEN);
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 10);
         const lettersToExchange = [...currentPlayer.letterRack].splice(0, 1);
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
         expect(service.validateAction(action)).toBeTruthy();
@@ -157,7 +158,7 @@ describe('ActionValidatorService', () => {
 
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have enough letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 2);
-        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, FIVE));
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 5));
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
@@ -375,7 +376,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 
-    it('should validate placing a "word" with already present letters on the board (horizontal)', () => {
+    it('should validate placing a word with already present letters on the board (horizontal)', () => {
         const horizontalWord = 'abcdefghijk';
         for (let x = 0; x < horizontalWord.length; x++) {
             if (x % 2) {
@@ -390,7 +391,7 @@ describe('ActionValidatorService', () => {
         expect(service.validateAction(action)).toBeTruthy();
     });
 
-    it('should validate placing a "word" with already present letters on the board (vertical)', () => {
+    it('should validate placing a word with already present letters on the board (vertical)', () => {
         const verticalWord = 'abcdefghijk';
         for (let y = 0; y < verticalWord.length; y++) {
             if (y % 2) {
@@ -400,6 +401,34 @@ describe('ActionValidatorService', () => {
             }
         }
         const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: 0 };
+        const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
+
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
+    it('should validate placing a word that lands on the last column (horizontal)', () => {
+        const verticalWord = 'abcdefg';
+        const beginPos = BOARD_MAX_POSITION - verticalWord.length + 1;
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        game.board.grid[beginPos][beginPos].letterObject.char = 'a';
+        for (let y = 0; y < verticalWord.length; y++) {
+            currentPlayer.letterRack[y % RACK_LETTER_COUNT].char = verticalWord.charAt(y);
+        }
+        const placement: PlacementSetting = { direction: Direction.Horizontal, x: beginPos, y: beginPos };
+        const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
+
+        expect(service.validateAction(action)).toBeTruthy();
+    });
+
+    it('should validate placing a word that lands on the last row (vertical)', () => {
+        const verticalWord = 'abcdefg';
+        const beginPos = BOARD_MAX_POSITION - verticalWord.length + 1;
+        game.board.grid[centerPosition][centerPosition].letterObject.char = 'a';
+        game.board.grid[beginPos][beginPos].letterObject.char = 'a';
+        for (let y = 0; y < verticalWord.length; y++) {
+            currentPlayer.letterRack[y % RACK_LETTER_COUNT].char = verticalWord.charAt(y);
+        }
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: beginPos, y: beginPos };
         const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
         expect(service.validateAction(action)).toBeTruthy();

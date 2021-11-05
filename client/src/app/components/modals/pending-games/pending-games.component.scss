@@ -1,0 +1,34 @@
+mat-dialog-content {
+    max-height: 450;
+    // overflow: hidden;
+}
+table {
+    width: 100%;
+}
+.table-container {
+    max-height: 350;
+    overflow: auto;
+}
+.mat-row .mat-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+}
+
+.mat-row:hover .mat-cell {
+    border-color: currentColor;
+    background-color: white;
+    color: black;
+}
+
+.row-is-clicked {
+    // font-weight: bold;
+    background-color: white;
+    .mat-cell {
+        color: black;
+    }
+}
+
+.mat-button-focus-overlay {
+    background-color: transparent !important;
+}

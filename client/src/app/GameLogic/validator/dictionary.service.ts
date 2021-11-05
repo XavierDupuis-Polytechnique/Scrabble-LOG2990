@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ARRAY_BEGIN, FIRST_LETTER_INDEX, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
+import { DictInitialSearchSettings, DictRegexSettings, DictSubSearchSettings, DictWholeSearchSettings } from '@app/GameLogic/validator/dict-settings';
 import { Dictionary } from '@app/GameLogic/validator/dictionary';
 import data from 'src/assets/dictionary.json';
 
@@ -49,7 +50,7 @@ export class DictionaryService {
         if (maxDictWordLength > MAX_WORD_LENGTH) {
             maxDictWordLength = MAX_WORD_LENGTH;
         }
-        const dict = this.dynamicWordList[maxDictWordLength];
+        const dictWords = this.dynamicWordList[maxDictWordLength];
 
         if (partWord.word.includes('-')) {
             this.getSubWordsOfPartWord(partWord, tmpWordList);
@@ -58,16 +59,18 @@ export class DictionaryService {
             const tmpDict2: ValidWord[] = [];
             const foundIndex: number = START_OF_STRING;
             let oldSubWordLength: number = RESET;
-
-            oldSubWordLength = this.initialDictionarySearch(partWord, dict, tmpWordList, letterCountOfPartWord, tmpDict, foundIndex);
-            this.subDictionarySearch(partWord, tmpWordList, tmpDict, tmpDict2, oldSubWordLength, letterCountOfPartWord, wordList);
+            const initialSettings: DictInitialSearchSettings = { partWord, dictWords, tmpWordList, letterCountOfPartWord, tmpDict, foundIndex };
+            oldSubWordLength = this.initialDictionarySearch(initialSettings);
+            const subSettings: DictSubSearchSettings = { tmpWordList, tmpDict2, oldSubWordLength, wordList };
+            this.subDictionarySearch(initialSettings, subSettings);
         } else {
-            this.wholePartWordDictionarySearch(partWord, dict, letterCountOfPartWord, wordList);
+            const wholeSettings: DictWholeSearchSettings = { partWord, dictWords, letterCountOfPartWord, wordList };
+            this.wholePartWordDictionarySearch(wholeSettings);
         }
         return wordList;
     }
 
-    regexCheck(dictWord: ValidWord, placedLetters: string, botLetterRack: Letter[]): string {
+    regexValidation(dictWord: ValidWord, placedLetters: string, botLetterRack: Letter[]): string {
         const letterRack = botLetterRack;
         const mapRack = new Map<string, number>();
         const wordLength = dictWord.word.length;
@@ -80,10 +83,10 @@ export class DictionaryService {
         if (index === NOT_FOUND) {
             return 'false';
         }
-
-        placedWord = this.checkLeftOfPlacedWord(dictWord, placedWord, mapRack);
-        placedWord = this.checkMiddleOfPlacedWord(dictWord, placedWord, mapRack);
-        placedWord = this.checkRightOfPlacedWord(dictWord, placedWord, mapRack, wordLength);
+        const regexSettings: DictRegexSettings = { dictWord, placedWord, mapRack };
+        placedWord = this.validateLeftOfPlacedWord(regexSettings);
+        placedWord = this.validateMiddleOfPlacedWord(regexSettings);
+        placedWord = this.validateRightOfPlacedWord(regexSettings, wordLength);
 
         if (dictWord.word === placedWord.toLowerCase()) {
             return placedWord;
@@ -123,22 +126,15 @@ export class DictionaryService {
         return leftIndex;
     }
 
-    private initialDictionarySearch(
-        partWord: ValidWord,
-        dictWords: Set<string>,
-        tmpWordList: ValidWord[],
-        letterCountOfPartWord: number,
-        tmpDict: ValidWord[],
-        foundIndex: number,
-    ): number {
-        const firstWord = tmpWordList[ARRAY_BEGIN].word;
-        for (const dictWord of dictWords) {
-            foundIndex = dictWord.indexOf(firstWord);
-            if (foundIndex !== NOT_FOUND && dictWord.length - letterCountOfPartWord <= RACK_LETTER_COUNT) {
-                if (foundIndex <= partWord.leftCount) {
-                    const newWord: ValidWord = new ValidWord(dictWord, foundIndex);
-                    this.setStartingTile(partWord, newWord, foundIndex);
-                    tmpDict.push(newWord);
+    private initialDictionarySearch(settings: DictInitialSearchSettings): number {
+        const firstWord = settings.tmpWordList[ARRAY_BEGIN].word;
+        for (const dictWord of settings.dictWords) {
+            settings.foundIndex = dictWord.indexOf(firstWord);
+            if (settings.foundIndex !== NOT_FOUND && dictWord.length - settings.letterCountOfPartWord <= RACK_LETTER_COUNT) {
+                if (settings.foundIndex <= settings.partWord.leftCount) {
+                    const newWord: ValidWord = new ValidWord(dictWord, settings.foundIndex);
+                    this.setStartingTile(settings.partWord, newWord, settings.foundIndex);
+                    settings.tmpDict.push(newWord);
                 }
             }
         }
@@ -146,62 +142,61 @@ export class DictionaryService {
         return oldSubWordLength;
     }
 
-    private subDictionarySearch(
-        partWord: ValidWord,
-        tmpWordList: ValidWord[],
-        tmpDict: ValidWord[],
-        tmpDict2: ValidWord[],
-        oldSubWordLength: number,
-        letterCountOfPartWord: number,
-        wordList: ValidWord[],
-    ) {
-        const lastIndex = tmpWordList.length - 1;
+    private subDictionarySearch(initialSettings: DictInitialSearchSettings, subSettings: DictSubSearchSettings) {
+        const lastIndex = subSettings.tmpWordList.length - 1;
         for (let tmpIndex = 1; tmpIndex <= lastIndex; tmpIndex++) {
-            const tmpWord = tmpWordList[tmpIndex];
-            for (const tmpDictWord of tmpDict) {
-                const oldFoundIndex: number = tmpDictWord.indexFound + oldSubWordLength;
+            const tmpWord = subSettings.tmpWordList[tmpIndex];
+            for (const tmpDictWord of initialSettings.tmpDict) {
+                const oldFoundIndex: number = tmpDictWord.indexFound + subSettings.oldSubWordLength;
                 const foundIndex = tmpDictWord.word.indexOf(tmpWord.word, oldFoundIndex);
                 if (foundIndex !== NOT_FOUND) {
-                    if (foundIndex - oldFoundIndex === tmpWord.emptyCount && tmpDictWord.word.length - letterCountOfPartWord <= RACK_LETTER_COUNT) {
+                    if (
+                        foundIndex - oldFoundIndex === tmpWord.emptyCount &&
+                        tmpDictWord.word.length - initialSettings.letterCountOfPartWord <= RACK_LETTER_COUNT
+                    ) {
                         if (tmpIndex === lastIndex) {
                             if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
                                 tmpDictWord.indexFound = foundIndex;
 
-                                tmpDict2.push(tmpDictWord);
+                                subSettings.tmpDict2.push(tmpDictWord);
                             }
                         } else {
                             tmpDictWord.indexFound = foundIndex;
-                            tmpDict2.push(tmpDictWord);
+                            subSettings.tmpDict2.push(tmpDictWord);
                         }
                     }
                 }
             }
-            tmpDict = tmpDict2;
-            tmpDict2 = [];
+            initialSettings.tmpDict = subSettings.tmpDict2;
+            subSettings.tmpDict2 = [];
 
-            oldSubWordLength = tmpWord.word.length;
+            subSettings.oldSubWordLength = tmpWord.word.length;
         }
-        for (const dictWord of tmpDict) {
-            wordList.push(
-                new ValidWord(dictWord.word, RESET, RESET, RESET, RESET, partWord.isVertical, dictWord.startingTileX, dictWord.startingTileY),
-            );
+        for (const dictWord of initialSettings.tmpDict) {
+            const newWord: ValidWord = new ValidWord(dictWord.word);
+            newWord.isVertical = initialSettings.partWord.isVertical;
+            newWord.startingTileX = dictWord.startingTileX;
+            newWord.startingTileY = dictWord.startingTileY;
+            newWord.numberOfLettersPlaced = dictWord.word.length - initialSettings.letterCountOfPartWord;
+            subSettings.wordList.push(newWord);
         }
     }
 
-    private wholePartWordDictionarySearch(partWord: ValidWord, dictWords: Set<string>, letterCountOfPartWord: number, wordList: ValidWord[]) {
+    private wholePartWordDictionarySearch(wholeSettings: DictWholeSearchSettings) {
         let foundIndex = 0;
-        for (const dictWord of dictWords) {
-            foundIndex = dictWord.indexOf(partWord.word);
-            if (foundIndex !== NOT_FOUND && dictWord.length - letterCountOfPartWord <= RACK_LETTER_COUNT) {
+        for (const dictWord of wholeSettings.dictWords) {
+            foundIndex = dictWord.indexOf(wholeSettings.partWord.word);
+            if (foundIndex !== NOT_FOUND && dictWord.length - wholeSettings.letterCountOfPartWord <= RACK_LETTER_COUNT) {
                 if (
-                    foundIndex <= partWord.leftCount &&
-                    dictWord.length - (foundIndex + partWord.word.length) <= partWord.rightCount &&
-                    dictWord !== partWord.word
+                    foundIndex <= wholeSettings.partWord.leftCount &&
+                    dictWord.length - (foundIndex + wholeSettings.partWord.word.length) <= wholeSettings.partWord.rightCount &&
+                    dictWord !== wholeSettings.partWord.word
                 ) {
                     const newWord: ValidWord = new ValidWord(dictWord);
-                    newWord.isVertical = partWord.isVertical;
-                    this.setStartingTile(partWord, newWord, foundIndex);
-                    wordList.push(newWord);
+                    newWord.isVertical = wholeSettings.partWord.isVertical;
+                    this.setStartingTile(wholeSettings.partWord, newWord, foundIndex);
+                    newWord.numberOfLettersPlaced = dictWord.length - wholeSettings.letterCountOfPartWord;
+                    wholeSettings.wordList.push(newWord);
                 }
             }
         }
@@ -240,73 +235,73 @@ export class DictionaryService {
         }
     }
 
-    private checkLeftOfPlacedWord(dictWord: ValidWord, placedWord: string, mapRack: Map<string, number>): string {
+    private validateLeftOfPlacedWord(regexSettings: DictRegexSettings): string {
         let index: number;
         do {
-            const lettersLeft = this.tmpLetterLeft(mapRack);
-            let regex = new RegExp('(?<=[' + lettersLeft + '])' + placedWord.toLowerCase());
-            index = dictWord.word.search(regex);
+            const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
+            let regex = new RegExp('(?<=[' + lettersLeft + '])' + regexSettings.placedWord.toLowerCase());
+            index = regexSettings.dictWord.word.search(regex);
             if (index === NOT_FOUND) {
-                if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
-                    index = dictWord.word.search(regex);
+                if (regexSettings.mapRack.has('*')) {
+                    regex = new RegExp(regexSettings.placedWord.toLowerCase());
+                    index = regexSettings.dictWord.word.search(regex);
                     if (index === 0) break;
-                    this.deleteTmpLetter('*', mapRack);
-                    placedWord = dictWord.word[index - 1].toUpperCase() + placedWord;
+                    this.deleteTmpLetter('*', regexSettings.mapRack);
+                    regexSettings.placedWord = regexSettings.dictWord.word[index - 1].toUpperCase() + regexSettings.placedWord;
                 } else break;
             } else {
                 index--;
-                this.deleteTmpLetter(dictWord.word[index], mapRack);
-                placedWord = dictWord.word[index] + placedWord;
+                this.deleteTmpLetter(regexSettings.dictWord.word[index], regexSettings.mapRack);
+                regexSettings.placedWord = regexSettings.dictWord.word[index] + regexSettings.placedWord;
             }
         } while (index > FIRST_LETTER_INDEX);
-        return placedWord;
+        return regexSettings.placedWord;
     }
 
-    private checkMiddleOfPlacedWord(dictWord: ValidWord, placedWord: string, mapRack: Map<string, number>): string {
-        let indexOfDot: number = placedWord.indexOf('.');
+    private validateMiddleOfPlacedWord(regexSettings: DictRegexSettings): string {
+        let indexOfDot: number = regexSettings.placedWord.indexOf('.');
         let index: number;
         while (indexOfDot !== NOT_FOUND) {
-            const lettersLeft = this.tmpLetterLeft(mapRack);
-            const leftOfDot = placedWord.substring(0, indexOfDot).toLowerCase();
-            let regex = new RegExp(leftOfDot + '(?=[' + lettersLeft + '])');
-            index = dictWord.word.search(regex);
-            const rightOfDot = placedWord.substring(indexOfDot + 1);
+            const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
+            const leftOfDot = regexSettings.placedWord.substring(0, indexOfDot);
+            let regex = new RegExp(leftOfDot.toLowerCase() + '(?=[' + lettersLeft + '])');
+            index = regexSettings.dictWord.word.search(regex);
+            const rightOfDot = regexSettings.placedWord.substring(indexOfDot + 1);
             if (index === NOT_FOUND || index > 0) {
-                if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
-                    index = dictWord.word.search(regex);
-                    this.deleteTmpLetter('*', mapRack);
-                    placedWord = leftOfDot + dictWord.word[leftOfDot.length].toUpperCase() + rightOfDot;
+                if (regexSettings.mapRack.has('*')) {
+                    regex = new RegExp(regexSettings.placedWord.toLowerCase());
+                    index = regexSettings.dictWord.word.search(regex);
+                    this.deleteTmpLetter('*', regexSettings.mapRack);
+                    regexSettings.placedWord = leftOfDot + regexSettings.dictWord.word[leftOfDot.length].toUpperCase() + rightOfDot;
                 } else break;
             } else {
-                this.deleteTmpLetter(dictWord.word[indexOfDot], mapRack);
-                placedWord = leftOfDot + dictWord.word[leftOfDot.length] + rightOfDot;
+                this.deleteTmpLetter(regexSettings.dictWord.word[indexOfDot], regexSettings.mapRack);
+                regexSettings.placedWord = leftOfDot + regexSettings.dictWord.word[leftOfDot.length] + rightOfDot;
             }
-            indexOfDot = placedWord.indexOf('.');
+            indexOfDot = regexSettings.placedWord.indexOf('.');
         }
-        return placedWord;
+        return regexSettings.placedWord;
     }
 
-    private checkRightOfPlacedWord(dictWord: ValidWord, placedWord: string, mapRack: Map<string, number>, wordLength: number): string {
+    private validateRightOfPlacedWord(regexSettings: DictRegexSettings, wordLength: number): string {
         let index: number;
-        while (placedWord.length !== wordLength) {
-            const lettersLeft = this.tmpLetterLeft(mapRack);
-            let regex = new RegExp(placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
-            index = dictWord.word.search(regex);
+        while (regexSettings.placedWord.length !== wordLength) {
+            const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
+            let regex = new RegExp(regexSettings.placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
+            index = regexSettings.dictWord.word.search(regex);
             if (index === NOT_FOUND || index > 0) {
-                if (mapRack.has('*')) {
-                    regex = new RegExp(placedWord.toLowerCase());
-                    index = dictWord.word.search(regex);
-                    this.deleteTmpLetter('*', mapRack);
-                    placedWord = placedWord + dictWord.word[placedWord.length].toUpperCase();
+                if (regexSettings.mapRack.has('*')) {
+                    regex = new RegExp(regexSettings.placedWord.toLowerCase());
+                    index = regexSettings.dictWord.word.search(regex);
+                    this.deleteTmpLetter('*', regexSettings.mapRack);
+                    regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length].toUpperCase();
                 } else break;
             } else {
-                this.deleteTmpLetter(dictWord.word[placedWord.length], mapRack);
-                placedWord = placedWord + dictWord.word[placedWord.length];
+                this.deleteTmpLetter(regexSettings.dictWord.word[regexSettings.placedWord.length], regexSettings.mapRack);
+                regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length];
             }
         }
-        return placedWord;
+        return regexSettings.placedWord;
     }
 
     private deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {

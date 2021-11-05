@@ -3,27 +3,32 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
+import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
+import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
+import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
+import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
+import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
+import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
+import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
+import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
+import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
+import { MouseRollDirective } from '@app/directives/mouse-roll.directive';
+import { PreventContextMenuDirective } from '@app/directives/prevent-context-menu.directive';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
+import { GameLogicModule } from '@app/GameLogic/game-logic.module';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';
+import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
+import { BoardComponent } from '@app/pages/game-page/board/board.component';
+import { ChatBoxComponent } from '@app/pages/game-page/chat-box/chat-box.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
-import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
-import { HeaderBarComponent } from './components/header-bar/header-bar.component';
-import { NewSoloGameFormComponent } from './components/new-solo-game-form/new-solo-game-form.component';
-import { GameLogicModule } from './GameLogic/game-logic.module';
-import { ClassicGameComponent } from './pages/classic-game/classic-game.component';
-import { BoardComponent } from './pages/game-page/board/board.component';
-import { TileComponent } from './pages/game-page/board/tile/tile.component';
-import { ChatBoxComponent } from './pages/game-page/chat-box/chat-box.component';
-import { HorseComponent } from './pages/game-page/horse/horse.component';
-import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
-import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.component';
-import { HomepageComponent } from './pages/homepage/homepage.component';
-import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
-import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
+import { HorseComponent } from '@app/pages/game-page/horse/horse.component';
+import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.component';
+import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
+import { HomepageComponent } from '@app/pages/homepage/homepage.component';
+import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 
 /**
  * Main module that is used in main.ts.
@@ -35,21 +40,29 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
     declarations: [
         AppComponent,
         GamePageComponent,
-        MaterialPageComponent,
-        SidebarComponent,
         PlayerInfoComponent,
         InfoBoxComponent,
         ChatBoxComponent,
         BoardComponent,
         HorseComponent,
         NewSoloGameFormComponent,
+        NewOnlineGameFormComponent,
         HomepageComponent,
         ClassicGameComponent,
-        Log2990GameComponent,
-        LeaderboardComponent,
         HeaderBarComponent,
-        TileComponent,
         BoldPipe,
+        PreventContextMenuDirective,
+        ClickAndClickoutDirective,
+        MouseRollDirective,
+        WaitingForPlayerComponent,
+        ConvertToSoloFormComponent,
+        PendingGamesComponent,
+        JoinOnlineGameComponent,
+        DisconnectedFromServerComponent,
+        ErrorDialogComponent,
+        PreventContextMenuDirective,
+        ClickAndClickoutDirective,
+        MouseRollDirective,
     ],
     imports: [
         AppMaterialModule,

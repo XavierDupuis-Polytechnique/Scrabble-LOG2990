@@ -1,7 +1,10 @@
+import { Vec2 } from '@app/classes/vec2';
+import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Tile } from '@app/GameLogic/game/board/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Bot } from '@app/GameLogic/player/bot';
+import { PositionSettings } from '@app/GameLogic/player/position-settings';
 import { ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
@@ -38,18 +41,21 @@ export class BotCrawler {
                 initialWord.leftCount = MIDDLE_OF_BOARD;
                 initialWord.rightCount = MIDDLE_OF_BOARD;
                 placedLetter.push(initialWord);
-                const possiblyValidWords: ValidWord[] = this.wordCheck(placedLetter);
-                this.bot.letterRack.push(tmpLetter[0]);
+                const possiblyValidWords: ValidWord[] = this.possibleWordsGenerator(placedLetter);
+                possiblyValidWords.forEach((word) => {
+                    word.numberOfLettersPlaced++;
+                });
+                this.bot.letterRack.splice(rackIndex, 0, tmpLetter[0]);
 
-                this.crossCheck(possiblyValidWords);
+                this.possibleWordsValidator(possiblyValidWords);
             }
         }
     }
 
-    boardCrawler(startingX: number, startingY: number, grid: Tile[][], isVerticalFlag: boolean) {
+    boardCrawler(startingPosition: Vec2, grid: Tile[][], isVerticalFlag: boolean) {
         if (this.bot.timesUp) return;
-        let x = startingX;
-        let y = startingY;
+        let x = startingPosition.x;
+        let y = startingPosition.y;
         let isVertical = isVerticalFlag;
         let letterInBox = grid[y][x].letterObject.char;
 
@@ -66,35 +72,38 @@ export class BotCrawler {
             letterInBox = grid[y][x].letterObject.char;
         }
         if (letterInBox !== ' ') {
-            const lettersOnLine: ValidWord = new ValidWord('');
-            this.getLettersOnLine(x, y, lettersOnLine, grid, isVertical, letterInBox);
-            const allPlacedLettersCombination = this.lineSplitter(lettersOnLine);
-            const possiblyValidWords: ValidWord[] = this.wordCheck(allPlacedLettersCombination);
-            this.crossCheck(possiblyValidWords);
+            const position: PositionSettings = { x, y, isVertical };
+            const lettersOnLine = this.getLettersOnLine(position, grid, letterInBox);
+            const allPlacedLettersCombination = this.getAllPossibilitiesOnLine(lettersOnLine);
+            const possiblyValidWords: ValidWord[] = this.possibleWordsGenerator(allPlacedLettersCombination);
+            this.possibleWordsValidator(possiblyValidWords);
         }
 
         if (isVertical && x < END_OF_BOARD) {
             x++;
             y = START_OF_BOARD;
-            this.boardCrawler(x, y, grid, isVertical);
+            const position: Vec2 = { x, y };
+            this.boardCrawler(position, grid, isVertical);
             return;
         } else if (isVertical && x === END_OF_BOARD) {
             return;
         } else if (!isVertical && y < END_OF_BOARD) {
             x = START_OF_BOARD;
             y++;
-            this.boardCrawler(x, y, grid, isVertical);
+            const position: Vec2 = { x, y };
+            this.boardCrawler(position, grid, isVertical);
             return;
         } else {
             x = START_OF_BOARD;
             y = START_OF_BOARD;
+            const position: Vec2 = { x, y };
             isVertical = true;
-            this.boardCrawler(x, y, grid, isVertical);
+            this.boardCrawler(position, grid, isVertical);
             return;
         }
     }
 
-    lineSplitter(lettersOnLine: ValidWord): ValidWord[] {
+    getAllPossibilitiesOnLine(lettersOnLine: ValidWord): ValidWord[] {
         const allPossibilities: ValidWord[] = [];
         const notFound = -1;
         const startOfLine = 0;
@@ -206,54 +215,56 @@ export class BotCrawler {
         return allPossibilities;
     }
 
-    private getLettersOnLine(x: number, y: number, lettersOnLine: ValidWord, grid: Tile[][], isVertical: boolean, letterInBox: string) {
+    private getLettersOnLine(position: PositionSettings, grid: Tile[][], letterInBox: string): ValidWord {
+        const lettersOnLine: ValidWord = new ValidWord('');
         let lastLetterOfLine: number;
         let rightCount = 0;
-        if (isVertical) {
-            lettersOnLine.leftCount = y;
+        if (position.isVertical) {
+            lettersOnLine.leftCount = position.y;
         } else {
-            lettersOnLine.leftCount = x;
+            lettersOnLine.leftCount = position.x;
         }
-        lettersOnLine.isVertical = isVertical;
-        lettersOnLine.startingTileX = x;
-        lettersOnLine.startingTileY = y;
-        if (isVertical) {
+        lettersOnLine.isVertical = position.isVertical;
+        lettersOnLine.startingTileX = position.x;
+        lettersOnLine.startingTileY = position.y;
+        if (position.isVertical) {
             let tmpY = END_OF_BOARD;
-            let tmpYLetterInBox = grid[tmpY][x].letterObject.char;
+            let tmpYLetterInBox = grid[tmpY][position.x].letterObject.char;
 
             while (tmpYLetterInBox === ' ') {
                 tmpY--;
                 rightCount++;
-                tmpYLetterInBox = grid[tmpY][x].letterObject.char;
+                tmpYLetterInBox = grid[tmpY][position.x].letterObject.char;
             }
             lastLetterOfLine = tmpY;
             lettersOnLine.rightCount = rightCount;
-            tmpY = y;
+            tmpY = position.y;
 
             while (tmpY <= lastLetterOfLine) {
-                letterInBox = grid[tmpY][x].letterObject.char;
+                letterInBox = grid[tmpY][position.x].letterObject.char;
                 lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 tmpY++;
             }
         } else {
             let tmpX = END_OF_BOARD;
-            let tmpXLetterInBox = grid[y][tmpX].letterObject.char;
+            let tmpXLetterInBox = grid[position.y][tmpX].letterObject.char;
 
             while (tmpXLetterInBox === ' ') {
                 tmpX--;
                 rightCount++;
-                tmpXLetterInBox = grid[y][tmpX].letterObject.char;
+                tmpXLetterInBox = grid[position.y][tmpX].letterObject.char;
             }
             lastLetterOfLine = tmpX;
             lettersOnLine.rightCount = rightCount;
-            tmpX = x;
+            tmpX = position.x;
 
             while (tmpX <= lastLetterOfLine) {
-                letterInBox = grid[y][tmpX].letterObject.char;
+                letterInBox = grid[position.y][tmpX].letterObject.char;
                 lettersOnLine.word = lettersOnLine.word.concat(this.emptyCheck(letterInBox));
                 tmpX++;
             }
         }
+        return lettersOnLine;
     }
 
     private emptyCheck(letterInBox: string): string {
@@ -264,7 +275,7 @@ export class BotCrawler {
         }
     }
 
-    private wordCheck(allPlacedLettersCombination: ValidWord[]): ValidWord[] {
+    private possibleWordsGenerator(allPlacedLettersCombination: ValidWord[]): ValidWord[] {
         const possiblyValidWords: ValidWord[] = [];
         let tmpWordList: ValidWord[] = [];
 
@@ -272,7 +283,7 @@ export class BotCrawler {
             tmpWordList = this.dictionaryService.wordGen(placedLetters);
 
             for (const word of tmpWordList) {
-                const wordToValidate = this.dictionaryService.regexCheck(word, placedLetters.word, this.bot.letterRack);
+                const wordToValidate = this.dictionaryService.regexValidation(word, placedLetters.word, this.bot.letterRack);
                 if (wordToValidate !== 'false') {
                     possiblyValidWords.push(
                         new ValidWord(
@@ -293,13 +304,13 @@ export class BotCrawler {
         return possiblyValidWords;
     }
 
-    private crossCheck(possiblyValidWords: ValidWord[]) {
+    private possibleWordsValidator(possiblyValidWords: ValidWord[]) {
         for (const word of possiblyValidWords) {
             let placement: PlacementSetting;
             if (word.isVertical) {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: 'V' };
+                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Vertical };
             } else {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: 'H' };
+                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Horizontal };
             }
             const fakeAction = new PlaceLetter(this.bot, word.word, placement, this.pointCalculatorService, this.wordValidator);
             const validWords = this.wordValidator.listOfValidWord(fakeAction);

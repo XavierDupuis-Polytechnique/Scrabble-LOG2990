@@ -1,6 +1,8 @@
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/GameLogic/constants';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { OnlineGameSettingsUI } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { Socket } from 'socket.io-client';
 
 export const placementSettingsToString = (placement: PlacementSetting): string => {
     const x = placement.x;
@@ -34,4 +36,44 @@ export const isCharUpperCase = (char: string) => {
     }
     const charCode = char.charCodeAt(0);
     return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
+};
+
+export const isGameSettings = (obj: unknown) => {
+    return (
+        (obj as OnlineGameSettingsUI).playerName !== undefined &&
+        typeof (obj as OnlineGameSettingsUI).playerName === 'string' &&
+        (obj as OnlineGameSettingsUI).opponentName === undefined &&
+        (obj as OnlineGameSettingsUI).randomBonus !== undefined &&
+        typeof (obj as OnlineGameSettingsUI).randomBonus === 'boolean' &&
+        (obj as OnlineGameSettingsUI).timePerTurn !== undefined &&
+        typeof (obj as OnlineGameSettingsUI).timePerTurn === 'number'
+    );
+};
+
+export const isSocketConnected = (socket: Socket | undefined): boolean => {
+    return socket ? socket.connected : false;
+};
+
+export const isStringALowerCaseLetter = (string: string): boolean => {
+    if (string.length !== 1) {
+        return false;
+    }
+    const charCode = string.charCodeAt(0);
+    return charCode >= 'a'.charCodeAt(0) && charCode <= 'z'.charCodeAt(0);
+};
+
+export const isStringAnUpperCaseLetter = (string: string): boolean => {
+    if (string.length !== 1) {
+        return false;
+    }
+    const charCode = string.charCodeAt(0);
+    return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
+};
+
+export const convertToProperLetter = (string: string): string => {
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
+export const getRandomInt = (max: number, min: number = 0): number => {
+    return Math.floor(Math.random() * (max - min) + min);
 };

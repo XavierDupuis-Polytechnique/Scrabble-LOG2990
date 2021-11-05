@@ -59,13 +59,15 @@ app-player-info {
 .actions {
     grid-area: Actions;
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     align-self: center;
+    align-items: center;
     padding: 1%;
+    padding-left: 15%;
+
     button {
-        padding-left: 1%;
-        padding-right: 1%;
-        margin-left: 5%;
+        padding: 1%;
+        margin: 5%;
     }
 }
 
@@ -76,7 +78,6 @@ app-player-info {
     align-self: center;
     align-items: center;
     padding-left: 2%;
-
     button {
         width: 60%;
         background-color: var(--red);

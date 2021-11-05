@@ -1,35 +1,17 @@
-mat-grid-list {
-    display: flex;
-    justify-content: space-evenly;
-    border: 10px solid var(--brown-choco);
-    border-radius: 0.3rem;
-    background-color: whitesmoke;
-}
-
-mat-grid-tile {
-    background-color: var(--bone);
-}
-
-app-tile {
-    height: 100%;
-    width: 100%;
-}
-
 mat-slider {
     width: 3%;
 }
 
-.boardContainer {
-    max-width: 66vmin;
-    padding-left: 15%;
-    padding-right: 15%;
-    background-color: transparent;
+canvas {
+    width: 70vh;
 }
-.zoomPolice {
+
+.boardContainer {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: center;
+}
+
+.zoomPolice {
     padding-left: 15%;
     color: whitesmoke;
 }

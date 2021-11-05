@@ -10,8 +10,17 @@ mat-grid-tile {
     font-weight: 700;
     border-radius: 10%;
     background-color: rgb(240, 231, 216);
-    border: 1px solid rgb(134, 114, 98);
+    //border: 1px solid rgb(134, 114, 98);
     box-shadow: 2px 2px 2px 0.2;
+    background-image: url('^assets/img/tuile.png');
+    background-size: contain;
+}
+
+mat-grid-tile:hover {
+    cursor: pointer;
+    //border: 1px;
+    color: #050801;
+    box-shadow: 0 0 5px white, 0 0 25px white, 0 0 50px white, 0 0 200px white;
 }
 
 sub {
@@ -25,4 +34,22 @@ sub {
     background-color: var(--brown-choco);
     border: 3px solid rgb(37, 37, 37);
     border-radius: 2%;
+}
+
+.selectedForMove {
+    //border: solid 2px #cc0a61 !important;
+    background: #cc0a61; /* fallback for old browsers */
+    background: -webkit-radial-gradient(#ffffff -40%, #cc0a61 140%); /* Chrome 10-25, Safari 5.1-6 */
+    background: radial-gradient(#ffffff -40%, #cc0a61 140%); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.selectedForExchange {
+    //border: solid 2px #3994c9 !important;
+    background: #3994c9; /* fallback for old browsers */
+    background: -webkit-radial-gradient(#ffffff -40%, #3994c9 140%); /* Chrome 10-25, Safari 5.1-6 */
+    background: radial-gradient(#ffffff -40%, #3994c9 140%); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.selectedForPlace {
+    opacity: 0.3;
 }

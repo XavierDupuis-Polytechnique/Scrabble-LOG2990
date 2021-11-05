@@ -18,8 +18,14 @@ const INVALID_EXCHANGE_LETTER = new RegExp('[^a-z*]');
 export class CommandParserService {
     private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
+    private errorMessageContent$: Subject<string> = new Subject();
+
     get parsedCommand$(): Observable<Command> {
         return this.command$;
+    }
+
+    get errorMessage$() {
+        return this.errorMessageContent$;
     }
 
     createCommand(from: string, args: string[], commandType: CommandType): Command {
@@ -31,83 +37,136 @@ export class CommandParserService {
         this.command$.next(command);
     }
 
+    sendErrorMessage(message: string) {
+        this.errorMessageContent$.next(message);
+    }
+
     parse(message: string, from: string): CommandType | undefined {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
         if (commandCondition[0] === '!') {
             const commandType = commandCondition as CommandType;
-            if (Object.values(CommandType).includes(commandType)) {
-                let args = toVerify.slice(1, toVerify.length);
-                if (commandType === CommandType.Place) {
-                    if (toVerify.length < 3) {
-                        throw Error('mot ou emplacement manquant');
-                    }
-                    args = this.placeLetterFormatter(args);
-                }
-                if (commandType === CommandType.Exchange) {
-                    this.exchangeLetterArgVerifier(args[0]);
-                }
-                const command = this.createCommand(from, args, commandCondition as CommandType);
-                this.sendCommand(command);
-                return commandCondition as CommandType;
+
+            if (!Object.values(CommandType).includes(commandType)) {
+                const errorContent = commandCondition + ' est une entrée invalide';
+                this.sendErrorMessage(errorContent);
+                return undefined;
             }
-            const errorContent = commandCondition + ' est une entrée invalide';
-            throw Error(errorContent);
+
+            let args: string[] | undefined = toVerify.slice(1, toVerify.length);
+
+            if (commandType === CommandType.Place) {
+                args = this.formatPlaceLetter(args);
+                if (args === undefined) {
+                    return undefined;
+                }
+            } else if (commandType === CommandType.Exchange) {
+                this.exchangeLetterArgVerifier(args[0]);
+            }
+            const command = this.createCommand(from, args, commandType);
+            this.sendCommand(command);
+            return commandType;
         }
         return undefined;
     }
 
-    placeLetterFormatter(args: string[]): string[] {
-        if (args[0].length <= MAX_PLACE_LETTER_ARG_SIZE && args[0].length >= MIN_PLACE_LETTER_ARG_SIZE) {
-            const row = args[0].charCodeAt(0);
-            const col = this.colArgVerifier(args[0]);
-            const direction = args[0].charCodeAt(args[0].length - 1);
-            const word = args[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
+    private formatPlaceLetter(placeLetterParameters: string[]): string[] | undefined {
+        const invalidParameters = this.errorSyntax + ': les paramètres sont invalides';
+        if (placeLetterParameters.length === 0) {
+            this.sendErrorMessage(invalidParameters);
+            return undefined;
+        }
+        if (placeLetterParameters[0].length < MIN_PLACE_LETTER_ARG_SIZE || placeLetterParameters[0].length > MAX_PLACE_LETTER_ARG_SIZE) {
+            this.sendErrorMessage(invalidParameters);
+            return undefined;
+        }
+        if (placeLetterParameters !== undefined && placeLetterParameters.length === 2) {
+            const row = placeLetterParameters[0].charCodeAt(0);
+            const col = this.verifyColumns(placeLetterParameters[0]);
+            const direction = placeLetterParameters[0].charCodeAt(placeLetterParameters[0].length - 1);
+            const word = placeLetterParameters[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
-            this.placeLetterArgVerifier(row, col, direction, word);
+            if (!this.verifyPlaceLetterArgParameters(row, col, direction, word)) {
+                return undefined;
+            }
 
-            args = [];
-            args = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
+            placeLetterParameters = [];
+            placeLetterParameters = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
+        } else if (placeLetterParameters.length === 1) {
+            this.sendErrorMessage('mot ou emplacement manquant');
+            return undefined;
         } else {
-            throw Error(this.errorSyntax + ': les paramètres sont invalides');
+            this.sendErrorMessage(invalidParameters);
+            return undefined;
         }
-        return args;
+        return placeLetterParameters;
     }
 
-    placeLetterArgVerifier(row: number, col: number, direction: number, word: string) {
-        if (row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
-            throw Error(this.errorSyntax + ': ligne hors champ');
+    private verifyPlaceLetterArgParameters(row: number, col: number | undefined, direction: number, word: string): boolean {
+        if (row === undefined || row > 'o'.charCodeAt(0) || row < 'a'.charCodeAt(0)) {
+            this.sendErrorMessage(this.errorSyntax + ': ligne invalide');
+            return false;
         }
-        if (col > BOARD_DIMENSION) {
-            throw Error(this.errorSyntax + ': colonne hors champ');
+        if (col === undefined || col > BOARD_DIMENSION) {
+            this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+            return false;
         }
-        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
-            throw Error(this.errorSyntax + ': direction invalide');
+        if (direction === undefined || (direction !== CHARACTER_H && direction !== CHARACTER_V)) {
+            this.sendErrorMessage(this.errorSyntax + ': direction invalide');
+            return false;
         }
-        if (word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
-            throw Error(this.errorSyntax + ': mot invalide');
+        if (word === undefined || word.length < 2 || word.length > BOARD_DIMENSION || INVALID_PLACE_LETTER.test(word)) {
+            this.sendErrorMessage(this.errorSyntax + ': mot invalide');
+            return false;
         }
+        return true;
     }
 
-    colArgVerifier(arg1: string): number {
+    private verifyColumns(columns: string): number | undefined {
         let col;
-        if (this.isNumeric(arg1[1]) && this.isNumeric(arg1[2]) && arg1.length === MAX_PLACE_LETTER_ARG_SIZE) {
-            col = Number(arg1[1] + arg1[2]);
+        if (this.validColumnsFormat(columns)) {
+            col = Number(columns[1] + columns[2]);
             return col;
-        } else if (this.isNumeric(arg1[1]) && arg1.length === MIN_PLACE_LETTER_ARG_SIZE) {
-            col = Number(arg1[1]);
+        } else if (this.validColumnFormat(columns)) {
+            col = Number(columns[1]);
             return col;
         }
-        throw Error(this.errorSyntax + ': colonne invalide');
+        this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+        return undefined;
     }
 
-    exchangeLetterArgVerifier(word: string) {
-        if (INVALID_EXCHANGE_LETTER.test(word) || word === undefined) {
-            throw Error('les paramètres sont invalides');
+    private exchangeLetterArgVerifier(word: string): boolean {
+        if (word === undefined || INVALID_EXCHANGE_LETTER.test(word)) {
+            this.sendErrorMessage('les paramètres sont invalides');
+            return false;
         }
         if (word.length > RACK_LETTER_COUNT) {
-            throw Error('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+            this.sendErrorMessage('Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé');
+            return false;
         }
+        return true;
+    }
+    private validColumnsFormat(columns: string): boolean {
+        if (!this.isNumeric(columns[1])) {
+            return false;
+        }
+        if (!this.isNumeric(columns[2])) {
+            return false;
+        }
+        if (columns.length !== MAX_PLACE_LETTER_ARG_SIZE) {
+            return false;
+        }
+        return true;
+    }
+
+    private validColumnFormat(columns: string) {
+        if (!this.isNumeric(columns[1])) {
+            return false;
+        }
+        if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
+            return false;
+        }
+        return true;
     }
 
     private isNumeric(value: string) {
