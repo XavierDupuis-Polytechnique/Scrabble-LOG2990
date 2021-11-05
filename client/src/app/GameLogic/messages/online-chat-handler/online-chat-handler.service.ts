@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
+import { ChatMessage } from '@app/GameLogic/messages/message.interface';
 import { isSocketConnected } from '@app/GameLogic/utils';
 import { Observable, Subject } from 'rxjs';
 import { filter } from 'rxjs/operators';

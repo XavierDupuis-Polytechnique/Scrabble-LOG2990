@@ -1,6 +1,6 @@
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { Game } from '@app/GameLogic/game/games/game';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/GameLogic/validator/word-search/word-searcher.service';

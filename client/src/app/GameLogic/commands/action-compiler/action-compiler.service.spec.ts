@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { ActionCompilerService } from '@app/GameLogic/commands/action-compiler/action-compiler.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';

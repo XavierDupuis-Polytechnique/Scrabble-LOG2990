@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { isGameSettings } from '@app/GameLogic/utils';
-import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
@@ -8,7 +8,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
     providedIn: 'root',
 })
-export class OnlineGameInitService {
+export class NewOnlineGameSocketHandler {
     pendingGameId$ = new Subject<string>();
     pendingGames$ = new BehaviorSubject<OnlineGameSettings[]>([]);
     startGame$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);

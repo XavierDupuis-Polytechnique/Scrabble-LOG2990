@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
-import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
+import { ChatMessage } from '@app/GameLogic/messages/message.interface';
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler/online-chat-handler.service';
 import { SocketMock } from '@app/GameLogic/socket-mock';
 import { take } from 'rxjs/operators';
 

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MouseRollDirective } from '@app/directives/mouse-roll.directive';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
-import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/interface/ui-input';
+import { InputComponent, InputType, UIInput, WheelRoll } from '@app/GameLogic/interfaces/ui-input';
 
 class MockUIInputControllerService {
     activeComponent: InputComponent;

@@ -5,8 +5,8 @@ import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angu
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
-import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -26,7 +26,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         private dialogRef: MatDialogRef<PendingGamesComponent>,
         private dialog: MatDialog,
         private cdref: ChangeDetectorRef,
-        private onlineSocketHandler: OnlineGameInitService,
+        private onlineSocketHandler: NewOnlineGameSocketHandler,
         private liveAnnouncer: LiveAnnouncer,
     ) {
         this.columns = [

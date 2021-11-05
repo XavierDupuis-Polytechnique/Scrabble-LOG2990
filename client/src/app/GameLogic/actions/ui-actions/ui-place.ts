@@ -1,10 +1,10 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { LetterPlacement } from '@app/GameLogic/actions/ui-actions/ui-place-interface';
 import { WordPlacement } from '@app/GameLogic/actions/ui-actions/word-placement.interface';
 import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';

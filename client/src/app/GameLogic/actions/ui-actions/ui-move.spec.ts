@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { UIAction } from '@app/GameLogic/actions/ui-actions/ui-action';
 import { ARROWLEFT, ARROWRIGHT, BACKSPACE, ENTER, JOKER_CHAR, RACK_LETTER_COUNT, SHIFT, SPACE } from '@app/GameLogic/constants';
-import { WheelRoll } from '@app/GameLogic/interface/ui-input';
+import { WheelRoll } from '@app/GameLogic/interfaces/ui-input';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { getRandomInt } from '@app/GameLogic/utils';

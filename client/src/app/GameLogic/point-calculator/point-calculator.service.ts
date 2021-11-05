@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Vec2 } from '@app/classes/vec2';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Tile } from '@app/GameLogic/game/board/tile';
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
+import { Vec2 } from '@app/GameLogic/interfaces/vec2';
 import { Player } from '@app/GameLogic/player/player';
 import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/GameLogic/point-calculator/calculation-estimation';
 

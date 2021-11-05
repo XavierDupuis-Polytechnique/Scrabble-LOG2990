@@ -1,7 +1,7 @@
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/GameLogic/constants';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
-import { OnlineGameSettingsUI } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { Direction } from '@app/GameLogic/direction.enum';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
+import { OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { Socket } from 'socket.io-client';
 
 export const placementSettingsToString = (placement: PlacementSetting): string => {

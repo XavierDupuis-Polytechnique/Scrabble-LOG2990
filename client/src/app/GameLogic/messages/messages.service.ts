@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
-import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
-import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
+import { ChatMessage, Message, MessageType } from '@app/GameLogic/messages/message.interface';
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler/online-chat-handler.service';
 import { BehaviorSubject } from 'rxjs';
-import { Message, MessageType } from './message.interface';
+
 @Injectable({
     providedIn: 'root',
 })

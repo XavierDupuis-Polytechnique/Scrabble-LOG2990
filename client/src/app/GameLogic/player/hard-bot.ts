@@ -1,10 +1,10 @@
 import { Action } from '@app/GameLogic/actions/action';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { Direction } from '@app/GameLogic/direction.enum';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { timer } from 'rxjs';
 import { Bot } from './bot';

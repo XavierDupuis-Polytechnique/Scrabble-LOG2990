@@ -5,7 +5,7 @@ import { UIMove } from '@app/GameLogic/actions/ui-actions/ui-move';
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { InputComponent, InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
 
 @Component({
     selector: 'app-horse',

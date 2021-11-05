@@ -1,4 +1,4 @@
-import { Game } from '@app/GameLogic/game/games/game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { Player } from '@app/GameLogic/player/player';
 import { Observable, Subject } from 'rxjs';
 

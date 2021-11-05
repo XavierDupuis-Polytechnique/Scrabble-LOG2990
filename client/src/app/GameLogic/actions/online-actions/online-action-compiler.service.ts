@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Action } from './action';
-import { ExchangeLetter } from './exchange-letter';
-import { OnlineAction, OnlineActionType } from './online-action-compiler.interface';
-import { PassTurn } from './pass-turn';
-import { PlaceLetter } from './place-letter';
+import { Action } from '@app/GameLogic/actions/action';
+import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
+import { PassTurn } from '@app/GameLogic/actions/pass-turn';
+import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { OnlineAction, OnlineActionType } from '@app/socket-handler/interfaces/online-action.interface';
 
 @Injectable({
     providedIn: 'root',

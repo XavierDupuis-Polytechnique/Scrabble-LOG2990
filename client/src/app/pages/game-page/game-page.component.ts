@@ -8,8 +8,8 @@ import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-i
 import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
-import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
+import { InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
 
 @Component({
     selector: 'app-game-page',

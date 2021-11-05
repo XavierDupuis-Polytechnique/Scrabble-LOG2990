@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Game } from '@app/GameLogic/game/games/game';
-import { OnlineGame } from '@app/GameLogic/game/games/online-game';
+import { OnlineGame } from '@app/GameLogic/game/games/online-game/online-game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';

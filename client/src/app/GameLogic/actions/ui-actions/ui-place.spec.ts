@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import {
     BACKSPACE,
@@ -9,8 +8,9 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Player } from '@app/GameLogic/player/player';

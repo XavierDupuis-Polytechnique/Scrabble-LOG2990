@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { InputComponent, InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
 import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';

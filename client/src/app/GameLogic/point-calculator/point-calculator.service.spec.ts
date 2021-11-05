@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
 
 import { TestBed } from '@angular/core/testing';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { Tile } from '@app/GameLogic/game/board/tile';

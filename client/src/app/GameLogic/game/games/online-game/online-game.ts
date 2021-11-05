@@ -1,20 +1,20 @@
 /* eslint-disable max-classes-per-file */
 import { Action } from '@app/GameLogic/actions/action';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { OnlineAction } from '@app/GameLogic/actions/online-action-compiler.interface';
-import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-actions/online-action-compiler.service';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { EMPTY_CHAR, JOKER_CHAR, NOT_FOUND, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { GameState } from '@app/GameLogic/game/game-state';
+import { GameState } from '@app/GameLogic/game/games/online-game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';
 import { isCharUpperCase } from '@app/GameLogic/utils';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { OnlineAction } from '@app/socket-handler/interfaces/online-action.interface';
 import { Subscription } from 'rxjs';
 
 interface PlayerWithIndex {

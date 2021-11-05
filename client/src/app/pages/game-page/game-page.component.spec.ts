@@ -9,7 +9,7 @@ import { DisconnectedFromServerComponent } from '@app/components/modals/disconne
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
 import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
-import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { Observable, Subject } from 'rxjs';

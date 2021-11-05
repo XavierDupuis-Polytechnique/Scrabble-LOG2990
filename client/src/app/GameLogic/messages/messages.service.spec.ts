@@ -1,12 +1,10 @@
 /* tslint:disable:no-unused-variable */
-
 import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/GameLogic/commands/command.interface';
-import { ChatMessage } from '@app/GameLogic/messages/chat-message.interface';
-import { Message, MessageType } from '@app/GameLogic/messages/message.interface';
+import { ChatMessage, Message, MessageType } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler/online-chat-handler.service';
 import { Observable, Subject } from 'rxjs';
 
 describe('Service: Messages', () => {

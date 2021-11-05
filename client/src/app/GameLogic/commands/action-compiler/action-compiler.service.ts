@@ -7,7 +7,7 @@ import { Command, CommandType } from '@app/GameLogic/commands/command.interface'
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';

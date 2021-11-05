@@ -1,8 +1,8 @@
-import { Vec2 } from '@app/classes/vec2';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { Tile } from '@app/GameLogic/game/board/tile';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
+import { Vec2 } from '@app/GameLogic/interfaces/vec2';
 import { Bot } from '@app/GameLogic/player/bot';
 import { PositionSettings } from '@app/GameLogic/player/position-settings';
 import { ValidWord, VERTICAL } from '@app/GameLogic/player/valid-word';

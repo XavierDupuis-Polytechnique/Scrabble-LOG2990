@@ -1,14 +1,14 @@
 /* eslint-disable max-lines */
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
-import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-actions/online-action-compiler.service';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Tile } from '@app/GameLogic/game/board/tile';
-import { GameState, LightPlayer } from '@app/GameLogic/game/game-state';
+import { GameState, LightPlayer } from '@app/GameLogic/game/games/online-game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { Player } from '@app/GameLogic/player/player';

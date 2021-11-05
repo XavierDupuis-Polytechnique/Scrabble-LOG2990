@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { GameState } from '@app/GameLogic/game/game-state';
+import { GameState } from '@app/GameLogic/game/games/online-game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { SocketMock } from '@app/GameLogic/socket-mock';
-import { UserAuth } from '@app/socket-handler/mode-multi/interface/user-auth.interface';
-import { OnlineAction, OnlineActionType } from '@app/socket-handler/online-action.interface';
+import { OnlineAction, OnlineActionType } from '@app/socket-handler/interfaces/online-action.interface';
+import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 import { GameSocketHandlerService } from './game-socket-handler.service';

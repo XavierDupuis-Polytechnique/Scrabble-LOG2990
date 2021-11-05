@@ -1,4 +1,4 @@
-import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { Board } from '@app/GameLogic/game/board/board';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */

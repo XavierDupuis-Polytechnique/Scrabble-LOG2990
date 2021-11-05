@@ -5,7 +5,7 @@ import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
 import { ASCII_CODE, NOT_FOUND } from '@app/GameLogic/constants';
 import { Board } from '@app/GameLogic/game/board/board';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
+import { InputComponent, InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 
 const MAX_FONT_SIZE = 25;

@@ -1,11 +1,11 @@
-import { Vec2 } from '@app/classes/vec2';
 import { Action } from '@app/GameLogic/actions/action';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { Game } from '@app/GameLogic/game/games/game';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
+import { Vec2 } from '@app/GameLogic/interfaces/vec2';
 import { Player } from '@app/GameLogic/player/player';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { isCharUpperCase } from '@app/GameLogic/utils';

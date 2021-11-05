@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TestBed } from '@angular/core/testing';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { BOARD_DIMENSION } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { Player } from '@app/GameLogic/player/player';

@@ -1,4 +1,3 @@
-import { Vec2 } from '@app/classes/vec2';
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
@@ -6,6 +5,7 @@ import { MIDDLE_OF_BOARD, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
+import { Vec2 } from '@app/GameLogic/interfaces/vec2';
 import { BotCrawler } from '@app/GameLogic/player/bot-crawler';
 import { BotMessagesService } from '@app/GameLogic/player/bot-messages.service';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';

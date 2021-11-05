@@ -1,22 +1,22 @@
 import { Injectable } from '@angular/core';
-import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
+import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { OnlineGame } from '@app/GameLogic/game/games/online-game';
+import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { OnlineGame } from '@app/GameLogic/game/games/online-game/online-game';
+import { Game } from '@app/GameLogic/game/games/solo-game/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
-import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler.service';
+import { OnlineChatHandlerService } from '@app/GameLogic/messages/online-chat-handler/online-chat-handler.service';
 import { BotCreatorService } from '@app/GameLogic/player/bot-creator.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
 import { PointCalculatorService } from '@app/GameLogic/point-calculator/point-calculator.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
-import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
-import { UserAuth } from '@app/socket-handler/mode-multi/interface/user-auth.interface';
+import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { Observable, Subject } from 'rxjs';
-import { Game } from './game';
-import { GameSettings } from './game-settings.interface';
 
 @Injectable({
     providedIn: 'root',

@@ -1,17 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketMock } from '@app/GameLogic/socket-mock';
-import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
+import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { first, take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 
-describe('OnlineGameInitService', () => {
-    let service: OnlineGameInitService;
+describe('NewOnlineGameSocketHandler', () => {
+    let service: NewOnlineGameSocketHandler;
     let createSocketFunction: () => Socket;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
-        service = TestBed.inject(OnlineGameInitService);
+        service = TestBed.inject(NewOnlineGameSocketHandler);
         createSocketFunction = service.connectToSocket;
         service.connectToSocket = jasmine.createSpy().and.returnValue(new SocketMock());
         service.connect();

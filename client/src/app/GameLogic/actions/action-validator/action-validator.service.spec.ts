@@ -2,18 +2,18 @@
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
-import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
-import { Direction } from '@app/GameLogic/actions/direction.enum';
+import { ActionValidatorService } from '@app/GameLogic/actions/action-validator/action-validator.service';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { BOARD_DIMENSION, BOARD_MAX_POSITION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
+import { Direction } from '@app/GameLogic/direction.enum';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { TimerService } from '@app/GameLogic/game/timer/timer.service';
-import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
+import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
 import { Player } from '@app/GameLogic/player/player';
 import { User } from '@app/GameLogic/player/user';
