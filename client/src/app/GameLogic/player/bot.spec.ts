@@ -1,6 +1,6 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';

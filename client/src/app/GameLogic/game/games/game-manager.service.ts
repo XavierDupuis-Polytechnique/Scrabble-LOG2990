@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { OnlineGame } from '@app/GameLogic/game/games/online-game';

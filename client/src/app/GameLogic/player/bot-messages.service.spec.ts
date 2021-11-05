@@ -4,7 +4,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { BOARD_DIMENSION } from '@app/GameLogic/constants';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';

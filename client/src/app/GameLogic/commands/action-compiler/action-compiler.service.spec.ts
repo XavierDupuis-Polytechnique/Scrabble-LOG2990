@@ -3,7 +3,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
+import { ActionCompilerService } from '@app/GameLogic/commands/action-compiler/action-compiler.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { Letter } from '@app/GameLogic/game/board/letter.interface';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';

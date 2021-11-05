@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
+import { ActionCompilerService } from '@app/GameLogic/commands/action-compiler/action-compiler.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { END_LINE, RESERVE_NOT_ACCESSIBLE } from '@app/GameLogic/constants';

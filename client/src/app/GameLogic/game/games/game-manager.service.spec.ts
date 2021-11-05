@@ -1,6 +1,6 @@
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/GameLogic/game/games/online-game';

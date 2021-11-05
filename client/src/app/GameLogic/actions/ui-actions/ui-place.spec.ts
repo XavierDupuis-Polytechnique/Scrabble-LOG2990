@@ -9,7 +9,7 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT
+    RACK_LETTER_COUNT,
 } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';

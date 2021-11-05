@@ -1,7 +1,7 @@
 import { Vec2 } from '@app/classes/vec2';
 import { Action } from '@app/GameLogic/actions/action';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { MIDDLE_OF_BOARD, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
