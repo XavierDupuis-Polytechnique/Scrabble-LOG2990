@@ -194,10 +194,10 @@ export class CanvasDrawer {
         const t = new UrlResolver();
         this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
         if (this.indicatorDir === Direction.Horizontal) {
-            img.src = t.resolve(window.location.origin, 'assets/img/ArrowRight.png');
+            img.src = t.resolve(window.location.origin, '^assets/img/ArrowRight.png');
         } else {
             this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
-            img.src = t.resolve(window.location.origin, 'assets/img/ArrowDown.png');
+            img.src = t.resolve(window.location.origin, '^assets/img/ArrowDown.png');
         }
         this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
 
