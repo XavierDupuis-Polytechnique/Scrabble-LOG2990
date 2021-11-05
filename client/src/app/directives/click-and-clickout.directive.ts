@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input } from '@angular/core';
-import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
-import { InputComponent, InputType } from '@app/GameLogic/interfaces/ui-input';
+import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
+import { InputComponent, InputType } from '@app/game-logic/interfaces/ui-input';
 
 @Directive({
     selector: '[appClickAndClickout]',

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
+import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 @Component({
     selector: 'app-abandon-button',
     templateUrl: './abandon-button.component.html',

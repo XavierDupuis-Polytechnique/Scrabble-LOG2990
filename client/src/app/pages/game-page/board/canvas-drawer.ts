@@ -1,5 +1,5 @@
-import { Direction } from '@app/GameLogic/direction.enum';
-import { Board } from '@app/GameLogic/game/board/board';
+import { Direction } from '@app/game-logic/direction.enum';
+import { Board } from '@app/game-logic/game/board/board';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {

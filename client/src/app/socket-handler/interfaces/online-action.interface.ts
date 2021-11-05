@@ -1,5 +1,5 @@
-import { Letter } from '@app/GameLogic/game/board/letter.interface';
-import { PlacementSetting } from '@app/GameLogic/interfaces/placement-setting.interface';
+import { Letter } from '@app/game-logic/game/board/letter.interface';
+import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 
 export interface OnlineAction {
     type: OnlineActionType;

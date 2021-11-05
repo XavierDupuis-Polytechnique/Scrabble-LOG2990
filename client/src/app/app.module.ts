@@ -15,7 +15,7 @@ import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-pl
 import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { MouseRollDirective } from '@app/directives/mouse-roll.directive';
 import { PreventContextMenuDirective } from '@app/directives/prevent-context-menu.directive';
-import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
+import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AppComponent } from '@app/pages/app/app.component';

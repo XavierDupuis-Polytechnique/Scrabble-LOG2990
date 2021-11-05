@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, DoCheck, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
-import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
-import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
-import { ASCII_CODE, NOT_FOUND } from '@app/GameLogic/constants';
-import { Board } from '@app/GameLogic/game/board/board';
-import { BoardService } from '@app/GameLogic/game/board/board.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
+import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
+import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
+import { ASCII_CODE, NOT_FOUND } from '@app/game-logic/constants';
+import { Board } from '@app/game-logic/game/board/board';
+import { BoardService } from '@app/game-logic/game/board/board.service';
+import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 
 const MAX_FONT_SIZE = 25;

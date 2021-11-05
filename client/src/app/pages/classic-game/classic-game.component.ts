@@ -5,8 +5,8 @@ import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-ga
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
-import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
+import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';

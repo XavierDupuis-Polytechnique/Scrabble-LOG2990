@@ -3,13 +3,13 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dial
 import { Router } from '@angular/router';
 import { AbandonButtonComponent } from '@app/components/modals/abandon-button/abandon-button.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
-import { UIExchange } from '@app/GameLogic/actions/ui-actions/ui-exchange';
-import { UIInputControllerService } from '@app/GameLogic/actions/ui-actions/ui-input-controller.service';
-import { UIPlace } from '@app/GameLogic/actions/ui-actions/ui-place';
-import { RACK_LETTER_COUNT } from '@app/GameLogic/constants';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { GameManagerService } from '@app/GameLogic/game/games/game-manager/game-manager.service';
-import { InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
+import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
+import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
+import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
+import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
+import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
+import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
+import { InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 
 @Component({
     selector: 'app-game-page',

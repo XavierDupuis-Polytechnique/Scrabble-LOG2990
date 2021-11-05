@@ -7,9 +7,9 @@ import {
     MAX_TIME_PER_TURN,
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
-    STEP_TIME_PER_TURN,
-} from '@app/GameLogic/constants';
-import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
+    STEP_TIME_PER_TURN
+} from '@app/game-logic/constants';
+import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 

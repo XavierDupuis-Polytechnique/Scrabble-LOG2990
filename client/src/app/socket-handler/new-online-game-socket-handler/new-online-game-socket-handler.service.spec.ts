@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SocketMock } from '@app/GameLogic/socket-mock';
+import { SocketMock } from '@app/game-logic/socket-mock';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { first, take } from 'rxjs/operators';

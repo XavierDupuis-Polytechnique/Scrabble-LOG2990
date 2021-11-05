@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { isGameSettings } from '@app/GameLogic/utils';
+import { isGameSettings } from '@app/game-logic/utils';
 import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { GameState } from '@app/GameLogic/game/games/online-game/game-state';
-import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
+import { GameState } from '@app/game-logic/game/games/online-game/game-state';
+import { TimerControls } from '@app/game-logic/game/timer/timer-controls.enum';
 import { OnlineAction } from '@app/socket-handler/interfaces/online-action.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { Observable, Subject } from 'rxjs';

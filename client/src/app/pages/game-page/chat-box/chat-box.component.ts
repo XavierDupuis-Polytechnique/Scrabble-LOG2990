@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { InputComponent, InputType, UIInput } from '@app/GameLogic/interfaces/ui-input';
-import { Message } from '@app/GameLogic/messages/message.interface';
-import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
+import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
+import { Message } from '@app/game-logic/messages/message.interface';
+import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { NewlinePipe } from '@app/pipes/newline-pipe/newline.pipe';
 import { Observable } from 'rxjs';

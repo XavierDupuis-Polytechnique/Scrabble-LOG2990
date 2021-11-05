@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LetterCreator } from '@app/GameLogic/game/board/letter-creator';
-import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
-import { User } from '@app/GameLogic/player/user';
+import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
+import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
+import { User } from '@app/game-logic/player/user';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { InfoBoxComponent, MILISECONDS_IN_MINUTE } from './info-box.component';
