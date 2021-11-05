@@ -17,7 +17,7 @@ import { GameManagerService, PlayerRef } from '@app/game/game-manager/game-manag
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
+import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { before } from 'mocha';

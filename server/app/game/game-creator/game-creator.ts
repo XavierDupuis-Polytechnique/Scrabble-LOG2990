@@ -5,7 +5,7 @@ import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
+import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { Subject } from 'rxjs';
 
 export class GameCreator {

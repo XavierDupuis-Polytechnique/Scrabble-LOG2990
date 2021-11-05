@@ -14,7 +14,7 @@ import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
+import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
 
