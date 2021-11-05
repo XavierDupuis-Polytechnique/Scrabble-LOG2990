@@ -5,7 +5,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
-import { SidebarComponent } from '@app/components/sidebar/sidebar.component';
 import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { MouseRollDirective } from '@app/directives/mouse-roll.directive';
 import { PreventContextMenuDirective } from '@app/directives/prevent-context-menu.directive';
@@ -30,8 +29,6 @@ import { HorseComponent } from './pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from './pages/game-page/info-box/info-box.component';
 import { PlayerInfoComponent } from './pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from './pages/homepage/homepage.component';
-import { LeaderboardComponent } from './pages/leaderboard/leaderboard.component';
-import { Log2990GameComponent } from './pages/log2990-game/log2990-game.component';
 
 /**
  * Main module that is used in main.ts.
@@ -43,7 +40,6 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
     declarations: [
         AppComponent,
         GamePageComponent,
-        SidebarComponent,
         PlayerInfoComponent,
         InfoBoxComponent,
         ChatBoxComponent,
@@ -53,8 +49,6 @@ import { Log2990GameComponent } from './pages/log2990-game/log2990-game.componen
         NewOnlineGameFormComponent,
         HomepageComponent,
         ClassicGameComponent,
-        Log2990GameComponent,
-        LeaderboardComponent,
         HeaderBarComponent,
         BoldPipe,
         PreventContextMenuDirective,

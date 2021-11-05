@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SocketMock } from '@app/GameLogic/socket-mock';
-import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
+import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
 import { first, take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
 

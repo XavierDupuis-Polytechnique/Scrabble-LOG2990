@@ -4,10 +4,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { JoinOnlineGameComponent } from '@app/pages/classic-game/modals/join-online-game/join-online-game.component';
+import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
 import { Observable, of, Subject } from 'rxjs';
 import { PendingGamesComponent } from './pending-games.component';
 

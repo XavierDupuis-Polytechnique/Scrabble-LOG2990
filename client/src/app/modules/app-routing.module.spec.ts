@@ -8,8 +8,6 @@ import { routes } from '@app/modules/app-routing.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
-import { LeaderboardComponent } from '@app/pages/leaderboard/leaderboard.component';
-import { Log2990GameComponent } from '@app/pages/log2990-game/log2990-game.component';
 
 describe('Router: App', () => {
     let location: Location;
@@ -19,7 +17,7 @@ describe('Router: App', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule.withRoutes(routes)],
-            declarations: [HomepageComponent, ClassicGameComponent, LeaderboardComponent, Log2990GameComponent],
+            declarations: [HomepageComponent, ClassicGameComponent],
         });
 
         router = TestBed.get(Router);

@@ -9,12 +9,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
 import { NewSoloGameFormComponent } from '@app/components/new-solo-game-form/new-solo-game-form.component';
 import { GameManagerService } from '@app/GameLogic/game/games/game-manager.service';
-import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
-import { OnlineGameInitService } from '@app/modeMulti/online-game-init.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { NewOnlineGameFormComponent } from '@app/pages/classic-game/modals/new-online-game-form/new-online-game-form.component';
 import { WaitingForPlayerComponent } from '@app/pages/classic-game/modals/waiting-for-player/waiting-for-player.component';
+import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { OnlineGameInitService } from '@app/socket-handler/mode-multi/online-game-init.service';
 import { Observable, of, Subject } from 'rxjs';
 
 describe('ClassicGameComponent', () => {
