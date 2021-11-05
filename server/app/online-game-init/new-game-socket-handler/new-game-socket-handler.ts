@@ -11,7 +11,7 @@ const joinGame = 'joinGame';
 const gameJoined = 'gameJoined';
 const pendingGameId = 'pendingGameId';
 
-export class NewOnlineGameSocketHandler {
+export class NewGameSocketHandler {
     readonly ioServer: Server;
 
     constructor(server: http.Server, private newOnlineGameService: NewOnlineGameService) {

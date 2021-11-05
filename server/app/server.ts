@@ -4,7 +4,7 @@ import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-ha
 import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
-import { NewOnlineGameSocketHandler } from '@app/services/new-online-game-manager';
+import { NewGameSocketHandler } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
@@ -14,7 +14,7 @@ export class Server {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     private static readonly baseDix: number = 10;
     private server: http.Server;
-    private onlineGameManager: NewOnlineGameSocketHandler;
+    private onlineGameManager: NewGameSocketHandler;
     private gameSocketsHandler: GameSocketsHandler;
     private messageHandler: MessagesSocketHandler;
     constructor(
@@ -39,7 +39,7 @@ export class Server {
 
         this.server = http.createServer(this.application.app);
 
-        this.onlineGameManager = new NewOnlineGameSocketHandler(this.server, this.onlineGameService);
+        this.onlineGameManager = new NewGameSocketHandler(this.server, this.onlineGameService);
         this.onlineGameManager.newGameHandler();
 
         this.gameSocketsHandler = new GameSocketsHandler(this.server, this.gameManager);

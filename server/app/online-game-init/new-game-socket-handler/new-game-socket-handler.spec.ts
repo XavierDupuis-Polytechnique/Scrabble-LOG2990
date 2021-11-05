@@ -10,10 +10,10 @@ import { beforeEach } from 'mocha';
 import { AddressInfo } from 'net';
 import { Socket } from 'socket.io';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
-import { NewOnlineGameSocketHandler } from './new-online-game-manager';
+import { NewGameSocketHandler } from './new-game-socket-handler';
 
 describe('New Online Game Service', () => {
-    let handler: NewOnlineGameSocketHandler;
+    let handler: NewGameSocketHandler;
     let clientSocket: ClientSocket;
     let serverSocket: Socket;
     let port: number;
@@ -27,7 +27,7 @@ describe('New Online Game Service', () => {
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
             newOnlineGameService = createSinonStubInstance<NewOnlineGameService>(NewOnlineGameService);
-            handler = new NewOnlineGameSocketHandler(httpServer, newOnlineGameService);
+            handler = new NewGameSocketHandler(httpServer, newOnlineGameService);
             handler.newGameHandler();
             handler.ioServer.on('connection', (socket: Socket) => {
                 serverSocket = socket;
