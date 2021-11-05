@@ -1,7 +1,6 @@
 import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { ZERO } from '@app/GameLogic/constants';
 import { Tile } from '@app/GameLogic/game/board/tile';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { Bot } from '@app/GameLogic/player/bot';
@@ -46,7 +45,7 @@ export class BotCrawler {
                 possiblyValidWords.forEach((word) => {
                     word.numberOfLettersPlaced++;
                 });
-                this.bot.letterRack.splice(rackIndex, ZERO, tmpLetter[0]);
+                this.bot.letterRack.splice(rackIndex, 0, tmpLetter[0]);
 
                 this.possibleWordsValidator(possiblyValidWords);
             }

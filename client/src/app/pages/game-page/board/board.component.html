@@ -1,5 +1,5 @@
 <div #ScrabbleBoard class="boardContainer" appClickAndClickout [inputComponent]="self">
-    <canvas id="canvas" #gridCanvas style="width: 100%; height: 100%" (click)="canvasClick($event)"></canvas>
+    <canvas id="canvas" #gridCanvas (click)="canvasClick($event)"></canvas>
 </div>
 <div class="zoomPolice">
     <span class="fontSizeValue">Taille police</span>

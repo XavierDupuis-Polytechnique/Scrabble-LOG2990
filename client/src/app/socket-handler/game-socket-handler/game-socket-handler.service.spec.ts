@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
 import { SocketMock } from '@app/GameLogic/socket-mock';
-import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
+import { UserAuth } from '@app/socket-handler/mode-multi/interface/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/socket-handler/online-action.interface';
 import { take } from 'rxjs/operators';
 import { Socket } from 'socket.io-client';
@@ -94,7 +94,6 @@ describe('GameSocketHandlerService', () => {
     });
 
     it('connectToSocket should return a socket', () => {
-        // J'ai pas trouvé d'autre moyen de tester cette fonction puisqu'elle est espioné pour intégrer le SocketMock
         expect(tempSocket instanceof Socket).toBeTrue();
     });
 });

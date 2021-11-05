@@ -6,5 +6,5 @@ export interface OnlineGameSettingsUI {
 }
 
 export interface OnlineGameSettings extends OnlineGameSettingsUI {
-    id: string; // TODO change to string
+    id: string;
 }

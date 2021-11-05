@@ -3,7 +3,7 @@ import { Direction } from '@app/GameLogic/actions/direction.enum';
 import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
-import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION, ZERO } from '@app/GameLogic/constants';
+import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/GameLogic/constants';
 import { PlacementSetting } from '@app/GameLogic/interface/placement-setting.interface';
 import { ValidWord } from '@app/GameLogic/player/valid-word';
 import { timer } from 'rxjs';
@@ -21,11 +21,11 @@ export class HardBot extends Bot {
 
     actionPicker(): Action {
         const validWordsList = this.bruteForceStart();
-        if (validWordsList.length === ZERO) {
+        if (validWordsList.length === 0) {
             return this.exchangeAction();
         } else {
             const pickedWord = this.bestWordPicker(validWordsList);
-            return this.playAction(pickedWord[ZERO]);
+            return this.playAction(pickedWord[0]);
         }
     }
 
@@ -34,16 +34,16 @@ export class HardBot extends Bot {
         const numberOfWords = 4;
         const bestWords: ValidWord[] = [];
         const zeroValueWord = new ValidWord('');
-        zeroValueWord.value.totalPoints = ZERO;
+        zeroValueWord.value.totalPoints = 0;
 
         for (let i = 0; i < numberOfWords; i++) {
             bestWords.push(zeroValueWord);
         }
 
         for (const validWord of validWordsList) {
-            for (let index = ZERO; index < numberOfWords; index++) {
+            for (let index = 0; index < numberOfWords; index++) {
                 if (validWord.value.totalPoints > bestWords[index].value.totalPoints) {
-                    bestWords.splice(index, ZERO, validWord);
+                    bestWords.splice(index, 0, validWord);
                     bestWords.pop();
                     break;
                 }

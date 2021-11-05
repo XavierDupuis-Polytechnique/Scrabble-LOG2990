@@ -1,10 +1,10 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
-import { BoldPipe } from '@app/components/bold-pipe/bold.pipe';
-import { NewlinePipe } from '@app/components/newline-pipe/newline.pipe';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { Message } from '@app/GameLogic/messages/message.interface';
 import { MessagesService } from '@app/GameLogic/messages/messages.service';
+import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
+import { NewlinePipe } from '@app/pipes/newline-pipe/newline.pipe';
 import { Observable } from 'rxjs';
 
 const NOT_ONLY_SPACE_RGX = new RegExp('.*[^ ].*');

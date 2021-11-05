@@ -9,10 +9,7 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    ONE,
     RACK_LETTER_COUNT,
-    THREE,
-    ZERO,
 } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
@@ -181,8 +178,8 @@ describe('UIPlace', () => {
         expect(action.pointerPosition).toEqual({ x, y });
         action.receiveKey('z');
         expect(action.pointerPosition).toEqual({ x, y });
-        expect(action.concernedIndexes.size).toBe(ZERO);
-        expect(action.orderedIndexes.length).toBe(ZERO);
+        expect(action.concernedIndexes.size).toBe(0);
+        expect(action.orderedIndexes.length).toBe(0);
     });
 
     it('should update the pointerPosition following an uppercase letter keyPress (using joker)', () => {
@@ -192,37 +189,37 @@ describe('UIPlace', () => {
         expect(action.pointerPosition).toEqual({ x, y });
         action.receiveKey('Z');
         expect(action.pointerPosition).toEqual({ x: ++x, y });
-        expect(action.concernedIndexes.size).toBe(ONE);
-        expect(action.orderedIndexes.length).toBe(ONE);
-        expect(action.orderedIndexes[0].rackIndex).toBe(THREE);
+        expect(action.concernedIndexes.size).toBe(1);
+        expect(action.orderedIndexes.length).toBe(1);
+        expect(action.orderedIndexes[0].rackIndex).toBe(3);
     });
 
     it('should not update while using letters the player does not have and no joker to use (lowercase)', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
         expect(action.pointerPosition).toEqual({ x, y });
         action.receiveKey('z');
         expect(action.pointerPosition).toEqual({ x, y });
-        expect(action.concernedIndexes.size).toBe(ZERO);
-        expect(action.orderedIndexes.length).toBe(ZERO);
+        expect(action.concernedIndexes.size).toBe(0);
+        expect(action.orderedIndexes.length).toBe(0);
     });
 
     it('should not update while using letters the player does not have and no joker to use (uppercase)', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
         expect(action.pointerPosition).toEqual({ x, y });
         action.receiveKey('Z');
         expect(action.pointerPosition).toEqual({ x, y });
-        expect(action.concernedIndexes.size).toBe(ZERO);
-        expect(action.orderedIndexes.length).toBe(ZERO);
+        expect(action.concernedIndexes.size).toBe(0);
+        expect(action.orderedIndexes.length).toBe(0);
     });
 
     it('should allow the player to use letters with accents and correctly translate them', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         let x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
@@ -244,8 +241,8 @@ describe('UIPlace', () => {
         const accentLetter = 'Ï';
         action.receiveKey(accentLetter);
         expect(action.pointerPosition).toEqual({ x: ++x, y });
-        expect(action.concernedIndexes.size).toBe(ONE);
-        expect(action.orderedIndexes.length).toBe(ONE);
+        expect(action.concernedIndexes.size).toBe(1);
+        expect(action.orderedIndexes.length).toBe(1);
     });
 
     it('should not allow the player to use letters with accents as joker if not uppercase', () => {
@@ -256,8 +253,8 @@ describe('UIPlace', () => {
         const accentLetter = 'ï';
         action.receiveKey(accentLetter);
         expect(action.pointerPosition).toEqual({ x, y });
-        expect(action.concernedIndexes.size).toBe(ZERO);
-        expect(action.orderedIndexes.length).toBe(ZERO);
+        expect(action.concernedIndexes.size).toBe(0);
+        expect(action.orderedIndexes.length).toBe(0);
     });
 
     it('should set the pointerPosition to null when overflowing', () => {
@@ -277,7 +274,7 @@ describe('UIPlace', () => {
         let y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
         for (const rackIndex of indexes) {
-            x += getRandomInt(THREE, ONE);
+            x += getRandomInt(3, 1);
             action.concernedIndexes.add(rackIndex);
             action.orderedIndexes.push({ x, y, rackIndex });
         }
@@ -302,7 +299,7 @@ describe('UIPlace', () => {
         action.receiveLeftClick({ x, y });
         action.receiveLeftClick({ x, y });
         for (const rackIndex of indexes) {
-            y += getRandomInt(THREE, ONE);
+            y += getRandomInt(3, 1);
             action.concernedIndexes.add(rackIndex);
             action.orderedIndexes.push({ x, y, rackIndex });
         }
@@ -321,7 +318,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly place all letters on the grid while receiving valid keypress', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         let movedX = MIDDLE_OF_BOARD;
         const stableY = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x: movedX, y: stableY });
@@ -347,7 +344,7 @@ describe('UIPlace', () => {
     });
 
     it('should not place letters while receiving invalid keypress', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
@@ -356,7 +353,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly remove all letters from grid when UIPlace is cancelled', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         let movedX = MIDDLE_OF_BOARD;
         const stableY = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x: movedX, y: stableY });
@@ -372,7 +369,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly retreive the corrrect word and position from the board when create the PlacerLetter (horizontal)', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
@@ -388,7 +385,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly retreive the correct word and position from the board when create the PlacerLetter (vertical)', () => {
-        player.letterRack[THREE].char = 'I';
+        player.letterRack[3].char = 'I';
         const x = MIDDLE_OF_BOARD;
         const y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });

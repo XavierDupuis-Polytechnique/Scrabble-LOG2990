@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/GameLogic/actions/action';
@@ -7,16 +8,7 @@ import { ExchangeLetter } from '@app/GameLogic/actions/exchange-letter';
 import { PassTurn } from '@app/GameLogic/actions/pass-turn';
 import { PlaceLetter } from '@app/GameLogic/actions/place-letter';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
-import {
-    BOARD_DIMENSION,
-    BOARD_MAX_POSITION,
-    DEFAULT_TIME_PER_TURN,
-    EMPTY_CHAR,
-    FIVE,
-    MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
-    TEN,
-} from '@app/GameLogic/constants';
+import { BOARD_DIMENSION, BOARD_MAX_POSITION, DEFAULT_TIME_PER_TURN, EMPTY_CHAR, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { GameInfoService } from '@app/GameLogic/game/game-info/game-info.service';
 import { Game } from '@app/GameLogic/game/games/game';
@@ -51,10 +43,10 @@ describe('ActionValidatorService', () => {
             super(player);
         }
         execute(): void {
-            throw new Error('Method not implemented.');
+            return;
         }
         protected perform(): void {
-            throw new Error('Method not implemented.');
+            return;
         }
     }
 
@@ -152,7 +144,7 @@ describe('ActionValidatorService', () => {
     });
 
     it('should validate a valid ExchangeLetter because the game letterBag has enough letters', () => {
-        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - TEN);
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 10);
         const lettersToExchange = [...currentPlayer.letterRack].splice(0, 1);
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
         expect(service.validateAction(action)).toBeTruthy();
@@ -166,7 +158,7 @@ describe('ActionValidatorService', () => {
 
     it('should invalidate an invalid ExchangeLetter because the game letterBag doesnt have enough letters', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 2);
-        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, FIVE));
+        const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack.splice(0, 5));
         expect(service.validateAction(action)).not.toBeTruthy();
     });
 

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { OnlineActionCompilerService } from '@app/GameLogic/actions/online-action-compiler.service';
-import { DEFAULT_TIME_PER_TURN, THOUSAND } from '@app/GameLogic/constants';
+import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { BoardService } from '@app/GameLogic/game/board/board.service';
 import { Game } from '@app/GameLogic/game/games/game';
 import { OnlineGame } from '@app/GameLogic/game/games/online-game';
@@ -110,8 +111,8 @@ describe('GameInfoService', () => {
 
     it('should return the player points with provided index', () => {
         service.receiveGame(game);
-        game.players[0].points = Math.floor(Math.random() * THOUSAND);
-        game.players[1].points = Math.floor(Math.random() * THOUSAND);
+        game.players[0].points = Math.floor(Math.random() * 1000);
+        game.players[1].points = Math.floor(Math.random() * 1000);
         expect(service.getPlayerScore(0)).toBe(game.players[0].points);
         expect(service.getPlayerScore(1)).toBe(game.players[1].points);
     });

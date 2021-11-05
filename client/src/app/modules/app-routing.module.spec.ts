@@ -1,15 +1,13 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable deprecation/deprecation */
 import { Location } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { FIFTY, TEN } from '@app/GameLogic/constants';
 import { routes } from '@app/modules/app-routing.module';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
-import { LeaderboardComponent } from '@app/pages/leaderboard/leaderboard.component';
-import { Log2990GameComponent } from '@app/pages/log2990-game/log2990-game.component';
 
 describe('Router: App', () => {
     let location: Location;
@@ -19,7 +17,7 @@ describe('Router: App', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule.withRoutes(routes)],
-            declarations: [HomepageComponent, ClassicGameComponent, LeaderboardComponent, Log2990GameComponent],
+            declarations: [HomepageComponent, ClassicGameComponent],
         });
 
         router = TestBed.get(Router);
@@ -32,11 +30,11 @@ describe('Router: App', () => {
 
     it('fakeAsync works', fakeAsync(() => {
         const promise = new Promise((resolve) => {
-            setTimeout(resolve, TEN);
+            setTimeout(resolve, 10);
         });
         let done = false;
         promise.then(() => (done = true));
-        tick(FIFTY);
+        tick(50);
         expect(done).toBeTruthy();
     }));
 

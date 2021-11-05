@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { THOUSAND, THREE, TWO } from '@app/GameLogic/constants';
 import { TimerService } from './timer.service';
 
 describe('TimerService', () => {
@@ -15,7 +15,7 @@ describe('TimerService', () => {
     });
 
     it('should time the interval', fakeAsync(() => {
-        const time = THOUSAND;
+        const time = 1000;
         let timerDone = false;
         const time$ = service.start(time);
         time$.subscribe(() => {
@@ -35,11 +35,11 @@ describe('TimerService', () => {
         });
         service.start(time);
         expect(timeLeft).toBe(time);
-        tick(THOUSAND);
-        expect(timeLeft).toBe(TWO * THOUSAND);
-        tick(THOUSAND);
-        expect(timeLeft).toBe(THOUSAND);
-        tick(THOUSAND);
+        tick(1000);
+        expect(timeLeft).toBe(2000);
+        tick(1000);
+        expect(timeLeft).toBe(1000);
+        tick(1000);
         expect(timeLeft).toBe(0);
     }));
 
@@ -51,10 +51,10 @@ describe('TimerService', () => {
         });
         service.start(time);
         expect(timeLeft).toBe(time);
-        tick(THOUSAND);
-        expect(timeLeft).toBe(THREE * THOUSAND);
+        tick(1000);
+        expect(timeLeft).toBe(3000);
         service.stop();
-        tick(THOUSAND);
-        expect(timeLeft).toBe(THREE * THOUSAND);
+        tick(1000);
+        expect(timeLeft).toBe(3000);
     }));
 });

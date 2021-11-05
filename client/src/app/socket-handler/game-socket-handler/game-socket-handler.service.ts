@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameState } from '@app/GameLogic/game/game-state';
 import { TimerControls } from '@app/GameLogic/game/timer/timer-controls.enum';
-import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
+import { UserAuth } from '@app/socket-handler/mode-multi/interface/user-auth.interface';
 import { OnlineAction } from '@app/socket-handler/online-action.interface';
 import { Observable, Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';

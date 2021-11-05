@@ -304,6 +304,9 @@ describe('OnlineGame', () => {
             TestBed.inject(WordSearcher),
         );
         onlineGame['placeTemporaryLetter'](action);
+        const result = boardService.board.grid[11][7].letterObject.char;
+        const expected = 'O';
+        expect(result).toEqual(expected);
     });
 
     it('should get the winner', () => {

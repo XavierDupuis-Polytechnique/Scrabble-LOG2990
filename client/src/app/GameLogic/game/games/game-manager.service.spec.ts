@@ -1,13 +1,13 @@
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
-import { CommandExecuterService } from '@app/GameLogic/commands/commandExecuter/command-executer.service';
+import { CommandExecuterService } from '@app/GameLogic/commands/command-executer/command-executer.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/GameLogic/constants';
 import { GameSettings } from '@app/GameLogic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/GameLogic/game/games/online-game';
 import { DictionaryService } from '@app/GameLogic/validator/dictionary.service';
-import { OnlineGameSettings } from '@app/modeMulti/interface/game-settings-multi.interface';
-import { UserAuth } from '@app/modeMulti/interface/user-auth.interface';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { OnlineGameSettings } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
+import { UserAuth } from '@app/socket-handler/mode-multi/interface/user-auth.interface';
 import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {

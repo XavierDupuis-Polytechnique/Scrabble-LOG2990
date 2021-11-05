@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Action } from '@app/GameLogic/actions/action';
 import { ActionValidatorService } from '@app/GameLogic/actions/action-validator.service';
-import { ActionCompilerService } from '@app/GameLogic/commands/actionCompiler/action-compiler.service';
+import { ActionCompilerService } from '@app/GameLogic/commands/action-compiler/action-compiler.service';
 import { CommandParserService } from '@app/GameLogic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/GameLogic/commands/command.interface';
 import { DEBUG_MESSAGE_ACTIVATED, DEBUG_MESSAGE_DEACTIVATED, END_LINE, RESERVE_NOT_ACCESSIBLE } from '@app/GameLogic/constants';

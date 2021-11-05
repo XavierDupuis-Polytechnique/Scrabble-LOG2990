@@ -7,10 +7,14 @@
         <app-board (clickTile)="receiveInput($event)" style="height: 100%"></app-board>
         <app-horse appPreventContextMenu (clickLetter)="receiveInput($event)"></app-horse>
         <div class="actions">
-            <button mat-raised-button color="accent" [disabled]="!canPass" (click)="pass()">Passer</button>
-            <button mat-raised-button color="accent" [disabled]="!canExchange" (click)="confirm()">Échanger</button>
-            <button mat-raised-button color="accent" [disabled]="!canPlace" (click)="confirm()">Placer</button>
-            <button mat-raised-button color="accent" [disabled]="!canCancel" (click)="cancel()">Annuler</button>
+            <div>
+                <button mat-raised-button color="accent" [disabled]="!canPass" (click)="pass()">Passer</button>
+                <button mat-raised-button color="accent" [disabled]="!canExchange" (click)="confirm()">Échanger</button>
+            </div>
+            <div>
+                <button mat-raised-button color="accent" [disabled]="!canPlace" (click)="confirm()">Placer</button>
+                <button mat-raised-button color="accent" [disabled]="!canCancel" (click)="cancel()">Annuler</button>
+            </div>
         </div>
         <div class="abandonner">
             <button mat-raised-button (click)="abandon()" *ngIf="!isEndOfGame">Abandonner la partie</button>

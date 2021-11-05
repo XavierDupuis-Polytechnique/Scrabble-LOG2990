@@ -9,7 +9,7 @@ import {
     MIN_TIME_PER_TURN,
     STEP_TIME_PER_TURN,
 } from '@app/GameLogic/constants';
-import { OnlineGameSettingsUI } from '@app/modeMulti/interface/game-settings-multi.interface';
+import { OnlineGameSettingsUI } from '@app/socket-handler/mode-multi/interface/game-settings-multi.interface';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 
