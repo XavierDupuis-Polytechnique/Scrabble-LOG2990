@@ -3,7 +3,7 @@ import { GameManagerService } from '@app/game/game-manager/game-manager.services
 import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
 import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
-import { NewOnlineGameService } from '@app/online-game-init/new-online-game.service';
+import { NewGameManagerService } from '@app/online-game-init/new-online-game.service';
 import { NewGameSocketHandler } from '@app/services/new-online-game-manager';
 import * as http from 'http';
 import { AddressInfo } from 'net';
@@ -19,7 +19,7 @@ export class Server {
     private messageHandler: MessagesSocketHandler;
     constructor(
         private readonly application: Application,
-        private onlineGameService: NewOnlineGameService,
+        private onlineGameService: NewGameManagerService,
         private gameManager: GameManagerService,
         private systemMessagesService: SystemMessagesService,
     ) {}

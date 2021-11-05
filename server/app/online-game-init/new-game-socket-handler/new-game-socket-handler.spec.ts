@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
-import { NewOnlineGameService } from '@app/online-game-init/new-game-manager/new-game-manager.service';
+import { NewGameManagerService } from '@app/online-game-init/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/online-game-init/online-game.interface';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
@@ -18,7 +18,7 @@ describe('New Online Game Service', () => {
     let serverSocket: Socket;
     let port: number;
     let httpServer: Server;
-    let newOnlineGameService: StubbedClass<NewOnlineGameService>;
+    let newGameManagerService: StubbedClass<NewGameManagerService>;
 
     before((done) => {
         httpServer = createServer();
@@ -26,8 +26,8 @@ describe('New Online Game Service', () => {
             process.setMaxListeners(0);
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
-            newOnlineGameService = createSinonStubInstance<NewOnlineGameService>(NewOnlineGameService);
-            handler = new NewGameSocketHandler(httpServer, newOnlineGameService);
+            newGameManagerService = createSinonStubInstance<NewGameManagerService>(NewGameManagerService);
+            handler = new NewGameSocketHandler(httpServer, newGameManagerService);
             handler.newGameHandler();
             handler.ioServer.on('connection', (socket: Socket) => {
                 serverSocket = socket;
@@ -50,7 +50,7 @@ describe('New Online Game Service', () => {
     it('should create pendingGame', (done) => {
         const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
         serverSocket.on('createGame', () => {
-            expect(newOnlineGameService.createPendingGame.calledWith(gameSettings)).to.be.true;
+            expect(newGameManagerService.createPendingGame.calledWith(gameSettings)).to.be.true;
             done();
         });
         clientSocket.emit('createGame', gameSettings);
@@ -58,7 +58,7 @@ describe('New Online Game Service', () => {
 
     it('should receive pendingGameId on create', (done) => {
         const id = 'abc';
-        newOnlineGameService.createPendingGame.returns(id);
+        newGameManagerService.createPendingGame.returns(id);
         const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
         clientSocket.on('pendingGameId', (pendingId: string) => {
             expect(pendingId).to.deep.equal(id);
@@ -80,7 +80,7 @@ describe('New Online Game Service', () => {
         const gameSettings = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
         clientSocket.emit('createGame', gameSettings);
         serverSocket.on('disconnect', () => {
-            expect(newOnlineGameService.deletePendingGame.called).to.be.true;
+            expect(newGameManagerService.deletePendingGame.called).to.be.true;
             done();
         });
         clientSocket.close();
@@ -97,7 +97,7 @@ describe('New Online Game Service', () => {
     });
 
     it('should throw error if player try to join a game not active', (done) => {
-        newOnlineGameService.joinPendingGame.returns(undefined);
+        newGameManagerService.joinPendingGame.returns(undefined);
         const id = 'aa';
         const playerName = 'abc';
         clientSocket.on('error', (errorContent: string) => {
@@ -111,9 +111,9 @@ describe('New Online Game Service', () => {
         const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
         const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000 };
 
-        newOnlineGameService.createPendingGame.returns('a');
-        newOnlineGameService.joinPendingGame.returns('id'); // ?
-        newOnlineGameService.getPendingGame.returns(gameSettings);
+        newGameManagerService.createPendingGame.returns('a');
+        newGameManagerService.joinPendingGame.returns('id'); // ?
+        newGameManagerService.getPendingGame.returns(gameSettings);
 
         const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
         const playerName = 'abc';

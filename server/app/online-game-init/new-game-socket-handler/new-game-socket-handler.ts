@@ -1,6 +1,6 @@
 import { isGameSettings } from '@app/game/game-logic/utils';
 import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/online-game.interface';
-import { NewOnlineGameService } from '@app/online-game-init/new-game-manager/new-game-manager.service';
+import { NewGameManagerService } from '@app/online-game-init/new-game-manager/new-game-manager.service';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
@@ -14,7 +14,7 @@ const pendingGameId = 'pendingGameId';
 export class NewGameSocketHandler {
     readonly ioServer: Server;
 
-    constructor(server: http.Server, private newOnlineGameService: NewOnlineGameService) {
+    constructor(server: http.Server, private newGameManagerService: NewGameManagerService) {
         this.ioServer = new Server(server, {
             path: '/newGame',
             cors: { origin: '*', methods: ['GET', 'POST'] },
@@ -25,7 +25,7 @@ export class NewGameSocketHandler {
         this.ioServer.on('connection', (socket) => {
             let gameId: string;
 
-            socket.emit(pendingGames, this.newOnlineGameService.getPendingGames());
+            socket.emit(pendingGames, this.newGameManagerService.getPendingGames());
 
             socket.on(createGame, (gameSettings: OnlineGameSettingsUI) => {
                 try {
@@ -56,7 +56,7 @@ export class NewGameSocketHandler {
         if (!isGameSettings(gameSettings)) {
             throw Error('Impossible de rejoindre la partie, les paramètres de partie sont invalides.');
         }
-        const gameId = this.newOnlineGameService.createPendingGame(gameSettings);
+        const gameId = this.newGameManagerService.createPendingGame(gameSettings);
         socket.emit(pendingGameId, gameId);
         socket.join(gameId);
         return gameId;
@@ -71,7 +71,7 @@ export class NewGameSocketHandler {
         if (typeof id !== 'string' || typeof name !== 'string') {
             throw Error('Impossible de rejoindre la partie, les paramètres sont invalides.');
         }
-        const gameToken = this.newOnlineGameService.joinPendingGame(id, name);
+        const gameToken = this.newGameManagerService.joinPendingGame(id, name);
         if (gameToken === undefined) {
             throw Error("Impossible de rejoindre la partie, elle n'existe pas.");
         }
@@ -80,13 +80,13 @@ export class NewGameSocketHandler {
     }
 
     private getPendingGame(id: string): OnlineGameSettings {
-        return this.newOnlineGameService.getPendingGame(id);
+        return this.newGameManagerService.getPendingGame(id);
     }
     private onDisconnect(gameId: string) {
         if (gameId === undefined) {
             return;
         }
-        this.newOnlineGameService.deletePendingGame(gameId);
+        this.newGameManagerService.deletePendingGame(gameId);
     }
 
     private sendError(error: Error, socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap>) {
@@ -100,6 +100,6 @@ export class NewGameSocketHandler {
     }
 
     private emitPendingGamesToAll() {
-        this.ioServer.emit(pendingGames, this.newOnlineGameService.getPendingGames());
+        this.ioServer.emit(pendingGames, this.newGameManagerService.getPendingGames());
     }
 }

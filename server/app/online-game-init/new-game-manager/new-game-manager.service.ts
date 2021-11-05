@@ -3,7 +3,7 @@ import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/online-game-init/
 import { Service } from 'typedi';
 
 @Service()
-export class NewOnlineGameService {
+export class NewGameManagerService {
     static gameIdCounter: number = 0;
     pendingGames: Map<string, OnlineGameSettingsUI> = new Map<string, OnlineGameSettingsUI>();
     constructor(private gameMaster: GameManagerService) {}
@@ -62,8 +62,8 @@ export class NewOnlineGameService {
     }
 
     private generateId(): string {
-        const gameId = NewOnlineGameService.gameIdCounter.toString();
-        NewOnlineGameService.gameIdCounter = (NewOnlineGameService.gameIdCounter + 1) % Number.MAX_SAFE_INTEGER;
+        const gameId = NewGameManagerService.gameIdCounter.toString();
+        NewGameManagerService.gameIdCounter = (NewGameManagerService.gameIdCounter + 1) % Number.MAX_SAFE_INTEGER;
         return gameId;
     }
 
