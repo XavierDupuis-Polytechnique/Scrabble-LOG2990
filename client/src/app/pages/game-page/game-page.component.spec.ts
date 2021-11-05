@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 // eslint-disable-next-line max-classes-per-file
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -10,7 +11,8 @@ import { GameManagerService } from '@app/GameLogic/game/games/game-manager.servi
 import { InputType, UIInput } from '@app/GameLogic/interface/ui-input';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { Observable, of, Subject } from 'rxjs';
+import { DisconnectedFromServerComponent } from '@app/pages/classic-game/modals/disconnected-from-server/disconnected-from-server.component';
+import { Observable, Subject } from 'rxjs';
 import { GamePageComponent } from './game-page.component';
 
 describe('GamePageComponent', () => {
@@ -20,6 +22,7 @@ describe('GamePageComponent', () => {
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
     let uiInput: UIInput;
     let mockObservableDisconnect: Subject<void>;
+    let mockClosedModal$: Subject<void>;
     class ActionValidatorServiceMock {
         sendAction() {
             return;
@@ -39,19 +42,25 @@ describe('GamePageComponent', () => {
             return;
         }
     }
+
     class MatDialogMock {
         open() {
             return {
-                afterClosed: () => of({}),
+                // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
+                afterClosed() {
+                    return mockClosedModal$.asObservable();
+                },
             };
         }
     }
+
     beforeEach(async () => {
+        mockClosedModal$ = new Subject();
         gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         await TestBed.configureTestingModule({
-            declarations: [GamePageComponent],
+            declarations: [GamePageComponent, DisconnectedFromServerComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
@@ -78,7 +87,6 @@ describe('GamePageComponent', () => {
     });
 
     it('A keypress should call receive', () => {
-        // eslint-disable-next-line dot-notation
         const inputControllerSpy = spyOn(component['inputController'], 'receive');
         const keyEvent = new KeyboardEvent('keydown', { code: 'KeyA' });
         component.keypressEvent(keyEvent);
@@ -86,7 +94,6 @@ describe('GamePageComponent', () => {
     });
 
     it('An input should call receive', () => {
-        // eslint-disable-next-line dot-notation
         const inputControllerSpy = spyOn(component['inputController'], 'receive');
         component.receiveInput(uiInput);
         expect(inputControllerSpy).toBeTruthy();
@@ -104,23 +111,60 @@ describe('GamePageComponent', () => {
     });
 
     it('should call function sendAction if button "Passer" is pressed', () => {
-        // eslint-disable-next-line dot-notation
         const inputControllerSpy = spyOn(component['inputController'], 'pass');
         component.pass();
         expect(inputControllerSpy).toHaveBeenCalled();
     });
 
     it('should call confirm', () => {
-        // eslint-disable-next-line dot-notation
         const inputControllerSpy = spyOn(component['inputController'], 'confirm');
         component.confirm();
         expect(inputControllerSpy).toBeTruthy();
     });
 
     it('should call cancel', () => {
-        // eslint-disable-next-line dot-notation
         const inputControllerSpy = spyOn(component['inputController'], 'cancel');
         component.cancel();
         expect(inputControllerSpy).toHaveBeenCalled();
+    });
+
+    it('should call cancel', () => {
+        const inputControllerSpy = spyOn(component['inputController'], 'cancel');
+        component.cancel();
+        expect(inputControllerSpy).toHaveBeenCalled();
+    });
+
+    it('should open the DisconnectedModal when calling the openDisconnected method', () => {
+        component.dialogRef = undefined;
+        component.openDisconnected();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
+        expect(component.dialogRef).toBeDefined();
+        mockClosedModal$.next();
+        expect(component.dialogRef).toBeUndefined();
+    });
+
+    it('should not open the DisconnectedModal a second time when calling the openDisconnected method if the modal is opened', () => {
+        component.dialogRef = undefined;
+        component.openDisconnected();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
+        expect(component.dialogRef).toBeDefined();
+
+        component.openDisconnected();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
+        expect(component.dialogRef).toBeDefined();
+    });
+
+    it('should open the DisconnectedModal a second time when calling the openDisconnected method if the modal was closed', () => {
+        component.dialogRef = undefined;
+        component.openDisconnected();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(1);
+        expect(component.dialogRef).toBeDefined();
+
+        mockClosedModal$.next();
+        expect(component.dialogRef).toBeUndefined();
+
+        component.openDisconnected();
+        expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(2);
+        expect(component.dialogRef).toBeDefined();
     });
 });
