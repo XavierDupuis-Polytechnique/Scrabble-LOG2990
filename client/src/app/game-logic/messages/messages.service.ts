@@ -75,6 +75,9 @@ export class MessagesService {
         };
         this.addMessageToLog(message);
         const command = this.commandParser.parse(content, forwarder);
+        if (command === CommandType.Help) {
+            return;
+        }
         if (command === CommandType.Exchange) {
             const hiddenLetters = content.split(' ');
             const numberOfLetters = hiddenLetters[1].length;
