@@ -1,0 +1,15 @@
+<div class="container">
+    <div class="list">
+        <mat-list>
+            <mat-list-item *ngFor="let item of listDict">
+                <div (click)="showUpdateMenu(item)">
+                    {{item.title}}, {{item.description}}
+                </div>
+            </mat-list-item>
+        </mat-list>
+    </div>
+
+    <input type="file" id="fileInput" accept=".json">
+    <button (click)="loadFile()">Load</button>
+</div>
+

@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
@@ -18,6 +19,8 @@ import { PreventContextMenuDirective } from '@app/directives/prevent-context-men
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { BoardComponent } from '@app/pages/game-page/board/board.component';
@@ -28,7 +31,6 @@ import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.compone
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -38,6 +40,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 @NgModule({
     declarations: [
         AppComponent,
+        AdminDictComponent,
         GamePageComponent,
         PlayerInfoComponent,
         InfoBoxComponent,
@@ -62,8 +65,18 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
+        AdminPageComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        MatTableModule,
+    ],
     providers: [
         {
             provide: APP_INITIALIZER,

@@ -1,0 +1,10 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+    background: url('^assets/img/home-bg.jpg') no-repeat center top;
+    background-size: 100vw 100vh;
+}
+
+mat-list-item {
+    border: solid 1px red;
+}
