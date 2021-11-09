@@ -52,9 +52,9 @@ export class GameManagerService {
     }
 
     createGame(gameSettings: GameSettings): void {
-        // if (this.game) {
-        //     this.stopGame();
-        // }
+        if (this.game && this.game instanceof OfflineGame) {
+            this.stopGame();
+        }
         this.game = new OfflineGame(
             gameSettings.randomBonus,
             gameSettings.timePerTurn,
@@ -72,9 +72,9 @@ export class GameManagerService {
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
-        // if (this.game) {
-        //     this.stopGame();
-        // }
+        if (this.game && this.game instanceof OfflineGame) {
+            this.stopGame();
+        }
         if (!gameSettings.opponentName) {
             throw Error('No opponent name was entered');
         }
