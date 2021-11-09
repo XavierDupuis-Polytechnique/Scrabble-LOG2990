@@ -116,7 +116,7 @@ describe('GameManagerService Online Edition', () => {
         };
 
         service.joinOnlineGame(userAuth, onlineGameSettings);
-        const result = service['onlineGame'];
+        const result = service['game'];
         expect(result).toBeInstanceOf(OnlineGame);
     });
 
@@ -206,13 +206,13 @@ describe('GameManagerService Online Edition', () => {
         };
 
         service.joinOnlineGame(userAuth, onlineGameSettings);
-        const result = service['onlineGame'];
+        const result = service['game'];
         expect(result).toBeInstanceOf(OnlineGame);
     });
 
     it('should stopOnlineGame when onlineGame is undefined', () => {
         const spy = spyOn(service['onlineChat'], 'leaveChatRoom');
-        service['stopOnlineGame']();
+        service['stopGame']();
         expect(spy).toHaveBeenCalled();
     });
 });

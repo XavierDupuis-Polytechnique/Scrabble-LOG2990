@@ -9,7 +9,7 @@ import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -36,7 +36,7 @@ describe('Service: OnlineActionCompiler', () => {
     let service: OnlineActionCompilerService;
     let placement: PlacementSetting;
     let actionValidatorSpy: ActionValidatorService;
-    let game: Game;
+    let game: OfflineGame;
     let p1: User;
     let p2: User;
     let timer: TimerService;
@@ -71,7 +71,7 @@ describe('Service: OnlineActionCompiler', () => {
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
 
-        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
         p1 = new User('p1');
         p2 = new User('p2');
         game.players.push(p1);

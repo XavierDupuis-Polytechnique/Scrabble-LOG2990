@@ -1,4 +1,4 @@
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { Player } from '@app/game-logic/player/player';
 import { Observable, Subject } from 'rxjs';
 
@@ -10,7 +10,7 @@ export abstract class Action {
 
     constructor(readonly player: Player) {}
 
-    execute(game: Game): void {
+    execute(game: OfflineGame): void {
         game.doAction(this);
         this.perform(game);
     }
@@ -20,5 +20,5 @@ export abstract class Action {
         this.endSubject.complete();
     }
 
-    protected abstract perform(game: Game): void;
+    protected abstract perform(game: OfflineGame): void;
 }
