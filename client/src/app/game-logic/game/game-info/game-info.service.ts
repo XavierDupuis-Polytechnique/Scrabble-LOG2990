@@ -106,6 +106,7 @@ export class GameInfoService {
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
+
         if (this.game instanceof OnlineGame) {
             return (this.game as OnlineGame).gameToken;
         }
