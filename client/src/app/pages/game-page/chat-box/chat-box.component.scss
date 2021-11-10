@@ -5,6 +5,11 @@ mat-form-field {
     width: 95%;
 }
 
+mat-icon {
+    color: var(--white);
+    font-size: medium;
+}
+
 .chatContainer {
     display: flex;
     flex-direction: column;
