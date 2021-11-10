@@ -116,7 +116,6 @@ describe('CommandExecuterService', () => {
             { type: CommandType.Exchange, from: ' ' },
             { type: CommandType.Pass, from: ' ' },
             { type: CommandType.Place, from: ' ' },
-            { type: CommandType.Help, from: ' ' },
         ];
         for (const notDebugCommand of notDebugCommands) {
             service.execute(notDebugCommand);
@@ -202,5 +201,14 @@ describe('CommandExecuterService', () => {
         };
         req.flush(obj);
         expect(messageServiceSpy.receiveSystemMessage.calls.argsFor(1)[0]).toEqual('Reserve:\\nA : 2\\nB : 3\\n');
+    });
+
+    it('should execute command help', () => {
+        const help = {
+            from: 'Tim',
+            type: CommandType.Help,
+        };
+        service.execute(help);
+        expect(messageServiceSpy.receiveSystemMessage).toHaveBeenCalled();
     });
 });
