@@ -5,8 +5,8 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { Game } from '@app/game-logic/game/games/solo-game/game';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
+import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/game-logic/player/bot-calculator/calculation-estimation';
 import { Player } from '@app/game-logic/player/player';
-import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/game-logic/point-calculator/calculation-estimation';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;
