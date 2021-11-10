@@ -211,6 +211,18 @@ describe('GameManagerService Online Edition', () => {
     });
 
     it('should stopOnlineGame when onlineGame is undefined', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p2',
+            opponentName: 'p1',
+            randomBonus: false,
+            id: '0',
+        };
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+        service.joinOnlineGame(userAuth, onlineGameSettings);
         const spy = spyOn(service['onlineChat'], 'leaveChatRoom');
         service['stopGame']();
         expect(spy).toHaveBeenCalled();

@@ -52,7 +52,7 @@ export class GameManagerService {
     }
 
     createGame(gameSettings: GameSettings): void {
-        if (this.game && this.game instanceof OfflineGame) {
+        if (this.game /* && this.game instanceof OfflineGame*/) {
             this.stopGame();
         }
         this.game = new OfflineGame(
@@ -72,7 +72,7 @@ export class GameManagerService {
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
-        if (this.game && this.game instanceof OfflineGame) {
+        if (this.game /* && this.game instanceof OfflineGame*/) {
             this.stopGame();
         }
         if (!gameSettings.opponentName) {
