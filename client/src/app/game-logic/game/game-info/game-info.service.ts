@@ -26,11 +26,11 @@ export class GameInfoService {
         this.players = game.players;
         this.game = game;
 
-        if (game instanceof OfflineGame) {
-            this.game.endTurn$.subscribe(() => {
-                this.endTurnSubject.next();
-            });
-        }
+        // if (game instanceof OfflineGame) {
+        this.game.endTurn$.subscribe(() => {
+            this.endTurnSubject.next();
+        });
+        // }
         // this.game = undefined;
     }
 

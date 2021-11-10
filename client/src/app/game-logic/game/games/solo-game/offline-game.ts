@@ -9,10 +9,10 @@ import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
-import { merge, Observable, Subject } from 'rxjs';
+import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
 
-export class OfflineGame implements Game {
+export class OfflineGame extends Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
@@ -20,11 +20,6 @@ export class OfflineGame implements Game {
     activePlayerIndex: number;
     consecutivePass: number = 0;
     turnNumber: number = 0;
-
-    private endTurnSubject = new Subject<void>();
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
-    }
 
     constructor(
         public randomBonus: boolean,
@@ -34,6 +29,7 @@ export class OfflineGame implements Game {
         private boardService: BoardService,
         private messagesService: MessagesService,
     ) {
+        super();
         this.board = new Board(randomBonus);
         this.boardService.board = this.board;
     }

@@ -16,25 +16,20 @@ import { Player } from '@app/game-logic/player/player';
 import { isCharUpperCase } from '@app/game-logic/utils';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineAction } from '@app/socket-handler/interfaces/online-action.interface';
-import { Observable, Subject, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 interface PlayerWithIndex {
     index: number;
     player: Player;
 }
 
-export class OnlineGame implements Game {
+export class OnlineGame extends Game {
     players: Player[] = [];
     activePlayerIndex: number = 0;
     lettersRemaining: number = 0;
     hasGameEnded: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
-
-    private endTurnSubject = new Subject<void>();
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
-    }
 
     private letterCreator = new LetterCreator();
 
@@ -50,6 +45,7 @@ export class OnlineGame implements Game {
         private boardService: BoardService,
         private onlineActionCompiler: OnlineActionCompilerService,
     ) {
+        super();
         this.boardService.board = new Board();
         this.userName = userName;
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
@@ -82,6 +78,7 @@ export class OnlineGame implements Game {
         if (this.playersWithIndex.size === 0) {
             this.setupPlayersWithIndex();
         }
+        this.endTurnSubject.next();
         this.updateClient(gameState);
     }
 

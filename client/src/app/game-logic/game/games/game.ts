@@ -1,10 +1,13 @@
 import { Player } from '@app/game-logic/player/player';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export abstract class Game {
     players: Player[];
     activePlayerIndex: number;
-    abstract get endTurn$(): Observable<void>;
+    protected endTurnSubject = new Subject<void>();
+    get endTurn$(): Observable<void> {
+        return this.endTurnSubject;
+    }
     abstract getNumberOfLettersRemaining(): number;
     abstract start(): void;
     abstract getWinner(): Player[];
