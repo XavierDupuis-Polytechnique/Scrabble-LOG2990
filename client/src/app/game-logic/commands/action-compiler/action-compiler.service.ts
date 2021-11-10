@@ -4,6 +4,7 @@ import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
+import { Direction } from '@app/game-logic/direction.enum';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
@@ -69,7 +70,7 @@ export class ActionCompilerService {
         const xString = placementArgs[1];
         const x = Number.parseInt(xString, 10) - 1;
         const y = placementArgs[0].charCodeAt(0) - 'a'.charCodeAt(0);
-        const direction = placementArgs[2].toUpperCase();
+        const direction = placementArgs[2].toUpperCase() as Direction;
         return { x, y, direction };
     }
 

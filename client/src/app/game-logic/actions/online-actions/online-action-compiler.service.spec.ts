@@ -6,6 +6,7 @@ import { OnlineActionCompilerService } from '@app/game-logic/actions/online-acti
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
@@ -78,7 +79,7 @@ describe('Service: OnlineActionCompiler', () => {
         game.players.push(p2);
         info.receiveGame(game);
         game.start();
-        placement = { x: 1, y: 1, direction: 'h' };
+        placement = { x: 1, y: 1, direction: Direction.Horizontal };
         letters = [
             { char: 'a', value: 1 },
             { char: 'b', value: 1 },
