@@ -99,7 +99,10 @@ export class OnlineGame implements Game {
     }
 
     forfeit() {
-        this.onlineSocket.forfeit();
+        if (!this.onlineSocket.socket) {
+            return;
+        }
+        this.onlineSocket.disconnect();
     }
 
     getWinner() {

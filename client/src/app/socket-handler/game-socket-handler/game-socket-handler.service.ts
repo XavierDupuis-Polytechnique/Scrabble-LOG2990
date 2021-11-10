@@ -80,7 +80,7 @@ export class GameSocketHandlerService {
         this.socket.emit('nextAction', action);
     }
 
-    forfeit() {
+    disconnect() {
         if (!this.socket) {
             throw Error(HAVE_NOT_JOINED_GAME_ERROR);
         }
