@@ -38,7 +38,8 @@ export const HELP =
     '#!échanger <x><x><x># ou x est une lettre à échanger par une de la réserve. \\n' +
     '#!passer# \\n Passe le tour. \\n #-Autres-# \\n #!debug# pour activer le mode débogage.\\n' +
     'Affiche les mots alternatifs que le joueur virtuel aurait pu placer.\\n' +
-    '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve.';
+    '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve. \\n' +
+    '#!aide# \\n Affiche la liste des commandes disponibles.';
 export const ASCII_CODE = 65;
 export const TIMER_STEP = 1000;
 export const BACKSPACE = 'Backspace';
