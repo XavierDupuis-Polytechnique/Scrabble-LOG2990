@@ -75,11 +75,11 @@ describe('GameSocketHandlerService', () => {
 
     it('forfeit should disconnect socket', () => {
         const spy = spyOn(service.socket, 'disconnect');
-        service.forfeit();
+        service.disconnect();
         expect(spy).toHaveBeenCalled();
         service.socket = undefined;
         expect(() => {
-            service.forfeit();
+            service.disconnect();
         }).toThrowError();
     });
 
