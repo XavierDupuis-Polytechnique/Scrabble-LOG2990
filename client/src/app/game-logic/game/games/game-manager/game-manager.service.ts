@@ -52,7 +52,7 @@ export class GameManagerService {
     }
 
     createGame(gameSettings: GameSettings): void {
-        if (this.game /* && this.game instanceof OfflineGame*/) {
+        if (this.game) {
             this.stopGame();
         }
         this.game = new OfflineGame(
@@ -72,7 +72,7 @@ export class GameManagerService {
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
-        if (this.game /* && this.game instanceof OfflineGame*/) {
+        if (this.game) {
             this.stopGame();
         }
         if (!gameSettings.opponentName) {
@@ -116,13 +116,6 @@ export class GameManagerService {
     }
 
     stopGame(): void {
-        // if (this.game) {
-        //     this.stopSoloGame();
-        // }
-
-        // if (this.onlineGame) {
-        //     this.stopOnlineGame();
-        // }
         this.timer.stop();
         if (this.game instanceof OnlineGame) {
             const onlineGame = this.game as OnlineGame;
@@ -134,19 +127,6 @@ export class GameManagerService {
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
     }
-
-    // private stopSoloGame() {
-    //     this.timer.stop();
-    //     // this.game = undefined;
-    // }
-
-    // private stopOnlineGame() {
-    //     this.timer.stop();
-    //     this.onlineGame?.forfeit();
-    //     this.onlineGame?.close();
-    //     this.onlineGame = undefined;
-    //     this.onlineChat.leaveChatRoom();
-    // }
 
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         const user = new User(playerName);

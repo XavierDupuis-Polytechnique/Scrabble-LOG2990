@@ -25,20 +25,10 @@ export class GameInfoService {
     receiveGame(game: Game): void {
         this.players = game.players;
         this.game = game;
-
-        // if (game instanceof OfflineGame) {
         this.game.endTurn$.subscribe(() => {
             this.endTurnSubject.next();
         });
-        // }
-        // this.game = undefined;
     }
-
-    // receiveOnlineGame(onlineGame: OnlineGame): void {
-    //     this.players = onlineGame.players;
-    //     this.game = onlineGame;
-    //     // this.game = undefined;
-    // }
 
     receiveUser(user: User): void {
         this.user = user;
@@ -66,9 +56,6 @@ export class GameInfoService {
         if (this.game instanceof OfflineGame) {
             return (this.game as OfflineGame).letterBag.countLetters();
         }
-        // else if (this.game instanceof OnlineGame) {
-        //     return (this.game as OnlineGame).letterOccurences;
-        // }
         return new Map<string, number>();
     }
 
@@ -83,9 +70,6 @@ export class GameInfoService {
         if (!this.players || !this.game) {
             throw Error('No Players in GameInfo');
         }
-        // if (!this.game) {
-        //     return this.players[(this.game as OnlineGame).activePlayerIndex];
-        // }
         return this.players[this.game.activePlayerIndex];
     }
 
@@ -97,7 +81,6 @@ export class GameInfoService {
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
-        // return this.game.letterBag.lettersLeft;
         return this.game.getNumberOfLettersRemaining();
     }
 
@@ -105,9 +88,6 @@ export class GameInfoService {
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
-        // if (this.game) {
-        //     return this.game.isEndOfGame();
-        // }
         return this.game.isEndOfGame();
     }
 
@@ -116,9 +96,6 @@ export class GameInfoService {
     }
 
     get winner(): Player[] {
-        // if (!this.game) {
-        //     return (this.onlineGame as OnlineGame).getWinner();
-        // }
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
@@ -126,12 +103,6 @@ export class GameInfoService {
     }
 
     get gameId(): string {
-        // if (this.onlineGame) {
-        //     return this.onlineGame.gameToken;
-        // } else {
-        //     return '';
-        // }
-
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
