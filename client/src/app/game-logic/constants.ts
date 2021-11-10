@@ -35,7 +35,7 @@ export const DEBUG_MESSAGE_DEACTIVATED = 'affichages de débogage désactivés';
 export const RESERVE_NOT_ACCESSIBLE = 'la commande de reserve est uniquement disponible en mode de débogage';
 export const HELP =
     '\\n #-Actions-# \\n #!placer <ligne><colonne>(h|v) <mot># \\n Place un mot sur le plateau de jeu.\\n' +
-    '#!échanger <x><x><x># ou x est une lettre à échanger par une de la réserve. \\n' +
+    '#!échanger <x><x><x># où x est une lettre du chevalet à échanger avec la réserve. \\n' +
     '#!passer# \\n Passe le tour. \\n #-Autres-# \\n #!debug# pour activer le mode débogage.\\n' +
     'Affiche les mots alternatifs que le joueur virtuel aurait pu placer.\\n' +
     '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve. \\n' +
