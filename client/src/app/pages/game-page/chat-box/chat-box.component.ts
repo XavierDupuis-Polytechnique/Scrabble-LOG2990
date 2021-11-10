@@ -29,6 +29,7 @@ export class ChatBoxComponent implements AfterViewInit {
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef, private gameInfo: GameInfoService) {}
 
     ngAfterViewInit(): void {
+        this.cdRef.detectChanges();
         this.messages$.subscribe(() => {
             this.cdRef.detectChanges();
             this.scrollDownChat();
