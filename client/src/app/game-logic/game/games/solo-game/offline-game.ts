@@ -47,6 +47,10 @@ export class OfflineGame extends Game {
         this.startTurn();
     }
 
+    stop() {
+        this.timer.stop();
+    }
+
     nextPlayer() {
         this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }

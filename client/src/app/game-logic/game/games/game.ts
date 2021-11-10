@@ -12,4 +12,5 @@ export abstract class Game {
     abstract start(): void;
     abstract getWinner(): Player[];
     abstract isEndOfGame(): boolean;
+    abstract stop(): void;
 }

@@ -116,14 +116,14 @@ export class GameManagerService {
     }
 
     stopGame(): void {
-        this.timer.stop();
+        // this.timer.stop();
+        this.game?.stop();
         if (this.game instanceof OnlineGame) {
-            const onlineGame = this.game as OnlineGame;
-            onlineGame.forfeit();
-            onlineGame.close();
+            //     const onlineGame = this.game as OnlineGame;
+            //     onlineGame.forfeit();
+            //     onlineGame.close();
             this.onlineChat.leaveChatRoom();
         }
-
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
     }

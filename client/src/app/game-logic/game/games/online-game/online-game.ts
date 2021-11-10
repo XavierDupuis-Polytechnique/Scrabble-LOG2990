@@ -69,6 +69,11 @@ export class OnlineGame extends Game {
         return this.hasGameEnded;
     }
 
+    stop() {
+        this.forfeit();
+        this.close();
+    }
+
     close() {
         this.gameState$$.unsubscribe();
         this.timerControls$$.unsubscribe();
