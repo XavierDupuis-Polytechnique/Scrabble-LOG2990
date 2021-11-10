@@ -1,4 +1,5 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, LocationStrategy } from '@angular/common';
+import { MockLocationStrategy } from '@angular/common/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -43,6 +44,7 @@ describe('ClassicGameComponent', () => {
                 { provide: MatDialog, useValue: matDialog },
                 { provide: NewOnlineGameSocketHandler, useValue: onlineSocketHandlerSpy },
                 { provide: GameManagerService, useValue: gameManagerSpy },
+                { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();

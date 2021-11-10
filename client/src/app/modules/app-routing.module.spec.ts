@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable deprecation/deprecation */
-import { Location } from '@angular/common';
+import { Location, LocationStrategy } from '@angular/common';
+import { MockLocationStrategy } from '@angular/common/testing';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -18,6 +19,7 @@ describe('Router: App', () => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule.withRoutes(routes)],
             declarations: [HomepageComponent, ClassicGameComponent],
+            providers: [{ provide: LocationStrategy, useClass: MockLocationStrategy }],
         });
 
         router = TestBed.get(Router);
