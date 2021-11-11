@@ -15,7 +15,7 @@ export const placementSettingsToString = (placement: PlacementSetting): string =
         throw Error('Y value not between 0-14');
     }
 
-    if (!Object.values(Direction).includes(direction)) {
+    if (!Object.values(Direction).includes(direction as Direction)) {
         throw Error('Invalid direction');
     }
 

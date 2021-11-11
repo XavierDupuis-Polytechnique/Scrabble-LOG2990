@@ -53,7 +53,7 @@ export class WordSearcher {
 
             const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(action, grid);
             for (const coord of coordsOfLettersToPlace) {
-                const direction = action.placement.direction;
+                const direction = action.placement.direction as Direction;
                 if (this.hasNeighbour(coord, direction, grid)) {
                     const beginingPos = this.goToBeginningOfWord(direction, coord, grid);
                     const word = this.goToEndOfWord(action, beginingPos, coord, grid);
