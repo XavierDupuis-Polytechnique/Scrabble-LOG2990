@@ -5,7 +5,6 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
-import { WordPointsEstimation } from '@app/game-logic/player/bot-calculator/calculation-estimation';
 import { Player } from '@app/game-logic/player/player';
 
 const MAX_LETTER_IN_RACK = 7;
@@ -62,15 +61,6 @@ export class PointCalculatorService {
         return sumOfWord;
     }
 
-    calculatePointsForEachWord(wordList: Tile[][]): WordPointsEstimation[] {
-        const wordPoints: WordPointsEstimation[] = wordList.map((wordTile) => {
-            const word = this.tileToString(wordTile);
-            const points = this.calculatePointsOfWord(wordTile);
-            return { word, points };
-        });
-        return wordPoints;
-    }
-
     calculatePointsOfRack(player: Player): number {
         let sumOfRack = 0;
         const letterRack = player.letterRack;
@@ -99,13 +89,5 @@ export class PointCalculatorService {
                 this.grid[y][x].wordMultiplicator = 1;
             }
         }
-    }
-
-    tileToString(word: Tile[]): string {
-        let wordTemp = '';
-        word.forEach((tile) => {
-            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
-        });
-        return wordTemp;
     }
 }
