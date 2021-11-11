@@ -3,6 +3,7 @@ import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -22,7 +23,16 @@ describe('PassTurn', () => {
         const timerService = TestBed.inject(TimerService);
         const pointCalulatorService = TestBed.inject(PointCalculatorService);
         const boardService = TestBed.inject(BoardService);
-        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
+        const objectiveManager = TestBed.inject(ObjectiveManagerService);
+        game = new OfflineGame(
+            randomBonus,
+            DEFAULT_TIME_PER_TURN,
+            timerService,
+            pointCalulatorService,
+            boardService,
+            messageService,
+            objectiveManager,
+        );
         game.players.push(player1);
         game.players.push(player2);
     });

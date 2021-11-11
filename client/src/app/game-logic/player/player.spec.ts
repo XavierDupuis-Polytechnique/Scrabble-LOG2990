@@ -5,6 +5,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
@@ -21,6 +22,7 @@ describe('Player', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
+    let objectiveManager: ObjectiveManagerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
     const randomBonus = false;
@@ -38,6 +40,7 @@ describe('Player', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
+        objectiveManager = TestBed.inject(ObjectiveManagerService);
         bot = new EasyBot(
             'test',
             boardService,
@@ -48,7 +51,9 @@ describe('Player', () => {
             gameInfo,
             TestBed.inject(CommandExecuterService),
         );
-        gameInfo.receiveGame(new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        gameInfo.receiveGame(
+            new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService, objectiveManager),
+        );
     });
 
     it('should create an instance', () => {

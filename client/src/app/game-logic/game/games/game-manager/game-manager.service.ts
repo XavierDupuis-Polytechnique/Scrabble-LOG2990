@@ -7,6 +7,7 @@ import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
@@ -45,6 +46,7 @@ export class GameManagerService {
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
         private onlineActionCompiler: OnlineActionCompilerService,
+        private objectiveManager: ObjectiveManagerService,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -62,6 +64,7 @@ export class GameManagerService {
             this.pointCalculator,
             this.boardService,
             this.messageService,
+            this.objectiveManager,
         );
 
         const playerName = gameSettings.playerName;

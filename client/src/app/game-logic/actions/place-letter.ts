@@ -42,6 +42,7 @@ export class PlaceLetter extends Action {
                 this.end();
             });
         }
+        game.updateObjectives(this);
     }
 
     private revert(game: OfflineGame) {

@@ -6,6 +6,7 @@ import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -26,6 +27,7 @@ describe('GameInfoService', () => {
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let messages: MessagesService;
+    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     const randomBonus = false;
 
@@ -38,8 +40,8 @@ describe('GameInfoService', () => {
         board = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
-
-        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
+        objectiveManager = TestBed.inject(ObjectiveManagerService);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages, objectiveManager);
         game.players = [new User('p1'), new User('p2')];
         game.start();
     });

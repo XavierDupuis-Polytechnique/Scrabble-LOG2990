@@ -7,6 +7,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -22,6 +23,7 @@ describe('PointCalculatorService', () => {
     let timer: TimerService;
     let boardService: BoardService;
     let messages: MessagesService;
+    let objectiveManager: ObjectiveManagerService;
     const randomBonus = false;
     let player1: Player;
     let player2: Player;
@@ -59,7 +61,8 @@ describe('PointCalculatorService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
         messages = TestBed.inject(MessagesService);
-        game = new MockGame(randomBonus, timePerTurn, timer, pointCalculator, boardService, messages);
+        objectiveManager = TestBed.inject(ObjectiveManagerService);
+        game = new MockGame(randomBonus, timePerTurn, timer, pointCalculator, boardService, messages, objectiveManager);
         player1 = new User('Tim');
         player2 = new User('Max');
         listOfWord = [];
@@ -400,7 +403,7 @@ describe('PointCalculatorService', () => {
             { char: 'T', value: 1 },
         ];
         const timeTurn = 30;
-        game = new MockGame(randomBonus, timeTurn, timer, pointCalculator, boardService, messages);
+        game = new MockGame(randomBonus, timeTurn, timer, pointCalculator, boardService, messages, objectiveManager);
         game.activePlayer.points = 100;
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;

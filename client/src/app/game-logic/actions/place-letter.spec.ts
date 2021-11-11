@@ -8,6 +8,7 @@ import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -45,6 +46,7 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
+    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     const randomBonus = false;
     beforeEach(() => {
@@ -70,7 +72,8 @@ describe('PlaceLetter', () => {
         const messages = TestBed.inject(MessagesService);
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
-        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
+        objectiveManager = TestBed.inject(ObjectiveManagerService);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages, objectiveManager);
         game.players.push(player1);
         game.players.push(player2);
         game.start();
