@@ -1,7 +1,4 @@
 import { Action } from '@app/game-logic/actions/action';
-import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
-import { PassTurn } from '@app/game-logic/actions/pass-turn';
-import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
@@ -58,18 +55,17 @@ export class HardBot extends Bot {
             y: pickedWord.startingTileY,
             direction: pickedWord.isVertical ? Direction.Vertical : Direction.Horizontal,
         };
-        const action = new PlaceLetter(this, pickedWord.word, placeSetting, this.pointCalculatorService, this.wordValidator);
-        return action;
+        return this.actionCreator.createPlaceLetter(this, pickedWord.word, placeSetting);
     }
 
     exchangeAction(): Action {
         if (this.gameInfo.numberOfLettersRemaining > RACK_LETTER_COUNT) {
-            return new ExchangeLetter(this, this.letterRack);
-        } else return this.passAction();
+            return this.actionCreator.createExchange(this, this.letterRack);
+        }
+        return this.passAction();
     }
 
     passAction(): Action {
-        const action = new PassTurn(this);
-        return action;
+        return this.actionCreator.createPassTurn(this);
     }
 }
