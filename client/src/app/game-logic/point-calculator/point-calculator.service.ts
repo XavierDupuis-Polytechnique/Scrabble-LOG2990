@@ -5,7 +5,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { Game } from '@app/game-logic/game/games/solo-game/game';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
-import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/game-logic/player/bot-calculator/calculation-estimation';
+import { WordPointsEstimation } from '@app/game-logic/player/bot-calculator/calculation-estimation';
 import { Player } from '@app/game-logic/player/player';
 
 const MAX_LETTER_IN_RACK = 7;
@@ -32,19 +32,6 @@ export class PointCalculatorService {
         }
         action.player.points += totalPointsOfTurn;
         return totalPointsOfTurn;
-    }
-
-    testPlaceLetterCalculation(numberOfLettersToPlace: number, wordList: Tile[][]): PlaceLetterPointsEstimation {
-        const wordsPoints = this.calculatePointsForEachWord(wordList);
-        let totalPoints = 0;
-        wordsPoints.forEach((wordPoint) => {
-            totalPoints += wordPoint.points;
-        });
-        const isBingo = numberOfLettersToPlace >= MAX_LETTER_IN_RACK;
-        if (isBingo) {
-            totalPoints += BONUS;
-        }
-        return { wordsPoints, totalPoints, isBingo };
     }
 
     endOfGamePointDeduction(game: Game): void {

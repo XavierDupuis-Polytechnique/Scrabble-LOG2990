@@ -1,7 +1,5 @@
 /* eslint-disable max-lines */
-
 import { TestBed } from '@angular/core/testing';
-import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
@@ -174,9 +172,6 @@ describe('PointCalculatorService', () => {
             { x: 6, y: 0 },
         ];
         pointCalculator.placeLetterCalculation(action, listOfWord);
-        const estimation = pointCalculator.testPlaceLetterCalculation(RACK_LETTER_COUNT, listOfWord);
-        expect(estimation.isBingo).toBe(true);
-        expect(estimation.totalPoints).toBe(totalPointsOfWord);
         expect(player2.points).toBe(totalPointsOfWord);
     });
 
@@ -276,8 +271,6 @@ describe('PointCalculatorService', () => {
         grid[2][3].letterObject = { char: 'E', value: 1 };
         const wordBat = [grid[2][0], grid[3][0], grid[4][0]];
         const wordBake = [grid[2][0], grid[2][1], grid[2][2], grid[2][3]];
-        const pointBat = 5;
-        const pointBake = 20;
         listOfWord.push(wordBat);
         listOfWord.push(wordBake);
         action = new MockPlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
@@ -288,68 +281,8 @@ describe('PointCalculatorService', () => {
             { x: 2, y: 2 },
             { x: 3, y: 2 },
         ];
-        const letterToPlace = RACK_LETTER_COUNT - wordBake.length;
-        const estimation = pointCalculator.testPlaceLetterCalculation(letterToPlace, listOfWord);
-        expect(estimation.wordsPoints[0].points).toBe(pointBat);
-        expect(estimation.wordsPoints[1].points).toBe(pointBake);
         pointCalculator.placeLetterCalculation(action, listOfWord);
         expect(player2.points).toBe(totalPointsOfPlayer2);
-    });
-
-    it('should estimate the correct points of every word made', () => {
-        player1.letterRack = [
-            { char: 'B', value: 3 },
-            { char: 'A', value: 1 },
-            { char: 'T', value: 1 },
-            { char: 'O', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'N', value: 1 },
-        ];
-        player2.letterRack = [
-            { char: 'B', value: 3 },
-            { char: 'A', value: 1 },
-            { char: 'K', value: 5 },
-            { char: 'E', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'N', value: 1 },
-            { char: 'N', value: 1 },
-        ];
-        grid[3][0].letterObject = { char: 'A', value: 1 };
-        grid[4][0].letterObject = { char: 'T', value: 1 };
-        const wordAt = [grid[3][0], grid[4][0]];
-        listOfWord.push(wordAt);
-        action = new MockPlaceLetter(player1, 'at', { x: 0, y: 3, direction: Direction.Vertical }, pointCalculator, wordSearcher);
-        action.execute(game);
-        action.affectedCoords = [
-            { x: 0, y: 3 },
-            { x: 0, y: 4 },
-        ];
-        pointCalculator.placeLetterCalculation(action, listOfWord);
-        listOfWord = [];
-
-        grid[2][0].letterObject = { char: 'B', value: 3 };
-        grid[2][1].letterObject = { char: 'A', value: 1 };
-        grid[2][2].letterObject = { char: 'K', value: 5 };
-        grid[2][3].letterObject = { char: 'E', value: 1 };
-        const wordBat = [grid[2][0], grid[3][0], grid[4][0]];
-        const wordBake = [grid[2][0], grid[2][1], grid[2][2], grid[2][3]];
-        const pointBat = 5;
-        const pointBake = 20;
-        listOfWord.push(wordBat);
-        listOfWord.push(wordBake);
-        action = new MockPlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
-        action.execute(game);
-        action.affectedCoords = [
-            { x: 0, y: 2 },
-            { x: 1, y: 2 },
-            { x: 2, y: 2 },
-            { x: 3, y: 2 },
-        ];
-        const letterToPlace = RACK_LETTER_COUNT - wordBake.length;
-        const estimation = pointCalculator.testPlaceLetterCalculation(letterToPlace, listOfWord);
-        expect(estimation.wordsPoints[0].points).toBe(pointBat);
-        expect(estimation.wordsPoints[1].points).toBe(pointBake);
     });
 
     it('should not calculate bonus when player place all letter if rack was not full (on end of game)', () => {
