@@ -1,6 +1,4 @@
 /* tslint:disable:no-unused-variable */
-import { LocationStrategy } from '@angular/common';
-import { MockLocationStrategy } from '@angular/common/testing';
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -32,7 +30,6 @@ describe('AbandonButtonComponent', () => {
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: MatDialogRef, useValue: mockDialogRef },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
-                { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
         }).compileComponents();
     });

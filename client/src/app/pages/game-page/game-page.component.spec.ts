@@ -1,7 +1,6 @@
 /* eslint-disable dot-notation */
 // eslint-disable-next-line max-classes-per-file
-import { CommonModule, LocationStrategy } from '@angular/common';
-import { MockLocationStrategy } from '@angular/common/testing';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
@@ -69,7 +68,6 @@ describe('GamePageComponent', () => {
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
                 { provide: MatDialog, useClass: MatDialogMock },
                 { provide: UIInputControllerService, useClass: UIInputControllerServiceMock },
-                { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
