@@ -33,6 +33,8 @@ import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
+import { AdminJvComponent } from '@app/pages/admin-page/admin-jv/admin-jv.component';
+import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -70,6 +72,8 @@ import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dia
         AdminPageComponent,
         EditDictDialogComponent,
         AlertDialogComponent,
+        AdminJvComponent,
+        EditJvDialogComponent,
     ],
     imports: [
         AppMaterialModule,

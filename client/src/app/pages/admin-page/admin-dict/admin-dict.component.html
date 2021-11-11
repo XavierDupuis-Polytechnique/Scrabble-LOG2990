@@ -1,5 +1,6 @@
-<div class="container">
+<div class="container" >
     <div class="list">
+        <h1>Liste des dictionnaires</h1>
         <mat-selection-list [multiple]="false">
             <mat-list-option *ngFor="let item of dictMap | keyvalue; let i = index">
                 <div (click)="showUpdateMenu(item.value)">
@@ -14,12 +15,14 @@
         </mat-selection-list>
     </div>
 
-    <div>
-        <label for="fileInput" class="customButton">Upload File</label>
+    <div class="uploadContainer">
+
         <input type="file" id="fileInput" accept=".json" (change)="showSelectedFile()" />
-        <div>
-            <p *ngIf="!isFileEmpty">Selected file: {{ selectedFile }}</p>
+        <div class="fileContainer">
+            <mat-icon class="downloadIcon">file_download</mat-icon>
+            <label for="fileInput" class="textHover">Choisir un fichier</label>
+            <p class="selectedFileText">{{ selectedFile }}</p>
+            <button (click)="loadFile()" class="customButton">Upload</button>
         </div>
-        <button (click)="loadFile()" class="customButton">Load</button>
     </div>
 </div>

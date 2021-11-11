@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -13,78 +15,73 @@ export class AdminDictComponent implements OnInit {
     dictMap: Map<number, Dictionary>;
 
     selectedFile: string;
-    isFileEmpty: boolean = true;
+
     constructor(private readonly dictHttpService: DictHttpService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
         this.dictMap = new Map<number, Dictionary>();
-        const tempList = this.dictHttpService.getListDict();
-
-        tempList.forEach((dict) => {
-            if (dict.id) {
-                this.dictMap.set(dict.id, dict);
-            }
-        });
+        this.updateDictMap();
     }
 
     async loadFile() {
         const input = document.getElementById('fileInput') as HTMLInputElement;
-        this.isFileEmpty = true;
-        if (input.files) {
-            const file = input.files[0];
-            const dict = await this.readFile(file);
-
-            if (dict) {
-                this.uploadDictionnary(dict);
-            }
-        }
+        const file = input.files![0];
+        this.selectedFile = '';
+        const dict = await this.readFile(file);
+        this.uploadDictionnary(dict);
     }
 
     showUpdateMenu(dict: Dictionary): void {
-        this.dialog
-            .open(EditDictDialogComponent, {
-                width: '400px',
-                data: dict,
-            })
-            .afterClosed()
-            .subscribe((result: Dictionary) => {
-                // TODO remove result.id in if when dictionnary interface is fully implemented
-                if (result && result.id) {
-                    const tes = this.dictMap.get(result.id);
-                    if (tes) tes.title = result.title;
-                }
-            });
+        const defaultDictId = 1;
+        if (dict.id !== defaultDictId) {
+            this.dialog
+                .open(EditDictDialogComponent, {
+                    width: '400px',
+                    data: dict,
+                })
+                .afterClosed()
+                .subscribe((result: Dictionary) => {
+                    const tes = this.dictMap.get(result.id!);
+                    tes!.title = result.title;
+                });
+        }
     }
 
     showSelectedFile() {
         const input = document.getElementById('fileInput') as HTMLInputElement;
-        if (input.files) {
-            this.selectedFile = input.files[0].name;
-            this.isFileEmpty = false;
-        }
+        this.selectedFile = input.files![0].name;
     }
 
     private async readFile(file: File): Promise<Dictionary> {
         const tempFileReader = new FileReader();
-        return new Promise((resolve, reject) => {
-            tempFileReader.onerror = () => {
-                reject();
-            };
-
+        return new Promise((resolve) => {
             tempFileReader.onload = (res) => {
-                const resultString = res.target?.result;
-                if (resultString) {
-                    const dictionary: Dictionary = JSON.parse(resultString?.toString());
-                    resolve(dictionary);
-                } else {
-                    reject();
-                }
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const resultString = res.target!.result;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const dictionary: Dictionary = JSON.parse(resultString!.toString());
+                resolve(dictionary);
             };
             tempFileReader.readAsText(file);
         });
     }
 
     private uploadDictionnary(dict: Dictionary): void {
-        this.dictHttpService.uploadDict(dict);
+        if (!this.dictHttpService.uploadDict(dict)) {
+            this.dialog.open(AlertDialogComponent, {
+                width: '250px',
+                data: 'Erreur de lecture du fichier',
+            });
+        } else {
+            this.updateDictMap();
+        }
+    }
+
+    private updateDictMap(): void {
+        const tempDictList = this.dictHttpService.getListDict();
+
+        tempDictList.forEach((dict) => {
+            this.dictMap.set(dict.id!, dict);
+        });
     }
 }

@@ -1,0 +1,22 @@
+<mat-dialog-content style="display: flex; flex-direction: column">
+    <mat-form-field>
+        <input matInput autocomplete="off" [(ngModel)]="bot.name" placeholder="Nom du bot" />
+    </mat-form-field>
+    <mat-form-field *ngIf="!isEdit">
+        <mat-select placeholder="Difficulté du bot" [value]="bot.type">
+            <mat-option value="Facile">Facile</mat-option>
+            <mat-option value="Expert">Expert</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="isEdit">
+        <input matInput autocomplete="off" placeholder="Difficulté" readonly [value]="bot.type"/>
+    </mat-form-field>
+    <div style="display: flex; flex-direction: row" *ngIf="isEdit">
+        <button mat-button (click)="editBot()">Upload Edit</button>
+        <button mat-button (click)="deleteBot()">Delete</button>
+    </div>
+
+    <div style="display: flex; flex-direction: row" *ngIf="!isEdit">
+        <button mat-button (click)="addBot()">Create bot</button>
+    </div>
+</mat-dialog-content>

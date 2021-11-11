@@ -1,3 +1,27 @@
-<p>
-  admin-jv works!
-</p>
+<div class="container">
+    <div class="listContainer">
+        <div class="list">
+            <h1>Bot facile</h1>
+            <mat-selection-list [multiple]="false">
+                <mat-list-option *ngFor="let bot of easyBotList">
+                    <div (click)="showUpdateMenu(bot)">
+                        <p>{{bot.name}}</p>
+                    </div>
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
+        <div class="list">
+            <h1>Bot expert</h1>
+            <mat-selection-list [multiple]="false">
+                <mat-list-option *ngFor="let bot of hardBotList">
+                    <div (click)="showUpdateMenu(bot)">
+                        <p>{{bot.name}}</p>
+                    </div>
+                </mat-list-option>
+            </mat-selection-list>
+        </div>
+    </div>
+    <div style="display: flex; justify-content: center;">
+        <button class="customButton" (click)="addBot()">Ajouter un bot</button>
+    </div>
+</div>

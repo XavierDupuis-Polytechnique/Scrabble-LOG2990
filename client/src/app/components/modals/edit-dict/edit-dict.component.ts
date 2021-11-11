@@ -28,6 +28,11 @@ export class EditDictDialogComponent {
         if (this.dictHttpService.editDict(this.tempDict)) {
             this.close();
         } else {
+            this.dialog.open(AlertDialogComponent, {
+                width: '400px',
+                disableClose: true,
+                data: 'Le titre du dictionnaire est déjà utilisé pour un autre dictionnaire',
+            });
             this.isEditedCorrectly = false;
             this.tempDict = this.dictionary;
         }
@@ -39,7 +44,11 @@ export class EditDictDialogComponent {
 
     delete(): void {
         if (!this.dictHttpService.delete(this.dictionary)) {
-            this.dialog.open(AlertDialogComponent, { width: '400px', disableClose: true });
+            this.dialog.open(AlertDialogComponent, {
+                width: '400px',
+                disableClose: true,
+                data: 'Vous ne pouvez pas supprimer le dictionnaire par defaut',
+            });
         }
     }
 }

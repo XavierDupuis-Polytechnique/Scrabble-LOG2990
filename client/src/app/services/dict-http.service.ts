@@ -5,17 +5,18 @@ import { Dictionary } from '@app/game-logic/validator/dictionary';
     providedIn: 'root',
 })
 export class DictHttpService {
+    templist: Dictionary[] = [
+        { title: 'French', description: 'Dictionnaire francais', words: ['wow'], id: 1 },
+        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 2 },
+    ];
     // TODO create and return HTTP request to the server
     getListDict(): Dictionary[] {
-        return [
-            { title: 'French', description: 'Dictionnaire francais', words: ['wow'], id: 1 },
-            { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 2 },
-        ];
+        return this.templist;
     }
 
     // TODO create POST HTTP request to the server
-    uploadDict(dict: Dictionary): void {
-        console.log(dict);
+    uploadDict(dict: Dictionary): boolean {
+        return true;
     }
     // TODO create PUT HTTP request to the server
     editDict(dict: Dictionary): boolean {
