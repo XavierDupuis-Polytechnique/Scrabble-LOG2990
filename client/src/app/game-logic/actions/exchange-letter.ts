@@ -1,13 +1,13 @@
 import { Action } from '@app/game-logic/actions/action';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { Player } from '@app/game-logic/player/player';
 
 export class ExchangeLetter extends Action {
     constructor(player: Player, readonly lettersToExchange: Letter[]) {
         super(player);
     }
-    protected perform(game: Game) {
+    protected perform(game: OfflineGame) {
         const lettersFromBag: Letter[] = game.letterBag.drawGameLetters(this.lettersToExchange.length);
         const rackLettersToExchange = this.player.getLettersFromRack(this.lettersToExchange);
         const exchangeLetterSet = new Set(rackLettersToExchange);

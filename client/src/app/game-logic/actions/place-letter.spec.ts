@@ -7,7 +7,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -37,7 +37,7 @@ describe('PlaceLetter', () => {
         y: 0,
         direction: Direction.Horizontal,
     };
-    let game: Game;
+    let game: OfflineGame;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     let wordSearcher: WordSearcher;
@@ -70,7 +70,7 @@ describe('PlaceLetter', () => {
         const messages = TestBed.inject(MessagesService);
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
-        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
         game.players.push(player1);
         game.players.push(player2);
         game.start();

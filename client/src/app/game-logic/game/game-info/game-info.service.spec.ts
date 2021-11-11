@@ -5,7 +5,7 @@ import { OnlineActionCompilerService } from '@app/game-logic/actions/online-acti
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -21,7 +21,7 @@ const passThrough = (map: Map<string, number>): Map<string, number> => {
 
 describe('GameInfoService', () => {
     let service: GameInfoService;
-    let game: Game;
+    let game: OfflineGame;
     let timer: TimerService;
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
@@ -39,7 +39,7 @@ describe('GameInfoService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
 
-        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];
         game.start();
     });
@@ -205,7 +205,7 @@ describe('GameInfoService Online Edition', () => {
     });
 
     it('should return the number of letters remaining', () => {
-        service.receiveOnlineGame(onlineGame);
+        service.receiveGame(onlineGame);
         const result = service.numberOfLettersRemaining;
         const expected = 0;
         expect(result).toEqual(expected);
@@ -214,14 +214,14 @@ describe('GameInfoService Online Edition', () => {
     it('should get the active player', () => {
         onlineGame.players = [new User('p1'), new User('p2')];
         onlineGame.activePlayerIndex = 0;
-        service.receiveOnlineGame(onlineGame);
+        service.receiveGame(onlineGame);
         const result = service.activePlayer;
         const expected = onlineGame.players[0];
         expect(result).toEqual(expected);
     });
 
     it('should get the endOfGame status', () => {
-        service.receiveOnlineGame(onlineGame);
+        service.receiveGame(onlineGame);
         const result = service.isEndOfGame;
         const expected = false;
         expect(result).toEqual(expected);
@@ -230,20 +230,20 @@ describe('GameInfoService Online Edition', () => {
     it('should get the winner', () => {
         const p1 = new User('p1');
         spyOn(onlineGame, 'getWinner').and.returnValue([p1]);
-        service.receiveOnlineGame(onlineGame);
+        service.receiveGame(onlineGame);
         const result = service.winner;
         const expected: Player[] = [p1];
         expect(result).toEqual(expected);
     });
 
     it('should return that the game is online', () => {
-        service.receiveOnlineGame(onlineGame);
+        service.receiveGame(onlineGame);
         const result = service.isOnlineGame;
         expect(result).toBeTruthy();
     });
 
     it('should get the gameId online', () => {
-        service.receiveOnlineGame(onlineGame);
+        service.receiveGame(onlineGame);
         const result = service.gameId;
         const expected = '0';
         expect(result).toEqual(expected);

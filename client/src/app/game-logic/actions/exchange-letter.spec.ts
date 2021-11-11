@@ -3,7 +3,7 @@ import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -12,7 +12,7 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 
 describe('ExchangeLetter', () => {
-    let game: Game;
+    let game: OfflineGame;
     const player: Player = new User('Tim');
     const randomBonus = false;
     const dict = new DictionaryService();
@@ -22,7 +22,7 @@ describe('ExchangeLetter', () => {
         const timerService = TestBed.inject(TimerService);
         const pointCalulatorService = TestBed.inject(PointCalculatorService);
         const boardService = TestBed.inject(BoardService);
-        game = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         game.players[0] = player;
         game.start();
     });

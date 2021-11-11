@@ -8,6 +8,7 @@ import { Board } from '@app/game-logic/game/board/board';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
+import { Game } from '@app/game-logic/game/games/game';
 import { GameState } from '@app/game-logic/game/games/online-game/game-state';
 import { TimerControls } from '@app/game-logic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
@@ -22,11 +23,11 @@ interface PlayerWithIndex {
     player: Player;
 }
 
-export class OnlineGame {
+export class OnlineGame extends Game {
     players: Player[] = [];
     activePlayerIndex: number = 0;
     lettersRemaining: number = 0;
-    isEndOfGame: boolean = false;
+    hasGameEnded: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
 
@@ -44,6 +45,7 @@ export class OnlineGame {
         private boardService: BoardService,
         private onlineActionCompiler: OnlineActionCompilerService,
     ) {
+        super();
         this.boardService.board = new Board();
         this.userName = userName;
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
@@ -55,6 +57,23 @@ export class OnlineGame {
         });
     }
 
+    getNumberOfLettersRemaining(): number {
+        return this.lettersRemaining;
+    }
+
+    start(): void {
+        return;
+    }
+
+    isEndOfGame(): boolean {
+        return this.hasGameEnded;
+    }
+
+    stop() {
+        this.forfeit();
+        this.close();
+    }
+
     close() {
         this.gameState$$.unsubscribe();
         this.timerControls$$.unsubscribe();
@@ -64,6 +83,7 @@ export class OnlineGame {
         if (this.playersWithIndex.size === 0) {
             this.setupPlayersWithIndex();
         }
+        this.endTurnSubject.next();
         this.updateClient(gameState);
     }
 
@@ -81,7 +101,10 @@ export class OnlineGame {
     }
 
     forfeit() {
-        this.onlineSocket.forfeit();
+        if (!this.onlineSocket.socket) {
+            return;
+        }
+        this.onlineSocket.disconnect();
     }
 
     getWinner() {
@@ -255,7 +278,7 @@ export class OnlineGame {
     }
 
     private updateEndOfGame(gameState: GameState) {
-        this.isEndOfGame = gameState.isEndOfGame;
+        this.hasGameEnded = gameState.isEndOfGame;
         this.winnerNames = gameState.winnerIndex.map((index: number) => {
             return gameState.players[index].name;
         });

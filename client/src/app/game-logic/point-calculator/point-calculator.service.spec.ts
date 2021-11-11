@@ -4,7 +4,7 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Tile } from '@app/game-logic/game/board/tile';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -319,7 +319,7 @@ describe('PointCalculatorService', () => {
         expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
         const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + pointCalculator.calculatePointsOfRack(game.otherPlayer);
         const otherPlayerEOGamePoints = initialPointPlayer2 - pointCalculator.calculatePointsOfRack(game.otherPlayer);
-        pointCalculator.endOfGamePointDeduction(game as unknown as Game);
+        pointCalculator.endOfGamePointDeduction(game as unknown as OfflineGame);
         expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
         expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);
     });
@@ -338,7 +338,7 @@ describe('PointCalculatorService', () => {
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;
         game.otherPlayer.letterRack = threeLetterRack;
-        pointCalculator.endOfGamePointDeduction(game as unknown as Game);
+        pointCalculator.endOfGamePointDeduction(game as unknown as OfflineGame);
         expect(game.activePlayer.points).toBe(totalPointsActivePlayer);
         expect(game.otherPlayer.points).toBe(totalPointsOtherPlayer);
     });

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Game } from '@app/game-logic/game/games/game';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
@@ -13,7 +14,6 @@ export class GameInfoService {
     players: Player[];
     user: User;
     private game: Game | undefined;
-    private onlineGame: OnlineGame | undefined;
 
     private endTurnSubject = new Subject<void>();
     get endTurn$(): Observable<void> {
@@ -28,13 +28,6 @@ export class GameInfoService {
         this.game.endTurn$.subscribe(() => {
             this.endTurnSubject.next();
         });
-        this.onlineGame = undefined;
-    }
-
-    receiveOnlineGame(onlineGame: OnlineGame): void {
-        this.players = onlineGame.players;
-        this.onlineGame = onlineGame;
-        this.game = undefined;
     }
 
     receiveUser(user: User): void {
@@ -59,7 +52,11 @@ export class GameInfoService {
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
-        return this.game.letterBag.countLetters();
+
+        if (this.game instanceof OfflineGame) {
+            return (this.game as OfflineGame).letterBag.countLetters();
+        }
+        return new Map<string, number>();
     }
 
     get numberOfPlayers(): number {
@@ -70,11 +67,8 @@ export class GameInfoService {
     }
 
     get activePlayer(): Player {
-        if (!this.players) {
+        if (!this.players || !this.game) {
             throw Error('No Players in GameInfo');
-        }
-        if (!this.game) {
-            return this.players[(this.onlineGame as OnlineGame).activePlayerIndex];
         }
         return this.players[this.game.activePlayerIndex];
     }
@@ -84,42 +78,38 @@ export class GameInfoService {
     }
 
     get numberOfLettersRemaining(): number {
-        if (!this.game && !this.onlineGame) {
+        if (!this.game) {
             throw Error('No Game in GameInfo');
         }
-        if (!this.game) {
-            return (this.onlineGame as OnlineGame).lettersRemaining;
-        }
-        return this.game.letterBag.lettersLeft;
+        return this.game.getNumberOfLettersRemaining();
     }
 
     get isEndOfGame(): boolean {
         if (!this.game) {
-            return (this.onlineGame as OnlineGame).isEndOfGame;
+            throw Error('No Game in GameInfo');
         }
         return this.game.isEndOfGame();
     }
 
     get isOnlineGame(): boolean {
-        if (!this.game) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.game instanceof OnlineGame;
     }
 
     get winner(): Player[] {
         if (!this.game) {
-            return (this.onlineGame as OnlineGame).getWinner();
+            throw Error('No Game in GameInfo');
         }
         return this.game.getWinner();
     }
 
     get gameId(): string {
-        if (this.onlineGame) {
-            return this.onlineGame.gameToken;
-        } else {
-            return '';
+        if (!this.game) {
+            throw Error('No Game in GameInfo');
         }
+
+        if (this.game instanceof OnlineGame) {
+            return (this.game as OnlineGame).gameToken;
+        }
+        return '';
     }
 }
