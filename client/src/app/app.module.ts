@@ -72,7 +72,8 @@ import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-j
         AdminPageComponent,
         EditDictDialogComponent,
         AlertDialogComponent,
->>>>>>>>> Temporary merge branch 2
+        AdminJvComponent,
+        EditJvDialogComponent,
     ],
     imports: [
         AppMaterialModule,
