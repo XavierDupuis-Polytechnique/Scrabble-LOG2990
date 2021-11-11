@@ -4,12 +4,12 @@ import { Game } from '@app/game-logic/game/games/game';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class ObjectiveManagerService {
-  objectives: Objective[];
-  constructor() {}
-  updateObjectives(action: Action, game: Game) {
-    return;
-  }
+    objectives: Objective[];
+    constructor() {}
+    updateObjectives(action: Action, game: Game) {
+        return;
+    }
 }
