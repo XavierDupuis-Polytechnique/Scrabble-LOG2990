@@ -1,6 +1,5 @@
-<div class="container">
-    <div class="justified">
-        <button mat-flat-button color="primary" [routerLink]="['/admin/dict']">Dictionnaire</button>
-        <button mat-flat-button color="primary" [routerLink]="['/admin/jv']">Joueurs Virtuels</button>
-    </div>
-</div>
+<mat-toolbar><h1>Page d'administration</h1></mat-toolbar>
+<mat-tab-group>
+    <mat-tab label="Dictionnaire"><app-admin-dict></app-admin-dict>></mat-tab>
+    <mat-tab label="Joueurs Virtuels"><app-admin-jv></app-admin-jv>></mat-tab>
+</mat-tab-group>

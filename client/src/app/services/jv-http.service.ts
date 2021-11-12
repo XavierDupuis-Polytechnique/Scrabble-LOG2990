@@ -11,7 +11,21 @@ export interface BotInfo {
 export class JvHttpService {
     // TODO GET HTTP request
     getEasyBotList(): BotInfo[] {
-        return [{ name: 'Bernard', type: 'facile' }];
+        return [
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+            { name: 'Bernard', type: 'facile' },
+        ];
     }
     // TODO GET HTTP request
     getHardBotList(): BotInfo[] {
