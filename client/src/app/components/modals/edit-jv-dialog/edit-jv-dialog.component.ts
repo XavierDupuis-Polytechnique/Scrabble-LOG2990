@@ -3,11 +3,6 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
 
-interface DialogData {
-    dialogBot: BotInfo;
-    isEdit: boolean;
-}
-
 @Component({
     selector: 'app-edit-jv-dialog',
     templateUrl: './edit-jv-dialog.component.html',
@@ -15,15 +10,15 @@ interface DialogData {
 })
 export class EditJvDialogComponent {
     bot: BotInfo;
-    isEdit: boolean;
+    isEdit: boolean = false;
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: DialogData,
+        @Inject(MAT_DIALOG_DATA) public data: BotInfo,
         private readonly jvHttpService: JvHttpService,
         private dialog: MatDialog,
         private dialogRef: MatDialogRef<EditJvDialogComponent>,
     ) {
-        this.bot = { name: data.dialogBot.name, type: data.dialogBot.type, canEdit: data.dialogBot.canEdit, id: data.dialogBot.id };
-        this.isEdit = data.isEdit;
+        this.bot = { name: data.name, type: data.type, canEdit: data.canEdit, id: data.id };
+        this.isEdit = data.canEdit;
     }
     // TODO changer les message d'alert
     editBot() {

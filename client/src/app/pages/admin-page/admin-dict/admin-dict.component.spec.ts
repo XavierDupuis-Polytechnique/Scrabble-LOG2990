@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
-import { Dictionary } from '@app/game-logic/validator/dictionary';
-import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
 import { of } from 'rxjs';
 
@@ -13,7 +12,7 @@ describe('admin-dictionary component', () => {
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
     let matDialog: jasmine.SpyObj<MatDialog>;
     beforeEach(async () => {
-        dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getListDict']);
+        dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getListDict', 'getDictInfoList', 'delete']);
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
             declarations: [AdminDictComponent],
@@ -73,59 +72,24 @@ describe('admin-dictionary component', () => {
         expect(matDialog.open).not.toHaveBeenCalled();
     });
 
-    it('dialog should not open if default dict', async () => {
-        const dict: Dictionary = {
-            title: 'test',
-            description: 'test',
-            words: ['test'],
-            id: 1,
-        };
+    it('showUpdateMenu should open dialog', () => {
+        const dictInfoMock: DictInfo = { id: 1, canEdit: true, description: 'test', title: 'test' };
+
         matDialog.open.and.returnValue({
             afterClosed: () => {
-                return of({
-                    title: 'test2',
-                    description: 'test',
-                    word: ['test'],
-                    id: 1,
-                });
+                return of({});
             },
             close: () => {
                 return;
             },
         } as MatDialogRef<EditDictDialogComponent>);
-        component.dictMap = new Map<number, Dictionary>();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        component.dictMap.set(dict.id!, dict);
-
-        await component.showUpdateMenu(dict);
-        expect(matDialog.open).not.toHaveBeenCalled();
+        component.showUpdateMenu(dictInfoMock);
+        expect(matDialog.open).toHaveBeenCalled();
     });
 
-    it('dialog should open if not default dict', async () => {
-        const dict: Dictionary = {
-            title: 'test',
-            description: 'test',
-            words: ['test'],
-            id: 2,
-        };
-        matDialog.open.and.returnValue({
-            afterClosed: () => {
-                return of({
-                    title: 'test2',
-                    description: 'test',
-                    word: ['test'],
-                    id: 2,
-                });
-            },
-            close: () => {
-                return;
-            },
-        } as MatDialogRef<EditDictDialogComponent>);
-        component.dictMap = new Map<number, Dictionary>();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        component.dictMap.set(dict.id!, dict);
-
-        component.showUpdateMenu(dict);
-        expect(matDialog.open).toHaveBeenCalled();
+    it('deleteDict should call http service', () => {
+        const dictInfoMock: DictInfo = { id: 1, canEdit: true, description: 'test', title: 'test' };
+        component.deleteDict(dictInfoMock);
+        expect(dictHttpServiceMock.delete).toHaveBeenCalledWith(dictInfoMock);
     });
 });
