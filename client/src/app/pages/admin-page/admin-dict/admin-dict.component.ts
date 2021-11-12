@@ -6,20 +6,48 @@ import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-d
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
+export interface PeriodicElement {
+    name: string;
+    position: number;
+    weight: number;
+    symbol: string;
+}
+
+export interface DictInfo {
+    id: number;
+    title: string;
+    description: string;
+    canEdit: boolean;
+}
+const ELEMENT_DATA: PeriodicElement[] = [
+    { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+    { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+    { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
+    { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+    { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
+    { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
+    { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+    { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+    { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+    { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
+];
 @Component({
     selector: 'app-admin-dict',
     templateUrl: './admin-dict.component.html',
     styleUrls: ['./admin-dict.component.scss'],
 })
 export class AdminDictComponent implements OnInit {
-    dictMap: Map<number, Dictionary>;
-
+    listDict: Dictionary[];
     selectedFile: string;
+    displayedColumns: string[] = ['position', 'name', 'weight', 'edit', 'delete'];
+    dataSource = ELEMENT_DATA;
+
+    dictDataSource: DictInfo[];
+    dictDisplayedColumns: string[] = ['title', 'description', 'edit', 'delete'];
 
     constructor(private readonly dictHttpService: DictHttpService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
-        this.dictMap = new Map<number, Dictionary>();
         this.updateDictMap();
     }
 
@@ -31,20 +59,18 @@ export class AdminDictComponent implements OnInit {
         this.uploadDictionnary(dict);
     }
 
-    showUpdateMenu(dict: Dictionary): void {
-        const defaultDictId = 1;
-        if (dict.id !== defaultDictId) {
-            this.dialog
-                .open(EditDictDialogComponent, {
-                    width: '400px',
-                    data: dict,
-                })
-                .afterClosed()
-                .subscribe((result: Dictionary) => {
-                    const tes = this.dictMap.get(result.id!);
-                    tes!.title = result.title;
-                });
-        }
+    showUpdateMenu(dict: DictInfo): void {
+        this.dialog
+            .open(EditDictDialogComponent, { width: '250px', data: dict })
+            .afterClosed()
+            .subscribe(() => {
+                this.updateDictMap();
+            });
+    }
+
+    deleteDict(dict: DictInfo): void {
+        this.dictHttpService.delete(dict);
+        this.updateDictMap();
     }
 
     showSelectedFile() {
@@ -78,10 +104,7 @@ export class AdminDictComponent implements OnInit {
     }
 
     private updateDictMap(): void {
-        const tempDictList = this.dictHttpService.getListDict();
-
-        tempDictList.forEach((dict) => {
-            this.dictMap.set(dict.id!, dict);
-        });
+        // REMOVE DEAD CODE
+        this.dictDataSource = this.dictHttpService.getDictInfoList();
     }
 }

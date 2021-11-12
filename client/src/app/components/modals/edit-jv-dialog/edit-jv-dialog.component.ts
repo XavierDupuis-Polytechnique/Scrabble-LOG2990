@@ -22,7 +22,7 @@ export class EditJvDialogComponent {
         private dialog: MatDialog,
         private dialogRef: MatDialogRef<EditJvDialogComponent>,
     ) {
-        this.bot = { name: data.dialogBot.name, type: data.dialogBot.type };
+        this.bot = { name: data.dialogBot.name, type: data.dialogBot.type, canEdit: data.dialogBot.canEdit, id: data.dialogBot.id };
         this.isEdit = data.isEdit;
     }
     // TODO changer les message d'alert
@@ -39,18 +39,6 @@ export class EditJvDialogComponent {
 
     addBot() {
         if (!this.jvHttpService.addBot(this.bot)) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: 'Un problème est survenue. Veuillez réessayer',
-            });
-        } else {
-            this.dialogRef.close();
-        }
-    }
-
-    deleteBot() {
-        console.log(this.bot);
-        if (!this.jvHttpService.deleteBot(this.bot)) {
             this.dialog.open(AlertDialogComponent, {
                 width: '250px',
                 data: 'Un problème est survenue. Veuillez réessayer',

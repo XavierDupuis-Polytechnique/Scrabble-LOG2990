@@ -9,11 +9,10 @@
         </mat-select>
     </mat-form-field>
     <mat-form-field *ngIf="isEdit">
-        <input matInput autocomplete="off" placeholder="Difficulté" readonly [value]="bot.type"/>
+        <input matInput autocomplete="off" placeholder="Difficulté" readonly [value]="bot.type" />
     </mat-form-field>
     <div style="display: flex; flex-direction: row" *ngIf="isEdit">
         <button mat-button (click)="editBot()">Upload Edit</button>
-        <button mat-button (click)="deleteBot()">Delete</button>
     </div>
 
     <div style="display: flex; flex-direction: row" *ngIf="!isEdit">

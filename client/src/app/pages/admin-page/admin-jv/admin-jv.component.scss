@@ -1,62 +1,10 @@
+.overflow {
+    height: 50%;
+    overflow: auto;
+}
+
 .container {
-    width: 100vw;
-    height: 100vh;
-    background: url('^assets/img/home-bg.jpg') no-repeat center top;
-    background-size: 100vw 100vh;
-}
-
-.mat-list-item {
-    text-align: center;
-}
-
-.list {
-    height: 50vh;
-    width: 50%;
-    align-items: center;
-    justify-content: center;
-    overflow-y: scroll;
-}
-
-.listContainer {
     display: flex;
-
-    width: 100%;
-    flex-direction: row;
-}
-
-h1 {
-    border-radius: 0px;
-}
-
-.customButton {
-    background-color: #ea4c89;
-    border-radius: 8px;
-    border-style: none;
-    box-sizing: border-box;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    height: 40px;
-    line-height: 20px;
-    list-style: none;
-    margin-top: 150px;
-    outline: none;
-    padding: 10px 16px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    transition: color 100ms;
-    vertical-align: baseline;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-
-}
-
-.customButton:hover,
-.customButton:focus {
-    background-color: #f082ac;
+    flex-direction: column;
+    height: 93vh !important;
 }

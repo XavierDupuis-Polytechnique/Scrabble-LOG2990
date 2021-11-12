@@ -11,6 +11,9 @@ import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
 export class AdminJvComponent implements OnInit {
     easyBotList: BotInfo[];
     hardBotList: BotInfo[];
+    botDataInfo: BotInfo[];
+    botDisplayedColumns: string[] = ['name', 'type', 'edit', 'delete'];
+
     constructor(private readonly jvHttpService: JvHttpService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
@@ -36,8 +39,11 @@ export class AdminJvComponent implements OnInit {
         });
     }
 
+    deleteBot(bot: BotInfo): void {
+        this.jvHttpService.deleteBot(bot);
+    }
+
     private updateList() {
-        this.easyBotList = this.jvHttpService.getEasyBotList();
-        this.hardBotList = this.jvHttpService.getHardBotList();
+        this.botDataInfo = this.jvHttpService.getDataInfo();
     }
 }

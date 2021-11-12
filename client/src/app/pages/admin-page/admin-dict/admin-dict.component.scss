@@ -1,57 +1,5 @@
-.container {
-    width: 100vw;
-    height: 100vh;
-    background: url('^assets/img/home-bg.jpg') no-repeat center top;
-    background-size: 100vw 100vh;
-}
-
-.mat-list-item {
-    text-align: center;
-}
-
-.list {
-    height: 50vh;
-    align-items: center;
-    justify-content: center;
-    overflow-y: scroll;
-}
-
 input[type='file'] {
     display: none;
-}
-
-/* CSS */
-.customButton {
-    background-color: #ea4c89;
-    border-radius: 8px;
-    border-style: none;
-    box-sizing: border-box;
-    color: #ffffff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: 'Haas Grot Text R Web', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    height: 40px;
-    line-height: 20px;
-    list-style: none;
-    margin: 0;
-    outline: none;
-    padding: 10px 16px;
-    position: relative;
-    text-align: center;
-    text-decoration: none;
-    transition: color 100ms;
-    vertical-align: baseline;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-
-}
-
-.customButton:hover,
-.customButton:focus {
-    background-color: #f082ac;
 }
 
 .uploadContainer {
@@ -91,6 +39,13 @@ input[type='file'] {
     height: 50px;
 }
 
-h1 {
-    border-radius:  0px;
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 93vh !important;
+}
+
+.overflow {
+    height: 50%;
+    overflow: auto;
 }

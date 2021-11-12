@@ -1,8 +1,8 @@
-<div class="container" >
+<!-- <div class="container" >
+    <h1>Liste des dictionnaires</h1>
     <div class="list">
-        <h1>Liste des dictionnaires</h1>
-        <mat-selection-list [multiple]="false">
-            <mat-list-option *ngFor="let item of dictMap | keyvalue; let i = index">
+        <mat-list style="border: solid 1px black;">
+            <mat-list-item *ngFor="let item of dictMap | keyvalue; let i = index">
                 <div (click)="showUpdateMenu(item.value)">
                     <div>
                         {{ item.value.title }}
@@ -11,8 +11,8 @@
                         {{ item.value.description }}
                     </div>
                 </div>
-            </mat-list-option>
-        </mat-selection-list>
+            </mat-list-item>
+        </mat-list>
     </div>
 
     <div class="uploadContainer">
@@ -23,6 +23,56 @@
             <label for="fileInput" class="textHover">Choisir un fichier</label>
             <p class="selectedFileText">{{ selectedFile }}</p>
             <button (click)="loadFile()" class="customButton">Upload</button>
+        </div>
+    </div>
+</div> -->
+
+<div class="container">
+    <div class="overflow mat-elevation-z8">
+        <table mat-table [dataSource]="dictDataSource" class="mat-elevation-z8" style="width: 100%">
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef>Titre</th>
+                <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef>Édition</th>
+                <td mat-cell *matCellDef="let element">
+                    <div (click)="showUpdateMenu(element)" *ngIf="element.canEdit">
+                        <button mat-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef>Supression</th>
+                <td mat-cell *matCellDef="let element">
+                    <div (click)="deleteDict(element)" *ngIf="element.canEdit">
+                        <button mat-button>
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="dictDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: dictDisplayedColumns"></tr>
+        </table>
+    </div>
+
+    <div class="uploadContainer">
+        <input type="file" id="fileInput" accept=".json" (change)="showSelectedFile()" />
+        <div class="fileContainer">
+            <mat-icon class="downloadIcon">file_download</mat-icon>
+            <label for="fileInput" class="textHover">Choisir un fichier</label>
+            <p class="selectedFileText">{{ selectedFile }}</p>
+            <button (click)="loadFile()" mat-button>Upload</button>
         </div>
     </div>
 </div>

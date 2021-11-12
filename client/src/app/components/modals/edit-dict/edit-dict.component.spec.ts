@@ -46,16 +46,4 @@ describe('EditDictDialogComponent', () => {
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();
     });
-
-    it('delete should open alert dialog if not ok', () => {
-        dictHttpMock.delete.and.returnValue(false);
-        component.delete();
-        expect(matDialog.open).toHaveBeenCalled();
-    });
-
-    it('delete should not open dialog if ok', () => {
-        dictHttpMock.delete.and.returnValue(true);
-        component.delete();
-        expect(matDialog.open).not.toHaveBeenCalled();
-    });
 });
