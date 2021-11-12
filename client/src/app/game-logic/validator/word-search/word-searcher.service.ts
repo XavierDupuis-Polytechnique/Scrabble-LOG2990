@@ -9,7 +9,7 @@ import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.i
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
 import { isCharUpperCase } from '@app/game-logic/utils';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
-import { Word } from '@app/game-logic/validator/word-search/word';
+import { Word, WordPlacement } from '@app/game-logic/validator/word-search/word';
 @Injectable({
     providedIn: 'root',
 })
@@ -23,48 +23,32 @@ export class WordSearcher {
     }
 
     validateWords(action: PlaceLetter): boolean {
-        const listOfValidWord = this.listOfValidWord(action);
+        const word = action.word;
+        const placement = action.placement;
+        const listOfValidWord = this.listOfValidWord({ word, placement });
         if (listOfValidWord.length > 0) {
             return true;
         }
         return false;
     }
 
-    findIndexOfLetterToPlace(action: PlaceLetter) {
-        const indexOfLetterToPlace: number[] = [];
-        if (action.placement.direction === Direction.Horizontal) {
-            const startCoord = action.placement.x;
-            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(action);
-            coordsOfLettersToPlace.forEach((coord) => {
-                const index = coord.x - startCoord;
-                indexOfLetterToPlace.push(index);
-            });
-        } else {
-            const startCoord = action.placement.y;
-            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(action);
-            coordsOfLettersToPlace.forEach((coord) => {
-                const index = coord.y - startCoord;
-                indexOfLetterToPlace.push(index);
-            });
-        }
-        return indexOfLetterToPlace;
-    }
-
-    listOfValidWord(action: PlaceLetter): Word[] {
+    listOfValidWord(wordPlacement: WordPlacement): Word[] {
         const listOfValidWord: Word[] = [];
-        if (this.dictionaryService.isWordInDict(action.word)) {
-            const letters = this.stringToTile(action.word, action.placement);
-            const index = this.findIndexOfLetterToPlace(action);
+        const word = wordPlacement.word;
+        const placement = wordPlacement.placement;
+        if (this.dictionaryService.isWordInDict(word)) {
+            const letters = this.stringToTile(word, placement);
+            const index = this.findIndexOfLetterToPlace(word, placement);
             listOfValidWord.push({ letters, index });
 
-            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(action);
+            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
             for (const coord of coordsOfLettersToPlace) {
-                const direction = action.placement.direction as Direction;
+                const direction = placement.direction;
                 if (this.hasNeighbour(coord, direction)) {
                     const beginingPos = this.goToBeginningOfWord(direction, coord);
-                    const word = this.goToEndOfWord(action, beginingPos, coord);
-                    if (this.isValid(word.letters)) {
-                        listOfValidWord.push(word);
+                    const wordToValidate = this.goToEndOfWord(wordPlacement, beginingPos, coord);
+                    if (this.isValid(wordToValidate.letters)) {
+                        listOfValidWord.push(wordToValidate);
                     } else {
                         return [];
                     }
@@ -72,6 +56,26 @@ export class WordSearcher {
             }
         }
         return listOfValidWord;
+    }
+
+    findIndexOfLetterToPlace(word: string, placement: PlacementSetting) {
+        const indexOfLetterToPlace: number[] = [];
+        if (placement.direction === Direction.Horizontal) {
+            const startCoord = placement.x;
+            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
+            coordsOfLettersToPlace.forEach((coord) => {
+                const index = coord.x - startCoord;
+                indexOfLetterToPlace.push(index);
+            });
+        } else {
+            const startCoord = placement.y;
+            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
+            coordsOfLettersToPlace.forEach((coord) => {
+                const index = coord.y - startCoord;
+                indexOfLetterToPlace.push(index);
+            });
+        }
+        return indexOfLetterToPlace;
     }
 
     hasNeighbour(coord: Vec2, direction: Direction): boolean {
@@ -87,7 +91,7 @@ export class WordSearcher {
     goToBeginningOfWord(direction: Direction, letterPos: Vec2): Vec2 {
         let x = letterPos.x;
         let y = letterPos.y;
-        if ((direction as Direction) === Direction.Horizontal) {
+        if (direction === Direction.Horizontal) {
             while (this.tileIsOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
                 y -= 1;
             }
@@ -101,8 +105,8 @@ export class WordSearcher {
         return { x, y };
     }
 
-    goToEndOfWord(action: PlaceLetter, beginingPos: Vec2, letterPos: Vec2): Word {
-        const direction = action.placement.direction;
+    goToEndOfWord(wordPlacement: WordPlacement, beginingPos: Vec2, letterPos: Vec2): Word {
+        const direction = wordPlacement.placement.direction;
         let x = beginingPos.x;
         let y = beginingPos.y;
         const letters: Tile[] = [];
@@ -113,8 +117,8 @@ export class WordSearcher {
                 if (this.tileIsOccupied(x, y)) {
                     letters.push(this.grid[y][x]);
                 } else {
-                    const indexInWord = x - action.placement.x;
-                    letters.push(this.createTile(action.word[indexInWord], { x, y }));
+                    const indexInWord = x - wordPlacement.placement.x;
+                    letters.push(this.createTile(wordPlacement.word[indexInWord], { x, y }));
                     index.push(indexInNeighbor);
                 }
                 y += 1;
@@ -126,8 +130,8 @@ export class WordSearcher {
                 if (this.tileIsOccupied(x, y)) {
                     letters.push(this.grid[y][x]);
                 } else {
-                    const indexInWord = y - action.placement.y;
-                    letters.push(this.createTile(action.word[indexInWord], { x, y }));
+                    const indexInWord = y - wordPlacement.placement.y;
+                    letters.push(this.createTile(wordPlacement.word[indexInWord], { x, y }));
                     index.push(indexInNeighbor);
                 }
                 x += 1;
@@ -162,11 +166,10 @@ export class WordSearcher {
         return char !== EMPTY_CHAR;
     }
 
-    findCoordOfLettersToPlace(action: PlaceLetter): Vec2[] {
+    findCoordOfLettersToPlace(word: string, placement: PlacementSetting): Vec2[] {
         const listOfCoord: Vec2[] = [];
-        const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
-        const direction = action.placement.direction;
-        const word = action.word;
+        const startCoord: Vec2 = { x: placement.x, y: placement.y };
+        const direction = placement.direction;
         if (direction === Direction.Horizontal) {
             const y = startCoord.y;
             const wordEnd = startCoord.x + word.length;
