@@ -5,7 +5,6 @@ import { Board } from '@app/game-logic/game/board/board';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterBag } from '@app/game-logic/game/board/letter-bag';
 import { Game } from '@app/game-logic/game/games/game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -29,7 +28,6 @@ export class OfflineGame extends Game {
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
         private messagesService: MessagesService,
-        private objectiveManager: ObjectiveManagerService,
     ) {
         super();
         this.board = new Board(randomBonus);
@@ -101,10 +99,6 @@ export class OfflineGame extends Game {
             }
         }
         return winners;
-    }
-
-    updateObjectives(action: Action) {
-        this.objectiveManager.updateObjectives(action, this);
     }
 
     private pickFirstPlayer() {

@@ -4,7 +4,6 @@ import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { User } from '@app/game-logic/player/user';
@@ -18,7 +17,6 @@ describe('Game', () => {
     let pointCalculatorSpy: jasmine.SpyObj<PointCalculatorService>;
     let boardSpy: jasmine.SpyObj<BoardService>;
     let messageSpy: jasmine.SpyObj<MessagesService>;
-    let objectiveManager: ObjectiveManagerService;
     let user1: User;
     let user2: User;
 
@@ -30,8 +28,7 @@ describe('Game', () => {
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
-        game = new OfflineGame(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy, objectiveManager);
+        game = new OfflineGame(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy);
         user1 = new User('Tim');
         user2 = new User('Paul');
         game.players = [user1, user2];

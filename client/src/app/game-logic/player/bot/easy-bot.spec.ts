@@ -10,7 +10,6 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
@@ -27,7 +26,6 @@ describe('EasyBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
-    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     let newGame: OfflineGame;
     const randomBonus = false;
@@ -46,8 +44,7 @@ describe('EasyBot', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
-        newGame = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService, objectiveManager);
+        newGame = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
         gameInfo.receiveGame(newGame);
         easyBot = new EasyBot(
             'test',

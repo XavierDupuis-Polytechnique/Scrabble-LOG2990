@@ -20,7 +20,6 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -42,7 +41,6 @@ describe('ActionValidatorService', () => {
     let info: GameInfoService;
     let messagesSpy: MessagesService;
     let wordSearcher: WordSearcher;
-    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
@@ -79,8 +77,7 @@ describe('ActionValidatorService', () => {
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
-        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy, objectiveManager);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
         p1 = new User('p1');
         p2 = new User('p2');
         game.players.push(p1);

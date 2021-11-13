@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { User } from '@app/game-logic/player/user';
@@ -29,8 +28,7 @@ describe('Action', () => {
         const timerService = TestBed.inject(TimerService);
         const pointCalulatorService = TestBed.inject(PointCalculatorService);
         const boardService = TestBed.inject(BoardService);
-        const objectiveManager = TestBed.inject(ObjectiveManagerService);
-        game = new OfflineGame(randomBonus, TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService, objectiveManager);
+        game = new OfflineGame(randomBonus, TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
         gameSpy = spyOn(game, 'doAction');
         user = new User('Paul');
         action = new TestAction(user);
