@@ -1,0 +1,3 @@
+describe('BotNamesController', () => {
+    it();
+});

@@ -7,7 +7,7 @@ interface BotName {
     name: string;
 }
 @Service()
-export class BotNameService {
+export class BotNamesService {
     client: MongoClient;
     db: Db;
 

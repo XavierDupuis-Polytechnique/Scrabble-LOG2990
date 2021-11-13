@@ -1,5 +1,5 @@
 import { HttpException } from '@app/classes/http.exception';
-import { BotNameController } from '@app/controllers/bot-name.controller';
+import { BotNamesController } from '@app/controllers/bot-names.controller';
 import { DebugController } from '@app/controllers/debug.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -16,7 +16,7 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
-    constructor(private readonly debugController: DebugController, private readonly botNameController: BotNameController) {
+    constructor(private readonly debugController: DebugController, private readonly botNameController: BotNamesController) {
         this.app = express();
 
         this.swaggerOptions = {

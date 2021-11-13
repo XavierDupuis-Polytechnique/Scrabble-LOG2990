@@ -1,13 +1,13 @@
 import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
 import { StatusCodes } from 'http-status-codes';
-import { BotNameService } from '@app/db-manager-services/bot-name-db-manager/bot-name.service';
+import { BotNamesService } from '@app/db-manager-services/bot-name-db-manager/bot-names.service';
 
 @Service()
-export class BotNameController {
+export class BotNamesController {
     router: Router;
 
-    constructor(private botNameService: BotNameService) {
+    constructor(private botNameService: BotNamesService) {
         this.configureRouter();
     }
 
