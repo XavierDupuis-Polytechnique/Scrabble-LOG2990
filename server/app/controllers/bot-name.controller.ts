@@ -1,7 +1,8 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { Service } from 'typedi';
 import { StatusCodes } from 'http-status-codes';
 import { BotNameService } from '@app/db-manager-services/bot-name-db-manager/bot-name.service';
+
 @Service()
 export class BotNameController {
     router: Router;
@@ -13,22 +14,49 @@ export class BotNameController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get('/botnames', async (req, res) => {
-            // res.json(['allo', 'banana', 'paul']);
+        this.router.get('/', async (req: Request, res: Response) => {
             try {
                 const botNames = await this.botNameService.getBotNames();
                 res.json(botNames);
             } catch (error) {
-                res.status(StatusCodes.NOT_FOUND);
+                res.sendStatus(StatusCodes.NOT_FOUND);
             }
-            // res.json(this.botNameService.getBotNames());
         });
 
-        this.router.post('/botnames', async (req, res) => {
-            console.log(req.body);
+        this.router.post('/', async (req: Request, res: Response) => {
+            const botName = req.body.name;
+            if (botName === undefined) {
+                res.sendStatus(StatusCodes.BAD_REQUEST);
+                return;
+            }
+            try {
+                const botNameAdded = await this.botNameService.addBotName(botName);
+                if (botNameAdded) {
+                    res.sendStatus(StatusCodes.CREATED);
+                } else {
+                    res.sendStatus(StatusCodes.CONFLICT);
+                }
+            } catch (e) {
+                res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
+            }
+        });
 
-            res.status(StatusCodes.CREATED).send();
-            // res.json(this.botNameService.addBotName(req.body));
+        this.router.delete('/', async (req: Request, res: Response) => {
+            const botName = req.body.name;
+            if (botName === undefined) {
+                res.sendStatus(StatusCodes.BAD_REQUEST);
+                return;
+            }
+            try {
+                const botNameDeleted = await this.botNameService.deleteBotName(botName);
+                if (botNameDeleted) {
+                    res.sendStatus(StatusCodes.OK);
+                } else {
+                    res.sendStatus(StatusCodes.NOT_FOUND);
+                }
+            } catch (e) {
+                res.sendStatus(StatusCodes.SERVICE_UNAVAILABLE);
+            }
         });
     }
 }

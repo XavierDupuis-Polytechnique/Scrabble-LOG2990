@@ -1,5 +1,5 @@
 import { BOT_NAME_COLLECTION, DATABASE_NAME, DATABASE_URL } from '@app/constants';
-import { Db, MongoClient } from 'mongodb';
+import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 
 interface BotName {
@@ -21,22 +21,49 @@ export class BotNameService {
         } catch (error) {
             throw Error('Data base connection error');
         }
-        const isCollectionExist = (await this.db.collection(BOT_NAME_COLLECTION).countDocuments()) !== 0;
-        if (!isCollectionExist) {
-            await this.db.createCollection(BOT_NAME_COLLECTION);
-            const names = ['aaa', 'bbb', 'ccc'];
-            for (const name of names) {
-                await this.db.collection(BOT_NAME_COLLECTION).insertOne({ name });
-            }
+        const collections = await this.db.listCollections().toArray();
+        const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === BOT_NAME_COLLECTION);
+        if (isCollectionExist) {
+            return;
         }
+        this.createCollection();
     }
 
     async getBotNames(): Promise<string[]> {
-        return this.db.collection(BOT_NAME_COLLECTION)
+        return this.db
+            .collection(BOT_NAME_COLLECTION)
             .find()
             .toArray()
             .then((botNames: BotName[]) => {
                 return botNames.map((botName: BotName) => botName.name);
             });
+    }
+
+    async addBotName(name: string): Promise<boolean> {
+        try {
+            await this.db.collection(BOT_NAME_COLLECTION).insertOne({ name });
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    async deleteBotName(name: string): Promise<boolean> {
+        try {
+            const deleteResult = await this.db.collection(BOT_NAME_COLLECTION).deleteOne({ name });
+            const isDeleted = deleteResult.deletedCount === 1 ? true : false;
+            return isDeleted;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    private async createCollection() {
+        try {
+            await this.db.createCollection(BOT_NAME_COLLECTION);
+            await this.db.collection(BOT_NAME_COLLECTION).createIndex({ name: 1 }, { unique: true });
+        } catch (e) {
+            throw Error('Data base collection creation error');
+        }
     }
 }
