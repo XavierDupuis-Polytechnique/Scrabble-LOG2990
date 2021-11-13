@@ -24,7 +24,7 @@ describe('SpecialOfflineGame', () => {
         pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
         boardSpy = jasmine.createSpyObj('BoardService', ['board']);
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
-        objectiveSpy = jasmine.createSpyObj('ObjectiveManagerService', ['void']);
+        objectiveSpy = jasmine.createSpyObj('ObjectiveManagerService', ['chooseObjectives']);
         game = new SpecialOfflineGame(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy, objectiveSpy);
     });
 
