@@ -1,4 +1,5 @@
 import { BOT_NAME_COLLECTION, DATABASE_NAME, DATABASE_URL } from '@app/constants';
+import { DEFAULT_BOT_NAMES } from '@app/db-manager-services/bot-name-db-manager/default-bot-names';
 import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 
@@ -27,6 +28,7 @@ export class BotNameService {
             return;
         }
         this.createCollection();
+        this.populateCollection();
     }
 
     async getBotNames(): Promise<string[]> {
@@ -64,6 +66,17 @@ export class BotNameService {
             await this.db.collection(BOT_NAME_COLLECTION).createIndex({ name: 1 }, { unique: true });
         } catch (e) {
             throw Error('Data base collection creation error');
+        }
+    }
+
+    private async populateCollection() {
+        const botNames = DEFAULT_BOT_NAMES.map((name: string) => {
+            return { name };
+        });
+        try {
+            await this.db.collection(BOT_NAME_COLLECTION).insertMany(botNames);
+        } catch (e) {
+            throw Error('Data base collection population error');
         }
     }
 }
