@@ -11,6 +11,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -47,6 +48,7 @@ describe('Service: OnlineActionCompiler', () => {
     let wordSearcher: WordSearcher;
     let letters: Letter[];
     let pointCalculator: PointCalculatorService;
+    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     const randomBonus = false;
 
@@ -71,6 +73,7 @@ describe('Service: OnlineActionCompiler', () => {
         board = TestBed.inject(BoardService);
         info = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
+        objectiveManager = TestBed.inject(ObjectiveManagerService);
 
         game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messagesSpy);
         p1 = new User('p1');
@@ -92,7 +95,7 @@ describe('Service: OnlineActionCompiler', () => {
     });
 
     it('should only call compilePlaceLetter', () => {
-        const placeLetter = new PlaceLetter(p1, 'abc', placement, pointCalculator, wordSearcher);
+        const placeLetter = new PlaceLetter(p1, 'abc', placement, pointCalculator, wordSearcher, objectiveManager);
         const onlinePlaceLetterTest: OnlineAction = {
             type: OnlineActionType.Place,
             placementSettings: placeLetter.placement,

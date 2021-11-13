@@ -7,6 +7,7 @@ import { CommandExecuterService } from '@app/game-logic/commands/command-execute
 import { BOARD_DIMENSION } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
@@ -49,7 +50,14 @@ describe('bot message service', () => {
             name: 'test',
         };
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 7, y: 7 };
-        const action = new PlaceLetter(player as Player, 'allo', placement, TestBed.inject(PointCalculatorService), TestBed.inject(WordSearcher));
+        const action = new PlaceLetter(
+            player as Player,
+            'allo',
+            placement,
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+            TestBed.inject(ObjectiveManagerService),
+        );
         service.sendAction(action);
 
         expect(spy).toHaveBeenCalled();

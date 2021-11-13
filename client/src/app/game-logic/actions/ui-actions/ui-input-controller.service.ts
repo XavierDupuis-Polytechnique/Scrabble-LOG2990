@@ -9,6 +9,7 @@ import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
 import { ENTER, ESCAPE } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -35,6 +36,7 @@ export class UIInputControllerService {
         private pointCalculator: PointCalculatorService,
         private wordSearcher: WordSearcher,
         private boardService: BoardService,
+        private objectiveManager: ObjectiveManagerService,
     ) {
         this.info.endTurn$?.subscribe(() => {
             if (this.activeAction instanceof UIPlace) {
@@ -68,7 +70,7 @@ export class UIInputControllerService {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
                     this.discardAction();
-                    this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
+                    this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService, this.objectiveManager);
                     return true;
                 }
                 break;

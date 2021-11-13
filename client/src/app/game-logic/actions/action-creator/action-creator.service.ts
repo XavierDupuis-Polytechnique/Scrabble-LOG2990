@@ -3,6 +3,7 @@ import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -12,10 +13,14 @@ import { WordSearcher } from '@app/game-logic/validator/word-search/word-searche
     providedIn: 'root',
 })
 export class ActionCreatorService {
-    constructor(private pointCalculatorService: PointCalculatorService, private wordSearcher: WordSearcher) {}
+    constructor(
+        private pointCalculatorService: PointCalculatorService,
+        private wordSearcher: WordSearcher,
+        private objectiveManager: ObjectiveManagerService,
+    ) {}
 
     createPlaceLetter(player: Player, wordToPlace: string, placementSetting: PlacementSetting): PlaceLetter {
-        return new PlaceLetter(player, wordToPlace, placementSetting, this.pointCalculatorService, this.wordSearcher);
+        return new PlaceLetter(player, wordToPlace, placementSetting, this.pointCalculatorService, this.wordSearcher, this.objectiveManager);
     }
 
     createExchange(player: Player, lettersToExchange: Letter[]): ExchangeLetter {

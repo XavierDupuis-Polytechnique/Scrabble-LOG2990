@@ -96,6 +96,7 @@ describe('BoardComponent', () => {
             jasmine.createSpyObj('PointCalculatorService', ['void']),
             jasmine.createSpyObj('WordSearcher', ['void']),
             jasmine.createSpyObj('BoardService', ['void']),
+            jasmine.createSpyObj('ObjectiveManagerService', ['void']),
         );
 
         test.pointerPosition = { x: 1, y: 1 };
@@ -115,6 +116,7 @@ describe('BoardComponent', () => {
             jasmine.createSpyObj('PointCalculatorService', ['void']),
             jasmine.createSpyObj('WordSearcher', ['void']),
             jasmine.createSpyObj('BoardService', ['void']),
+            jasmine.createSpyObj('ObjectiveManagerService', ['void']),
         );
 
         (Object.getOwnPropertyDescriptor(inputControllerMock, 'activeAction')?.get as jasmine.Spy<() => UIPlace>).and.returnValue(test);

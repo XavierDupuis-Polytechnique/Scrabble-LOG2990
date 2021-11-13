@@ -44,7 +44,7 @@ export class GameManagerService {
         private commandExecuter: CommandExecuterService,
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
-        private onlineActionCompiler: OnlineActionCompilerService,
+        private onlineActionCompiler: OnlineActionCompilerService, // private objectiveManager: ObjectiveManagerService,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -94,7 +94,7 @@ export class GameManagerService {
 
         const opponentName = gameSettings.playerName === userName ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(userName, opponentName);
-        this.allocateOnlinePlayers(players);
+        this.allocatePlayers(players);
         onlineGame.handleUserActions();
 
         this.info.receiveGame(this.game);
@@ -131,10 +131,6 @@ export class GameManagerService {
         return [user, bot];
     }
 
-    private allocatePlayers(players: Player[]) {
-        (this.game as OfflineGame).players = players;
-    }
-
     private createOnlinePlayers(userName: string, opponentName: string): Player[] {
         const user = new User(userName);
         const opponent = new User(opponentName);
@@ -142,7 +138,7 @@ export class GameManagerService {
         return [user, opponent];
     }
 
-    private allocateOnlinePlayers(players: Player[]) {
+    private allocatePlayers(players: Player[]) {
         if (!this.game) {
             return;
         }

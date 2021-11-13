@@ -11,6 +11,7 @@ import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
+import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { InputComponent, InputType } from '@app/game-logic/interfaces/ui-input';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
@@ -95,6 +96,7 @@ describe('HorseComponent', () => {
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BoardService),
+            TestBed.inject(ObjectiveManagerService),
         );
         mockUIInputControllerService.activeAction.concernedIndexes.add(index);
         expect(component.isLetterSelectedForMove(index)).toBeFalsy();
@@ -139,6 +141,7 @@ describe('HorseComponent', () => {
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BoardService),
+            TestBed.inject(ObjectiveManagerService),
         );
         for (let index = 0; index < RACK_LETTER_COUNT; index++) {
             if (index % 2) {
