@@ -1,13 +1,15 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TIME_BUFFER_BEFORE_ACTION } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -22,7 +24,7 @@ describe('HardBot', () => {
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
     const dict = new DictionaryService();
-    let newGame: Game;
+    let newGame: OfflineGame;
     const randomBonus = false;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
@@ -40,17 +42,18 @@ describe('HardBot', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
-        newGame = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
+        newGame = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
         gameInfo.receiveGame(newGame);
         hardBot = new HardBot(
             'test',
             boardService,
             dict,
-            pointCalculator,
+            TestBed.inject(BotCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BotMessagesService),
             gameInfo,
             TestBed.inject(CommandExecuterService),
+            TestBed.inject(ActionCreatorService),
         );
     });
 

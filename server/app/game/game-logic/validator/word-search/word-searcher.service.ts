@@ -81,7 +81,7 @@ export class WordSearcher {
     goToBeginningOfWord(direction: Direction, letterPos: Vec2, grid: Tile[][]): Vec2 {
         let x = letterPos.x;
         let y = letterPos.y;
-        if ((direction as Direction) === Direction.Horizontal) {
+        if (direction === Direction.Horizontal) {
             while (this.tileIsOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
                 y -= 1;
             }

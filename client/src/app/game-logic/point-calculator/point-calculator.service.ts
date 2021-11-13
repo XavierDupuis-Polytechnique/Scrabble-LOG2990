@@ -3,10 +3,9 @@ import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Tile } from '@app/game-logic/game/board/tile';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
 import { Player } from '@app/game-logic/player/player';
-import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/game-logic/point-calculator/calculation-estimation';
 
 const MAX_LETTER_IN_RACK = 7;
 const BONUS = 50;
@@ -34,22 +33,9 @@ export class PointCalculatorService {
         return totalPointsOfTurn;
     }
 
-    testPlaceLetterCalculation(numberOfLettersToPlace: number, wordList: Tile[][]): PlaceLetterPointsEstimation {
-        const wordsPoints = this.calculatePointsForEachWord(wordList);
-        let totalPoints = 0;
-        wordsPoints.forEach((wordPoint) => {
-            totalPoints += wordPoint.points;
-        });
-        const isBingo = numberOfLettersToPlace >= MAX_LETTER_IN_RACK;
-        if (isBingo) {
-            totalPoints += BONUS;
-        }
-        return { wordsPoints, totalPoints, isBingo };
-    }
-
-    endOfGamePointDeduction(game: Game): void {
+    endOfGamePointDeduction(game: OfflineGame): void {
         const activePlayer = game.getActivePlayer();
-        if (game.consecutivePass >= Game.maxConsecutivePass) {
+        if (game.consecutivePass >= OfflineGame.maxConsecutivePass) {
             for (const player of game.players) {
                 player.points -= this.calculatePointsOfRack(player);
             }
@@ -73,15 +59,6 @@ export class PointCalculatorService {
         });
         sumOfWord *= totalWordMultiplicator;
         return sumOfWord;
-    }
-
-    calculatePointsForEachWord(wordList: Tile[][]): WordPointsEstimation[] {
-        const wordPoints: WordPointsEstimation[] = wordList.map((wordTile) => {
-            const word = this.tileToString(wordTile);
-            const points = this.calculatePointsOfWord(wordTile);
-            return { word, points };
-        });
-        return wordPoints;
     }
 
     calculatePointsOfRack(player: Player): number {
@@ -112,13 +89,5 @@ export class PointCalculatorService {
                 this.grid[y][x].wordMultiplicator = 1;
             }
         }
-    }
-
-    tileToString(word: Tile[]): string {
-        let wordTemp = '';
-        word.forEach((tile) => {
-            wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
-        });
-        return wordTemp;
     }
 }

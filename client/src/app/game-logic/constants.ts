@@ -33,6 +33,13 @@ export const STEP_TIME_PER_TURN = 30000;
 export const DEBUG_MESSAGE_ACTIVATED = 'affichages de débogage activés';
 export const DEBUG_MESSAGE_DEACTIVATED = 'affichages de débogage désactivés';
 export const RESERVE_NOT_ACCESSIBLE = 'la commande de reserve est uniquement disponible en mode de débogage';
+export const HELP =
+    '\\n #-Actions-# \\n #!placer <ligne><colonne>(h|v) <mot># \\n Place un mot sur le plateau de jeu.\\n' +
+    '#!échanger <x><x><x># où x est une lettre du chevalet à échanger avec la réserve. \\n' +
+    '#!passer# \\n Passe le tour. \\n #-Autres-# \\n #!debug# pour activer le mode débogage.\\n' +
+    'Affiche les mots alternatifs que le joueur virtuel aurait pu placer.\\n' +
+    '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve. \\n' +
+    '#!aide# \\n Affiche la liste des commandes disponibles.';
 export const ASCII_CODE = 65;
 export const TIMER_STEP = 1000;
 export const BACKSPACE = 'Backspace';

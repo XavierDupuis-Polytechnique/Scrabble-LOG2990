@@ -5,7 +5,7 @@ import { ActionValidatorService } from '@app/game-logic/actions/action-validator
 import { ActionCompilerService } from '@app/game-logic/commands/action-compiler/action-compiler.service';
 import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
-import { DEBUG_MESSAGE_ACTIVATED, DEBUG_MESSAGE_DEACTIVATED, END_LINE, RESERVE_NOT_ACCESSIBLE } from '@app/game-logic/constants';
+import { DEBUG_MESSAGE_ACTIVATED, DEBUG_MESSAGE_DEACTIVATED, END_LINE, HELP, RESERVE_NOT_ACCESSIBLE } from '@app/game-logic/constants';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { environment } from 'src/environments/environment';
@@ -52,7 +52,7 @@ export class CommandExecuterService {
         }
 
         if (type === CommandType.Help) {
-            return;
+            this.executeAide();
         }
 
         if (type === CommandType.Exchange || type === CommandType.Pass || type === CommandType.Place) {
@@ -105,5 +105,9 @@ export class CommandExecuterService {
 
     private sendAction(action: Action) {
         this.actionValidator.sendAction(action);
+    }
+
+    private executeAide() {
+        this.messageService.receiveSystemMessage(HELP);
     }
 }

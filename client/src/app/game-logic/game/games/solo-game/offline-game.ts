@@ -4,13 +4,15 @@ import { MAX_CONSECUTIVE_PASS } from '@app/game-logic/constants';
 import { Board } from '@app/game-logic/game/board/board';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterBag } from '@app/game-logic/game/board/letter-bag';
+import { Game } from '@app/game-logic/game/games/game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
-import { merge, Observable, Subject } from 'rxjs';
+import { merge } from 'rxjs';
 import { first, mapTo } from 'rxjs/operators';
-export class Game {
+
+export class OfflineGame extends Game {
     static readonly maxConsecutivePass = MAX_CONSECUTIVE_PASS;
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
@@ -18,11 +20,6 @@ export class Game {
     activePlayerIndex: number;
     consecutivePass: number = 0;
     turnNumber: number = 0;
-    private endTurnSubject = new Subject<void>();
-
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
-    }
 
     constructor(
         public randomBonus: boolean,
@@ -32,8 +29,13 @@ export class Game {
         private boardService: BoardService,
         private messagesService: MessagesService,
     ) {
+        super();
         this.board = new Board(randomBonus);
         this.boardService.board = this.board;
+    }
+
+    getNumberOfLettersRemaining(): number {
+        return this.letterBag.lettersLeft;
     }
 
     start(): void {
@@ -43,6 +45,10 @@ export class Game {
         this.drawGameLetters();
         this.pickFirstPlayer();
         this.startTurn();
+    }
+
+    stop() {
+        this.timer.stop();
     }
 
     nextPlayer() {
@@ -57,7 +63,7 @@ export class Game {
                 }
             }
         }
-        if (this.consecutivePass >= Game.maxConsecutivePass) {
+        if (this.consecutivePass >= OfflineGame.maxConsecutivePass) {
             return true;
         }
         return false;
