@@ -7,7 +7,7 @@ import { BotNamesService } from '@app/db-manager-services/bot-name-db-manager/bo
 export class BotNamesController {
     router: Router;
 
-    constructor(private botNameService: BotNamesService) {
+    constructor(private botNamesService: BotNamesService) {
         this.configureRouter();
     }
 
@@ -16,9 +16,9 @@ export class BotNamesController {
 
         this.router.get('/', async (req: Request, res: Response) => {
             try {
-                const botNames = await this.botNameService.getBotNames();
+                const botNames = await this.botNamesService.getBotNames();
                 res.json(botNames);
-            } catch (error) {
+            } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
@@ -30,7 +30,7 @@ export class BotNamesController {
                 return;
             }
             try {
-                const botNameAdded = await this.botNameService.addBotName(botName);
+                const botNameAdded = await this.botNamesService.addBotName(botName);
                 if (botNameAdded) {
                     res.sendStatus(StatusCodes.CREATED);
                 } else {
@@ -48,7 +48,7 @@ export class BotNamesController {
                 return;
             }
             try {
-                const botNameDeleted = await this.botNameService.deleteBotName(botName);
+                const botNameDeleted = await this.botNamesService.deleteBotName(botName);
                 if (botNameDeleted) {
                     res.sendStatus(StatusCodes.OK);
                 } else {
