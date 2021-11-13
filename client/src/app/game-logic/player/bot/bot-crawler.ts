@@ -1,12 +1,10 @@
-import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { Direction } from '@app/game-logic/direction.enum';
 import { Tile } from '@app/game-logic/game/board/tile';
-import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { Bot } from '@app/game-logic/player/bot/bot';
 import { ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { PositionSettings } from '@app/game-logic/player/position-settings';
-import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 
@@ -19,7 +17,7 @@ export class BotCrawler {
     constructor(
         private bot: Bot,
         private dictionaryService: DictionaryService,
-        protected pointCalculatorService: PointCalculatorService,
+        protected botCalculatorService: BotCalculatorService,
         protected wordValidator: WordSearcher,
     ) {}
 
@@ -305,22 +303,17 @@ export class BotCrawler {
     }
 
     private possibleWordsValidator(possiblyValidWords: ValidWord[]) {
-        for (const word of possiblyValidWords) {
-            let placement: PlacementSetting;
-            if (word.isVertical) {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Vertical };
-            } else {
-                placement = { x: word.startingTileX, y: word.startingTileY, direction: Direction.Horizontal };
-            }
-            const fakeAction = new PlaceLetter(this.bot, word.word, placement, this.pointCalculatorService, this.wordValidator);
-            const validWords = this.wordValidator.listOfValidWord(fakeAction);
+        for (const wordData of possiblyValidWords) {
+            const direction = wordData.isVertical ? Direction.Vertical : Direction.Horizontal;
+            const placement = { x: wordData.startingTileX, y: wordData.startingTileY, direction };
+            const validWords = this.wordValidator.listOfValidWord({ word: wordData.word, placement });
             const wordIsValid = validWords.length > EMPTY;
             if (wordIsValid) {
                 const words = validWords.map((validWord) => validWord.letters);
-                const pointEstimation = this.pointCalculatorService.testPlaceLetterCalculation(word.numberOfLettersPlaced, words);
-                word.value = pointEstimation;
-                word.adjacentWords = validWords;
-                this.bot.validWordList.push(word);
+                const pointEstimation = this.botCalculatorService.testPlaceLetterCalculation(wordData.numberOfLettersPlaced, words);
+                wordData.value = pointEstimation;
+                wordData.adjacentWords = validWords;
+                this.bot.validWordList.push(wordData);
             }
         }
     }

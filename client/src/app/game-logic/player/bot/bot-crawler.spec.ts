@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 import { TestBed } from '@angular/core/testing';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.service';
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
-import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 
@@ -31,14 +32,18 @@ describe('BotCrawler1', () => {
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     let bot: EasyBot;
     let boardService: BoardService;
+    let botCalculator: BotCalculatorService;
+    let actionFactory: ActionCreatorService;
+
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService],
         });
         boardService = TestBed.inject(BoardService);
-        const pointCalc = new PointCalculatorService(boardService);
+        botCalculator = TestBed.inject(BotCalculatorService);
+        actionFactory = TestBed.inject(ActionCreatorService);
         const wordVal = new WordSearcher(boardService, dict);
-        bot = new EasyBot('test', boardService, dict, pointCalc, wordVal, botMessageMock, gameInfo, commandExecuterMock);
+        bot = new EasyBot('test', boardService, dict, botCalculator, wordVal, botMessageMock, gameInfo, commandExecuterMock, actionFactory);
     });
 
     it('should create an instance', () => {
@@ -102,14 +107,18 @@ describe('BotCrawler2', () => {
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     let bot: EasyBot;
     let boardService: BoardService;
+    let botCalculator: BotCalculatorService;
+    let actionFactory: ActionCreatorService;
     beforeEach(async () => {
         await TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService],
+            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, ActionCreatorService],
         });
         boardService = TestBed.inject(BoardService);
-        const pointCalc = new PointCalculatorService(boardService);
+        botCalculator = TestBed.inject(BotCalculatorService);
+        actionFactory = TestBed.inject(ActionCreatorService);
         const wordVal = new WordSearcher(boardService, dict);
-        bot = new EasyBot('test', boardService, dict, pointCalc, wordVal, botMessageMock, gameInfo, commandExecuterMock);
+
+        bot = new EasyBot('test', boardService, dict, botCalculator, wordVal, botMessageMock, gameInfo, commandExecuterMock, actionFactory);
     });
 
     it('should return a list of all validWord the bot can play', () => {

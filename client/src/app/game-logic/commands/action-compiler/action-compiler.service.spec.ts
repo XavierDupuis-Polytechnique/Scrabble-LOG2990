@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -23,7 +24,7 @@ describe('ActionCompilerService', () => {
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [{ provide: DictionaryService, useValue: dict }, ActionCreatorService],
         });
         service = TestBed.inject(ActionCompilerService);
         gameInfo = TestBed.inject(GameInfoService);
