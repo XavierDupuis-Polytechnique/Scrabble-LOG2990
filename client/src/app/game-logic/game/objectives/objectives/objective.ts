@@ -1,3 +1,4 @@
+import { Action } from '@app/game-logic/actions/action';
 import { Game } from '@app/game-logic/game/games/game';
 
 export abstract class Objective {
@@ -9,5 +10,5 @@ export abstract class Objective {
     get isCompleted(): boolean {
         return this.owner !== undefined;
     }
-    abstract update(game: Game): void;
+    abstract update(action: Action, game: Game): void;
 }

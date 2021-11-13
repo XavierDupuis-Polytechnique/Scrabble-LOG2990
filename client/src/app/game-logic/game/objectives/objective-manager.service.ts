@@ -34,25 +34,34 @@ export class ObjectiveManagerService {
     }
 
     checkObjectives(action: Action, game: Game) {
-        return;
+        for (const objective of this.objectives) {
+            objective.update(action, game);
+        }
     }
 
     chooseObjectives(count: number = 1): Objective[] {
+        if (this.availableObjectivesIndex.length < count) {
+            throw new Error('Cannot create ' + count + ' unique objectives : only ' + this.availableObjectivesIndex.length + ' available');
+        }
         const createdObjectives: Objective[] = [];
         for (let index = 0; index < count; index++) {
             const randomInt = getRandomInt(this.availableObjectivesIndex.length);
             const randomObjectiveIndex = this.availableObjectivesIndex[randomInt];
-            switch (randomObjectiveIndex) {
-                case ObjectiveType.FOURCOURNERS:
-                    createdObjectives.push(new FourCorners());
-                    break;
-
-                default:
-                    break;
-            }
+            const createdObjective = this.createObjective(randomObjectiveIndex);
+            createdObjectives.push(createdObjective);
             this.availableObjectivesIndex.splice(randomObjectiveIndex, 1);
         }
         this.objectives = this.objectives.concat(createdObjectives);
         return createdObjectives;
+    }
+
+    private createObjective(objectiveIndex: number): Objective {
+        switch (objectiveIndex) {
+            case ObjectiveType.FOURCOURNERS:
+                return new FourCorners();
+
+            default:
+                throw Error('Could not create objectif with specified index ' + objectiveIndex);
+        }
     }
 }
