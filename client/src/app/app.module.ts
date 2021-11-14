@@ -28,6 +28,7 @@ import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.compone
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
+import { ObjectivesComponent } from './pages/game-page/objectives/objectives.component';
 
 /**
  * Main module that is used in main.ts.
@@ -62,6 +63,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
+        ObjectivesComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [

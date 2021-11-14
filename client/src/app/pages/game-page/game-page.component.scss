@@ -6,11 +6,12 @@
 .container {
     display: grid;
     grid-template-columns: 0.8fr 1fr 1fr 0.8fr;
-    grid-template-rows: 0.25fr 1.5fr 1.75fr 0.5fr;
+    grid-template-rows: 0.25fr 1.5fr 1.75fr 0.5fr 0.8fr;
     gap: 0px 0px;
     grid-template-areas:
         'Img Img Img Img'
-        'Player Board Board Info'
+        'Info Board Board Objectives'
+        'Player Board Board Chat'
         'Actions Board Board Chat'
         'Quitter Horse Horse Chat';
 }
@@ -52,6 +53,12 @@ app-horse {
 
 app-player-info {
     grid-area: Player;
+    padding: 1%;
+    padding-left: 2%;
+}
+
+app-objectives {
+    grid-area: Objectives;
     padding: 1%;
     padding-left: 2%;
 }

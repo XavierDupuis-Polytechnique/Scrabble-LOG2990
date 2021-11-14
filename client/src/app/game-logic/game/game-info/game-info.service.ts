@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { Game } from '@app/game-logic/game/games/game';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
@@ -111,5 +115,31 @@ export class GameInfoService {
             return (this.game as OnlineGame).gameToken;
         }
         return '';
+    }
+
+    get isSpecialGame(): boolean {
+        if (!this.game) {
+            return false;
+        }
+        return this.game instanceof SpecialOfflineGame || this.game instanceof SpecialOnlineGame;
+    }
+
+    get privateObjectives(): Objective[] {
+        if (!this.game || !this.user) {
+            throw Error('No Game or User in GameInfo');
+        }
+        const specialGame = this.game as SpecialGame;
+        const privateObjectives = specialGame.privateObjectives.get(this.user.name);
+        if (!privateObjectives) {
+            return [];
+        }
+        return privateObjectives;
+    }
+
+    get publicObjectives(): Objective[] {
+        if (!this.game) {
+            throw Error('No Game in GameInfo');
+        }
+        return (this.game as SpecialGame).publicObjectives;
     }
 }

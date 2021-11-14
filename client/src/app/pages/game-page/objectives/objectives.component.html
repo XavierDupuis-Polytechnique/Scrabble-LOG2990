@@ -1,0 +1,18 @@
+<div *ngIf="info.isSpecialGame">
+    <div *ngFor="let publicObjective of info.publicObjectives">
+        <mat-card class="public objective">
+            <mat-card-header> {{ publicObjective.name }} </mat-card-header>
+            <mat-card-subtitle> {{ publicObjective.description }} </mat-card-subtitle>
+            <mat-divider inset></mat-divider>
+            <mat-card-content></mat-card-content>
+        </mat-card>
+    </div>
+    <div *ngFor="let privateObjective of info.privateObjectives">
+        <mat-card class="private objective">
+            <mat-card-header> {{ privateObjective.name }} </mat-card-header>
+            <mat-card-subtitle> {{ privateObjective.description }} </mat-card-subtitle>
+            <mat-divider inset></mat-divider>
+            <mat-card-content></mat-card-content>
+        </mat-card>
+    </div>
+</div>

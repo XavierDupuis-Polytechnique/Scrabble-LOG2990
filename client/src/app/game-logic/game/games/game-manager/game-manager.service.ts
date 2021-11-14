@@ -7,6 +7,7 @@ import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
@@ -69,6 +70,11 @@ export class GameManagerService {
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
+    }
+
+    createSpecialGame(gameSettings: GameSettings): void {
+        (this.game as SpecialOfflineGame).allocateObjectives();
+        return;
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {

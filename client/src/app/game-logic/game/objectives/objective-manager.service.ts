@@ -53,6 +53,7 @@ export class ObjectiveManagerService {
         }
         this.objectives = this.objectives.concat(createdObjectives);
         return createdObjectives;
+        // return [this.createObjective(0)];
     }
 
     private createObjective(objectiveIndex: number): Objective {
@@ -61,7 +62,7 @@ export class ObjectiveManagerService {
                 return new FourCorners();
 
             default:
-                throw Error('Could not create objectif with specified index ' + objectiveIndex);
+                throw Error('Could not create objective with specified index ' + objectiveIndex);
         }
     }
 }

@@ -1,12 +1,13 @@
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
 import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 
-export class SpecialOfflineGame extends OfflineGame {
+export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
     privateObjectives: Map<string, Objective[]>;
     publicObjectives: Objective[];
     constructor(
@@ -21,10 +22,9 @@ export class SpecialOfflineGame extends OfflineGame {
         super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService);
         this.privateObjectives = new Map<string, Objective[]>();
         this.publicObjectives = [];
-        this.allocateObjectives();
     }
 
-    private allocateObjectives() {
+    allocateObjectives() {
         this.allocatePrivateObjectives();
         this.allocatePublicObjectives();
     }
