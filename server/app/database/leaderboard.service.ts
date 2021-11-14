@@ -3,8 +3,8 @@ import { Collection } from 'mongodb';
 import { Service } from 'typedi';
 
 export enum GameMode {
-    Classique,
-    Log,
+    Classic = 'classic',
+    Log = 'log',
 }
 export interface Score {
     name: string;
@@ -51,8 +51,18 @@ export class LeaderboardService {
         return this.databaseService.database.collection(LEADERBOARD_LOG_COLLECTION);
     }
 
+    async getAllScores(): Promise<Map<string, Score[]>> {
+        const allScores = new Map<string, Score[]>();
+        const modes = [GameMode.Classic, GameMode.Log];
+        for (const mode of modes) {
+            const scores = await this.getScores(mode);
+            allScores.set(GameMode.Classic, scores);
+        }
+        return allScores;
+    }
+
     async getScores(mode: GameMode): Promise<Score[]> {
-        const collection = mode === GameMode.Classique ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
+        const collection = mode === GameMode.Classic ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
         return collection
             .find({})
             .toArray()
@@ -62,19 +72,22 @@ export class LeaderboardService {
     }
 
     async addScore(score: Score, mode: GameMode): Promise<boolean> {
-        if (!this.validateScore(score)) {
+        if (!this.validScore(score)) {
             return false;
         }
-        const collection = mode === GameMode.Classique ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
+        const collection = mode === GameMode.Classic ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
+        const isPlayerInDb = collection.find((collectionScore: Score) => collectionScore.name === score.name);
+        if (isPlayerInDb) {
+            this.modifyScore(score, mode);
+        }
         try {
+            console.log('Adding score');
             await collection.insertOne(score);
             return true;
         } catch (e) {
             return false;
         }
     }
-
-    // async modifyScore(score: Score): Promise<void> {}
 
     async deleteScores(): Promise<boolean> {
         try {
@@ -86,7 +99,24 @@ export class LeaderboardService {
         }
     }
 
-    private validateScore(score: Score): boolean {
-        return score.point < 0;
+    private async modifyScore(score: Score, mode: GameMode): Promise<boolean> {
+        const collection = mode === GameMode.Classic ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
+        try {
+            console.log('Modifying score');
+            await collection.updateOne({ name: score.name }, { point: score.point });
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    private validScore(score: Score): boolean {
+        if (score.isEditable) {
+            console.log('ValidScore');
+            return score.point > 0;
+        }
+        console.log('InvalidScore');
+
+        return false;
     }
 }

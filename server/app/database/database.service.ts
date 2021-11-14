@@ -48,13 +48,13 @@ export class DatabaseService {
         try {
             const checkCollectionExists = await this.collectionExists(collectionName);
             if (!checkCollectionExists) {
-                await this.db.createCollection(collectionName);
-                await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
+                await this.database.createCollection(collectionName);
+                await this.database.collection(collectionName).createIndex({ name: 1 }, { unique: true });
+                this.populateLeaderboardCollection(collectionName);
             }
         } catch (e) {
             throw Error('Data base collection creation error');
         }
-        this.populateLeaderboardCollection(collectionName);
     }
 
     private async collectionExists(name: string): Promise<boolean> {
