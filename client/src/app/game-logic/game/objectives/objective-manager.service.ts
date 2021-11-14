@@ -15,7 +15,10 @@ enum ObjectiveType {
     sEVENTH,
     eIGHTH,
 }
-
+// TODO: change responsabiltity to only manage objectives in multiplayer it is going to receive
+// a list with objectives so the update methode is just going to update the objectives attributes
+// in solo it is going to update them with the update method of every objective
+// therefore ObjectiveManagerService is not going to be responsible for the creation of objectives
 @Injectable({
     providedIn: 'root',
 })
@@ -25,6 +28,7 @@ export class ObjectiveManagerService {
     private static objectiveCount = Object.keys(ObjectiveType).length;
     availableObjectivesIndex: number[];
     objectives: Objective[];
+    // weird to do that in constructor that means it gonna do it one time
     constructor() {
         this.availableObjectivesIndex = [];
         for (let index = 0; index < ObjectiveManagerService.objectiveCount; index++) {
@@ -38,7 +42,7 @@ export class ObjectiveManagerService {
             objective.update(action, game);
         }
     }
-
+    // TODO: game should do that
     chooseObjectives(count: number = 1): Objective[] {
         if (this.availableObjectivesIndex.length < count) {
             throw new Error('Cannot create ' + count + ' unique objectives : only ' + this.availableObjectivesIndex.length + ' available');
@@ -55,6 +59,7 @@ export class ObjectiveManagerService {
         return createdObjectives;
     }
 
+    // TODO" put that in a util func or in another class for exemple (objective-creator)
     private createObjective(objectiveIndex: number): Objective {
         switch (objectiveIndex) {
             case ObjectiveType.FOURCOURNERS:

@@ -13,6 +13,7 @@ import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-
 import { Subscription } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 
+// TODO: change name to new-game-component (page)
 @Component({
     selector: 'app-classic-game',
     templateUrl: './classic-game.component.html',
@@ -21,6 +22,8 @@ import { takeWhile } from 'rxjs/operators';
 export class ClassicGameComponent {
     gameSettings: GameSettings;
     startGame$$: Subscription;
+    specialGame = false;
+
     constructor(
         private router: Router,
         private gameManager: GameManagerService,
@@ -116,6 +119,10 @@ export class ClassicGameComponent {
     }
 
     startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
+        // TODO: join special game if special game is selected
+        if (this.specialGame) {
+            throw Error('not implemented yet');
+        }
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
@@ -124,7 +131,12 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        this.gameManager.createGame(this.gameSettings);
+        // TODO: create special game if special game is selected
+        if (this.specialGame) {
+            this.gameManager.createSpecialGame(this.gameSettings);
+        } else {
+            this.gameManager.createGame(this.gameSettings);
+        }
         this.router.navigate(['/game']);
     }
 }

@@ -30,7 +30,6 @@ import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-inf
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
-import { SpecialGameComponent } from './pages/special-game/special-game/special-game.component';
 
 /**
  * Main module that is used in main.ts.
@@ -67,7 +66,6 @@ import { SpecialGameComponent } from './pages/special-game/special-game/special-
         MouseRollDirective,
         ObjectivesListComponent,
         ObjectiveComponent,
-        SpecialGameComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [
