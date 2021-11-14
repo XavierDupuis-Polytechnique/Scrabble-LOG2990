@@ -25,10 +25,12 @@ import { ChatBoxComponent } from '@app/pages/game-page/chat-box/chat-box.compone
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { HorseComponent } from '@app/pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.component';
+import { ObjectiveComponent } from '@app/pages/game-page/objectives/objective-component/objective.component';
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
-import { ObjectivesComponent } from './pages/game-page/objectives/objectives.component';
+import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
+import { SpecialGameComponent } from './pages/special-game/special-game/special-game.component';
 
 /**
  * Main module that is used in main.ts.
@@ -63,7 +65,9 @@ import { ObjectivesComponent } from './pages/game-page/objectives/objectives.com
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
-        ObjectivesComponent,
+        ObjectivesListComponent,
+        ObjectiveComponent,
+        SpecialGameComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [

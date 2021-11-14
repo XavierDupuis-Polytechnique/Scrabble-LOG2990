@@ -38,7 +38,7 @@ export class PlaceLetter extends Action {
             this.pointCalculator.placeLetterCalculation(this, words);
             this.drawLettersForPlayer(game);
             // TODO : if(game instanceof SpecialOnlineGame) then next line
-            this.objectiveManager.checkObjectives(this, game);
+            this.objectiveManager.updateObjectives(this, game);
             this.end();
         } else {
             timer(TIME_FOR_REVERT).subscribe(() => {

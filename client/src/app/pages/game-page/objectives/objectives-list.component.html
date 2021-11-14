@@ -1,0 +1,8 @@
+<div *ngIf="info.isSpecialGame">
+    <div *ngFor="let publicObjective of info.publicObjectives">
+        <app-objective class="public objective" [objective]="publicObjective"></app-objective>
+    </div>
+    <div *ngFor="let privateObjective of info.privateObjectives">
+        <app-objective class="private objective" [objective]="privateObjective"></app-objective>
+    </div>
+</div>
