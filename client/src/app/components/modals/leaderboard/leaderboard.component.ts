@@ -26,7 +26,7 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
             {
                 columnDef: 'playerName',
                 header: 'Nom des joueurs',
-                cell: (score: HighScore) => `${score.names} \n`,
+                cell: (score: HighScore) => `${score.names}`,
             },
             {
                 columnDef: 'points',
@@ -49,7 +49,7 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
             data.forEach((obj) => {
                 const indexOfScore = scores.findIndex((score: HighScore) => obj.point === score.point);
                 if (indexOfScore !== -1) {
-                    scores[indexOfScore].names.push(obj.name);
+                    scores[indexOfScore].names.push(' ' + obj.name);
                 } else {
                     scores.push({ names: [obj.name], point: obj.point });
                 }

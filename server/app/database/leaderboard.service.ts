@@ -18,11 +18,11 @@ export const LEADERBOARD_LOG_COLLECTION = 'leaderboardLog';
 export const DEFAULT_LEADERBOARD = [
     {
         name: 'Player0',
-        point: 100,
+        point: 200,
     },
     {
         name: 'Player1',
-        point: 200,
+        point: 100,
     },
     {
         name: 'Player2',
