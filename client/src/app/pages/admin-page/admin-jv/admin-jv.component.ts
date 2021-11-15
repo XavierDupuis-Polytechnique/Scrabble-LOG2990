@@ -49,9 +49,11 @@ export class AdminJvComponent implements OnInit {
         });
     }
 
-    private async updateList() {
-        this.botDataInfo = await this.jvHttpService.getDataInfo();
-        this.dataSource = [...this.botDataInfo];
-        console.log(this.dataSource);
+    private updateList() {
+        this.jvHttpService.getDataInfo().subscribe((res) => {
+            const list = res as BotInfo[];
+            this.botDataInfo = list;
+            this.dataSource = [...this.botDataInfo];
+        });
     }
 }

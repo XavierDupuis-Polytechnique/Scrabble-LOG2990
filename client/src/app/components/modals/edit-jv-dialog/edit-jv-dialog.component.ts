@@ -22,26 +22,28 @@ export class EditJvDialogComponent {
         this.editBotInfo = { name: data.name, type: data.type, canEdit: data.canEdit };
         this.isEdit = data.canEdit;
     }
-    // TODO changer les message d'alert
+
     editBot() {
-        if (!this.jvHttpService.editBot(this.editBotInfo, this.bot)) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: 'Un problème est survenue. Veuillez réessayer',
-            });
-        } else {
-            this.dialogRef.close();
-        }
+        this.jvHttpService.editBot(this.editBotInfo, this.bot).subscribe((res) => {
+            const ans = JSON.parse(res.toString());
+            if (ans === false) {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: 'Le nom du joueur virtuel est déjà utilisé',
+                });
+            } else this.dialogRef.close();
+        });
     }
 
     addBot() {
-        if (!this.jvHttpService.addBot(this.bot)) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: 'Un problème est survenue. Veuillez réessayer',
-            });
-        } else {
-            this.dialogRef.close();
-        }
+        this.jvHttpService.addBot(this.bot).subscribe((res) => {
+            const ans = JSON.parse(res.toString());
+            if (ans === false) {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: 'Le nom du joueur virtuel est déjà utilisé',
+                });
+            } else this.dialogRef.close();
+        });
     }
 }

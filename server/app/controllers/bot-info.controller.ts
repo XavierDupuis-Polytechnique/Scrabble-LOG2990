@@ -29,11 +29,11 @@ export class BotInfoController {
                 const clientBotInfo = req.body as BotInfo;
                 const t = await this.botInfoService.isBotExist(clientBotInfo.name);
                 if (t) {
-                    res.sendStatus(StatusCodes.CONFLICT);
+                    res.send(false);
                 } else {
                     clientBotInfo.canEdit = true;
                     await this.botInfoService.addBot(clientBotInfo);
-                    res.sendStatus(StatusCodes.OK);
+                    res.send(true);
                 }
             } catch (e) {
                 throw Error('BotInfo Controller add error');
@@ -54,11 +54,8 @@ export class BotInfoController {
         this.router.put('/', async (req, res) => {
             try {
                 const clientBotInfos = req.body as BotInfo[];
-                const serverBotInfo = await this.botInfoService.getBotInfoByName(clientBotInfos[0].name);
-                serverBotInfo.name = clientBotInfos[1].name;
-                serverBotInfo.type = clientBotInfos[1].type;
-                this.botInfoService.updateBot(clientBotInfos[0], serverBotInfo);
-                res.sendStatus(StatusCodes.OK);
+                const ans = await this.botInfoService.updateBot(clientBotInfos[0], clientBotInfos[1]);
+                res.send(ans);
             } catch (e) {
                 throw Error('BotInfo Controller put error');
             }

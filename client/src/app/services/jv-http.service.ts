@@ -18,33 +18,19 @@ export interface BotInfo {
 })
 export class JvHttpService {
     constructor(private http: HttpClient) {}
-    async editBot(oldBot: BotInfo, newBot: BotInfo): Promise<boolean> {
-        return new Promise<boolean>((resolve) => {
-            this.http.put(`${environment.serverUrl}/botinfo`, [oldBot, newBot], { responseType: 'text' }).subscribe((res) => {
-                resolve(true);
-            });
-        });
+    editBot(oldBot: BotInfo, newBot: BotInfo) {
+        return this.http.put(`${environment.serverUrl}/botinfo`, [oldBot, newBot]);
     }
 
-    async addBot(bot: BotInfo): Promise<boolean> {
-        return new Promise<boolean>((resolve) => {
-            this.http.post(`${environment.serverUrl}/botinfo`, bot, { responseType: 'text' }).subscribe((res) => {
-                console.log(res);
-                resolve(true);
-            });
-        });
+    addBot(bot: BotInfo) {
+        return this.http.post(`${environment.serverUrl}/botinfo`, bot);
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
     deleteBot(bot: BotInfo) {
         return this.http.delete(`${environment.serverUrl}/botinfo/${bot.name}`, { responseType: 'text' });
     }
 
-    async getDataInfo(): Promise<BotInfo[]> {
-        return new Promise<BotInfo[]>((resolve) => {
-            this.http.get<BotInfo[]>(`${environment.serverUrl}/botinfo`).subscribe((res) => {
-                resolve(res);
-            });
-        });
+    getDataInfo() {
+        return this.http.get(`${environment.serverUrl}/botinfo`);
     }
 }
