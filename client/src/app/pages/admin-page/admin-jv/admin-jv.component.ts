@@ -24,7 +24,7 @@ export class AdminJvComponent implements OnInit {
         this.dialog
             .open(EditJvDialogComponent, {
                 width: '250px',
-                data: { dialogBot: bot, isEdit: true },
+                data: bot,
             })
             .afterClosed()
             .subscribe(() => {
@@ -33,17 +33,22 @@ export class AdminJvComponent implements OnInit {
     }
 
     addBot(): void {
-        this.dialog.open(EditJvDialogComponent, {
-            width: '250px',
-            data: { dialogBot: {}, isEdit: false },
-        });
+        this.dialog
+            .open(EditJvDialogComponent, {
+                width: '250px',
+                data: { dialogBot: {}, isEdit: false },
+            })
+            .afterClosed()
+            .subscribe(() => {
+                this.updateList();
+            });
     }
 
     deleteBot(bot: BotInfo): void {
         this.jvHttpService.deleteBot(bot);
     }
 
-    private updateList() {
-        this.botDataInfo = this.jvHttpService.getDataInfo();
+    private async updateList() {
+        this.botDataInfo = await this.jvHttpService.getDataInfo();
     }
 }

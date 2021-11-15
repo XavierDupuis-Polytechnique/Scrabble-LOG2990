@@ -17,7 +17,7 @@ export class EditJvDialogComponent {
         private dialog: MatDialog,
         private dialogRef: MatDialogRef<EditJvDialogComponent>,
     ) {
-        this.bot = { name: data.name, type: data.type, canEdit: data.canEdit, id: data.id };
+        this.bot = { name: data.name, type: data.type, canEdit: data.canEdit };
         this.isEdit = data.canEdit;
     }
     // TODO changer les message d'alert
