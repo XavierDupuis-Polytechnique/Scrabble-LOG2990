@@ -20,7 +20,7 @@ export class BotInfoController {
                 const botInfos = await this.botInfoService.getBotInfoList();
                 res.json(botInfos);
             } catch (e) {
-                throw Error('BotInfo Controller Get error');
+                res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
@@ -36,7 +36,7 @@ export class BotInfoController {
                     res.send(true);
                 }
             } catch (e) {
-                throw Error('BotInfo Controller add error');
+                res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
@@ -47,7 +47,7 @@ export class BotInfoController {
                 this.botInfoService.deleteBot(botinfo);
                 res.sendStatus(StatusCodes.OK);
             } catch (error) {
-                throw Error(error);
+                res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
@@ -57,7 +57,7 @@ export class BotInfoController {
                 const ans = await this.botInfoService.updateBot(clientBotInfos[0], clientBotInfos[1]);
                 res.send(ans);
             } catch (e) {
-                throw Error('BotInfo Controller put error');
+                res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
     }

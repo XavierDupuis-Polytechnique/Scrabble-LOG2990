@@ -2,8 +2,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
-import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
-import { of } from 'rxjs';
+import { BotInfo, BotType, JvHttpService } from '@app/services/jv-http.service';
+import { Observable, of } from 'rxjs';
 import { AdminJvComponent } from './admin-jv.component';
 
 describe('AdminJvComponent', () => {
@@ -15,6 +15,11 @@ describe('AdminJvComponent', () => {
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         jvHttpServiceMock = jasmine.createSpyObj('JvHttpService', ['deleteBot', 'getDataInfo']);
 
+        const dummyData: BotInfo[] = [{ name: 'Test', canEdit: true, type: BotType.Easy }];
+        const obs = new Observable<BotInfo[]>((sub) => {
+            sub.next(dummyData);
+        });
+        jvHttpServiceMock.getDataInfo.and.returnValue(obs);
         TestBed.configureTestingModule({
             declarations: [AdminJvComponent],
             providers: [
@@ -35,18 +40,28 @@ describe('AdminJvComponent', () => {
     });
 
     it('addBot should open the dialog', () => {
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of({});
+            },
+        } as MatDialogRef<EditJvDialogComponent>);
         component.addBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 
     it('deleteBot should call http service', () => {
-        const jvMock: BotInfo = { id: 1, canEdit: true, name: 'test', type: 'facile' };
+        const jvMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        const obs = new Observable<Object>((subscribe) => {
+            subscribe.next({});
+        });
+        jvHttpServiceMock.deleteBot.and.returnValue(obs);
         component.deleteBot(jvMock);
         expect(jvHttpServiceMock.deleteBot).toHaveBeenCalledWith(jvMock);
     });
 
     it('showUpdateMenu should open dialog', () => {
-        const jvMock: BotInfo = { id: 1, canEdit: true, name: 'test', type: 'facile' };
+        const jvMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
 
         matDialogMock.open.and.returnValue({
             afterClosed: () => {

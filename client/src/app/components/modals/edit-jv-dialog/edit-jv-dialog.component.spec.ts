@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { JvHttpService } from '@app/services/jv-http.service';
+import { BotType, JvHttpService } from '@app/services/jv-http.service';
+import { Observable } from 'rxjs';
 import { EditJvDialogComponent } from './edit-jv-dialog.component';
 
 describe('EditJvDialogComponent', () => {
@@ -38,25 +39,37 @@ describe('EditJvDialogComponent', () => {
     });
 
     it('editBot should call http service and close dialog if ok', () => {
-        jvHttpMock.editBot.and.returnValue(true);
-        const mockBot = { id: 1, canEdit: true, name: 'test', type: 'facile' };
+        const obs = new Observable<boolean>((subscriber) => {
+            subscriber.next(true);
+        });
+        jvHttpMock.editBot.and.returnValue(obs);
+        const mockBot = { canEdit: true, name: 'test', type: BotType.Easy };
+        const oldMockBot = { canEdit: true, name: 'old', type: BotType.Easy };
+
+        component.editBotInfo = oldMockBot;
         component.bot = mockBot;
         component.editBot();
-        expect(jvHttpMock.editBot).toHaveBeenCalledOnceWith(mockBot);
+        expect(jvHttpMock.editBot).toHaveBeenCalledOnceWith(oldMockBot, mockBot);
         expect(matDialogRefMock.close).toHaveBeenCalled();
     });
 
     it('editbot should open alert dialog if problem', () => {
-        const mockBot = { id: 1, canEdit: true, name: 'test', type: 'facile' };
+        const mockBot = { canEdit: true, name: 'test', type: BotType.Easy };
         component.bot = mockBot;
-        jvHttpMock.editBot.and.returnValue(false);
+        const obs = new Observable<boolean>((subscriber) => {
+            subscriber.next(false);
+        });
+        jvHttpMock.editBot.and.returnValue(obs);
         component.editBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 
     it('addBot should call http service and close dialog if ok', () => {
-        jvHttpMock.addBot.and.returnValue(true);
-        const mockBot = { id: 1, canEdit: true, name: 'test', type: 'facile' };
+        const obs = new Observable<boolean>((subscriber) => {
+            subscriber.next(true);
+        });
+        jvHttpMock.addBot.and.returnValue(obs);
+        const mockBot = { canEdit: true, name: 'test', type: BotType.Easy };
         component.bot = mockBot;
         component.addBot();
         expect(jvHttpMock.addBot).toHaveBeenCalledOnceWith(mockBot);
@@ -64,9 +77,12 @@ describe('EditJvDialogComponent', () => {
     });
 
     it('addBot should open alert dialog if problem', () => {
-        const mockBot = { id: 1, canEdit: true, name: 'test', type: 'facile' };
+        const mockBot = { canEdit: true, name: 'test', type: BotType.Easy };
         component.bot = mockBot;
-        jvHttpMock.addBot.and.returnValue(false);
+        const obs = new Observable<boolean>((subscriber) => {
+            subscriber.next(false);
+        });
+        jvHttpMock.addBot.and.returnValue(obs);
         component.addBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });

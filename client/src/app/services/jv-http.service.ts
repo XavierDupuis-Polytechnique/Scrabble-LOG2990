@@ -27,7 +27,7 @@ export class JvHttpService {
     }
 
     deleteBot(bot: BotInfo) {
-        return this.http.delete(`${environment.serverUrl}/botinfo/${bot.name}`, { responseType: 'text' });
+        return this.http.delete(`${environment.serverUrl}/botinfo/${bot.name}`);
     }
 
     getDataInfo() {
