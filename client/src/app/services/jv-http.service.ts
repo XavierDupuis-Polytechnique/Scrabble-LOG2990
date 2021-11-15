@@ -18,8 +18,12 @@ export interface BotInfo {
 })
 export class JvHttpService {
     constructor(private http: HttpClient) {}
-    editBot(bot: BotInfo): boolean {
-        return true;
+    async editBot(oldBot: BotInfo, newBot: BotInfo): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            this.http.put(`${environment.serverUrl}/botinfo`, [oldBot, newBot], { responseType: 'text' }).subscribe((res) => {
+                resolve(true);
+            });
+        });
     }
 
     async addBot(bot: BotInfo): Promise<boolean> {
@@ -31,8 +35,9 @@ export class JvHttpService {
         });
     }
 
-    deleteBot(bot: BotInfo): boolean {
-        return false;
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    deleteBot(bot: BotInfo) {
+        return this.http.delete(`${environment.serverUrl}/botinfo/${bot.name}`, { responseType: 'text' });
     }
 
     async getDataInfo(): Promise<BotInfo[]> {

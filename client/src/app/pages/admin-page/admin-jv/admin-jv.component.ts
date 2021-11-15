@@ -9,9 +9,8 @@ import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
     styleUrls: ['./admin-jv.component.scss'],
 })
 export class AdminJvComponent implements OnInit {
-    easyBotList: BotInfo[];
-    hardBotList: BotInfo[];
     botDataInfo: BotInfo[];
+    dataSource: BotInfo[];
     botDisplayedColumns: string[] = ['name', 'type', 'edit', 'delete'];
 
     constructor(private readonly jvHttpService: JvHttpService, private dialog: MatDialog) {}
@@ -44,11 +43,15 @@ export class AdminJvComponent implements OnInit {
             });
     }
 
-    deleteBot(bot: BotInfo): void {
-        this.jvHttpService.deleteBot(bot);
+    deleteBot(bot: BotInfo) {
+        this.jvHttpService.deleteBot(bot).subscribe(() => {
+            this.updateList();
+        });
     }
 
     private async updateList() {
         this.botDataInfo = await this.jvHttpService.getDataInfo();
+        this.dataSource = [...this.botDataInfo];
+        console.log(this.dataSource);
     }
 }

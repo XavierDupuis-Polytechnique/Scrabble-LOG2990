@@ -26,28 +26,41 @@ export class BotInfoController {
 
         this.router.post('/', async (req, res) => {
             try {
-                // const clientBotInfo = req.body as BotInfo;
-                this.botInfoService.findBotByName('Test');
-                res.sendStatus(StatusCodes.OK);
+                const clientBotInfo = req.body as BotInfo;
+                const t = await this.botInfoService.isBotExist(clientBotInfo.name);
+                if (t) {
+                    res.sendStatus(StatusCodes.CONFLICT);
+                } else {
+                    clientBotInfo.canEdit = true;
+                    await this.botInfoService.addBot(clientBotInfo);
+                    res.sendStatus(StatusCodes.OK);
+                }
             } catch (e) {
                 throw Error('BotInfo Controller add error');
             }
         });
 
-        this.router.delete('/', async (req, res) => {
+        this.router.delete('/:botName', async (req, res) => {
             try {
-                const botInfo = req.body as BotInfo;
-                if (botInfo.canEdit && botInfo.name) {
-                    if (await this.botInfoService.deleteBot(botInfo)) {
-                        res.sendStatus(StatusCodes.OK);
-                    } else {
-                        res.sendStatus(StatusCodes.NOT_FOUND);
-                    }
-                } else {
-                    res.sendStatus(StatusCodes.FORBIDDEN);
-                }
+                const botName = req.params.botName;
+                const botinfo = await this.botInfoService.getBotInfoByName(botName);
+                this.botInfoService.deleteBot(botinfo);
+                res.sendStatus(StatusCodes.OK);
+            } catch (error) {
+                throw Error(error);
+            }
+        });
+
+        this.router.put('/', async (req, res) => {
+            try {
+                const clientBotInfos = req.body as BotInfo[];
+                const serverBotInfo = await this.botInfoService.getBotInfoByName(clientBotInfos[0].name);
+                serverBotInfo.name = clientBotInfos[1].name;
+                serverBotInfo.type = clientBotInfos[1].type;
+                this.botInfoService.updateBot(clientBotInfos[0], serverBotInfo);
+                res.sendStatus(StatusCodes.OK);
             } catch (e) {
-                throw Error('BotInfo Controller delete error');
+                throw Error('BotInfo Controller put error');
             }
         });
     }

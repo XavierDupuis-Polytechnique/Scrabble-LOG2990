@@ -30,24 +30,33 @@ export class BotInfoService {
             await this.populateCollection();
         }
     }
-    async findBotByName(botName: string) {
-        const test = await this.collection.find({ name: botName }).toArray();
-        console.log(test);
+    async isBotExist(botName: string): Promise<boolean> {
+        const bot = await this.collection.find({ name: botName }).project({ _id: 0, name: 1, canEdit: 1, type: 1 }).toArray();
+        if (bot.length !== 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
     async getBotInfoList(): Promise<BotInfo[]> {
         return this.collection.find().toArray();
     }
-
-    async addBot(bot: BotInfo) {
-        const isBotExist = await this.collection.find({ name: bot.name }).toArray();
-        if (isBotExist.length !== 0) {
-            return false;
+    async getBotInfoByName(botName: string): Promise<BotInfo> {
+        const botInfo = await this.collection.find({ name: botName }).toArray();
+        if (botInfo.length === 1) {
+            return botInfo[0] as BotInfo;
         } else {
-            this.collection.insertOne(bot);
-            return true;
+            return {} as BotInfo;
         }
     }
 
+    async addBot(bot: BotInfo) {
+        this.collection.insertOne(bot);
+    }
+
+    async updateBot(oldBot: BotInfo, newBot: BotInfo) {
+        this.collection.updateOne({ name: oldBot.name }, { $set: newBot });
+    }
     async deleteBot(bot: BotInfo): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
             this.collection.deleteOne(bot, (err) => {
@@ -57,6 +66,9 @@ export class BotInfoService {
         });
     }
 
+    async clearDropCollection() {
+        this.collection.deleteMany({ canEdit: true });
+    }
     private async createCollection() {
         try {
             await this.db.createCollection(BOT_INFO_COLLECTION);

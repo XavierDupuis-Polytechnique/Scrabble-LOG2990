@@ -10,6 +10,7 @@ import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
 })
 export class EditJvDialogComponent {
     bot: BotInfo;
+    editBotInfo: BotInfo;
     isEdit: boolean = false;
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: BotInfo,
@@ -18,11 +19,12 @@ export class EditJvDialogComponent {
         private dialogRef: MatDialogRef<EditJvDialogComponent>,
     ) {
         this.bot = { name: data.name, type: data.type, canEdit: data.canEdit };
+        this.editBotInfo = { name: data.name, type: data.type, canEdit: data.canEdit };
         this.isEdit = data.canEdit;
     }
     // TODO changer les message d'alert
     editBot() {
-        if (!this.jvHttpService.editBot(this.bot)) {
+        if (!this.jvHttpService.editBot(this.editBotInfo, this.bot)) {
             this.dialog.open(AlertDialogComponent, {
                 width: '250px',
                 data: 'Un problème est survenue. Veuillez réessayer',
