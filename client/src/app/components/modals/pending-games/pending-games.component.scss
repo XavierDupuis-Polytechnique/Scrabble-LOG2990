@@ -1,14 +1,16 @@
 mat-dialog-content {
     max-height: 450;
-    // overflow: hidden;
 }
+
 table {
     width: 100%;
 }
+
 .table-container {
     max-height: 350;
     overflow: auto;
 }
+
 .mat-row .mat-cell {
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
@@ -22,7 +24,6 @@ table {
 }
 
 .row-is-clicked {
-    // font-weight: bold;
     background-color: white;
     .mat-cell {
         color: black;

@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { GameMode } from '@app/components/leaderboard.interface';
 import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderboard.component';
 
 @Component({
@@ -9,15 +9,11 @@ import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderb
     styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent {
-    constructor(private matDialog: MatDialog, private http: HttpClient) {}
+    constructor(private matDialog: MatDialog) {}
     openLeaderboard() {
-        // this.http.get(`${environment.serverUrl}/api/scores?gameMode=classic`).subscribe((data) => {
-        //     const letterOccurences = Object.entries(data);
-        //     console.log(letterOccurences);
-        // });
         this.matDialog.open(LeaderboardComponent, {
             width: '350px',
-            panelClass: 'icon-outside',
+            data: GameMode.Classic,
         });
     }
 }
