@@ -14,8 +14,8 @@ export class LeaderboardController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get('/', async (req: Request, res: Response) => {
-            const gameMode = req.query.gameMode?.toString();
+        this.router.get('/:gameMode', async (req: Request, res: Response) => {
+            const gameMode = req.query.gameMode;
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
                 res.json(scores);

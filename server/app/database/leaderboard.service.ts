@@ -45,7 +45,7 @@ export class LeaderboardService {
 
     async getScores(mode: GameMode): Promise<Score[]> {
         const collection = this.getLeaderboardCollection(mode);
-        const scores = await collection.find().sort({ point: -1 }).toArray();
+        const scores: Score[] = await collection.find({}).sort({ point: -1 }).toArray();
         return scores;
     }
 
