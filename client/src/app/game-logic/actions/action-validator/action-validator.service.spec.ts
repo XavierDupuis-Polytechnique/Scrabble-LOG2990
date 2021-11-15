@@ -7,22 +7,25 @@ import { ActionValidatorService } from '@app/game-logic/actions/action-validator
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
-import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
+import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import {
     BOARD_DIMENSION,
     BOARD_MAX_POSITION,
     DEFAULT_TIME_PER_TURN,
     EMPTY_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
+import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
+import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.service';
+import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -40,6 +43,7 @@ describe('ActionValidatorService', () => {
     let board: BoardService;
     let info: GameInfoService;
     let messagesSpy: MessagesService;
+    let commandExecuterSpy: CommandExecuterService;
     let wordSearcher: WordSearcher;
     const dict = new DictionaryService();
     const randomBonus = false;
@@ -60,16 +64,12 @@ describe('ActionValidatorService', () => {
 
     beforeEach(() => {
         messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
+        commandExecuterSpy = jasmine.createSpyObj(CommandExecuterService, ['any']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesSpy },
-                CommandParserService,
-                PointCalculatorService,
-                BoardService,
-                TimerService,
-                GameInfoService,
-                PointCalculatorService,
+                { provide: CommandExecuterService, useValue: commandExecuterSpy },
             ],
         });
         service = TestBed.inject(ActionValidatorService);
@@ -96,6 +96,12 @@ describe('ActionValidatorService', () => {
         const action = new UnknownAction(currentPlayer);
         service['validateAction'](action);
         expect(messagesSpy.receiveErrorMessage).toHaveBeenCalledWith("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
+    });
+
+    it('should return false when the action is not valid', () => {
+        const action = new UnknownAction(currentPlayer);
+        const result = service.sendAction(action);
+        expect(result).toBeFalsy();
     });
     /// ////////////////// ///
 
@@ -216,6 +222,18 @@ describe('ActionValidatorService', () => {
         const lettersToExchange = [{ char: '!NOT_A_LETTER', value: 666 }];
         const action = new ExchangeLetter(currentPlayer, lettersToExchange);
         expect(service['validateAction'](action)).not.toBeTruthy();
+    });
+
+    it('validateExchangeLetter should return true when a hardBot exchange letters while theres less than 7 letters left', () => {
+        game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 5);
+        const letterCreator = new LetterCreator();
+        // game.letterBag.gameLetters = [letterCreator.createLetter('a'), letterCreator.createLetter('b'), letterCreator.createLetter('c')];
+        const letterRack = [letterCreator.createLetter('c'), letterCreator.createLetter('d')];
+        const hardBot = TestBed.inject(BotCreatorService).createBot('testHardBot', 'hard') as HardBot;
+        hardBot.letterRack = letterRack;
+        const action = new ExchangeLetter(hardBot, letterRack);
+        const result = service['validateExchangeLetter'](action);
+        expect(result).toBeTruthy();
     });
     /// ////////////////// ///
 
@@ -412,6 +430,22 @@ describe('ActionValidatorService', () => {
         const action = new PlaceLetter(currentPlayer, verticalWord, placement, pointCalculator, wordSearcher);
 
         expect(service['validateAction'](action)).toBeTruthy();
+    });
+
+    it('should return false if the word is off limit in y', () => {
+        const word = 'abcdefghijk';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: centerPosition, y: -1 };
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
+        const result = service['validateBoardsLimits'](action);
+        expect(result).toBeFalsy();
+    });
+
+    it('should return false if the word is off limit in x', () => {
+        const word = 'abcdefghijk';
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: -1, y: centerPosition };
+        const action = new PlaceLetter(currentPlayer, word, placement, pointCalculator, wordSearcher);
+        const result = service['validateBoardsLimits'](action);
+        expect(result).toBeFalsy();
     });
 
     it('should validate placing a word that lands on the last column (horizontal)', () => {
