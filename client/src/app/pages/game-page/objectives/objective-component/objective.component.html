@@ -1,11 +1,21 @@
-<mat-card>
+<mat-card (click)="descriptionToggle()">
     <mat-card-header>
+        <div>
+            {{ name }}
+        </div>
         <div [ngSwitch]="status">
             <mat-icon *ngSwitchCase="'NotClaimed'">panorama_fish_eye</mat-icon>
             <mat-icon  *ngSwitchCase="'Won'" style="color: limegreen;">check_circle</mat-icon>
             <mat-icon *ngSwitchCase="'Lost'" style="color: red;">cancel</mat-icon>
         </div>
-        {{ name }}
     </mat-card-header>
-    <mat-card-subtitle> {{ description }} </mat-card-subtitle>
+    <mat-card-subtitle *ngIf="showDescription">
+        {{ description }}
+    </mat-card-subtitle>
+    <mat-card-content>
+        <mat-progress-bar [value]="progression"></mat-progress-bar>
+        <div class="progression-percentage">
+            {{ progression | percent }}
+        </div>
+    </mat-card-content>
 </mat-card>

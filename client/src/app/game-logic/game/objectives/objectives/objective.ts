@@ -6,7 +6,7 @@ export abstract class Objective {
     description: string;
     owner: string | undefined;
     points: number;
-    progression: number;
+    progression = 0;
     get isCompleted(): boolean {
         return this.owner !== undefined;
     }

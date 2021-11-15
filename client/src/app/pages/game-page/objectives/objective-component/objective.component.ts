@@ -11,7 +11,13 @@ import { ObjectiveStatus } from '@app/pages/game-page/objectives/objectives-stat
 export class ObjectiveComponent {
     @Input() objective: Objective;
 
+    showDescription = false;
+
     constructor(private info: GameInfoService) {}
+
+    descriptionToggle() {
+        this.showDescription = !this.showDescription;
+    }
 
     get status(): ObjectiveStatus {
         if (this.objective.owner === undefined) {
@@ -22,6 +28,10 @@ export class ObjectiveComponent {
             return ObjectiveStatus.Won;
         }
         return ObjectiveStatus.Lost;
+    }
+
+    get progression(): number {
+        return this.objective.progression;
     }
 
     get name(): string {

@@ -1,0 +1,16 @@
+.mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-left: -40%;
+    margin-bottom: 2.5%;
+}
+
+.mat-card-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.progression-percentage {
+    margin-top: -3% !important;
+    margin-left: 2%;
+}
