@@ -13,7 +13,7 @@
         {{ description }}
     </mat-card-subtitle>
     <mat-card-content>
-        <mat-progress-bar [value]="progression"></mat-progress-bar>
+        <mat-progress-bar [value]="progression * 100"></mat-progress-bar>
         <div class="progression-percentage">
             {{ progression | percent }}
         </div>
