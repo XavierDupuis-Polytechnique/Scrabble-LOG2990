@@ -1,0 +1,25 @@
+<mat-dialog-content>
+    <h3>Meilleurs Scores</h3>
+    <div class="table-container">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+            <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                    {{ column.header }}
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    {{ column.cell(row) }}
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">Impossible de se connecter au serveur</td>
+            </tr>
+        </table>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close]>Fermer</button>
+</mat-dialog-actions>

@@ -45,18 +45,9 @@ export class LeaderboardService {
 
     async getScores(mode: GameMode): Promise<Score[]> {
         const collection = this.getLeaderboardCollection(mode);
-        const scores = await collection.find({}).toArray();
+        const scores = await collection.find().sort({ point: -1 }).toArray();
         return scores;
     }
-
-    // async addScore(score: Score, mode: GameMode): Promise<void> {
-    //     if (!this.validScore(score)) {
-    //         return;
-    //     }
-    //     const collection = this.getLeaderboardCollection(mode);
-    //     console.log('Adding score');
-    //     await collection.insertOne(score);
-    // }
 
     async deleteScores(): Promise<void> {
         try {
