@@ -1,17 +1,40 @@
+.leaderboards-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+h3 {
+    font-weight: 400;
+    font-size: large;
+    display: flex;
+    justify-content: center;
+}
+h4 {
+    font-weight: 100;
+    display: flex;
+    justify-content: center;
+}
+
 mat-dialog-content {
     max-height: 450;
 }
 
 table {
     width: 100%;
+    min-width: 250px;
 }
 
 .table-container {
     max-height: 350;
     overflow: auto;
 }
-
+.mat-header-cell {
+    border-bottom: 2px solid rgba($color: #9d19bed3, $alpha: 1);
+    padding: 1%;
+}
 .mat-row .mat-cell {
-    border-bottom: 1px solid transparent;
+    border-bottom: 1px solid;
     border-top: 1px solid transparent;
+    padding: 1%;
 }

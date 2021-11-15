@@ -8,21 +8,10 @@ import { environment } from 'src/environments/environment';
 export class LeaderboardService {
     constructor(private http: HttpClient) {}
 
+    // getHighestscores(gameMode: GameMode) {}
+
     getLeaderBoard(gameMode: GameMode): Observable<Score[]> {
         const params = new HttpParams().set('gameMode', gameMode);
-
         return this.http.get(`${environment.serverUrl}/scores/gameMode?`, { params }) as Observable<Score[]>;
     }
-
-    // getHighestscores(scores: Map<string, number>) {
-    //     const highestScores = new Map<string[], number>();
-    //     const currentHighScore = 0;
-    //     for (const score of scores) {
-    //         const playerName = score[0];
-    //         const point = score[1];
-    //         if (point > currentHighScore) {
-    //             highestScores.set([playerName], point);
-    //         } else if (point === currentHighScore)
-    //     }
-    // }
 }
