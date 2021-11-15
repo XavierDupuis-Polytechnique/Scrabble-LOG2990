@@ -67,6 +67,7 @@ export class GameManagerService {
             this.messageService,
         );
 
+        // TODO: remove code repetition
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
@@ -85,6 +86,13 @@ export class GameManagerService {
             this.objectiveManager,
         );
         (this.game as SpecialOfflineGame).allocateObjectives();
+
+        // TODO remove code repetition
+        const playerName = gameSettings.playerName;
+        const botDifficulty = gameSettings.botDifficulty;
+        const players = this.createPlayers(playerName, botDifficulty);
+        this.allocatePlayers(players);
+        this.info.receiveGame(this.game);
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
