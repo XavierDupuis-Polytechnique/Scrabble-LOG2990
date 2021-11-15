@@ -1,6 +1,11 @@
 <mat-card>
-    <mat-card-header> {{ name }} </mat-card-header>
+    <mat-card-header>
+        <div [ngSwitch]="status">
+            <mat-icon *ngSwitchCase="'NotClaimed'">panorama_fish_eye</mat-icon>
+            <mat-icon  *ngSwitchCase="'Won'" style="color: limegreen;">check_circle</mat-icon>
+            <mat-icon *ngSwitchCase="'Lost'" style="color: red;">cancel</mat-icon>
+        </div>
+        {{ name }}
+    </mat-card-header>
     <mat-card-subtitle> {{ description }} </mat-card-subtitle>
-    <mat-divider inset></mat-divider>
-    <mat-card-content></mat-card-content>
 </mat-card>
