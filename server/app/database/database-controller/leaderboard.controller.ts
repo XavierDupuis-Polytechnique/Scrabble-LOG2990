@@ -18,6 +18,7 @@ export class LeaderboardController {
             const gameMode = req.query.gameMode?.toString();
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
+                console.log(scores);
                 res.json(scores);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
@@ -28,12 +29,8 @@ export class LeaderboardController {
             const gameMode = req.query.gameMode?.toString();
             console.log(req.body);
             try {
-                const isSuccesful = await this.leaderboardService.addScore(req.body, gameMode as GameMode);
-                if (isSuccesful) {
-                    res.sendStatus(StatusCodes.ACCEPTED);
-                } else {
-                    res.sendStatus(StatusCodes.BAD_REQUEST);
-                }
+                await this.leaderboardService.updateLeaderboard(req.body, gameMode as GameMode);
+                res.sendStatus(StatusCodes.CREATED);
             } catch (e) {
                 res.sendStatus(StatusCodes.BAD_REQUEST);
             }

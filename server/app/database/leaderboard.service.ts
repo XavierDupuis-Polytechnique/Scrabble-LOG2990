@@ -9,7 +9,6 @@ export enum GameMode {
 export interface Score {
     name: string;
     point: number;
-    isEditable: boolean;
 }
 
 // TODO put in constant file
@@ -20,22 +19,18 @@ export const DEFAULT_LEADERBOARD = [
     {
         name: 'Player0',
         point: 100,
-        isEditable: false,
     },
     {
         name: 'Player1',
         point: 100,
-        isEditable: false,
     },
     {
         name: 'Player2',
         point: 50,
-        isEditable: true,
     },
     {
         name: 'Player3',
         point: 10,
-        isEditable: true,
     },
 ];
 
@@ -43,80 +38,66 @@ export const DEFAULT_LEADERBOARD = [
 export class LeaderboardService {
     constructor(private databaseService: DatabaseService) {}
 
-    get leaderboardCalssicCollection(): Collection<Score> {
-        return this.databaseService.database.collection(LEADERBOARD_CLASSIC_COLLECTION);
-    }
-
-    get leaderboardLogCollection(): Collection<Score> {
-        return this.databaseService.database.collection(LEADERBOARD_LOG_COLLECTION);
-    }
-
-    async getAllScores(): Promise<Map<string, Score[]>> {
-        const allScores = new Map<string, Score[]>();
-        const modes = [GameMode.Classic, GameMode.Log];
-        for (const mode of modes) {
-            const scores = await this.getScores(mode);
-            allScores.set(GameMode.Classic, scores);
-        }
-        return allScores;
+    getLeaderboardCollection(mode: GameMode): Collection<Score> {
+        const collectionName = mode === GameMode.Classic ? LEADERBOARD_CLASSIC_COLLECTION : LEADERBOARD_LOG_COLLECTION;
+        return this.databaseService.database.collection(collectionName);
     }
 
     async getScores(mode: GameMode): Promise<Score[]> {
-        const collection = mode === GameMode.Classic ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
-        return collection
-            .find({})
-            .toArray()
-            .then((scores: Score[]) => {
-                return scores;
-            });
+        const collection = this.getLeaderboardCollection(mode);
+        const scores = await collection.find({}).toArray();
+        return scores;
     }
 
-    async addScore(score: Score, mode: GameMode): Promise<boolean> {
-        if (!this.validScore(score)) {
-            return false;
-        }
-        const collection = mode === GameMode.Classic ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
-        const isPlayerInDb = collection.find((collectionScore: Score) => collectionScore.name === score.name);
-        if (isPlayerInDb) {
-            this.modifyScore(score, mode);
-        }
-        try {
-            console.log('Adding score');
-            await collection.insertOne(score);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
+    // async addScore(score: Score, mode: GameMode): Promise<void> {
+    //     if (!this.validScore(score)) {
+    //         return;
+    //     }
+    //     const collection = this.getLeaderboardCollection(mode);
+    //     console.log('Adding score');
+    //     await collection.insertOne(score);
+    // }
 
     async deleteScores(): Promise<boolean> {
         try {
-            await this.leaderboardCalssicCollection.deleteMany({});
-            await this.leaderboardLogCollection.deleteMany({});
+            await this.getLeaderboardCollection(GameMode.Classic).deleteMany({});
+            this.databaseService.populateLeaderboardCollection(GameMode.Classic);
+            await this.getLeaderboardCollection(GameMode.Log).deleteMany({});
+            this.databaseService.populateLeaderboardCollection(GameMode.Log);
             return true;
         } catch (e) {
             return false;
         }
     }
 
-    private async modifyScore(score: Score, mode: GameMode): Promise<boolean> {
-        const collection = mode === GameMode.Classic ? this.leaderboardCalssicCollection : this.leaderboardLogCollection;
+    async updateLeaderboard(score: Score, mode: GameMode): Promise<void> {
+        const collection = this.getLeaderboardCollection(mode);
+        const currentScore = await collection.findOne({ name: score.name });
+        if (currentScore === undefined) {
+            await this.addScore(score, mode);
+            return;
+        }
+        if (score.point > currentScore.point) {
+            await this.modifyScore(score, mode);
+        }
+    }
+
+    private async modifyScore(score: Score, mode: GameMode) {
+        const collection = this.getLeaderboardCollection(mode);
         try {
-            console.log('Modifying score');
-            await collection.updateOne({ name: score.name }, { point: score.point });
-            return true;
+            await collection.updateOne({ name: score.name }, { $set: { point: score.point } });
         } catch (e) {
-            return false;
+            throw new Error(e);
         }
     }
 
-    private validScore(score: Score): boolean {
-        if (score.isEditable) {
-            console.log('ValidScore');
-            return score.point > 0;
+    private async addScore(score: Score, mode: GameMode) {
+        const collection = this.getLeaderboardCollection(mode);
+        try {
+            await collection.insertOne({ name: score.name, point: score.point });
+            return;
+        } catch (e) {
+            throw new Error(e);
         }
-        console.log('InvalidScore');
-
-        return false;
     }
 }
