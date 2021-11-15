@@ -18,7 +18,6 @@ export class LeaderboardController {
             const gameMode = req.query.gameMode?.toString();
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
-                console.log(scores);
                 res.json(scores);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
@@ -27,10 +26,18 @@ export class LeaderboardController {
 
         this.router.post('/', async (req: Request, res: Response) => {
             const gameMode = req.query.gameMode?.toString();
-            console.log(req.body);
             try {
                 await this.leaderboardService.updateLeaderboard(req.body, gameMode as GameMode);
-                res.sendStatus(StatusCodes.CREATED);
+                res.sendStatus(StatusCodes.OK);
+            } catch (e) {
+                res.sendStatus(StatusCodes.BAD_REQUEST);
+            }
+        });
+
+        this.router.delete('/', async (req: Request, res: Response) => {
+            try {
+                await this.leaderboardService.deleteScores();
+                res.sendStatus(StatusCodes.OK);
             } catch (e) {
                 res.sendStatus(StatusCodes.BAD_REQUEST);
             }

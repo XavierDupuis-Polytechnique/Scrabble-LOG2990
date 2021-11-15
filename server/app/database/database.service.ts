@@ -36,7 +36,7 @@ export class DatabaseService {
     //     console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
     // }
 
-    private async populateLeaderboardCollection(name: string): Promise<void> {
+    async populateLeaderboardCollection(name: string): Promise<void> {
         try {
             await this.db.collection(name).insertMany(DEFAULT_LEADERBOARD);
         } catch (e) {

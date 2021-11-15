@@ -22,7 +22,7 @@ export const DEFAULT_LEADERBOARD = [
     },
     {
         name: 'Player1',
-        point: 100,
+        point: 200,
     },
     {
         name: 'Player2',
@@ -58,16 +58,15 @@ export class LeaderboardService {
     //     await collection.insertOne(score);
     // }
 
-    async deleteScores(): Promise<boolean> {
+    async deleteScores(): Promise<void> {
         try {
             await this.getLeaderboardCollection(GameMode.Classic).deleteMany({});
-            this.databaseService.populateLeaderboardCollection(GameMode.Classic);
             await this.getLeaderboardCollection(GameMode.Log).deleteMany({});
-            this.databaseService.populateLeaderboardCollection(GameMode.Log);
-            return true;
         } catch (e) {
-            return false;
+            throw new Error(e);
         }
+        await this.populateCollection(GameMode.Classic);
+        await this.populateCollection(GameMode.Log);
     }
 
     async updateLeaderboard(score: Score, mode: GameMode): Promise<void> {
@@ -98,6 +97,15 @@ export class LeaderboardService {
             return;
         } catch (e) {
             throw new Error(e);
+        }
+    }
+
+    private async populateCollection(mode: GameMode): Promise<void> {
+        const collection = this.getLeaderboardCollection(mode);
+        try {
+            await collection.insertMany(DEFAULT_LEADERBOARD);
+        } catch (e) {
+            throw Error('Data base collection population error');
         }
     }
 }
