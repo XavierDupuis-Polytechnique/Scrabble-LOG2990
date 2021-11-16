@@ -1,7 +1,10 @@
-export interface Dictionary {
+import * as data from '@app/game/game-logic/validator/dictionary/dictionary.json';
+
+export interface DictionaryDb {
     title: string;
     description: string;
-    words: string[];
+    words?: string[];
+    canEdit?: boolean;
 }
 
-export class DefaultDictionary {}
+export const DEFAULT_DICTIONARY = data as DictionaryDb;
