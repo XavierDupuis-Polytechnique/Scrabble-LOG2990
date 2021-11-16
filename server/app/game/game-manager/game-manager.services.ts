@@ -1,10 +1,12 @@
 import { NEW_GAME_TIMEOUT } from '@app/constants';
+import { GameMode, LeaderboardService } from '@app/database/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -29,7 +31,7 @@ export class GameManagerService {
     activePlayers = new Map<string, PlayerRef>(); // gameToken => PlayerRef[]
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
 
-    private endGame$ = new Subject<string>(); // gameToken
+    private endGame$ = new Subject<EndOfGame>(); // gameToken
 
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
@@ -48,6 +50,7 @@ export class GameManagerService {
         private gameCompiler: GameCompiler,
         private timerController: TimerController,
         private gameActionNotifier: GameActionNotifierService,
+        private leaderboardService: LeaderboardService,
     ) {
         this.gameCreator = new GameCreator(
             this.pointCalculator,
@@ -58,7 +61,14 @@ export class GameManagerService {
             this.timerController,
         );
 
-        this.endGame$.subscribe((gameToken: string) => {
+        this.endGame$.subscribe((endOfGame: EndOfGame) => {
+            const gameToken = endOfGame.gameToken;
+            if (endOfGame.reason === EndOfGameReason.GameEnded) {
+                this.updateLeaderboard(gameToken, endOfGame.players);
+            }
+            if (endOfGame.reason === EndOfGameReason.Forfeit) {
+                this.updateLeaderboard(gameToken, endOfGame.players);
+            }
             this.deleteGame(gameToken);
         });
     }
@@ -157,12 +167,11 @@ export class GameManagerService {
     }
 
     private endGame(game: ServerGame) {
-        game.stop();
+        game.stop(); // OTHER
     }
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
-        game.stop();
     }
 
     private deleteInactiveGame(gameToken: string) {
@@ -176,5 +185,19 @@ export class GameManagerService {
     private deleteGame(gameToken: string) {
         this.activeGames.delete(gameToken);
         this.linkedClients.delete(gameToken);
+    }
+
+    private updateLeaderboard(gameToken: string, players: Player[]) {
+        // const game = this.activeGames.get(gameToken);
+        // if (game === undefined) {
+        //     return;
+        // }
+        // const players = game.players;
+
+        for (const player of players) {
+            console.log(player.name);
+            const score = { name: player.name, point: player.points };
+            this.leaderboardService.updateLeaderboard(score, GameMode.Classic);
+        }
     }
 }

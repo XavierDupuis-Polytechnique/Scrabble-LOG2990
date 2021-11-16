@@ -4,6 +4,7 @@ import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { Board } from '@app/game/game-logic/board/board';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
+import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -23,10 +24,7 @@ export class ServerGame {
     winnerByForfeitedIndex: number;
 
     isEnded$ = new Subject<undefined>();
-    private isEndedValue: boolean = false;
-    get isEnded() {
-        return this.isEndedValue;
-    }
+    endState: EndOfGameReason;
 
     constructor(
         timerController: TimerController,
@@ -37,7 +35,7 @@ export class ServerGame {
         private gameCompiler: GameCompiler,
         private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
-        private endGameSubject: Subject<string>,
+        private endGameSubject: Subject<EndOfGame>,
     ) {
         this.timer = new Timer(gameToken, timerController);
         this.board = new Board(randomBonus);
@@ -54,7 +52,15 @@ export class ServerGame {
     }
 
     stop() {
-        this.isEndedValue = true;
+        this.endState = EndOfGameReason.Other;
+        this.isEnded$.next(undefined);
+    }
+
+    forfeit(playerName: string) {
+        this.winnerByForfeitedIndex = this.players.findIndex((player) => {
+            return player.name !== playerName;
+        });
+        this.endState = EndOfGameReason.Forfeit;
         this.isEnded$.next(undefined);
     }
 
@@ -63,9 +69,9 @@ export class ServerGame {
     }
 
     isEndOfGame() {
-        if (this.isEnded) {
-            return true;
-        }
+        // if (this.isEndedValue) {
+        //     return true;
+        // }
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
                 if (player.isLetterRackEmpty) {
@@ -83,11 +89,19 @@ export class ServerGame {
         return this.players[this.activePlayerIndex];
     }
 
-    onEndOfGame() {
+    onEndOfGame(reason: EndOfGameReason) {
+        console.log(this.players);
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
         this.emitGameState();
-        this.endGameSubject.next(this.gameToken);
+        console.log(this.players);
+        if (reason === EndOfGameReason.GameEnded) {
+            this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
+        }
+        if (reason === EndOfGameReason.Forfeit) {
+            const remainingPlayer = this.players[this.winnerByForfeitedIndex];
+            this.endGameSubject.next({ gameToken: this.gameToken, reason: EndOfGameReason.Forfeit, players: [remainingPlayer] });
+        }
     }
 
     doAction(action: Action) {
@@ -119,12 +133,6 @@ export class ServerGame {
         return winners;
     }
 
-    forfeit(playerName: string) {
-        this.winnerByForfeitedIndex = this.players.findIndex((player) => {
-            return player.name !== playerName;
-        });
-    }
-
     private pickFirstPlayer() {
         const max = this.players.length;
         const firstPlayer = Math.floor(Math.random() * max);
@@ -138,8 +146,8 @@ export class ServerGame {
     }
 
     private startTurn() {
-        if (this.isEnded) {
-            this.onEndOfGame();
+        if (this.endState) {
+            this.onEndOfGame(this.endState);
             return;
         }
         const activePlayer = this.players[this.activePlayerIndex];
@@ -151,18 +159,18 @@ export class ServerGame {
     private endOfTurn(action: Action | undefined) {
         this.timer.stop();
         if (!action) {
-            this.onEndOfGame();
+            this.onEndOfGame(EndOfGameReason.Forfeit);
             return;
         }
 
-        if (this.isEnded) {
-            this.onEndOfGame();
+        if (this.endState) {
+            this.onEndOfGame(this.endState);
             return;
         }
 
         action.end$.subscribe(() => {
             if (this.isEndOfGame()) {
-                this.onEndOfGame();
+                this.onEndOfGame(EndOfGameReason.GameEnded);
                 return;
             }
             this.nextPlayer();
