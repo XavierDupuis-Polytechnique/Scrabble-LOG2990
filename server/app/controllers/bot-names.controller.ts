@@ -1,7 +1,7 @@
-import { Request, Response, Router } from 'express';
-import { Service } from 'typedi';
-import { StatusCodes } from 'http-status-codes';
 import { BotNamesService } from '@app/db-manager-services/bot-name-db-manager/bot-names.service';
+import { Request, Response, Router } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import { Service } from 'typedi';
 
 @Service()
 export class BotNamesController {

@@ -1,0 +1,51 @@
+input[type='file'] {
+    display: none;
+}
+
+.uploadContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.fileContainer {
+    height: 300px;
+    width: 350px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.downloadIcon {
+    font-size: 50px;
+    height: 50px;
+    width: 50px;
+    padding: 35px;
+}
+
+.textHover {
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+
+.textHover:hover,
+.textHover:focus {
+    color: aqua;
+}
+
+.selectedFileText {
+    height: 50px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 93vh !important;
+}
+
+.overflow {
+    height: 50%;
+    overflow: auto;
+}
