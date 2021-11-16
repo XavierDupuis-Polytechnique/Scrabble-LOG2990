@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { GameMode } from '@app/components/leaderboard.interface';
+import { LeaderboardService } from '@app/components/leaderboard.service';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -18,6 +20,7 @@ import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handle
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { Observable, Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
@@ -45,6 +48,7 @@ export class GameManagerService {
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
         private onlineActionCompiler: OnlineActionCompilerService,
+        private leaderboardService: LeaderboardService,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -69,6 +73,12 @@ export class GameManagerService {
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
+
+        this.game.isEndOfGame$.pipe(first()).subscribe(() => {
+            if (this.game !== null) {
+                this.updateLeaderboard(this.game.players);
+            }
+        });
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -124,6 +134,17 @@ export class GameManagerService {
         this.commandExecuter.resetDebug();
     }
 
+    updateLeaderboard(players: Player[]) {
+        if (players === undefined) {
+            return;
+        }
+        for (const player of players) {
+            if (player instanceof User) {
+                const score = { mode: GameMode.Classic, name: player.name, point: player.points };
+                this.leaderboardService.updateLeaderboard(GameMode.Classic, score);
+            }
+        }
+    }
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         const user = new User(playerName);
         const bot = this.botService.createBot(playerName, botDifficulty);

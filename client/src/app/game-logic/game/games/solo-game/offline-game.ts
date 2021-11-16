@@ -127,6 +127,7 @@ export class OfflineGame extends Game {
 
         action.end$.subscribe(() => {
             if (this.isEndOfGame()) {
+                this.isEndOfGameSubject.next();
                 this.onEndOfGame();
                 return;
             }
