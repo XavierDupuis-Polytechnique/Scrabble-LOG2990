@@ -24,12 +24,34 @@ export class AdminDropDbComponent {
                 },
             })
             .afterClosed()
-            .subscribe((ans) => {
+            .subscribe(async (ans) => {
                 if (ans === true) {
-                    this.joueurVirtuelHttpService.dropTalbe();
-                    this.dictHttpService.dropTable();
-                    // TODO Afficher un message lorsque la base de données est bien effacé
+                    const isJvDropOk = await this.dropJvTable();
+                    const isDictOk = await this.dropDictTable();
+
+                    if (!isJvDropOk && !isDictOk) {
+                        this.dialog.open(AlertDialogComponent, {
+                            width: '250px',
+                            data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },
+                        });
+                    }
                 }
             });
+    }
+
+    async dropJvTable() {
+        return new Promise<boolean>((resolve) => {
+            this.joueurVirtuelHttpService.dropTalbe().subscribe((res) => {
+                const ans = JSON.parse(res.toString());
+                resolve(ans);
+            });
+        });
+    }
+
+    async dropDictTable() {
+        return new Promise<boolean>((resolve) => {
+            // TODO change this when dictHttpService will be implemented
+            resolve(this.dictHttpService.dropTable());
+        });
     }
 }

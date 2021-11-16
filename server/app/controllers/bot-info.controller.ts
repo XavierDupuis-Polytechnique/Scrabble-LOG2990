@@ -60,5 +60,14 @@ export class BotInfoController {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
+
+        this.router.get('/drop', async (req, res) => {
+            try {
+                await this.botInfoService.clearDropCollection();
+                res.send(true);
+            } catch (error) {
+                res.send(false);
+            }
+        });
     }
 }

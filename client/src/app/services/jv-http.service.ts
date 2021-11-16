@@ -35,6 +35,6 @@ export class JvHttpService {
     }
 
     dropTalbe() {
-        return true;
+        return this.http.get(`${environment.serverUrl}/botinfo/drop`);
     }
 }
