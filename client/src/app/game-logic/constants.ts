@@ -50,3 +50,6 @@ export const ARROWRIGHT = 'ArrowRight';
 export const ARROWLEFT = 'ArrowLeft';
 export const SHIFT = 'Shift';
 export const N_CORNERS = 4;
+export const PRIVATE_OBJECTIVE_COUNT = 1;
+export const PUBLIC_OBJECTIVE_COUNT = 2;
+export const TOTAL_OBJECTIVE_COUNT = 8;

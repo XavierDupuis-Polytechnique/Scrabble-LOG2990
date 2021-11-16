@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
 import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners/four-corners';
 import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
@@ -15,9 +16,9 @@ import { getRandomInt } from '@app/game-logic/utils';
     providedIn: 'root',
 })
 export class ObjectiveCreator {
-    static privateObjectiveCount = 1;
-    static publicObjectiveCount = 2;
-    private static objectiveCount = 8;
+    static privateObjectiveCount = PRIVATE_OBJECTIVE_COUNT;
+    static publicObjectiveCount = PUBLIC_OBJECTIVE_COUNT;
+    private static objectiveCount = TOTAL_OBJECTIVE_COUNT;
     availableObjectivesIndex: number[];
 
     constructor() {
