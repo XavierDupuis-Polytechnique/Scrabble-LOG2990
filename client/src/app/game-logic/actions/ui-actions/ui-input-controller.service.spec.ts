@@ -9,7 +9,6 @@ import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
 import { BOARD_MAX_POSITION, EMPTY_CHAR, ENTER, ESCAPE, MIDDLE_OF_BOARD, RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { InputComponent, InputType, UIInput, WheelRoll } from '@app/game-logic/interfaces/ui-input';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
@@ -36,7 +35,6 @@ describe('UIInputControllerService', () => {
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
     let boardService: BoardService;
-    let objectiveManager: ObjectiveManagerService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -50,7 +48,6 @@ describe('UIInputControllerService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
         boardService = TestBed.inject(BoardService);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
         player = new User('p1');
         player.letterRack = [
             { char: EMPTY_CHAR, value: 0 },
@@ -240,7 +237,7 @@ describe('UIInputControllerService', () => {
     it('should remove letters temporarily placed on the board after UIPlace switches to UIMove', () => {
         service.activeComponent = InputComponent.Board;
         const board = TestBed.inject(BoardService).board;
-        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService, objectiveManager);
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         const char = 'A';
         player.letterRack[0].char = char;
         const pos = BOARD_MAX_POSITION / 2;
@@ -256,7 +253,7 @@ describe('UIInputControllerService', () => {
     it('should remove letters temporarily placed on the board after UIPlace switches to UIExchange', () => {
         service.activeComponent = InputComponent.Board;
         const board = TestBed.inject(BoardService).board;
-        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService, objectiveManager);
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         const char = 'A';
         player.letterRack[0].char = char;
         const pos = BOARD_MAX_POSITION / 2;
@@ -317,7 +314,7 @@ describe('UIInputControllerService', () => {
     });
 
     it('should create the Action following the "ENTER" Keypress', () => {
-        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService, objectiveManager);
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         service.activeComponent = InputComponent.Board;
         const input1: UIInput = { type: InputType.LeftClick, from: InputComponent.Board, args: { x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD } };
         service.processInput(input1);

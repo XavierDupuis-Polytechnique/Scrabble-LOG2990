@@ -1,15 +1,13 @@
-import { TestBed } from '@angular/core/testing';
-import { ObjectiveManagerService } from './objective-manager.service';
+import { ObjectiveCreator } from './objective-manager.service';
 
 describe('ObjectiveManager', () => {
-    let service: ObjectiveManagerService;
+    let creator: ObjectiveCreator;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
-        service = TestBed.inject(ObjectiveManagerService);
+        creator = new ObjectiveCreator();
     });
 
     it('should be created', () => {
-        expect(service).toBeTruthy();
+        expect(creator).toBeTruthy();
     });
 });

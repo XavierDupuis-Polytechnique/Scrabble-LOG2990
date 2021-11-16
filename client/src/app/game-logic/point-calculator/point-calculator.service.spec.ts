@@ -5,7 +5,6 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -21,7 +20,6 @@ describe('PointCalculatorService', () => {
     let timer: TimerService;
     let boardService: BoardService;
     let messages: MessagesService;
-    let objectiveManager: ObjectiveManagerService;
     const randomBonus = false;
     let player1: Player;
     let player2: Player;
@@ -59,7 +57,6 @@ describe('PointCalculatorService', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
         messages = TestBed.inject(MessagesService);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
         game = new MockGame(randomBonus, timePerTurn, timer, pointCalculator, boardService, messages);
         player1 = new User('Tim');
         player2 = new User('Max');
@@ -88,14 +85,7 @@ describe('PointCalculatorService', () => {
 
     it('should calculate the correct points of a word with letter multiplicator', () => {
         const totalPointsOfWord = 11;
-        action = new MockPlaceLetter(
-            player2,
-            'bateaux',
-            { x: 0, y: 0, direction: Direction.Horizontal },
-            pointCalculator,
-            wordSearcher,
-            objectiveManager,
-        );
+        action = new MockPlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
             { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
@@ -119,14 +109,7 @@ describe('PointCalculatorService', () => {
 
     it('should calculate the correct points of a word with word multiplicator', () => {
         const totalPointsOfWord = 66;
-        action = new MockPlaceLetter(
-            player2,
-            'bateaux',
-            { x: 0, y: 0, direction: Direction.Horizontal },
-            pointCalculator,
-            wordSearcher,
-            objectiveManager,
-        );
+        action = new MockPlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
         word = [
             { letterObject: { char: 'B', value: 3 }, letterMultiplicator: 2, wordMultiplicator: 1 },
             { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 2 },
@@ -177,14 +160,7 @@ describe('PointCalculatorService', () => {
             { char: 'U', value: 1 },
             { char: 'X', value: 8 },
         ];
-        action = new MockPlaceLetter(
-            player2,
-            bateaux,
-            { x: 0, y: 0, direction: Direction.Horizontal },
-            pointCalculator,
-            wordSearcher,
-            objectiveManager,
-        );
+        action = new MockPlaceLetter(player2, bateaux, { x: 0, y: 0, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
         action.execute(game);
         action.affectedCoords = [
             { x: 0, y: 0 },
@@ -216,14 +192,7 @@ describe('PointCalculatorService', () => {
         grid[0][1].letterObject = { char: 'A', value: 1 };
         grid[0][2].letterObject = { char: 'T', value: 1 };
         listOfWord.push(wordBat);
-        action = new MockPlaceLetter(
-            player1,
-            'bat',
-            { x: 0, y: 0, direction: Direction.Horizontal },
-            pointCalculator,
-            wordSearcher,
-            objectiveManager,
-        );
+        action = new MockPlaceLetter(player1, 'bat', { x: 0, y: 0, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
         action.execute(game);
         action.affectedCoords = [
             { x: 0, y: 0 },
@@ -249,14 +218,7 @@ describe('PointCalculatorService', () => {
         grid[0][4].letterObject = { char: 'A', value: 1 };
         grid[0][5].letterObject = { char: 'U', value: 1 };
         grid[0][6].letterObject = { char: 'X', value: 8 };
-        action = new MockPlaceLetter(
-            player2,
-            'bateaux',
-            { x: 0, y: 0, direction: Direction.Horizontal },
-            pointCalculator,
-            wordSearcher,
-            objectiveManager,
-        );
+        action = new MockPlaceLetter(player2, 'bateaux', { x: 0, y: 0, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
         action.execute(game);
         action.affectedCoords = [
             { x: 3, y: 0 },
@@ -294,7 +256,7 @@ describe('PointCalculatorService', () => {
         grid[4][0].letterObject = { char: 'T', value: 1 };
         const wordAt = [grid[3][0], grid[4][0]];
         listOfWord.push(wordAt);
-        action = new MockPlaceLetter(player1, 'at', { x: 0, y: 3, direction: Direction.Vertical }, pointCalculator, wordSearcher, objectiveManager);
+        action = new MockPlaceLetter(player1, 'at', { x: 0, y: 3, direction: Direction.Vertical }, pointCalculator, wordSearcher);
         action.execute(game);
         action.affectedCoords = [
             { x: 0, y: 3 },
@@ -311,14 +273,7 @@ describe('PointCalculatorService', () => {
         const wordBake = [grid[2][0], grid[2][1], grid[2][2], grid[2][3]];
         listOfWord.push(wordBat);
         listOfWord.push(wordBake);
-        action = new MockPlaceLetter(
-            player2,
-            'bake',
-            { x: 0, y: 2, direction: Direction.Horizontal },
-            pointCalculator,
-            wordSearcher,
-            objectiveManager,
-        );
+        action = new MockPlaceLetter(player2, 'bake', { x: 0, y: 2, direction: Direction.Horizontal }, pointCalculator, wordSearcher);
         action.execute(game);
         action.affectedCoords = [
             { x: 0, y: 2 },
@@ -351,7 +306,7 @@ describe('PointCalculatorService', () => {
             { char: 'U', value: 1 },
             { char: 'N', value: 1 },
         ];
-        action = new MockPlaceLetter(player1, 'cet', { x: 5, y: 0, direction: Direction.Vertical }, pointCalculator, wordSearcher, objectiveManager);
+        action = new MockPlaceLetter(player1, 'cet', { x: 5, y: 0, direction: Direction.Vertical }, pointCalculator, wordSearcher);
         action.affectedCoords = [
             { x: 5, y: 0 },
             { x: 5, y: 1 },

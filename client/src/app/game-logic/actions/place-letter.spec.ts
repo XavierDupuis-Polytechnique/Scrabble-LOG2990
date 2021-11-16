@@ -7,7 +7,6 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -45,7 +44,6 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
-    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     const randomBonus = false;
     beforeEach(() => {
@@ -73,18 +71,17 @@ describe('PlaceLetter', () => {
         game.players.push(player2);
         game.start();
         letterCreator = new LetterCreator();
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
         const letterObjects = letterCreator.createLetters(lettersToPlace.split(''));
         activePlayer = game.getActivePlayer();
         for (let i = 0; i < letterObjects.length; i++) {
             activePlayer.letterRack[i] = letterObjects[i];
         }
-        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorSpy, wordSearcher, objectiveManager);
+        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorSpy, wordSearcher);
     });
 
     it('should create an instance', () => {
         activePlayer = game.getActivePlayer();
-        expect(new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorSpy, wordSearcher, objectiveManager)).toBeTruthy();
+        expect(new PlaceLetter(activePlayer, lettersToPlace, placement, pointCalculatorSpy, wordSearcher)).toBeTruthy();
     });
 
     it('should place letter at right place', () => {
@@ -122,7 +119,7 @@ describe('PlaceLetter', () => {
     it('should place letters in vertical', () => {
         const newPlacement = { ...placement };
         newPlacement.direction = Direction.Vertical;
-        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, newPlacement, pointCalculatorSpy, wordSearcher, objectiveManager);
+        placeLetter = new PlaceLetter(activePlayer, lettersToPlace, newPlacement, pointCalculatorSpy, wordSearcher);
         placeLetter.execute(game);
 
         const word = placeLetter.word;
@@ -134,7 +131,7 @@ describe('PlaceLetter', () => {
     it('should place blank letter', () => {
         activePlayer.letterRack[0] = letterCreator.createLetter('*');
         const wordToPlace = 'Bateau';
-        placeLetter = new PlaceLetter(activePlayer, wordToPlace, placement, pointCalculatorSpy, wordSearcher, objectiveManager);
+        placeLetter = new PlaceLetter(activePlayer, wordToPlace, placement, pointCalculatorSpy, wordSearcher);
         placeLetter.execute(game);
 
         const word = placeLetter.word;

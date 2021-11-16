@@ -9,7 +9,6 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { GameState, LightPlayer } from '@app/game-logic/game/games/online-game/game-state';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { TimerControls } from '@app/game-logic/game/timer/timer-controls.enum';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { Player } from '@app/game-logic/player/player';
@@ -193,7 +192,6 @@ describe('OnlineGame', () => {
             { x: 7, y: 7, direction: Direction.Horizontal },
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
-            TestBed.inject(ObjectiveManagerService),
         );
 
         onlineGame.handleUserActions();
@@ -278,7 +276,6 @@ describe('OnlineGame', () => {
             { x: 7, y: 7, direction: Direction.Horizontal },
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
-            TestBed.inject(ObjectiveManagerService),
         );
 
         onlineGame.handleUserActions();
@@ -308,7 +305,6 @@ describe('OnlineGame', () => {
             { x: 7, y: 7, direction: Direction.Vertical },
             TestBed.inject(PointCalculatorService),
             TestBed.inject(WordSearcher),
-            TestBed.inject(ObjectiveManagerService),
         );
         onlineGame['placeTemporaryLetter'](action);
         const result = boardService.board.grid[11][7].letterObject.char;

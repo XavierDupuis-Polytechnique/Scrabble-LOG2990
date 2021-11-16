@@ -8,7 +8,6 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { convertToProperLetter, isStringALowerCaseLetter, isStringAnUpperCaseLetter } from '@app/game-logic/utils';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
@@ -25,7 +24,6 @@ export class UIPlace implements UIAction {
         private pointCalculator: PointCalculatorService,
         private wordSearcher: WordSearcher,
         private boardService: BoardService,
-        private objectiveManager: ObjectiveManagerService,
     ) {}
 
     get canBeCreated(): boolean {
@@ -79,7 +77,6 @@ export class UIPlace implements UIAction {
             { direction: this.direction, x: wordPlacement.x, y: wordPlacement.y },
             this.pointCalculator,
             this.wordSearcher,
-            this.objectiveManager,
         );
         return createdAction;
     }

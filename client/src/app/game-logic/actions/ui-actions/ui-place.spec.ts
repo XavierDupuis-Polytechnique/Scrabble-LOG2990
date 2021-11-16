@@ -8,12 +8,11 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -38,7 +37,6 @@ describe('UIPlace', () => {
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
     let info: GameInfoService;
-    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -61,10 +59,9 @@ describe('UIPlace', () => {
             { char: 'G', value: 0 },
         ];
         info = TestBed.inject(GameInfoService);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
         info.players = [player, new User('opponent')];
         info.user = player;
-        action = new UIPlace(info, pointCalculator, wordSearcher, boardService, objectiveManager);
+        action = new UIPlace(info, pointCalculator, wordSearcher, boardService);
     });
 
     it('should create an instance', () => {

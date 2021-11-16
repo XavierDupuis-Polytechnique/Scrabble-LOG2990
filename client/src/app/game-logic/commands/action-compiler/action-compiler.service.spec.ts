@@ -8,7 +8,6 @@ import { Command, CommandType } from '@app/game-logic/commands/command.interface
 import { Direction } from '@app/game-logic/direction.enum';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
@@ -22,7 +21,6 @@ describe('ActionCompilerService', () => {
     let player: Player;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
-    let objectiveManager: ObjectiveManagerService;
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -31,7 +29,6 @@ describe('ActionCompilerService', () => {
         service = TestBed.inject(ActionCompilerService);
         gameInfo = TestBed.inject(GameInfoService);
         pointCalculator = TestBed.inject(PointCalculatorService);
-        objectiveManager = TestBed.inject(ObjectiveManagerService);
         wordSearcher = TestBed.inject(WordSearcher);
         player = new User('p1');
         gameInfo.user = player;
@@ -93,7 +90,7 @@ describe('ActionCompilerService', () => {
             direction: Direction.Horizontal,
         };
 
-        const expectedAction = new PlaceLetter(player, 'abc', placement, pointCalculator, wordSearcher, objectiveManager);
+        const expectedAction = new PlaceLetter(player, 'abc', placement, pointCalculator, wordSearcher);
         expect(service.translate(command)).toEqual(expectedAction);
     });
 

@@ -4,7 +4,7 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
-import { ObjectiveManagerService } from '@app/game-logic/game/objectives/objective-manager.service';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
 import { Player } from '@app/game-logic/player/player';
@@ -23,7 +23,6 @@ export class PlaceLetter extends Action {
         public placement: PlacementSetting,
         private pointCalculator: PointCalculatorService,
         private wordSearcher: WordSearcher,
-        private objectiveManager: ObjectiveManagerService,
     ) {
         super(player);
     }
@@ -37,8 +36,9 @@ export class PlaceLetter extends Action {
         if (wordValid) {
             this.pointCalculator.placeLetterCalculation(this, words);
             this.drawLettersForPlayer(game);
-            // TODO : if(game instanceof SpecialOnlineGame) then next line
-            this.objectiveManager.updateObjectives(this, game);
+            if (game instanceof SpecialOfflineGame) {
+                (game as SpecialOfflineGame).updateObjectives(this);
+            }
             this.end();
         } else {
             timer(TIME_FOR_REVERT).subscribe(() => {
