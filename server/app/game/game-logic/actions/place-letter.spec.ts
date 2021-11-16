@@ -5,6 +5,7 @@ import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Tile } from '@app/game/game-logic/board/tile';
 import { DEFAULT_TIME_PER_TURN } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -39,7 +40,7 @@ describe('PlaceLetter', () => {
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerController = createSinonStubInstance<TimerController>(TimerController);
     let clock: SinonFakeTimers;
-    const mockEndGame$ = new Subject<string>();
+    const mockEndGame$ = new Subject<EndOfGame>();
     beforeEach(() => {
         clock = useFakeTimers();
         wordSearcherStub.listOfValidWord.returns([{ letters: [new Tile()], index: [0] }]);

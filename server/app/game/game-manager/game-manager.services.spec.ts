@@ -3,12 +3,14 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { NEW_GAME_TIMEOUT } from '@app/constants';
+import { LeaderboardService } from '@app/database/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -32,6 +34,7 @@ describe('GameManagerService', () => {
     let stubTimerController: TimerController;
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
+    let stubLeaderboardService: LeaderboardService;
     let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
@@ -40,6 +43,7 @@ describe('GameManagerService', () => {
         stubGameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
         stubTimerController = createSinonStubInstance<TimerController>(TimerController);
         stubGameActionNotifierService = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
+        stubLeaderboardService = createSinonStubInstance<LeaderboardService>(LeaderboardService);
     });
 
     afterEach(() => {
@@ -55,6 +59,7 @@ describe('GameManagerService', () => {
             stubGameCompiler,
             stubTimerController,
             stubGameActionNotifierService,
+            stubLeaderboardService,
         );
     });
 
@@ -491,7 +496,7 @@ describe('GameManagerService', () => {
         };
         service.createGame(gameToken, gameSettings);
         // eslint-disable-next-line dot-notation
-        service['endGame$'].next(gameToken);
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [] });
         expect(service.activeGames.size).to.be.equal(0);
     });
 });

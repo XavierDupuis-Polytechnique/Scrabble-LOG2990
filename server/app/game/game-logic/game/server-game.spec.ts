@@ -4,6 +4,7 @@ import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { RACK_LETTER_COUNT } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -27,7 +28,7 @@ describe('ServerGame', () => {
     const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const newGameStateSubject = new Subject<GameStateToken>();
-    const endGameSubject = new Subject<string>();
+    const endGameSubject = new Subject<EndOfGame>();
 
     beforeEach(() => {
         game = new ServerGame(
@@ -83,7 +84,7 @@ describe('ServerGame', () => {
         p1.letterRack = [];
         expect(game.isEndOfGame()).to.be.equal(true);
         if (game.isEndOfGame()) {
-            game.onEndOfGame();
+            game.onEndOfGame(EndOfGameReason.GameEnded);
         }
     });
 
@@ -159,26 +160,27 @@ describe('ServerGame', () => {
         expect(game.getWinner()[0]).to.be.deep.equal(p2);
     });
 
-    it('endOfTurn should return true and call onEndOfGame if the isEnded is true', () => {
+    it('endOfTurn should return true and call onEndOfGame if the endState is defined', () => {
         game.stop();
-        expect(game.isEnded).to.be.equal(true);
+        expect(game.endState).to.be.equal(EndOfGameReason.Other);
         const gameSpy = spy(game, 'onEndOfGame');
         game['startTurn']();
         expect(gameSpy.called).to.be.equal(true);
     });
 
-    it('isEndOfGame should return true if isEnded is true', () => {
-        game.stop();
-        expect(game.isEnded).to.be.equal(true);
+    it('forfeit should return reason forfeit and isEndOFgame should return false', () => {
+        game.forfeit('blabla');
+        expect(game.endState).to.be.equal(EndOfGameReason.Forfeit);
         const result = game['isEndOfGame']();
-        expect(result).to.be.equal(true);
+        expect(result).to.be.equal(false);
     });
 
-    it('endOfTurn should return and call onEndOfGame if the isEnded is true', () => {
+    it('endOfTurn should return and call onEndOfGame if the endState is defined', () => {
         const action = new PassTurn(p1);
         const actionSpy = spy(action, 'execute');
         game.start();
-        game['isEndedValue'] = true;
+        game.consecutivePass = 6;
+        game.endState = EndOfGameReason.GameEnded;
         const gameSpy = spy(game, 'onEndOfGame');
         game['endOfTurn'](action);
         expect(gameSpy.called).to.be.equal(true);

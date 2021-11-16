@@ -3,6 +3,7 @@ import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { DEFAULT_TIME_PER_TURN } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -23,7 +24,7 @@ describe('ExchangeLetter', () => {
     const mockNewGameState$ = new Subject<GameStateToken>();
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerController = createSinonStubInstance<TimerController>(TimerController);
-    const mockEndGame$ = new Subject<string>();
+    const mockEndGame$ = new Subject<EndOfGame>();
     beforeEach(() => {
         game = new ServerGame(
             timerController,
