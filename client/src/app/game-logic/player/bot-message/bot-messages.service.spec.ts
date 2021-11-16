@@ -101,6 +101,9 @@ describe('bot message service', () => {
     it('sendAction should call sendNextBestWords if the player is a hardBot', () => {
         spyOn(service, 'formatAlternativeWord').and.returnValue('somethingValid');
         const player = TestBed.inject(BotCreatorService).createBot('Bot', 'hard');
+        (Object.getOwnPropertyDescriptor(commandExecuterServiceMock, 'isDebugModeActivated')?.get as jasmine.Spy<() => boolean>).and.returnValue(
+            true,
+        );
         (player as HardBot).bestWordList = [new ValidWord('second'), new ValidWord('third')];
         const action = new PlaceLetter(
             player as HardBot,
