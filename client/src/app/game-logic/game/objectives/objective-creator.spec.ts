@@ -1,4 +1,4 @@
-import { ObjectiveCreator } from './objective-manager.service';
+import { ObjectiveCreator } from './objective-creator';
 
 describe('ObjectiveManager', () => {
     let creator: ObjectiveCreator;

@@ -2,7 +2,7 @@ import { Action } from '@app/game-logic/actions/action';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
-import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-manager.service';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
