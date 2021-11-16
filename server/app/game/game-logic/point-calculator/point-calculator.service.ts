@@ -3,6 +3,7 @@ import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { Tile } from '@app/game/game-logic/board/tile';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PlaceLetterPointsEstimation, WordPointsEstimation } from '@app/game/game-logic/point-calculator/calculation-estimation';
 import { Service } from 'typedi';
@@ -41,7 +42,7 @@ export class PointCalculatorService {
 
     endOfGamePointDeduction(game: ServerGame): void {
         const activePlayer = game.getActivePlayer();
-        if (game.consecutivePass >= ServerGame.maxConsecutivePass) {
+        if (game.consecutivePass >= ServerGame.maxConsecutivePass || game.endState === EndOfGameReason.Forfeit) {
             for (const player of game.players) {
                 player.points -= this.calculatePointsOfRack(player);
             }
