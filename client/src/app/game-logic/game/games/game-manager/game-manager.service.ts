@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { GameMode } from '@app/components/leaderboard.interface';
-import { LeaderboardService } from '@app/components/leaderboard.service';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -16,6 +14,8 @@ import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.servic
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
+import { GameMode } from '@app/leaderboard/leaderboard.interface';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';

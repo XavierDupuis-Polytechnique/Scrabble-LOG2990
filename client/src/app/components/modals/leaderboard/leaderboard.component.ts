@@ -1,8 +1,8 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { GameMode } from '@app/components/leaderboard.interface';
-import { LeaderboardService } from '@app/components/leaderboard.service';
 import { MAX_HIGHSCORE, NOT_FOUND } from '@app/game-logic/constants';
+import { GameMode } from '@app/leaderboard/leaderboard.interface';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 export interface HighScore {
     names: string[];
     point: number;

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { GameMode, Score } from '@app/components/leaderboard.interface';
+import { GameMode, Score } from '@app/leaderboard/leaderboard.interface';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
