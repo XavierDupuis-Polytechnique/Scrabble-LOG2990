@@ -3,8 +3,10 @@
         <img src="assets/img/logoWhite.png" width="200" height="50" alt="Logo Scrabble" />
         <app-player-info></app-player-info>
         <app-info-box></app-info-box>
-        <app-chat-box (clickChatbox)="receiveInput($event)"></app-chat-box>
-        <app-objectives-list></app-objectives-list>
+        <div class="container-objectives-and-chat">
+            <app-objectives-list></app-objectives-list>
+            <app-chat-box (clickChatbox)="receiveInput($event)"></app-chat-box>
+        </div>
         <app-board (clickTile)="receiveInput($event)" style="height: 100%"></app-board>
         <app-horse appPreventContextMenu (clickLetter)="receiveInput($event)"></app-horse>
         <div class="actions">
