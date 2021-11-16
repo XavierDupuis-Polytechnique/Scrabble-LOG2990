@@ -1,4 +1,5 @@
-import { ObjectiveType } from '@app/game-logic/game/objectives/objective-type';
+import { Injectable } from '@angular/core';
+import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
 import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners/four-corners';
 import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
 import { NineLettersWord } from '@app/game-logic/game/objectives/objectives/nine-letters-word/nine-letters-word';
@@ -10,6 +11,9 @@ import { ThreeSameLetters } from '@app/game-logic/game/objectives/objectives/thr
 import { TripleBonus } from '@app/game-logic/game/objectives/objectives/triple-bonus/triple-bonus';
 import { getRandomInt } from '@app/game-logic/utils';
 
+@Injectable({
+    providedIn: 'root',
+})
 export class ObjectiveCreator {
     static privateObjectiveCount = 1;
     static publicObjectiveCount = 2;
