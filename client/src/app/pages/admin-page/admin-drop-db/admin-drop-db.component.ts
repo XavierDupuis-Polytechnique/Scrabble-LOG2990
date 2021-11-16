@@ -16,7 +16,9 @@ export class AdminDropDbComponent {
             .open(AlertDialogComponent, {
                 width: '250px',
                 data: {
-                    message: 'Le nom du joueur virtuel est déjà utilisé',
+                    message: `
+                    Attention si vous continuez, vous aller perdre toutes les données de la base de données.
+                    Voullez-vous continuer le processus?`,
                     button1: 'Non',
                     button2: 'Oui',
                 },
@@ -26,6 +28,7 @@ export class AdminDropDbComponent {
                 if (ans === true) {
                     this.joueurVirtuelHttpService.dropTalbe();
                     this.dictHttpService.dropTable();
+                    // TODO Afficher un message lorsque la base de données est bien effacé
                 }
             });
     }
