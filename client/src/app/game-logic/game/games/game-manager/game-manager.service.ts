@@ -82,7 +82,6 @@ export class GameManagerService {
             this.boardService,
             this.messageService,
         );
-        (this.game as SpecialOfflineGame).allocateObjectives();
 
         // TODO remove code repetition
         const playerName = gameSettings.playerName;
@@ -90,6 +89,7 @@ export class GameManagerService {
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
+        (this.game as SpecialOfflineGame).allocateObjectives();
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {

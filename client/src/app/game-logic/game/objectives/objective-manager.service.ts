@@ -1,6 +1,5 @@
 import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
-import { getRandomInt } from '@app/game-logic/utils';
 
 enum ObjectiveType {
     FOURCOURNERS,
@@ -24,7 +23,7 @@ export class ObjectiveCreator {
     availableObjectivesIndex: number[];
     // objectives: Objective[];
 
-    init() {
+    constructor() {
         this.availableObjectivesIndex = [];
         for (let index = 0; index < ObjectiveCreator.objectiveCount; index++) {
             this.availableObjectivesIndex.push(index);
@@ -39,19 +38,22 @@ export class ObjectiveCreator {
     // }
 
     chooseObjectives(count: number = 1): Objective[] {
-        this.init();
-        if (this.availableObjectivesIndex.length < count) {
-            throw new Error('Cannot create ' + count + ' unique objectives : only ' + this.availableObjectivesIndex.length + ' available');
+        // if (this.availableObjectivesIndex.length < count) {
+        //     throw new Error('Cannot create ' + count + ' unique objectives : only ' + this.availableObjectivesIndex.length + ' available');
+        // }
+        // const createdObjectives: Objective[] = [];
+        // for (let index = 0; index < count; index++) {
+        //     const randomInt = getRandomInt(this.availableObjectivesIndex.length);
+        //     const randomObjectiveIndex = this.availableObjectivesIndex[randomInt];
+        //     const createdObjective = this.createObjective(randomObjectiveIndex);
+        //     createdObjectives.push(createdObjective);
+        //     this.availableObjectivesIndex.splice(randomObjectiveIndex, 1);
+        // }
+        // return createdObjectives;
+        const createdObjectives = [];
+        for (let i = 0; i < count; i++) {
+            createdObjectives.push(this.createObjective(0));
         }
-        const createdObjectives: Objective[] = [];
-        for (let index = 0; index < count; index++) {
-            const randomInt = getRandomInt(this.availableObjectivesIndex.length);
-            const randomObjectiveIndex = this.availableObjectivesIndex[randomInt];
-            const createdObjective = this.createObjective(randomObjectiveIndex);
-            createdObjectives.push(createdObjective);
-            this.availableObjectivesIndex.splice(randomObjectiveIndex, 1);
-        }
-        // this.objectives = this.objectives.concat(createdObjectives);
         return createdObjectives;
     }
 
