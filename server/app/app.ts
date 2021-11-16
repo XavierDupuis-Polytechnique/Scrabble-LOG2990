@@ -1,4 +1,5 @@
 import { HttpException } from '@app/classes/http.exception';
+import { BotNamesController } from '@app/controllers/bot-names.controller';
 import { DebugController } from '@app/controllers/debug.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -15,7 +16,7 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
-    constructor(private readonly debugController: DebugController) {
+    constructor(private readonly debugController: DebugController, private readonly botNamesController: BotNamesController) {
         this.app = express();
 
         this.swaggerOptions = {
@@ -37,6 +38,7 @@ export class Application {
     bindRoutes(): void {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/servergame', this.debugController.router);
+        this.app.use('/api/botnames', this.botNamesController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });

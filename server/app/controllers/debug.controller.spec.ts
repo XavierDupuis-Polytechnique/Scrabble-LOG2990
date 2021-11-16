@@ -2,7 +2,6 @@ import { Application } from '@app/app';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
-// import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
@@ -16,7 +15,6 @@ const HTTP_BAD_REQUEST = StatusCodes.BAD_REQUEST;
 
 describe('ServerGameController', () => {
     let gameManagerService: SinonStubbedInstance<GameManagerService>;
-    // let pointCalculatorService: SinonStubbedInstance<PointCalculatorService>;
     let expressApp: Express.Application;
 
     beforeEach(async () => {
