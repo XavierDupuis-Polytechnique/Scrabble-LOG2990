@@ -18,16 +18,17 @@ export class LeaderboardController {
             const gameMode = req.query.gameMode;
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
-                res.json(scores);
+                res.send(scores);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
-        this.router.post('/', async (req: Request, res: Response) => {
-            const gameMode = req.query.gameMode?.toString();
+        this.router.post('/:gameMode', async (req: Request, res: Response) => {
+            const gameMode = req.query.gameMode;
             try {
-                await this.leaderboardService.updateLeaderboard(req.body, gameMode as GameMode);
+                const score = { name: req.body.name, point: req.body.point };
+                await this.leaderboardService.updateLeaderboard(score, gameMode as GameMode);
                 res.sendStatus(StatusCodes.OK);
             } catch (e) {
                 res.sendStatus(StatusCodes.BAD_REQUEST);

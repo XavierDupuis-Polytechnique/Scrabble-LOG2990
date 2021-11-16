@@ -32,10 +32,6 @@ export class DatabaseService {
         return this.client.close();
     }
 
-    // async populateDB(): Promise<void> {
-    //     console.log('THIS ADDS DATA TO THE DATABASE, DO NOT USE OTHERWISE');
-    // }
-
     async populateLeaderboardCollection(name: string): Promise<void> {
         try {
             await this.db.collection(name).insertMany(DEFAULT_LEADERBOARD);
