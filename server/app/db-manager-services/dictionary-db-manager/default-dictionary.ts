@@ -1,0 +1,7 @@
+export interface Dictionary {
+    title: string;
+    description: string;
+    words: string[];
+}
+
+export class DefaultDictionary {}
