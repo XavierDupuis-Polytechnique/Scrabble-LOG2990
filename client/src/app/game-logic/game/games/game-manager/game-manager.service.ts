@@ -76,7 +76,10 @@ export class GameManagerService {
 
         this.game.isEndOfGame$.pipe(first()).subscribe(() => {
             if (this.game !== null) {
-                this.updateLeaderboard(this.game.players);
+                // TODO: unComment when merge branch Objective
+                // const mode = this.game instanceof SpecialOffline ? GameMode.Classic : GameMode.Log;
+                const mode = GameMode.Classic;
+                this.updateLeaderboard(this.game.players, mode);
             }
         });
     }
@@ -134,14 +137,14 @@ export class GameManagerService {
         this.commandExecuter.resetDebug();
     }
 
-    updateLeaderboard(players: Player[]) {
+    updateLeaderboard(players: Player[], mode: GameMode) {
         if (players === undefined) {
             return;
         }
         for (const player of players) {
             if (player instanceof User) {
                 const score = { mode: GameMode.Classic, name: player.name, point: player.points };
-                this.leaderboardService.updateLeaderboard(GameMode.Classic, score);
+                this.leaderboardService.updateLeaderboard(mode, score);
             }
         }
     }
