@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { LocationStrategy } from '@angular/common';
+import { MockLocationStrategy } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
@@ -31,6 +33,7 @@ describe('bot message service', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesService },
                 { provide: CommandExecuterService, useValue: commandExecuterServiceMock },
+                { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
         });
         service = TestBed.inject(BotMessagesService);
