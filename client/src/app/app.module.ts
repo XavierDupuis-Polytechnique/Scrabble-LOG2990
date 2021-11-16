@@ -35,6 +35,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
 import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
+import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -74,6 +75,7 @@ import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-j
         AlertDialogComponent,
         AdminJoueurVirtuelComponent,
         EditJvDialogComponent,
+        AdminDropDbComponent,
     ],
     imports: [
         AppMaterialModule,
