@@ -6,7 +6,7 @@ export class TripleBonus extends Objective {
     name = 'Les 3 mousquetaires';
     description = 'Faire un placement en utilisant 3 cases bonus';
 
-    update(action: Action, game: Game): void {
+    updateProgression(action: Action, game: Game): void {
         throw new Error('Method not implemented.');
     }
 }

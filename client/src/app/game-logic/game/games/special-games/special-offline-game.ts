@@ -2,7 +2,7 @@ import { Action } from '@app/game-logic/actions/action';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
-import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -11,7 +11,6 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
     privateObjectives: Map<string, Objective[]>;
     publicObjectives: Objective[];
-    objectiveCreator: ObjectiveCreator;
     constructor(
         public randomBonus: boolean,
         public timePerTurn: number,
@@ -19,9 +18,9 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         pointCalculator: PointCalculatorService,
         boardService: BoardService,
         messagesService: MessagesService,
+        private objectiveCreator: ObjectiveCreator,
     ) {
         super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService);
-        this.objectiveCreator = new ObjectiveCreator();
     }
 
     allocateObjectives() {
@@ -39,6 +38,10 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         const playerObjectives = this.privateObjectives.get(action.player.name);
         if (!playerObjectives) {
             return;
+        }
+
+        for (const privateObjective of playerObjectives) {
+            privateObjective.update(action, this);
         }
     }
 

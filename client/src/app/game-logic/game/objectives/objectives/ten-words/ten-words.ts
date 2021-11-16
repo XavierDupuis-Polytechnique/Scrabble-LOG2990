@@ -6,7 +6,7 @@ export class TenWords extends Objective {
     name = '10 mots';
     description = 'Placer au moins 10 mots dans une partie.';
 
-    update(action: Action, game: Game): void {
+    updateProgression(action: Action, game: Game): void {
         throw new Error('Method not implemented.');
     }
 }

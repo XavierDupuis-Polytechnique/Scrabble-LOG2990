@@ -6,7 +6,7 @@ export class Palindrome extends Objective {
     name = 'Engage le jeu, que je le gagne';
     description = 'Former un palindrome';
 
-    update(action: Action, game: Game): void {
+    updateProgression(action: Action, game: Game): void {
         throw new Error('Method not implemented.');
     }
 }

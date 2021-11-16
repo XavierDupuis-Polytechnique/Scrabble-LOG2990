@@ -6,7 +6,7 @@ export class ThreeSameLetters extends Objective {
     name = 'La triforce';
     description = 'Former un mot avec 3 fois la même lettre';
 
-    update(action: Action, game: Game): void {
+    updateProgression(action: Action, game: Game): void {
         throw new Error('Method not implemented.');
     }
 }

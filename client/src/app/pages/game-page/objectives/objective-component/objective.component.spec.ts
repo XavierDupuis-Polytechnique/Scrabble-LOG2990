@@ -5,7 +5,7 @@ import { User } from '@app/game-logic/player/user';
 import { ObjectiveComponent } from './objective.component';
 
 class MockObjective extends Objective {
-    update(): void {
+    updateProgression(): void {
         return;
     }
 }
