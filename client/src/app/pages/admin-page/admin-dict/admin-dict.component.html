@@ -1,32 +1,3 @@
-<!-- <div class="container" >
-    <h1>Liste des dictionnaires</h1>
-    <div class="list">
-        <mat-list style="border: solid 1px black;">
-            <mat-list-item *ngFor="let item of dictMap | keyvalue; let i = index">
-                <div (click)="showUpdateMenu(item.value)">
-                    <div>
-                        {{ item.value.title }}
-                    </div>
-                    <div>
-                        {{ item.value.description }}
-                    </div>
-                </div>
-            </mat-list-item>
-        </mat-list>
-    </div>
-
-    <div class="uploadContainer">
-
-        <input type="file" id="fileInput" accept=".json" (change)="showSelectedFile()" />
-        <div class="fileContainer">
-            <mat-icon class="downloadIcon">file_download</mat-icon>
-            <label for="fileInput" class="textHover">Choisir un fichier</label>
-            <p class="selectedFileText">{{ selectedFile }}</p>
-            <button (click)="loadFile()" class="customButton">Upload</button>
-        </div>
-    </div>
-</div> -->
-
 <div class="container">
     <div class="overflow mat-elevation-z8">
         <table mat-table [dataSource]="dictDataSource" class="mat-elevation-z8" style="width: 100%">
