@@ -77,7 +77,7 @@ export class LeaderboardService {
         try {
             await collection.updateOne({ name: score.name }, { $set: { point: score.point } });
         } catch (e) {
-            console.error(e);
+            return;
         }
     }
 
@@ -86,7 +86,7 @@ export class LeaderboardService {
         try {
             await collection.insertOne({ name: score.name, point: score.point });
         } catch (e) {
-            console.error(e);
+            return;
         }
     }
 

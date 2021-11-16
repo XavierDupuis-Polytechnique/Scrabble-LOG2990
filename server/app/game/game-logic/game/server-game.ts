@@ -90,11 +90,9 @@ export class ServerGame {
     }
 
     onEndOfGame(reason: EndOfGameReason) {
-        console.log(this.players);
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
         this.emitGameState();
-        console.log(this.players);
         if (reason === EndOfGameReason.GameEnded) {
             this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
         }

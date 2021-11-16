@@ -64,10 +64,10 @@ export class GameManagerService {
         this.endGame$.subscribe((endOfGame: EndOfGame) => {
             const gameToken = endOfGame.gameToken;
             if (endOfGame.reason === EndOfGameReason.GameEnded) {
-                this.updateLeaderboard(gameToken, endOfGame.players);
+                this.updateLeaderboard(endOfGame.players);
             }
             if (endOfGame.reason === EndOfGameReason.Forfeit) {
-                this.updateLeaderboard(gameToken, endOfGame.players);
+                this.updateLeaderboard(endOfGame.players);
             }
             this.deleteGame(gameToken);
         });
@@ -167,7 +167,7 @@ export class GameManagerService {
     }
 
     private endGame(game: ServerGame) {
-        game.stop(); // OTHER
+        game.stop();
     }
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
@@ -187,15 +187,8 @@ export class GameManagerService {
         this.linkedClients.delete(gameToken);
     }
 
-    private updateLeaderboard(gameToken: string, players: Player[]) {
-        // const game = this.activeGames.get(gameToken);
-        // if (game === undefined) {
-        //     return;
-        // }
-        // const players = game.players;
-
+    private updateLeaderboard(players: Player[]) {
         for (const player of players) {
-            console.log(player.name);
             const score = { name: player.name, point: player.points };
             this.leaderboardService.updateLeaderboard(score, GameMode.Classic);
         }
