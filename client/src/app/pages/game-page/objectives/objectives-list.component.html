@@ -1,8 +1,14 @@
 <div *ngIf="info.isSpecialGame">
-    <div *ngFor="let publicObjective of info.publicObjectives">
-        <app-objective class="public objective" [objective]="publicObjective"></app-objective>
+    <div class="public">
+        <h2>Objectif(s) publique(s)</h2>
+        <div *ngFor="let publicObjective of info.publicObjectives">
+            <app-objective [objective]="publicObjective"></app-objective>
+        </div>
     </div>
-    <div *ngFor="let privateObjective of info.privateObjectives">
-        <app-objective class="private objective" [objective]="privateObjective"></app-objective>
+    <div class="private">
+        <h2>Objectif(s) privé(s)</h2>
+        <div *ngFor="let privateObjective of info.privateObjectives">
+            <app-objective [objective]="privateObjective"></app-objective>
+        </div>
     </div>
 </div>

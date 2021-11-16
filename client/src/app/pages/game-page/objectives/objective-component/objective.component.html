@@ -1,12 +1,12 @@
-<mat-card (click)="descriptionToggle()">
+<mat-card class="objective" (click)="descriptionToggle()">
     <mat-card-header>
         <div>
             {{ name }}
         </div>
         <div [ngSwitch]="status">
             <mat-icon *ngSwitchCase="'NotClaimed'">panorama_fish_eye</mat-icon>
-            <mat-icon *ngSwitchCase="'Won'" style="color: limegreen;">check_circle</mat-icon>
-            <mat-icon *ngSwitchCase="'Lost'" style="color: red;">cancel</mat-icon>
+            <mat-icon *ngSwitchCase="'Won'" style="color: limegreen">check_circle</mat-icon>
+            <mat-icon *ngSwitchCase="'Lost'" style="color: red">cancel</mat-icon>
         </div>
     </mat-card-header>
     <mat-card-subtitle *ngIf="showDescription">
