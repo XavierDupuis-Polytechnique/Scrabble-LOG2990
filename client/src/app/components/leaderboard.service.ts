@@ -6,12 +6,15 @@ import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class LeaderboardService {
+    url = `${environment.serverUrl}/scores`;
     constructor(private http: HttpClient) {}
-
-    // getHighestscores(gameMode: GameMode) {}
 
     getLeaderBoard(gameMode: GameMode): Observable<Score[]> {
         const params = new HttpParams().set('gameMode', gameMode);
-        return this.http.get(`${environment.serverUrl}/scores/gameMode?`, { params }) as Observable<Score[]>;
+        return this.http.get(`${this.url}/gameMode?`, { params }) as Observable<Score[]>;
+    }
+
+    updateLeaderboard(mode: GameMode, score: Score) {
+        this.http.post(`${this.url}/gameMode?gameMode=${mode}`, score, { responseType: 'text' }).subscribe();
     }
 }

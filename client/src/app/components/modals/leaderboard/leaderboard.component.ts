@@ -2,6 +2,7 @@ import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angu
 import { MatTableDataSource } from '@angular/material/table';
 import { GameMode } from '@app/components/leaderboard.interface';
 import { LeaderboardService } from '@app/components/leaderboard.service';
+import { MAX_HIGHSCORE, NOT_FOUND } from '@app/game-logic/constants';
 export interface HighScore {
     names: string[];
     point: number;
@@ -36,38 +37,30 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
         ];
     }
     ngOnInit() {
-        // this.leaderboardService.getLeaderBoard(this.gameMode).subscribe((data) => {
-        //     const highScore: HighScore[] = [];
-        //     data.forEach((obj) => {
-        //         highScore.push({ names: [obj.name], point: obj.point });
-        //     });
-        //     this.dataSource.data = highScore;
-        // });
-
         this.leaderboardService.getLeaderBoard(GameMode.Classic).subscribe((data) => {
             const scores: HighScore[] = [];
             data.forEach((obj) => {
                 const indexOfScore = scores.findIndex((score: HighScore) => obj.point === score.point);
-                if (indexOfScore !== -1) {
+                if (indexOfScore !== NOT_FOUND) {
                     scores[indexOfScore].names.push(' ' + obj.name);
                 } else {
                     scores.push({ names: [obj.name], point: obj.point });
                 }
             });
-            this.dataSourceClassic.data = scores;
+            this.dataSourceClassic.data = scores.slice(0, MAX_HIGHSCORE);
         });
 
         this.leaderboardService.getLeaderBoard(GameMode.Log).subscribe((data) => {
             const scores: HighScore[] = [];
             data.forEach((obj) => {
                 const indexOfScore = scores.findIndex((score: HighScore) => obj.point === score.point);
-                if (indexOfScore !== -1) {
+                if (indexOfScore !== NOT_FOUND) {
                     scores[indexOfScore].names.push(obj.name);
                 } else {
                     scores.push({ names: [obj.name], point: obj.point });
                 }
             });
-            this.dataSourceLog.data = scores;
+            this.dataSourceLog.data = scores.slice(0, MAX_HIGHSCORE);
         });
     }
 
