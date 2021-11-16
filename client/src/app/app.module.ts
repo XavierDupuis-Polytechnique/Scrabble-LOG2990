@@ -20,6 +20,7 @@ import { CommandExecuterService } from '@app/game-logic/commands/command-execute
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { AdminJoueurVirtuelComponent } from '@app/pages/admin-page/admin-joueur-virtuel/admin-jv.component';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
@@ -31,9 +32,8 @@ import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.compone
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
-import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
-import { AdminJvComponent } from '@app/pages/admin-page/admin-jv/admin-jv.component';
+import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
 /**
  * Main module that is used in main.ts.
@@ -72,7 +72,7 @@ import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-j
         AdminPageComponent,
         EditDictDialogComponent,
         AlertDialogComponent,
-        AdminJvComponent,
+        AdminJoueurVirtuelComponent,
         EditJvDialogComponent,
     ],
     imports: [

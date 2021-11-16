@@ -27,8 +27,8 @@ export class BotInfoController {
         this.router.post('/', async (req, res) => {
             try {
                 const clientBotInfo = req.body as BotInfo;
-                const t = await this.botInfoService.isBotExist(clientBotInfo.name);
-                if (t) {
+                const isBotExist = await this.botInfoService.isBotExist(clientBotInfo.name);
+                if (isBotExist) {
                     res.send(false);
                 } else {
                     clientBotInfo.canEdit = true;

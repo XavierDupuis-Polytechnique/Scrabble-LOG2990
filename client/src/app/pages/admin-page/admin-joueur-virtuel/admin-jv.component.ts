@@ -8,7 +8,7 @@ import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
     templateUrl: './admin-jv.component.html',
     styleUrls: ['./admin-jv.component.scss'],
 })
-export class AdminJvComponent implements OnInit {
+export class AdminJoueurVirtuelComponent implements OnInit {
     botDataInfo: BotInfo[];
     dataSource: BotInfo[];
     botDisplayedColumns: string[] = ['name', 'type', 'edit', 'delete'];
