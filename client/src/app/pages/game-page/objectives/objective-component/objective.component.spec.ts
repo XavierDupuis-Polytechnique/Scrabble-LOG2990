@@ -1,9 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners';
+import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { User } from '@app/game-logic/player/user';
-
 import { ObjectiveComponent } from './objective.component';
+
+class MockObjective extends Objective {
+    update(): void {
+        return;
+    }
+}
 
 describe('ObjectiveComponent', () => {
     let component: ObjectiveComponent;
@@ -20,8 +25,7 @@ describe('ObjectiveComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(ObjectiveComponent);
         component = fixture.componentInstance;
-        // TODO: create a mock objective
-        component.objective = new FourCorners();
+        component.objective = new MockObjective();
         fixture.detectChanges();
     });
 
