@@ -7,8 +7,8 @@ import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 
 export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
-    privateObjectives: Map<string, Objective[]>;
-    publicObjectives: Objective[];
+    privateObjectives = new Map<string, Objective[]>();
+    publicObjectives = [] as Objective[];
     constructor(
         public gameToken: string,
         public timePerTurn: number,
@@ -19,8 +19,6 @@ export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
         onlineActionCompiler: OnlineActionCompilerService,
     ) {
         super(gameToken, timePerTurn, userName, timer, onlineSocket, boardService, onlineActionCompiler);
-        this.privateObjectives = new Map<string, Objective[]>();
-        this.publicObjectives = [];
     }
 
     updateObjectives(privateObjectives: Map<string, Objective[]>, publicObjectives: Objective[]) {
