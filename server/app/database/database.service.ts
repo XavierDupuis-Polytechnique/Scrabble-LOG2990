@@ -1,3 +1,5 @@
+import { BOT_INFO_COLLECTION } from '@app/constants';
+import { DEFAULT_EASY_BOT } from '@app/database/bot-info/default-bot-names';
 import { DEFAULT_LEADERBOARD, LEADERBOARD_CLASSIC_COLLECTION, LEADERBOARD_LOG_COLLECTION } from '@app/database/leaderboard.service';
 import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
@@ -26,6 +28,8 @@ export class DatabaseService {
         }
         this.createLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
         this.createLeaderboardCollection(LEADERBOARD_LOG_COLLECTION);
+
+        this.createBotInfoCollection();
     }
 
     async closeConnection(): Promise<void> {
@@ -60,6 +64,27 @@ export class DatabaseService {
             return true;
         }
         return false;
+    }
+
+    private async createBotInfoCollection() {
+        try {
+            const checkCollectionEcists = await this.collectionExists(BOT_INFO_COLLECTION);
+            if (!checkCollectionEcists) {
+                await this.database.createCollection(BOT_INFO_COLLECTION);
+                await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
+                this.populateBotInfoCollection();
+            }
+        } catch (error) {
+            throw Error('Data base collection creation error');
+        }
+    }
+
+    private async populateBotInfoCollection() {
+        try {
+            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
+        } catch (error) {
+            throw Error('Data base collection population error');
+        }
     }
 
     get database(): Db {

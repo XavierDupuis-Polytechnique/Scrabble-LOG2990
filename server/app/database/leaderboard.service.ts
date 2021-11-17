@@ -67,7 +67,8 @@ export class LeaderboardService {
             await this.addScore(score, mode);
             return;
         }
-        if (score.point > currentScore.point) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (score.point > currentScore!.point) {
             await this.modifyScore(score, mode);
         }
     }

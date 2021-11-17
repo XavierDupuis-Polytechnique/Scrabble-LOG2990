@@ -1,6 +1,5 @@
 import { HttpException } from '@app/classes/http.exception';
 import { BotInfoController } from '@app/controllers/bot-info.controller';
-import { BotNamesController } from '@app/controllers/bot-names.controller';
 import { DebugController } from '@app/controllers/debug.controller';
 import { LeaderboardController } from '@app/database/leaderboard-controller/leaderboard.controller';
 import * as cookieParser from 'cookie-parser';
@@ -18,7 +17,11 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
-    constructor(private readonly debugController: DebugController, private readonly leaderboardController: LeaderboardController, private readonly botInfoController: BotInfoController) {
+    constructor(
+        private readonly debugController: DebugController,
+        private readonly leaderboardController: LeaderboardController,
+        private readonly botInfoController: BotInfoController,
+    ) {
         this.app = express();
 
         this.swaggerOptions = {

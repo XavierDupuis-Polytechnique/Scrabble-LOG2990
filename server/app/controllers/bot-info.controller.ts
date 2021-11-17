@@ -1,5 +1,5 @@
-import { BotInfoService } from '@app/db-manager-services/bot-info-db-manager/bot-info.service';
-import { BotInfo } from '@app/db-manager-services/bot-name-db-manager/bot-info';
+import { BotInfo } from '@app/database/bot-info/bot-info';
+import { BotInfoService } from '@app/database/bot-info/bot-info.service';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';

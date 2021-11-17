@@ -1,4 +1,4 @@
-import { BotInfo, BotType } from '@app/db-manager-services/bot-name-db-manager/bot-info';
+import { BotInfo, BotType } from '@app/database/bot-info/bot-info';
 
 export const DEFAULT_BOT_NAMES = ['Jimmy', 'Sasha', 'Beep'];
 

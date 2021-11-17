@@ -1,18 +1,14 @@
 import { BOT_INFO_COLLECTION } from '@app/constants';
-import { BotInfo } from '@app/db-manager-services/bot-name-db-manager/bot-info';
-import { DatabaseService } from '@app/db-manager-services/database.service';
-import { Db, MongoClient } from 'mongodb';
+import { BotInfo } from '@app/database/bot-info/bot-info';
+import { DatabaseService } from '@app/database/database.service';
+import { Collection } from 'mongodb';
 import { Service } from 'typedi';
 
 @Service()
 export class BotInfoService {
-    client: MongoClient;
-    db: Db;
-    constructor(private dbService: DatabaseService) {
-        this.dbService.start();
-    }
+    constructor(private dbService: DatabaseService) {}
 
-    get collection() {
+    get collection(): Collection<BotInfo> {
         return this.dbService.database.collection(BOT_INFO_COLLECTION);
     }
 
