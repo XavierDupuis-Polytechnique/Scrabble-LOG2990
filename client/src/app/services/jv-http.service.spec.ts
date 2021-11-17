@@ -55,7 +55,7 @@ describe('JvHttpService', () => {
     });
 
     it('dropTable should send drop request', () => {
-        service.dropTalbe().subscribe((res) => {
+        service.dropTable().subscribe((res) => {
             expect(res).toEqual(true);
         });
 

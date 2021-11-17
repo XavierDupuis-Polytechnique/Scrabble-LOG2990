@@ -2,7 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AdminDropDbComponent } from './admin-drop-db.component';
 import { JvHttpService } from '@app/services/jv-http.service';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { of } from 'rxjs';
 
 describe('AdminDropDbComponent', () => {
     let component: AdminDropDbComponent;
@@ -16,6 +18,9 @@ describe('AdminDropDbComponent', () => {
         jvHttpServiceMock = jasmine.createSpyObj('JvHttpService', ['dropTable']);
         dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['dropTable']);
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
+        const dummyAnswer = of(true);
+        jvHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
+        dictHttpServiceMock.dropTable.and.returnValue(true);
 
         await TestBed.configureTestingModule({
             declarations: [AdminDropDbComponent],
@@ -35,5 +40,42 @@ describe('AdminDropDbComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('dropTables should show alert dialog and call dropTable to service', () => {
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        component.dropTables();
+
+        expect(matDialogMock.open).toHaveBeenCalled();
+        expect(jvHttpServiceMock.dropTable).toHaveBeenCalled();
+    });
+
+    it('dropTables should not call dropTable to service', () => {
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(false);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        component.dropTables();
+
+        expect(jvHttpServiceMock.dropTable).not.toHaveBeenCalled();
+        expect(dictHttpServiceMock.dropTable).not.toHaveBeenCalled();
+    });
+
+    it('dropTables cover if path', () => {
+        const dummyAnswer = of(false);
+        jvHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
+        dictHttpServiceMock.dropTable.and.returnValue(false);
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        component.dropTables();
+        expect(matDialogMock.open).toHaveBeenCalled();
     });
 });

@@ -1,6 +1,5 @@
 import { Db, MongoClient, MongoClientOptions } from 'mongodb';
-import { MongoMemoryServer } from 'mongodb-memory-server';
-
+import { MongoMemoryServer } from 'mongodb-memory-server-core';
 const DATABASE_NAME = 'database';
 
 export class DatabaseServiceMock {

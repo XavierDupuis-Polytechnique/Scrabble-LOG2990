@@ -28,7 +28,6 @@ export class AdminDropDbComponent {
                 if (ans === true) {
                     const isJvDropOk = await this.dropJvTable();
                     const isDictOk = await this.dropDictTable();
-
                     if (!isJvDropOk && !isDictOk) {
                         this.dialog.open(AlertDialogComponent, {
                             width: '250px',
@@ -39,16 +38,16 @@ export class AdminDropDbComponent {
             });
     }
 
-    async dropJvTable() {
+    private async dropJvTable() {
         return new Promise<boolean>((resolve) => {
-            this.joueurVirtuelHttpService.dropTalbe().subscribe((res) => {
+            this.joueurVirtuelHttpService.dropTable().subscribe((res) => {
                 const ans = JSON.parse(res.toString());
                 resolve(ans);
             });
         });
     }
 
-    async dropDictTable() {
+    private async dropDictTable() {
         return new Promise<boolean>((resolve) => {
             // TODO change this when dictHttpService will be implemented
             resolve(this.dictHttpService.dropTable());
