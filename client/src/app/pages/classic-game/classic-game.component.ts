@@ -7,7 +7,8 @@ import { PendingGamesComponent } from '@app/components/modals/pending-games/pend
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
-import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subscription } from 'rxjs';
@@ -22,7 +23,7 @@ import { takeWhile } from 'rxjs/operators';
 export class ClassicGameComponent {
     gameSettings: GameSettings;
     startGame$$: Subscription;
-    specialGame = false;
+    gameMode = GameMode.Classic;
 
     constructor(
         private router: Router,
@@ -59,7 +60,13 @@ export class ClassicGameComponent {
                 return;
             }
             this.gameSettings = formOnline;
-            this.socketHandler.createGameMulti(formOnline);
+            const onlineGameSettings: OnlineGameSettingsUI = {
+                gameMode: this.gameMode,
+                timePerTurn: formOnline.timePerTurn,
+                playerName: formOnline.playerName,
+                randomBonus: formOnline.randomBonus,
+            };
+            this.socketHandler.createGameMulti(onlineGameSettings);
             const username = formOnline.playerName;
             this.openWaitingForPlayer(username);
         });
@@ -106,6 +113,7 @@ export class ClassicGameComponent {
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
         pendingGamesDialogConfig.minWidth = 550;
+        pendingGamesDialogConfig.data = this.gameMode;
         const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
         dialogRef.afterClosed().subscribe((name: string) => {
             this.startGame$$?.unsubscribe();
@@ -138,5 +146,9 @@ export class ClassicGameComponent {
             this.gameManager.createGame(this.gameSettings);
         }
         this.router.navigate(['/game']);
+    }
+
+    get specialGame() {
+        return this.gameMode === GameMode.Special;
     }
 }

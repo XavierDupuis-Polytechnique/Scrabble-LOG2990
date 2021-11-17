@@ -6,6 +6,7 @@ import { Service } from 'typedi';
 export class NewGameManagerService {
     static gameIdCounter: number = 0;
     pendingGames: Map<string, OnlineGameSettingsUI> = new Map<string, OnlineGameSettingsUI>();
+
     constructor(private gameMaster: GameManagerService) {}
 
     getPendingGames(): OnlineGameSettings[] {
