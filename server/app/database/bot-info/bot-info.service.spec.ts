@@ -86,7 +86,6 @@ describe('BotInfoService', () => {
     });
 
     // TODO find how to throw collection.deleteOne
-
     it('dropCollection should drop all expect default bot', async () => {
         await service.clearDropCollection();
         const ans = await service.getBotInfoList();
