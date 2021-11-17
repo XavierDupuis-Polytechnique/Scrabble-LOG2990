@@ -33,7 +33,9 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
 
     updateObjectives(action: Action, params: ObjectiveUpdateParams) {
         for (const publicObjective of this.publicObjectives) {
-            publicObjective.update(action, params);
+            if (!publicObjective.isCompleted) {
+                publicObjective.update(action, params);
+            }
         }
 
         const playerObjectives = this.privateObjectives.get(action.player.name);
@@ -42,7 +44,9 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         }
 
         for (const privateObjective of playerObjectives) {
-            privateObjective.update(action, params);
+            if (!privateObjective.isCompleted) {
+                privateObjective.update(action, params);
+            }
         }
     }
 
