@@ -54,7 +54,7 @@ export class LeaderboardService {
             await this.getLeaderboardCollection(GameMode.Classic).deleteMany({});
             await this.getLeaderboardCollection(GameMode.Log).deleteMany({});
         } catch (e) {
-            throw new Error(e);
+            return;
         }
         await this.populateCollection(GameMode.Classic);
         await this.populateCollection(GameMode.Log);
