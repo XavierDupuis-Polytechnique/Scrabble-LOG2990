@@ -63,7 +63,8 @@ export class HardBot extends Bot {
     exchangeAction(): Action {
         if (this.gameInfo.numberOfLettersRemaining > RACK_LETTER_COUNT) {
             return this.actionCreator.createExchange(this, this.letterRack);
-        } else if (this.gameInfo.numberOfLettersRemaining > 0) {
+        }
+        if (this.gameInfo.numberOfLettersRemaining > 0 && this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
             const lettersToExchange: Letter[] = [];
             const indexStart = this.getRandomInt(this.letterRack.length - 1);
             for (let i = 0; i < this.gameInfo.numberOfLettersRemaining; i++) {
