@@ -12,7 +12,7 @@ export class ObjectiveNotifierService {
         const ownerName = objective.owner;
         const objectiveName = objective.name;
         const points = objective.points;
-        const message = `${ownerName} a complété l'objectif ${objectiveName} (${points} points)`;
+        const message = `${ownerName} a complété l'objectif '${objectiveName}' (${points} points)`;
         this.messagesService.receiveSystemMessage(message);
     }
 }
