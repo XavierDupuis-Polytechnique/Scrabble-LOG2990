@@ -1,7 +1,8 @@
 <mat-dialog-content>
     <h3>Meilleurs Scores</h3>
+    <mat-icon (click)="refresh()">refresh</mat-icon>
     <div class="leaderboards-container">
-        <div class="leaderboard">
+        <div>
             <h4>Mode Classique</h4>
             <div class="table-container">
                 <table mat-table [dataSource]="dataSourceClassic" class="mat-elevation-z8">
@@ -23,7 +24,7 @@
                 </table>
             </div>
         </div>
-        <div class="leaderboard">
+        <div>
             <h4>Mode Log2990</h4>
             <div class="table-container">
                 <table mat-table [dataSource]="dataSourceLog" class="mat-elevation-z8">

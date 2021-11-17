@@ -49,4 +49,4 @@ export const ENTER = 'Enter';
 export const ARROWRIGHT = 'ArrowRight';
 export const ARROWLEFT = 'ArrowLeft';
 export const SHIFT = 'Shift';
-export const MAX_HIGHSCORE = 5;
+export const HIGHSCORES_TO_DISPLAY = 5;
