@@ -39,7 +39,7 @@ export class ObjectiveCreator {
             const randomObjectiveIndex = this.availableObjectivesIndex[randomInt];
             const createdObjective = this.createObjective(randomObjectiveIndex);
             createdObjectives.push(createdObjective);
-            this.availableObjectivesIndex.splice(randomObjectiveIndex, 1);
+            this.availableObjectivesIndex.splice(randomInt, 1);
         }
         return createdObjectives;
     }
