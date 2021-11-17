@@ -1,5 +1,6 @@
 import { Action } from '@app/game-logic/actions/action';
 import { Game } from '@app/game-logic/game/games/game';
+import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 
 export abstract class Objective {
     name: string;
@@ -11,12 +12,14 @@ export abstract class Objective {
         return this.progression === 1;
     }
 
+    constructor(private objectiveNotifier: ObjectiveNotifierService) {}
+
     update(action: Action, game: Game): void {
         this.updateProgression(action, game);
         if (this.isCompleted) {
             this.updateOwner(action);
             this.updatePoints(action);
-            this.sendCompletionMessage(action, game);
+            this.sendCompletionMessage();
         }
     }
 
@@ -28,8 +31,8 @@ export abstract class Objective {
         action.player.points += this.points;
     }
 
-    private sendCompletionMessage(action: Action, game: Game) {
-        return;
+    private sendCompletionMessage() {
+        this.objectiveNotifier.sendObjectiveNotification(this);
     }
 
     abstract updateProgression(action: Action, game: Game): void;
