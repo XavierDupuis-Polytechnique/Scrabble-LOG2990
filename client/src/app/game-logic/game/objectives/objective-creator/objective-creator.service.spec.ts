@@ -3,7 +3,7 @@ import { PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/game-logic/c
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { ObjectiveCreator } from './objective-creator.service';
 
-fdescribe('ObjectiveManager', () => {
+describe('ObjectiveManager', () => {
     let service: ObjectiveCreator;
     let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
 
