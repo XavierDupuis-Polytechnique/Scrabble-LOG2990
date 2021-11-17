@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
 import { HALF_ALPHABET_COMPLETION_PERCENTAGE, N_LETTERS_IN_ALPHABET } from '@app/game-logic/constants';
@@ -5,14 +6,32 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
+import { Player } from '@app/game-logic/player/player';
+
+class MockAction extends Action {
+    protected perform(): void {
+        return;
+    }
+}
+
+class MockPlayer extends Player {
+    setActive(): void {
+        return;
+    }
+}
 
 describe('HalfAlphabet', () => {
     let objective: HalfAlphabet;
+    let player: Player;
     let action: Action;
+    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
+        TestBed.configureTestingModule({ providers: [{ provide: ObjectiveNotifierService, useValue: objectiveNotifierSpy }] });
         objective = new HalfAlphabet(TestBed.inject(ObjectiveNotifierService));
-        action = jasmine.createSpyObj(Action, ['execute']);
+        player = new MockPlayer();
+        action = new MockAction(player);
     });
 
     it('should be created', () => {
@@ -35,7 +54,7 @@ describe('HalfAlphabet', () => {
             lettersToPlace,
             formedWords: [],
         };
-        objective.updateProgression(action, params);
+        objective.update(action, params);
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         const expectedProgression = 5 / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
         expect(objective.progression).toBe(expectedProgression);
@@ -56,7 +75,7 @@ describe('HalfAlphabet', () => {
             lettersToPlace: lettersToPlace2,
             formedWords: [],
         };
-        objective.updateProgression(action, params2);
+        objective.update(action, params2);
         expect(objective.progression).toBe(1);
     });
 });

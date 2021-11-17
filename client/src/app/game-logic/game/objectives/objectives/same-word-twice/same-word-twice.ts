@@ -8,12 +8,13 @@ export class SameWordTwice extends Objective {
     description = 'Former deux fois le même mot dans un même placement';
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
+        this.progression = 0;
         const formedWords: string[] = params.formedWords.map((word) => stringifyWord(word));
         const wordSet = new Set<string>();
         for (const word of formedWords) {
             if (wordSet.has(word)) {
                 this.progression = 1;
-                break;
+                return;
             }
             wordSet.add(word);
         }

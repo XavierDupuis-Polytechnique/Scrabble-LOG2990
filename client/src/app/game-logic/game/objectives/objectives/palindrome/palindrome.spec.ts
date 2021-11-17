@@ -1,17 +1,36 @@
+/* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 import { Palindrome } from '@app/game-logic/game/objectives/objectives/palindrome/palindrome';
+import { Player } from '@app/game-logic/player/player';
+
+class MockAction extends Action {
+    protected perform(): void {
+        return;
+    }
+}
+
+class MockPlayer extends Player {
+    setActive(): void {
+        return;
+    }
+}
 
 describe('Palindrome', () => {
     let objective: Palindrome;
+    let player: Player;
     let action: Action;
+    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
+        TestBed.configureTestingModule({ providers: [{ provide: ObjectiveNotifierService, useValue: objectiveNotifierSpy }] });
         objective = new Palindrome(TestBed.inject(ObjectiveNotifierService));
-        action = jasmine.createSpyObj(Action, ['execute']);
+        player = new MockPlayer();
+        action = new MockAction(player);
     });
 
     it('should be created', () => {
@@ -35,7 +54,7 @@ describe('Palindrome', () => {
             lettersToPlace: [],
             formedWords: [[tile1, tile2, tile3, tile4, tile5]],
         };
-        objective.updateProgression(action, params);
+        objective.update(action, params);
         expect(objective.progression).toBe(1);
     });
 
@@ -56,7 +75,7 @@ describe('Palindrome', () => {
             lettersToPlace: [],
             formedWords: [[tile1, tile2, tile3, tile4, tile5]],
         };
-        objective.updateProgression(action, params);
+        objective.update(action, params);
         expect(objective.progression).toBe(0);
     });
 });
