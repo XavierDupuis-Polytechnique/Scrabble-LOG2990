@@ -9,7 +9,7 @@ export class FourCorners extends Objective {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     points = 30;
 
-    updateProgression(action: Action, params: ObjectiveUpdateParams) {
+    protected updateProgression(action: Action, params: ObjectiveUpdateParams) {
         let newProgression = 0;
         const grid = params.previousGrid;
 

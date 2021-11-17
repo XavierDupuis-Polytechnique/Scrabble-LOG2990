@@ -8,7 +8,7 @@ export class NineLettersWord extends Objective {
     name = 'Mot de 9 lettres';
     description = 'Former un mot de 9 lettres';
 
-    updateProgression(action: Action, params: ObjectiveUpdateParams): void {
+    protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         for (const word of params.formedWords) {
             if (word.length === NineLettersWord.numberOfLettersRequired) {
                 this.progression = 1;

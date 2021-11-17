@@ -8,7 +8,7 @@ export class Palindrome extends Objective {
     name = 'Engage le jeu, que je le gagne';
     description = 'Former un palindrome';
 
-    updateProgression(action: Action, params: ObjectiveUpdateParams): void {
+    protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         const formedWords: string[] = params.formedWords.map((word: Tile[]) => stringifyWord(word));
         for (const word of formedWords) {
             if (isPalindrome(word)) {

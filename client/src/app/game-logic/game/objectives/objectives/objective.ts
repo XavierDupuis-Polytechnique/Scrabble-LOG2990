@@ -36,5 +36,5 @@ export abstract class Objective {
         this.objectiveNotifier.sendObjectiveNotification(this);
     }
 
-    abstract updateProgression(action: Action, params: ObjectiveUpdateParams): void;
+    protected abstract updateProgression(action: Action, params: ObjectiveUpdateParams): void;
 }

@@ -8,7 +8,7 @@ export class ThreeSameLetters extends Objective {
     name = 'La triforce';
     description = 'Former un mot avec 3 fois la même lettre';
 
-    updateProgression(action: Action, params: ObjectiveUpdateParams): void {
+    protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         for (const word of params.formedWords) {
             if (this.wordHasThreeSameLetters(word)) {
                 this.progression = 1;
