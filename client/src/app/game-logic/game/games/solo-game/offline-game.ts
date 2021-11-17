@@ -76,6 +76,7 @@ export class OfflineGame extends Game {
     onEndOfGame() {
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
+        this.isEndOfGameSubject.next();
     }
 
     doAction(action: Action) {
@@ -127,7 +128,6 @@ export class OfflineGame extends Game {
 
         action.end$.subscribe(() => {
             if (this.isEndOfGame()) {
-                this.isEndOfGameSubject.next();
                 this.onEndOfGame();
                 return;
             }
