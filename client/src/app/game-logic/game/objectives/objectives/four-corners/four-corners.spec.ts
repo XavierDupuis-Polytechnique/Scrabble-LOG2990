@@ -2,13 +2,12 @@
 /* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
-import { BOARD_DIMENSION, BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/game-logic/constants';
+import { BOARD_DIMENSION, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR } from '@app/game-logic/constants';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners/four-corners';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 import { Player } from '@app/game-logic/player/player';
-import { copyGrid } from '@app/game-logic/utils';
 
 class MockAction extends Action {
     protected perform(): void {
@@ -50,7 +49,11 @@ describe('FourCorners', () => {
             lettersToPlace: [],
             formedWords: [],
         };
-        params.currentGrid = copyGrid(emptyGrid);
+        params.currentGrid = emptyGrid;
+        params.currentGrid[BOARD_MAX_POSITION][BOARD_MIN_POSITION].letterObject = { char: EMPTY_CHAR, value: 0 };
+        params.currentGrid[BOARD_MAX_POSITION][BOARD_MAX_POSITION].letterObject = { char: EMPTY_CHAR, value: 0 };
+        params.currentGrid[BOARD_MIN_POSITION][BOARD_MIN_POSITION].letterObject = { char: EMPTY_CHAR, value: 0 };
+        params.currentGrid[BOARD_MIN_POSITION][BOARD_MAX_POSITION].letterObject = { char: EMPTY_CHAR, value: 0 };
     });
 
     it('should be created', () => {
@@ -79,6 +82,17 @@ describe('FourCorners', () => {
         params.currentGrid[BOARD_MAX_POSITION][BOARD_MAX_POSITION].letterObject = { char: 'B', value: 0 };
         objective.update(action, params);
         expect(objective.progression).toBe(0.5);
+        expect(objective.owner).toBeUndefined();
+        expect(player.points).toBe(0);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+    });
+
+    it('should update progression for 3 corners filled', () => {
+        params.currentGrid[BOARD_MAX_POSITION][BOARD_MIN_POSITION].letterObject = { char: 'A', value: 0 };
+        params.currentGrid[BOARD_MAX_POSITION][BOARD_MAX_POSITION].letterObject = { char: 'B', value: 0 };
+        params.currentGrid[BOARD_MIN_POSITION][BOARD_MIN_POSITION].letterObject = { char: 'C', value: 0 };
+        objective.update(action, params);
+        expect(objective.progression).toBe(0.75);
         expect(objective.owner).toBeUndefined();
         expect(player.points).toBe(0);
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
