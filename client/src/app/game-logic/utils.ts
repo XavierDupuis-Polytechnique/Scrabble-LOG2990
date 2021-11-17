@@ -82,7 +82,15 @@ export const getRandomInt = (max: number, min: number = 0): number => {
 export const copyGrid = (grid: Tile[][]): Tile[][] => {
     const copiedGrid = [];
     for (const row of grid) {
-        copiedGrid.push([...row]);
+        const copiedRow = [];
+        for (const tile of row) {
+            const copiedTile = new Tile();
+            copiedTile.letterMultiplicator = tile.letterMultiplicator;
+            copiedTile.letterObject = { ...tile.letterObject };
+            copiedTile.wordMultiplicator = tile.wordMultiplicator;
+            copiedRow.push(copiedTile);
+        }
+        copiedGrid.push(copiedRow);
     }
     return copiedGrid;
 };
