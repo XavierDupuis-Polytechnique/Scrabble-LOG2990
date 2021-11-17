@@ -53,3 +53,5 @@ export const N_CORNERS = 4;
 export const PRIVATE_OBJECTIVE_COUNT = 1;
 export const PUBLIC_OBJECTIVE_COUNT = 2;
 export const TOTAL_OBJECTIVE_COUNT = 8;
+export const N_LETTERS_IN_ALPHABET = 26;
+export const HALF_ALPHABET_COMPLETION_PERCENTAGE = 0.5;
