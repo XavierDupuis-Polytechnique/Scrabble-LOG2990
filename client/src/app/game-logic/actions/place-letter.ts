@@ -1,6 +1,7 @@
 import { Action } from '@app/game-logic/actions/action';
 import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
+import { Board } from '@app/game-logic/game/board/board';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
@@ -28,6 +29,7 @@ export class PlaceLetter extends Action {
     }
 
     protected perform(game: OfflineGame) {
+        const boardBefore = { ...game.board } as Board;
         const validWordList = this.wordSearcher.listOfValidWord(this);
         const words = validWordList.map((validWord) => validWord.letters);
         this.putLettersOnBoard(game);
@@ -37,7 +39,7 @@ export class PlaceLetter extends Action {
             this.pointCalculator.placeLetterCalculation(this, words);
             this.drawLettersForPlayer(game);
             if (game instanceof SpecialOfflineGame) {
-                (game as SpecialOfflineGame).updateObjectives(this);
+                (game as SpecialOfflineGame).updateObjectives(this, boardBefore, game.board);
             }
             this.end();
         } else {

@@ -1,4 +1,5 @@
 import { Action } from '@app/game-logic/actions/action';
+import { Board } from '@app/game-logic/game/board/board';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
@@ -30,9 +31,9 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         this.allocatePublicObjectives();
     }
 
-    updateObjectives(action: Action) {
+    updateObjectives(action: Action, boardBefore: Board, boardAfter: Board) {
         for (const publicObjective of this.publicObjectives) {
-            publicObjective.update(action, this);
+            publicObjective.update(action, boardBefore, boardAfter);
         }
 
         const playerObjectives = this.privateObjectives.get(action.player.name);
@@ -41,7 +42,7 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         }
 
         for (const privateObjective of playerObjectives) {
-            privateObjective.update(action, this);
+            privateObjective.update(action, boardBefore, boardAfter);
         }
     }
 

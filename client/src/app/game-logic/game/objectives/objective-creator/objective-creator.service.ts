@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
+import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners/four-corners';
 import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
 import { NineLettersWord } from '@app/game-logic/game/objectives/objectives/nine-letters-word/nine-letters-word';
@@ -21,7 +22,7 @@ export class ObjectiveCreator {
     private static objectiveCount = TOTAL_OBJECTIVE_COUNT;
     availableObjectivesIndex: number[];
 
-    constructor() {
+    constructor(private objectiveNotifier: ObjectiveNotifierService) {
         this.availableObjectivesIndex = [];
         for (let index = 0; index < ObjectiveCreator.objectiveCount; index++) {
             this.availableObjectivesIndex.push(index);
@@ -46,21 +47,21 @@ export class ObjectiveCreator {
     private createObjective(objectiveIndex: number): Objective {
         switch (objectiveIndex) {
             case ObjectiveType.FourCorners:
-                return new FourCorners();
+                return new FourCorners(this.objectiveNotifier);
             case ObjectiveType.TripleBonus:
-                return new TripleBonus();
+                return new TripleBonus(this.objectiveNotifier);
             case ObjectiveType.Palindrome:
-                return new Palindrome();
+                return new Palindrome(this.objectiveNotifier);
             case ObjectiveType.TenWords:
-                return new TenWords();
+                return new TenWords(this.objectiveNotifier);
             case ObjectiveType.NineLettersWord:
-                return new NineLettersWord();
+                return new NineLettersWord(this.objectiveNotifier);
             case ObjectiveType.HalfAlphabet:
-                return new HalfAlphabet();
+                return new HalfAlphabet(this.objectiveNotifier);
             case ObjectiveType.SameWordTwice:
-                return new SameWordTwice();
+                return new SameWordTwice(this.objectiveNotifier);
             case ObjectiveType.ThreeSameLetters:
-                return new ThreeSameLetters();
+                return new ThreeSameLetters(this.objectiveNotifier);
             default:
                 throw Error('Could not create objectif with specified index ' + objectiveIndex);
         }
