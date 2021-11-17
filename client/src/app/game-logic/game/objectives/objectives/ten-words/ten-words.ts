@@ -5,7 +5,7 @@ export class TenWords extends Objective {
     description = 'Placer au moins 10 mots dans une partie.';
     private wordCount = 0;
 
-    protected updateProgression(/* action: Action, params: ObjectiveUpdateParams*/): void {
+    protected updateProgression(): void {
         this.wordCount++;
         this.progression = this.wordCount / TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE;
     }
