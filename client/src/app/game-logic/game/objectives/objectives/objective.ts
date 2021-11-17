@@ -1,6 +1,6 @@
 import { Action } from '@app/game-logic/actions/action';
-import { Board } from '@app/game-logic/game/board/board';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
+import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 
 export abstract class Objective {
     name: string;
@@ -14,8 +14,8 @@ export abstract class Objective {
 
     constructor(private objectiveNotifier: ObjectiveNotifierService) {}
 
-    update(action: Action, boardBefore: Board, boardAfter: Board): void {
-        this.updateProgression(action, boardBefore, boardAfter);
+    update(action: Action, params: ObjectiveUpdateParams): void {
+        this.updateProgression(action, params);
         if (this.isCompleted) {
             this.updateOwner(action);
             this.updatePoints(action);
@@ -35,5 +35,5 @@ export abstract class Objective {
         this.objectiveNotifier.sendObjectiveNotification(this);
     }
 
-    abstract updateProgression(action: Action, boardBefore: Board, boardAfter: Board): void;
+    abstract updateProgression(action: Action, params: ObjectiveUpdateParams): void;
 }

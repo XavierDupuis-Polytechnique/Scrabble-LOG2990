@@ -1,5 +1,6 @@
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
+import { Tile } from '@app/game-logic/game/board/tile';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { Socket } from 'socket.io-client';
@@ -76,4 +77,12 @@ export const convertToProperLetter = (string: string): string => {
 
 export const getRandomInt = (max: number, min: number = 0): number => {
     return Math.floor(Math.random() * (max - min) + min);
+};
+
+export const copyGrid = (grid: Tile[][]): Tile[][] => {
+    const copiedGrid = [];
+    for (const row of grid) {
+        copiedGrid.push([...row]);
+    }
+    return copiedGrid;
 };
