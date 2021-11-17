@@ -11,7 +11,7 @@ export class FourCorners extends Objective {
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams) {
         let newProgression = 0;
-        const grid = params.previousGrid;
+        const grid = params.currentGrid;
 
         if (grid[BOARD_MIN_POSITION][BOARD_MIN_POSITION].letterObject.char !== EMPTY_CHAR) {
             newProgression += 1 / N_CORNERS;
