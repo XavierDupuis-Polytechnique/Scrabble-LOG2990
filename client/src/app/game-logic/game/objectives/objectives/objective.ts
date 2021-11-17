@@ -2,6 +2,7 @@ import { Action } from '@app/game-logic/actions/action';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 
+// TODO put name description in readonly
 export abstract class Objective {
     name: string;
     description: string;
