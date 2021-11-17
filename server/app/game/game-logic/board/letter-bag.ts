@@ -39,7 +39,7 @@ export class LetterBag {
         const LETTER_A_CODE = 'A'.charCodeAt(0);
         const LETTER_Z_CODE = 'Z'.charCodeAt(0);
         const letters: [string, number][] = [['*', 0]];
-        for (let code = LETTER_A_CODE; code < LETTER_Z_CODE; code++) {
+        for (let code = LETTER_A_CODE; code <= LETTER_Z_CODE; code++) {
             letters.push([String.fromCharCode(code), 0]);
         }
         const occurrences = new Map<string, number>(letters);
