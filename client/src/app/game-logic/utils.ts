@@ -86,3 +86,21 @@ export const copyGrid = (grid: Tile[][]): Tile[][] => {
     }
     return copiedGrid;
 };
+
+export const isPalindrome = (word: string): boolean => {
+    const length = word.length;
+    for (let i = 0; i < length / 2; i++) {
+        const leftLetter = word[i];
+        const rightLetter = word[length - i - 1];
+        if (leftLetter !== rightLetter) {
+            return false;
+        }
+    }
+    return true;
+};
+
+export const stringifyWord = (word: Tile[]): string => {
+    const letters: string[] = word.map((tile: Tile) => tile.letterObject.char);
+    const stringifiedWord = letters.join('');
+    return stringifiedWord;
+};
