@@ -16,6 +16,10 @@ export abstract class Objective {
     constructor(private objectiveNotifier: ObjectiveNotifierService) {}
 
     update(action: Action, params: ObjectiveUpdateParams): void {
+        const isAlreadyCompleted = this.isCompleted;
+        if (isAlreadyCompleted) {
+            return;
+        }
         this.updateProgression(action, params);
         if (this.isCompleted) {
             this.updateOwner(action);
