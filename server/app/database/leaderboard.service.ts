@@ -49,44 +49,47 @@ export class LeaderboardService {
         return scores;
     }
 
-    async deleteScores(): Promise<void> {
+    async deleteScores(): Promise<boolean> {
         try {
             await this.getLeaderboardCollection(GameMode.Classic).deleteMany({});
             await this.getLeaderboardCollection(GameMode.Log).deleteMany({});
+            await this.populateCollection(GameMode.Classic);
+            await this.populateCollection(GameMode.Log);
+            return true;
         } catch (e) {
-            return;
+            return false;
         }
-        await this.populateCollection(GameMode.Classic);
-        await this.populateCollection(GameMode.Log);
     }
 
-    async updateLeaderboard(score: Score, mode: GameMode): Promise<void> {
+    async updateLeaderboard(score: Score, mode: GameMode): Promise<boolean> {
         const collection = this.getLeaderboardCollection(mode);
         const currentScore = await collection.findOne({ name: score.name });
         if (currentScore === undefined) {
-            await this.addScore(score, mode);
-            return;
+            return await this.addScore(score, mode);
         }
         if (score.point > currentScore.point) {
-            await this.modifyScore(score, mode);
+            return await this.modifyScore(score, mode);
         }
+        return true;
     }
 
-    private async modifyScore(score: Score, mode: GameMode) {
+    private async modifyScore(score: Score, mode: GameMode): Promise<boolean> {
         const collection = this.getLeaderboardCollection(mode);
         try {
             await collection.updateOne({ name: score.name }, { $set: { point: score.point } });
+            return true;
         } catch (e) {
-            return;
+            return false;
         }
     }
 
-    private async addScore(score: Score, mode: GameMode) {
+    private async addScore(score: Score, mode: GameMode): Promise<boolean> {
         const collection = this.getLeaderboardCollection(mode);
         try {
             await collection.insertOne({ name: score.name, point: score.point });
+            return true;
         } catch (e) {
-            return;
+            return false;
         }
     }
 
@@ -95,7 +98,7 @@ export class LeaderboardService {
         try {
             await collection.insertMany(DEFAULT_LEADERBOARD);
         } catch (e) {
-            throw Error('Data base collection population error');
+            return;
         }
     }
 }

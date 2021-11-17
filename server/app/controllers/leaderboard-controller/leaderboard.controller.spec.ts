@@ -31,6 +31,11 @@ describe('LeaderboardController', () => {
             });
     });
 
+    it('should return BAD REQUEST if method cant return scores', async () => {
+        leaderboardService.getScores.resolves([]);
+        return supertest(expressApp).get('/api/scores/gameMode?gameMode=classic').expect(StatusCodes.BAD_REQUEST);
+    });
+
     it('should return NOT FOUND if get throws', async () => {
         leaderboardService.getScores.throws();
         return supertest(expressApp).get('/api/scores/gameMode?').expect(StatusCodes.NOT_FOUND);
@@ -38,7 +43,14 @@ describe('LeaderboardController', () => {
 
     it('should return OK if score was received', async () => {
         const score = { name: 'TEST', point: 10 };
+        leaderboardService.updateLeaderboard.resolves(true);
         return supertest(expressApp).post('/api/scores/gameMode?gameMode=classic').send(score).expect(StatusCodes.OK);
+    });
+
+    it('should return BAD REQUEST if leaderboard was not updated', async () => {
+        const score = { name: 'TEST', point: 10 };
+        leaderboardService.updateLeaderboard.resolves(false);
+        return supertest(expressApp).post('/api/scores/gameMode?gameMode=classic').send(score).expect(StatusCodes.BAD_REQUEST);
     });
 
     it('should return BAD REQUEST if update throws', async () => {
@@ -47,11 +59,17 @@ describe('LeaderboardController', () => {
     });
 
     it('should return OK if leaderboard was correctly deleted and repopulate', async () => {
-        return supertest(expressApp).delete('/api/scores/gameMode?gameMode=classic').expect(StatusCodes.OK);
+        leaderboardService.deleteScores.resolves(true);
+        return supertest(expressApp).delete('/api/scores/').expect(StatusCodes.OK);
+    });
+
+    it('should return BAD REQUEST if leaderboard was not deleted', async () => {
+        leaderboardService.deleteScores.resolves(false);
+        return supertest(expressApp).delete('/api/scores/').expect(StatusCodes.BAD_REQUEST);
     });
 
     it('delete should send BAD REQUEST if method delete throws', async () => {
         leaderboardService.deleteScores.throws();
-        return supertest(expressApp).delete('/api/scores/gameMode?gameMode=classic').expect(StatusCodes.BAD_REQUEST);
+        return supertest(expressApp).delete('/api/scores/').expect(StatusCodes.BAD_REQUEST);
     });
 });
