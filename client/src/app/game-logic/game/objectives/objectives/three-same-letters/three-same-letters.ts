@@ -1,5 +1,5 @@
 import { Action } from '@app/game-logic/actions/action';
-import { THREE_SAME_LETTERS_NUMBER_OF_OCCURENCES } from '@app/game-logic/constants';
+import { THREE_SAME_LETTERS_NUMBER_OF_OCCURENCES, THREE_SAME_LETTERS_POINTS } from '@app/game-logic/constants';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
@@ -7,6 +7,7 @@ import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objective
 export class ThreeSameLetters extends Objective {
     name = 'La triforce';
     description = 'Former un mot avec 3 fois la même lettre';
+    points = THREE_SAME_LETTERS_POINTS;
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         for (const word of params.formedWords) {
