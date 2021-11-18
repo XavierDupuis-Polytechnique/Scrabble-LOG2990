@@ -37,6 +37,7 @@ describe('ThreeSameLetters', () => {
             currentGrid: [],
             lettersToPlace: [],
             formedWords: [],
+            affectedCoords: [],
         };
     });
 

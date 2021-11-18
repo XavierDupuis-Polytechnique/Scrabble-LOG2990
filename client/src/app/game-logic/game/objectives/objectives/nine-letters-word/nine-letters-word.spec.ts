@@ -37,6 +37,7 @@ describe('NineLettersWord', () => {
             currentGrid: [],
             lettersToPlace: [],
             formedWords: [],
+            affectedCoords: [],
         };
     });
 

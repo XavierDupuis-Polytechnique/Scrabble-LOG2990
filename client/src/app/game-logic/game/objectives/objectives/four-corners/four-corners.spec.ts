@@ -48,6 +48,7 @@ describe('FourCorners', () => {
             currentGrid: [],
             lettersToPlace: [],
             formedWords: [],
+            affectedCoords: [],
         };
         params.currentGrid = emptyGrid;
         params.currentGrid[BOARD_MAX_POSITION][BOARD_MIN_POSITION].letterObject = { char: EMPTY_CHAR, value: 0 };

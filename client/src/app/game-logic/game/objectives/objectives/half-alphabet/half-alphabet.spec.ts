@@ -54,6 +54,7 @@ describe('HalfAlphabet', () => {
             currentGrid: [],
             lettersToPlace,
             formedWords: [],
+            affectedCoords: [],
         };
         objective.update(action, params);
         const expectedProgression = 5 / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
@@ -74,6 +75,7 @@ describe('HalfAlphabet', () => {
             currentGrid: [],
             lettersToPlace: lettersToPlace2,
             formedWords: [],
+            affectedCoords: [],
         };
         objective.update(action, params2);
         expect(objective.getPlayerProgression(action.player.name)).toBe(1);

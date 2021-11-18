@@ -25,6 +25,7 @@ describe('TenWords', () => {
     let player: Player;
     let action: Action;
     let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+    let params: ObjectiveUpdateParams;
 
     beforeEach(() => {
         objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
@@ -32,6 +33,13 @@ describe('TenWords', () => {
         objective = new TenWords(TestBed.inject(ObjectiveNotifierService));
         player = new MockPlayer();
         action = new MockAction(player);
+        params = {
+            previousGrid: [],
+            currentGrid: [],
+            lettersToPlace: [],
+            formedWords: [],
+            affectedCoords: [],
+        };
     });
 
     it('should be created', () => {
@@ -39,12 +47,6 @@ describe('TenWords', () => {
     });
 
     it('should not complete when less than 10 placeLetter action are executed (for the same player)', () => {
-        const params: ObjectiveUpdateParams = {
-            previousGrid: [],
-            currentGrid: [],
-            lettersToPlace: [],
-            formedWords: [],
-        };
         for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE - 1; i++) {
             objective.update(action, params);
         }
@@ -55,12 +57,6 @@ describe('TenWords', () => {
     });
 
     it('should not complete when 9 placeLetter action are executed for each player', () => {
-        const params: ObjectiveUpdateParams = {
-            previousGrid: [],
-            currentGrid: [],
-            lettersToPlace: [],
-            formedWords: [],
-        };
         for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE - 1; i++) {
             objective.update(action, params);
         }
@@ -80,12 +76,6 @@ describe('TenWords', () => {
     });
 
     it('should complete when 10 placeLetter action are executed (for the same player) when players are playing alternatively', () => {
-        const params: ObjectiveUpdateParams = {
-            previousGrid: [],
-            currentGrid: [],
-            lettersToPlace: [],
-            formedWords: [],
-        };
         const otherPlayer = new MockPlayer();
         otherPlayer.name = 'otherPlayer';
         const otherAction = new MockAction(otherPlayer);
@@ -102,12 +92,6 @@ describe('TenWords', () => {
     });
 
     it('should complete when 10 placeLetter action are executed (for the same player)', () => {
-        const params: ObjectiveUpdateParams = {
-            previousGrid: [],
-            currentGrid: [],
-            lettersToPlace: [],
-            formedWords: [],
-        };
         for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE; i++) {
             objective.update(action, params);
         }

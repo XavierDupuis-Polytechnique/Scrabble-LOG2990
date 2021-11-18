@@ -50,6 +50,7 @@ describe('SameWordTwice', () => {
                 [tile1, tile2],
                 [tile1, tile2],
             ],
+            affectedCoords: [],
         };
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(1);
@@ -71,6 +72,7 @@ describe('SameWordTwice', () => {
                 [tile1, tile2],
                 [tile1, tile1],
             ],
+            affectedCoords: [],
         };
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);

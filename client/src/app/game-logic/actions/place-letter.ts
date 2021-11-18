@@ -29,6 +29,7 @@ export class PlaceLetter extends Action {
         super(player);
     }
 
+    // TODO : if possible, refactor this method
     protected perform(game: OfflineGame) {
         const previousGrid = copyGrid(game.board.grid);
         const validWordList = this.wordSearcher.listOfValidWord(this);
@@ -46,6 +47,7 @@ export class PlaceLetter extends Action {
                     currentGrid,
                     lettersToPlace: this.lettersToRemoveInRack,
                     formedWords,
+                    affectedCoords: this.affectedCoords,
                 };
                 (game as SpecialOfflineGame).updateObjectives(this, updateObjectiveParams);
             }
