@@ -16,7 +16,13 @@ export interface GameState {
     winnerIndex: number[];
 }
 
+export interface ForfeitedGameSate extends GameState {
+    letterBag: Letter[];
+    consecutivePass: number;
+    randomBonus: boolean;
+}
+
 export interface GameStateToken {
-    gameState: GameState;
+    gameState: GameState | ForfeitedGameSate;
     gameToken: string;
 }

@@ -15,3 +15,9 @@ export interface GameState {
     isEndOfGame: boolean;
     winnerIndex: number[];
 }
+
+export interface ForfeitedGameSate extends GameState {
+    letterBag: Letter[];
+    consecutivePass: number;
+    randomBonus: boolean;
+}

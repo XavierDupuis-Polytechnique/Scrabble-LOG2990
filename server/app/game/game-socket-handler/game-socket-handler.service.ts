@@ -1,4 +1,4 @@
-import { GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameSate, GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { TimerControls } from '@app/game/game-logic/timer/timer-controls.enum';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
@@ -25,6 +25,13 @@ export class GameSocketsHandler {
             const gameToken = timerGameControl.gameToken;
             const timerControl = timerGameControl.control;
             this.emitTimerControl(timerControl, gameToken);
+        });
+
+        this.gameManager.lastGameState.subscribe((forfeitedGameState: GameStateToken) => {
+            const gameToken = forfeitedGameState.gameToken;
+            const gameState = forfeitedGameState.gameState;
+            this.emitTransitionGameState(gameState, gameToken);
+            this.sio.to(forfeitedGameState.gameToken).emit('transitionGameState', forfeitedGameState.gameState);
         });
     }
 
@@ -62,6 +69,10 @@ export class GameSocketsHandler {
         this.sio.to(gameToken).emit('gameState', gameState);
     }
 
+    private emitTransitionGameState(gameState: ForfeitedGameSate, gameToken: string) {
+        this.sio.to(gameToken).emit('transitionGameState', gameState);
+    }
+
     private addPlayerToGame(socketId: string, userAuth: UserAuth) {
         const playerId = socketId;
         this.gameManager.addPlayerToGame(playerId, userAuth);
@@ -74,5 +85,11 @@ export class GameSocketsHandler {
 
     private removePlayer(playerId: string) {
         this.gameManager.removePlayerFromGame(playerId);
+        const gameToken = this.gameManager.activePlayers.get(playerId)?.gameToken;
+        if (gameToken !== undefined) {
+            console.log(gameToken);
+            // const letterBag = this.gameManager.activeGames.get(gameToken)?.letterBag.gameLetters;
+            // this.sio.to(gameToken).emit('transitionGameState', gameState);
+        }
     }
 }

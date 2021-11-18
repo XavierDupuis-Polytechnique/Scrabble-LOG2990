@@ -5,7 +5,7 @@ import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
-import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -30,9 +30,14 @@ export class GameManagerService {
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
 
     private endGame$ = new Subject<string>(); // gameToken
-
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
+    private forfeitedGameState$ = new Subject<GameStateToken>();
+
+    get lastGameState(): Observable<GameStateToken> {
+        return this.forfeitedGameState$;
+    }
+
     get newGameState$(): Observable<GameStateToken> {
         return this.newGameStateSubject;
     }
@@ -162,7 +167,26 @@ export class GameManagerService {
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
+        this.createTransitionGameState(game);
         game.stop();
+    }
+
+    private createTransitionGameState(game: ServerGame) {
+        const gameState = this.gameCompiler.compile(game);
+        const lastGameState: ForfeitedGameSate = {
+            activePlayerIndex: gameState.activePlayerIndex,
+            consecutivePass: game.consecutivePass,
+            grid: gameState.grid,
+            isEndOfGame: gameState.isEndOfGame,
+            letterBag: game.letterBag.gameLetters,
+            players: [],
+            lettersRemaining: gameState.lettersRemaining,
+            winnerIndex: gameState.winnerIndex,
+            randomBonus: game.randomBonus,
+        };
+
+        const lastGameToken: GameStateToken = { gameState: lastGameState, gameToken: game.gameToken };
+        this.forfeitedGameState$.next(lastGameToken);
     }
 
     private deleteInactiveGame(gameToken: string) {

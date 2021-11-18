@@ -4,7 +4,7 @@ import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { Board } from '@app/game/game-logic/board/board';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
-import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -22,12 +22,15 @@ export class ServerGame {
     timer: Timer;
     winnerByForfeitedIndex: number;
 
+    forfeitedGameState$ = new Subject<ForfeitedGameSate>();
     isEnded$ = new Subject<undefined>();
     private isEndedValue: boolean = false;
     get isEnded() {
         return this.isEndedValue;
     }
-
+    get lastGameState() {
+        return this.forfeitedGameState$;
+    }
     constructor(
         timerController: TimerController,
         public randomBonus: boolean,

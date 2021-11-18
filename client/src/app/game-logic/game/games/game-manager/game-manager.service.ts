@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { BoardService } from '@app/game-logic/game/board/board.service';
+import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
@@ -23,12 +24,12 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class GameManagerService {
+    forfeitedLetterBag: Letter[];
     private game: Game | null;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
     }
-
     private disconnectedFromServerSubject = new Subject<void>();
     get disconnectedFromServer$(): Observable<void> {
         return this.disconnectedFromServerSubject;
@@ -48,6 +49,9 @@ export class GameManagerService {
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
+        });
+        this.gameSocketHandler.forfeitLetterBag$.subscribe((letterBag: Letter[]) => {
+            this.toOfflineGame(this.game as OnlineGame, letterBag);
         });
     }
 
@@ -113,6 +117,34 @@ export class GameManagerService {
         if (this.game) {
             this.game.start();
         }
+    }
+
+    toOfflineGame(game: OnlineGame, letterBag: Letter[]) {
+        const lastGameState = game.lastGameState;
+        const playerInfo = lastGameState.players;
+        const clientPlayer = playerInfo[lastGameState.winnerIndex[0]];
+
+        const newPlayers = this.createPlayers(clientPlayer.name, 'easy');
+
+        for (let i = 0; i < 0; i++) {
+            newPlayers[i].points = playerInfo[i].points;
+            newPlayers[i].letterRack = playerInfo[i].letterRack;
+        }
+
+        const newGameSettings: GameSettings = {
+            playerName: clientPlayer.name,
+            botDifficulty: 'EasyBot',
+            timePerTurn: game.timePerTurn,
+            randomBonus: true, // TODO: trouver comment l'enlever
+        };
+
+        this.createGame(newGameSettings);
+        const offlineGame = this.game as OfflineGame;
+        offlineGame.board.grid = lastGameState.grid;
+        offlineGame.letterBag.gameLetters = letterBag;
+        offlineGame.players = newPlayers;
+        offlineGame.timePerTurn = game.timePerTurn;
+        this.startGame();
     }
 
     stopGame(): void {
