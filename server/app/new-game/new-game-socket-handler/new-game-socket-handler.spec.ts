@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
+import { GameMode } from '@app/game/game-mode.enum';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
@@ -48,7 +49,7 @@ describe('New Online Game Service', () => {
     });
 
     it('should create pendingGame', (done) => {
-        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
+        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
         serverSocket.on('createGame', () => {
             expect(newGameManagerService.createPendingGame.calledWith(gameSettings)).to.be.true;
             done();
@@ -108,8 +109,8 @@ describe('New Online Game Service', () => {
     });
 
     it('should send gameSettings to players on joinGame', (done) => {
-        const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
-        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000 };
+        const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
+        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
 
         newGameManagerService.createPendingGame.returns('a');
         newGameManagerService.joinPendingGame.returns('id'); // ?
