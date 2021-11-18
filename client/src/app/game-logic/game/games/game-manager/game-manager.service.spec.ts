@@ -6,6 +6,7 @@ import { GameSettings } from '@app/game-logic/game/games/game-settings.interface
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { GameManagerService } from './game-manager.service';
@@ -72,6 +73,7 @@ describe('GameManagerService', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -108,6 +110,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -136,6 +139,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -154,6 +158,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -175,6 +180,7 @@ describe('GameManagerService Online Edition', () => {
             playerName: 'p1',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -198,6 +204,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p1',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -217,6 +224,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p1',
             randomBonus: false,
             id: '0',
+            gameMode: GameMode.Classic,
         };
         const userAuth: UserAuth = {
             playerName: 'p1',
