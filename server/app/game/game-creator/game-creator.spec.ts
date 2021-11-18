@@ -46,7 +46,7 @@ describe('GameCreator', () => {
 
     it('should create a server game with requested parameters', () => {
         onlineGameSettings = { id, playerName, opponentName, randomBonus, timePerTurn, gameMode };
-        const createdGame = gameCreator.createServerGame(onlineGameSettings, gameToken);
+        const createdGame = gameCreator.createGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(opponentName)]);
         expect(createdGame.timePerTurn).to.be.equal(timePerTurn);
@@ -55,7 +55,7 @@ describe('GameCreator', () => {
 
     it('should create a server game with requested parameters and default opponent name', () => {
         onlineGameSettings = { id, playerName, randomBonus, timePerTurn, gameMode };
-        const createdGame = gameCreator.createServerGame(onlineGameSettings, gameToken);
+        const createdGame = gameCreator.createGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(GameCreator.defaultOpponentName)]);
         expect(createdGame.timePerTurn).to.be.equal(timePerTurn);

@@ -64,7 +64,7 @@ export class GameManagerService {
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
-        const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
+        const newServerGame = this.gameCreator.createGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
         this.startInactiveGameDestructionTimer(gameToken);
