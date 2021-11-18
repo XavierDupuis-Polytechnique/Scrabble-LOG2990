@@ -41,7 +41,7 @@ export const HELP =
     '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve. \\n' +
     '#!aide# \\n Affiche la liste des commandes disponibles.';
 export const ASCII_CODE = 65;
-export const TIMER_STEP = 1000;
+export const TIMER_STEP = 100;
 export const BACKSPACE = 'Backspace';
 export const SPACE = ' ';
 export const ESCAPE = 'Escape';

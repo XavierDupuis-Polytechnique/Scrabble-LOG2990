@@ -5,6 +5,28 @@ mat-card {
     color: var(--black-chocolate);
 }
 
+// TODO try to do this without ng-deep
+::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+    stroke: var(--black-chocolate);
+}
+
+::ng-deep .mat-progress-spinner circle {
+    transition: none !important;
+
+}
+
+#timer-less-one-minute {
+    position: relative;
+    top: -58px;
+    left: 41px;
+}
+
+#timer-greater-one-minute {
+    position: relative;
+    top: -58px;
+    left: 29px;
+}
+
 .game-info {
     display: flex;
     flex-direction: column;
