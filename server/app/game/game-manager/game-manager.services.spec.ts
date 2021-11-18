@@ -432,7 +432,6 @@ describe('GameManagerService', () => {
             playerName,
             opponentName,
             gameMode: GameMode.Classic,
-
         };
         service.createGame(gameToken, gameSettings);
 
