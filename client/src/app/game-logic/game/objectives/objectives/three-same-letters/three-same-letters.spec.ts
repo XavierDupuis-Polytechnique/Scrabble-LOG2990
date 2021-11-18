@@ -45,7 +45,7 @@ describe('ThreeSameLetters', () => {
     });
 
     it('should not complete when only 2 of the same letter are in the same word', () => {
-        params.formedWords.push(wordifyString('acabcb'));
+        params.formedWords = [wordifyString('acabcb')];
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);
         expect(objective.owner).toBeUndefined();
@@ -54,8 +54,7 @@ describe('ThreeSameLetters', () => {
     });
 
     it('should not complete when 3 (or more) of the same letter are in 2 different words', () => {
-        params.formedWords.push(wordifyString('aba'));
-        params.formedWords.push(wordifyString('aca'));
+        params.formedWords = [wordifyString('aba'), wordifyString('aca')];
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);
         expect(objective.owner).toBeUndefined();
@@ -64,7 +63,7 @@ describe('ThreeSameLetters', () => {
     });
 
     it('should complete when 3 of the same letter are in the same word', () => {
-        params.formedWords.push(wordifyString('acabacb'));
+        params.formedWords = [wordifyString('acabacb')];
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(1);
         expect(objective.owner).toBe(player.name);
@@ -73,7 +72,7 @@ describe('ThreeSameLetters', () => {
     });
 
     it('should complete when 4 of the same letter are in the same word', () => {
-        params.formedWords.push(wordifyString('acabacba'));
+        params.formedWords = [wordifyString('acabacba')];
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(1);
         expect(objective.owner).toBe(player.name);

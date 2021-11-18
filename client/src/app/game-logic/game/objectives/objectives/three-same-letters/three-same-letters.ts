@@ -22,14 +22,14 @@ export class ThreeSameLetters extends Objective {
         const letterMap = new Map<string, number>();
         for (const letter of word) {
             const char = letter.letterObject.char.toUpperCase();
-            const occurence = letterMap.get(char);
-            if (occurence) {
-                letterMap.set(char, occurence + 1);
+            let occurence = letterMap.get(char);
+            if (occurence === undefined) {
+                letterMap.set(char, 1);
+            } else {
+                letterMap.set(char, ++occurence);
                 if (occurence === THREE_SAME_LETTERS_NUMBER_OF_OCCURENCES) {
                     return true;
                 }
-            } else {
-                letterMap.set(char, 1);
             }
         }
         return false;
