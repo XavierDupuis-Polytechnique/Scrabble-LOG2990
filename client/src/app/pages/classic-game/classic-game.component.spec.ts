@@ -13,6 +13,7 @@ import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-pl
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable, of, Subject } from 'rxjs';
@@ -120,6 +121,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            gameMode: GameMode.Classic,
         };
 
         matDialog.open.and.returnValue({
@@ -216,6 +218,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            gameMode: GameMode.Classic,
         };
         matDialog.open.and.returnValue({
             afterOpened: () => {
@@ -245,6 +248,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            gameMode: GameMode.Classic,
         };
         matDialog.open.and.returnValue({
             afterClosed: () => {
