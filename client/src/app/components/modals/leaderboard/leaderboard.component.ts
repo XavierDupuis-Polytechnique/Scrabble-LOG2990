@@ -1,7 +1,8 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { HIGHSCORES_TO_DISPLAY, NOT_FOUND } from '@app/game-logic/constants';
-import { GameMode, HighScore, Score } from '@app/leaderboard/leaderboard.interface';
+import { GameMode } from '@app/leaderboard/game-mode.enum';
+import { HighScore, Score } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { BehaviorSubject } from 'rxjs';
 @Component({
