@@ -1,4 +1,4 @@
-import { GameMode, LeaderboardService } from '@app/database/leaderboard.service';
+import { GameMode, LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';

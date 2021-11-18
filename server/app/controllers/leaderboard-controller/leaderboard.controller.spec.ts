@@ -1,5 +1,5 @@
 import { Application } from '@app/app';
-import { LeaderboardService, Score } from '@app/database/leaderboard.service';
+import { LeaderboardService, Score } from '@app/database/leaderboard-service/leaderboard.service';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import * as sinon from 'sinon';
