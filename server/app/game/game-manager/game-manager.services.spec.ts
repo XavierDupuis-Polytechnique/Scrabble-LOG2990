@@ -1,9 +1,10 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { NEW_GAME_TIMEOUT } from '@app/constants';
-import { LeaderboardService } from '@app/database/leaderboard.service';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
@@ -484,7 +485,7 @@ describe('GameManagerService', () => {
         }).to.not.throw(Error);
     });
 
-    it('should remove game when it finishes', () => {
+    it('should remove game when it finishes and update leaderboard', () => {
         const playerName = 'test1';
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
@@ -495,8 +496,22 @@ describe('GameManagerService', () => {
             opponentName: 'test2',
         };
         service.createGame(gameToken, gameSettings);
-        // eslint-disable-next-line dot-notation
         service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [] });
+        expect(service.activeGames.size).to.be.equal(0);
+    });
+
+    it('should update leaderboard when it finishes on forfeit', () => {
+        const player = new Player('test01');
+        const gameToken = '1';
+        const gameSettings: OnlineGameSettings = {
+            id: gameToken,
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName: player.name,
+            opponentName: 'test3',
+        };
+        service.createGame(gameToken, gameSettings);
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });
         expect(service.activeGames.size).to.be.equal(0);
     });
 });
