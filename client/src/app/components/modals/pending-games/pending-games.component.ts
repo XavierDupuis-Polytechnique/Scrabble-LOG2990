@@ -56,10 +56,12 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
 
     ngOnInit() {
         this.pendingGames$.subscribe((gameSettings) => {
-            this.dataSource.data = gameSettings;
+            const filteredGameSettings = gameSettings.filter((gameSetting) => gameSetting.gameMode === this.gameMode);
+            this.dataSource.data = filteredGameSettings;
         });
         this.onlineSocketHandler.listenForPendingGames();
     }
+
     ngAfterViewInit() {
         this.dataSource.sort = this.tableSort;
     }

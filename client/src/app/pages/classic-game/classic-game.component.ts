@@ -151,4 +151,12 @@ export class ClassicGameComponent {
     get specialGame() {
         return this.gameMode === GameMode.Special;
     }
+
+    set specialGame(value: boolean) {
+        if (value) {
+            this.gameMode = GameMode.Special;
+        } else {
+            this.gameMode = GameMode.Classic;
+        }
+    }
 }
