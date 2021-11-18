@@ -3,7 +3,7 @@ import {
     HALF_ALPHABET_COMPLETION_PERCENTAGE as COMPLETION_PERCENTAGE,
     HALF_ALPHABET_POINTS,
     JOKER_CHAR,
-    N_LETTERS_IN_ALPHABET
+    N_LETTERS_IN_ALPHABET,
 } from '@app/game-logic/constants';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';

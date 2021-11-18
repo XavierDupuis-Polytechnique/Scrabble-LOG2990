@@ -60,7 +60,7 @@ describe('FourCorners', () => {
         expect(objective).toBeTruthy();
     });
 
-    it('should not declare an owner if no corners are filled', () => {
+    it('should not complete if no corners are filled', () => {
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);
         expect(objective.owner).toBeUndefined();

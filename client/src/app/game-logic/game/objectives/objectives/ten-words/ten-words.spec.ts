@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
@@ -37,7 +38,70 @@ describe('TenWords', () => {
         expect(objective).toBeTruthy();
     });
 
-    it('should complete', () => {
+    it('should not complete when less than 10 placeLetter action are executed (for the same player)', () => {
+        const params: ObjectiveUpdateParams = {
+            previousGrid: [],
+            currentGrid: [],
+            lettersToPlace: [],
+            formedWords: [],
+        };
+        for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE - 1; i++) {
+            objective.update(action, params);
+        }
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0.9);
+        expect(objective.owner).toBeUndefined();
+        expect(player.points).toBe(0);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+    });
+
+    it('should not complete when 9 placeLetter action are executed for each player', () => {
+        const params: ObjectiveUpdateParams = {
+            previousGrid: [],
+            currentGrid: [],
+            lettersToPlace: [],
+            formedWords: [],
+        };
+        for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE - 1; i++) {
+            objective.update(action, params);
+        }
+
+        const otherPlayer = new MockPlayer();
+        otherPlayer.name = 'otherPlayer';
+        const otherAction = new MockAction(otherPlayer);
+        for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE - 1; i++) {
+            objective.update(otherAction, params);
+        }
+
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0.9);
+        expect(objective.getPlayerProgression(otherAction.player.name)).toBe(0.9);
+        expect(objective.owner).toBeUndefined();
+        expect(player.points).toBe(0);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+    });
+
+    it('should complete when 10 placeLetter action are executed (for the same player) when players are playing alternatively', () => {
+        const params: ObjectiveUpdateParams = {
+            previousGrid: [],
+            currentGrid: [],
+            lettersToPlace: [],
+            formedWords: [],
+        };
+        const otherPlayer = new MockPlayer();
+        otherPlayer.name = 'otherPlayer';
+        const otherAction = new MockAction(otherPlayer);
+        for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE - 1; i++) {
+            objective.update(action, params);
+            objective.update(otherAction, params);
+        }
+        objective.update(action, params);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
+        expect(objective.getPlayerProgression(otherAction.player.name)).toBe(0.9);
+        expect(objective.owner).toBe(player.name);
+        expect(player.points).toBe(objective.points);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+    });
+
+    it('should complete when 10 placeLetter action are executed (for the same player)', () => {
         const params: ObjectiveUpdateParams = {
             previousGrid: [],
             currentGrid: [],
@@ -48,5 +112,8 @@ describe('TenWords', () => {
             objective.update(action, params);
         }
         expect(objective.getPlayerProgression(action.player.name)).toBe(1);
+        expect(objective.owner).toBe(player.name);
+        expect(player.points).toBe(objective.points);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
     });
 });

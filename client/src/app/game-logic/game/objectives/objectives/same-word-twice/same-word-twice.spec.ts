@@ -53,6 +53,9 @@ describe('SameWordTwice', () => {
         };
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(1);
+        expect(objective.owner).toBe(player.name);
+        expect(player.points).toBe(objective.points);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
     });
 
     it('should not be completed', () => {
@@ -71,5 +74,8 @@ describe('SameWordTwice', () => {
         };
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);
+        expect(objective.owner).toBeUndefined();
+        expect(player.points).toBe(0);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
     });
 });
