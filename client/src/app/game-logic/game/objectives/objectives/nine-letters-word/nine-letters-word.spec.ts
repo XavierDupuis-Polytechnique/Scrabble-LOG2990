@@ -44,7 +44,7 @@ describe('NineLettersWord', () => {
         expect(objective).toBeTruthy();
     });
 
-    it('should not declare an owner if no 9 letters word are formed', () => {
+    it('should not complete if no 9 letters word are formed', () => {
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);
         expect(objective.owner).toBeUndefined();
@@ -52,7 +52,25 @@ describe('NineLettersWord', () => {
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
     });
 
-    it('should not declare an owner if no 9 letters word are formed', () => {
+    it('should not complete if a 8 letters word is formed', () => {
+        params.formedWords = [wordifyString('ABCDEFGH')];
+        objective.update(action, params);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
+        expect(objective.owner).toBeUndefined();
+        expect(player.points).toBe(0);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+    });
+
+    it('should complete if a 9 letters word is formed', () => {
+        params.formedWords = [wordifyString('ABCDEFGHI')];
+        objective.update(action, params);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
+        expect(objective.owner).toBe(player.name);
+        expect(player.points).toBe(objective.points);
+        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+    });
+
+    it('should not complete if a 10 letters word is formed', () => {
         params.formedWords = [wordifyString('ABCDEFGHIJ')];
         objective.update(action, params);
         expect(objective.getPlayerProgression(action.player.name)).toBe(0);
