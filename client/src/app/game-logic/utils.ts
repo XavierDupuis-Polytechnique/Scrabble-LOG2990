@@ -112,3 +112,13 @@ export const stringifyWord = (word: Tile[]): string => {
     const stringifiedWord = letters.join('');
     return stringifiedWord;
 };
+
+export const wordifyString = (word: string): Tile[] => {
+    const stringList = word.split('');
+    const tileList: Tile[] = stringList.map((char: string) => {
+        const newTile = new Tile();
+        newTile.letterObject.char = char;
+        return newTile;
+    });
+    return tileList;
+};
