@@ -20,7 +20,11 @@ export class DatabaseServiceMock {
     }
 
     async closeConnection(): Promise<void> {
-        return this.client.close();
+        if (this.client) {
+            return this.client.close();
+        } else {
+            return Promise.resolve();
+        }
     }
 
     get database(): Db {

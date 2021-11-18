@@ -34,7 +34,7 @@ export class DatabaseService {
 
     async populateLeaderboardCollection(name: string): Promise<void> {
         try {
-            await this.db.collection(name).insertMany(DEFAULT_LEADERBOARD);
+            await this.database.collection(name).insertMany(DEFAULT_LEADERBOARD);
         } catch (e) {
             throw Error('Data base collection population error');
         }
@@ -54,7 +54,7 @@ export class DatabaseService {
     }
 
     private async collectionExists(name: string): Promise<boolean> {
-        const collections = await this.db.listCollections().toArray();
+        const collections = await this.database.listCollections().toArray();
         const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === name);
         if (isCollectionExist) {
             return true;

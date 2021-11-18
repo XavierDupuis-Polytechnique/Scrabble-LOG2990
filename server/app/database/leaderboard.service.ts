@@ -32,6 +32,10 @@ export const DEFAULT_LEADERBOARD = [
         name: 'Player3',
         point: 10,
     },
+    {
+        name: 'Player4',
+        point: 5,
+    },
 ];
 
 @Service()
