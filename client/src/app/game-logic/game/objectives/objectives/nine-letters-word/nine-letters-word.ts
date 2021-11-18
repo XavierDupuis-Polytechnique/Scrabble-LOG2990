@@ -12,7 +12,7 @@ export class NineLettersWord extends Objective {
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         for (const word of params.formedWords) {
             if (word.length === NineLettersWord.numberOfLettersRequired) {
-                this.progression = 1;
+                this.setPlayerProgression(action.player.name, 1);
                 return;
             }
         }

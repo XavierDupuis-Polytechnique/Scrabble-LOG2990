@@ -1,16 +1,20 @@
 import { Action } from '@app/game-logic/actions/action';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
-
-// TODO put name description in readonly
 export abstract class Objective {
-    name: string;
-    description: string;
+    readonly name: string;
+    readonly description: string;
     owner: string | undefined;
     points: number;
-    progression = 0;
+    protected progressions = new Map<string, number>();
+
     get isCompleted(): boolean {
-        return this.progression === 1;
+        for (const [, progression] of this.progressions) {
+            if (progression === 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     constructor(private objectiveNotifier: ObjectiveNotifierService) {}
@@ -26,6 +30,18 @@ export abstract class Objective {
             this.updatePoints(action);
             this.sendCompletionMessage();
         }
+    }
+
+    getPlayerProgression(name: string): number {
+        const progression = this.progressions.get(name);
+        if (progression === undefined) {
+            return 0;
+        }
+        return progression;
+    }
+
+    protected setPlayerProgression(name: string, newProgression: number) {
+        this.progressions.set(name, newProgression);
     }
 
     private updateOwner(action: Action) {

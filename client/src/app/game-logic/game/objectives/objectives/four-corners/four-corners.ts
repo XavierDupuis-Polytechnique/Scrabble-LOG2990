@@ -28,6 +28,6 @@ export class FourCorners extends Objective {
             newProgression += 1 / N_CORNERS;
         }
 
-        this.progression = newProgression;
+        this.setPlayerProgression(action.player.name, newProgression);
     }
 }

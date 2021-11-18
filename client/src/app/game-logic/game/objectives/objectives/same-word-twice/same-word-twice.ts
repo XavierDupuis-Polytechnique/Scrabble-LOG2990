@@ -10,12 +10,12 @@ export class SameWordTwice extends Objective {
     points = SAME_WORD_TWICE_POINTS;
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
-        this.progression = 0;
+        this.setPlayerProgression(action.player.name, 0);
         const formedWords: string[] = params.formedWords.map((word) => stringifyWord(word));
         const wordSet = new Set<string>();
         for (const word of formedWords) {
             if (wordSet.has(word)) {
-                this.progression = 1;
+                this.setPlayerProgression(action.player.name, 1);
                 return;
             }
             wordSet.add(word);

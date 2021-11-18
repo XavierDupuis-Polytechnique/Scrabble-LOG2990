@@ -62,7 +62,7 @@ describe('FourCorners', () => {
 
     it('should not declare an owner if no corners are filled', () => {
         objective.update(action, params);
-        expect(objective.progression).toBe(0);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
         expect(objective.owner).toBeUndefined();
         expect(player.points).toBe(0);
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe('FourCorners', () => {
     it('should update progression for 1 corner filled', () => {
         params.currentGrid[BOARD_MAX_POSITION][BOARD_MIN_POSITION].letterObject = { char: 'A', value: 0 };
         objective.update(action, params);
-        expect(objective.progression).toBe(0.25);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0.25);
         expect(objective.owner).toBeUndefined();
         expect(player.points).toBe(0);
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
@@ -81,7 +81,7 @@ describe('FourCorners', () => {
         params.currentGrid[BOARD_MAX_POSITION][BOARD_MIN_POSITION].letterObject = { char: 'A', value: 0 };
         params.currentGrid[BOARD_MAX_POSITION][BOARD_MAX_POSITION].letterObject = { char: 'B', value: 0 };
         objective.update(action, params);
-        expect(objective.progression).toBe(0.5);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0.5);
         expect(objective.owner).toBeUndefined();
         expect(player.points).toBe(0);
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
@@ -92,7 +92,7 @@ describe('FourCorners', () => {
         params.currentGrid[BOARD_MAX_POSITION][BOARD_MAX_POSITION].letterObject = { char: 'B', value: 0 };
         params.currentGrid[BOARD_MIN_POSITION][BOARD_MIN_POSITION].letterObject = { char: 'C', value: 0 };
         objective.update(action, params);
-        expect(objective.progression).toBe(0.75);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0.75);
         expect(objective.owner).toBeUndefined();
         expect(player.points).toBe(0);
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
@@ -104,7 +104,7 @@ describe('FourCorners', () => {
         params.currentGrid[BOARD_MIN_POSITION][BOARD_MIN_POSITION].letterObject = { char: 'C', value: 0 };
         params.currentGrid[BOARD_MIN_POSITION][BOARD_MAX_POSITION].letterObject = { char: 'D', value: 0 };
         objective.update(action, params);
-        expect(objective.progression).toBe(1);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
         expect(objective.owner).toBe(player.name);
         expect(player.points).toBe(objective.points);
         expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);

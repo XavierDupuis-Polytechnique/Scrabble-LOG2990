@@ -14,7 +14,7 @@ export class Palindrome extends Objective {
         const formedWords: string[] = params.formedWords.map((word: Tile[]) => stringifyWord(word));
         for (const word of formedWords) {
             if (isPalindrome(word)) {
-                this.progression = 1;
+                this.setPlayerProgression(action.player.name, 1);
             }
         }
     }

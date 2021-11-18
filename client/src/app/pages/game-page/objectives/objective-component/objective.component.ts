@@ -31,7 +31,7 @@ export class ObjectiveComponent {
     }
 
     get progression(): number {
-        return this.objective.progression;
+        return this.objective.getPlayerProgression(this.info.user.name);
     }
 
     get name(): string {

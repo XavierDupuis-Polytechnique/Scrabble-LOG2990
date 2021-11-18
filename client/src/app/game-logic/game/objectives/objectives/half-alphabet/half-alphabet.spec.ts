@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-classes-per-file */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
@@ -55,9 +56,8 @@ describe('HalfAlphabet', () => {
             formedWords: [],
         };
         objective.update(action, params);
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         const expectedProgression = 5 / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
-        expect(objective.progression).toBe(expectedProgression);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(expectedProgression);
 
         const lettersToPlace2 = [
             { char: 'F', value: 0 },
@@ -76,6 +76,6 @@ describe('HalfAlphabet', () => {
             formedWords: [],
         };
         objective.update(action, params2);
-        expect(objective.progression).toBe(1);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
     });
 });

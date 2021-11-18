@@ -52,7 +52,7 @@ describe('SameWordTwice', () => {
             ],
         };
         objective.update(action, params);
-        expect(objective.progression).toBe(1);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
     });
 
     it('should not be completed', () => {
@@ -70,6 +70,6 @@ describe('SameWordTwice', () => {
             ],
         };
         objective.update(action, params);
-        expect(objective.progression).toBe(0);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
     });
 });

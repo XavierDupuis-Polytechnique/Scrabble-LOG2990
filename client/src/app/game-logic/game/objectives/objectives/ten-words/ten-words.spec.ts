@@ -47,6 +47,6 @@ describe('TenWords', () => {
         for (let i = 0; i < TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE; i++) {
             objective.update(action, params);
         }
-        expect(objective.progression).toBe(1);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
     });
 });

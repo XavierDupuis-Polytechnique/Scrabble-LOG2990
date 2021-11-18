@@ -55,7 +55,7 @@ describe('Palindrome', () => {
             formedWords: [[tile1, tile2, tile3, tile4, tile5]],
         };
         objective.update(action, params);
-        expect(objective.progression).toBe(1);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
     });
 
     it('should not complete the objective', () => {
@@ -76,6 +76,6 @@ describe('Palindrome', () => {
             formedWords: [[tile1, tile2, tile3, tile4, tile5]],
         };
         objective.update(action, params);
-        expect(objective.progression).toBe(0);
+        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
     });
 });
