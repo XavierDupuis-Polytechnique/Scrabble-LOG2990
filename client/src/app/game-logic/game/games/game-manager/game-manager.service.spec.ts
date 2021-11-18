@@ -2,9 +2,19 @@
 import { TestBed } from '@angular/core/testing';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { BoardService } from '@app/game-logic/game/board/board.service';
+import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
+import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
+import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
+import { Bot } from '@app/game-logic/player/bot/bot';
+import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
+import { Player } from '@app/game-logic/player/player';
+import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
+import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
@@ -14,7 +24,7 @@ import { GameManagerService } from './game-manager.service';
 describe('GameManagerService', () => {
     let service: GameManagerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
-    const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
+    let leaderboardServiceMock: jasmine.SpyObj<LeaderboardService>;
 
     const dict = new DictionaryService();
     beforeEach(() => {
@@ -26,6 +36,7 @@ describe('GameManagerService', () => {
             ],
         });
         service = TestBed.inject(GameManagerService);
+        leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
     });
 
     it('should be created', () => {
@@ -232,5 +243,55 @@ describe('GameManagerService Online Edition', () => {
         const spy = spyOn(service['onlineChat'], 'leaveChatRoom');
         service['stopGame']();
         expect(spy).toHaveBeenCalled();
+    });
+
+    // ARHFHHHFA
+    it('should updateLeaderboard when game is done', () => {
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+            randomBonus: false,
+        };
+        service.createGame(gameSettings);
+        (service['game'] as Game)['isEndOfGameSubject'].next();
+        expect(leaderboardServiceMock.updateLeaderboard).toHaveBeenCalled();
+    });
+
+    it('should not updateLeaderboard if game is undefined', () => {
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+            randomBonus: false,
+        };
+        service.createGame(gameSettings);
+        const game = service['game'] as Game;
+        service['allocateOnlinePlayers']([]);
+        service['game'] = undefined;
+        game['isEndOfGameSubject'].next();
+        expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
+    });
+
+    it('should not updateLeaderboard if players are undefined', () => {
+        const players = undefined as unknown;
+        service.updateLeaderboard(players as Player[], GameMode.Classic);
+        expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
+    });
+
+    it('should not updateLeaderboard if player is bot', () => {
+        const easyBot = new EasyBot(
+            'bot',
+            TestBed.inject(BoardService),
+            dict,
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+            TestBed.inject(BotMessagesService),
+            TestBed.inject(GameInfoService),
+            commandExecuterMock,
+        ) as Bot;
+        const players = [easyBot];
+        service.updateLeaderboard(players, GameMode.Classic);
+        expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
     });
 });

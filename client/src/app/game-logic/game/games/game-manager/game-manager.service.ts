@@ -26,7 +26,7 @@ import { first } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class GameManagerService {
-    private game: Game | null;
+    private game: Game | undefined;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
@@ -75,12 +75,13 @@ export class GameManagerService {
         this.info.receiveGame(this.game);
 
         this.game.isEndOfGame$.pipe(first()).subscribe(() => {
-            if (this.game !== null) {
-                // TODO: unComment when merge branch Objective
-                // const mode = this.game instanceof SpecialOffline ? GameMode.Classic : GameMode.Log;
-                const mode = GameMode.Classic;
-                this.updateLeaderboard(this.game.players, mode);
+            if (this.game === undefined) {
+                return;
             }
+            // TODO: unComment when merge branch Objective
+            // const mode = this.game instanceof SpecialOffline ? GameMode.Classic : GameMode.Log;
+            const mode = GameMode.Classic;
+            this.updateLeaderboard(this.game.players, mode);
         });
     }
 
@@ -135,6 +136,7 @@ export class GameManagerService {
         }
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
+        this.game = undefined;
     }
 
     updateLeaderboard(players: Player[], mode: GameMode) {
