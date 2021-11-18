@@ -1,4 +1,8 @@
-import { DEFAULT_LEADERBOARD, LEADERBOARD_CLASSIC_COLLECTION, LEADERBOARD_LOG_COLLECTION } from '@app/database/leaderboard.service';
+import {
+    DEFAULT_LEADERBOARD,
+    LEADERBOARD_CLASSIC_COLLECTION,
+    LEADERBOARD_LOG_COLLECTION
+} from '@app/database/leaderboard-service/leaderboard.service';
 import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
@@ -34,7 +38,9 @@ export class DatabaseService {
 
     async populateLeaderboardCollection(name: string): Promise<void> {
         try {
-            await this.database.collection(name).insertMany(DEFAULT_LEADERBOARD);
+            if ((await this.db.collection(name).countDocuments()) === 0) {
+                await this.db.collection(name).insertMany(DEFAULT_LEADERBOARD);
+            }
         } catch (e) {
             throw Error('Data base collection population error');
         }
@@ -44,8 +50,8 @@ export class DatabaseService {
         try {
             const checkCollectionExists = await this.collectionExists(collectionName);
             if (!checkCollectionExists) {
-                await this.database.createCollection(collectionName);
-                await this.database.collection(collectionName).createIndex({ name: 1 }, { unique: true });
+                await this.db.createCollection(collectionName);
+                await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
                 this.populateLeaderboardCollection(collectionName);
             }
         } catch (e) {
@@ -54,12 +60,12 @@ export class DatabaseService {
     }
 
     private async collectionExists(name: string): Promise<boolean> {
-        const collections = await this.database.listCollections().toArray();
+        const collections = await this.db.listCollections().toArray();
         const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === name);
-        if (isCollectionExist) {
-            return true;
+        if (isCollectionExist === undefined) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     get database(): Db {
