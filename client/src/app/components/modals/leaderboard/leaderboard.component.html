@@ -1,6 +1,11 @@
 <mat-dialog-content>
-    <h3>Meilleurs Scores</h3>
-    <mat-icon (click)="refresh()">refresh</mat-icon>
+    <div class="header">
+        <div></div>
+        <h3>Meilleurs Scores</h3>
+        <button mat-fab class="refreshIcon" color="primary" (click)="refresh()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
     <div class="leaderboards-container">
         <div>
             <h4>Mode Classique</h4>
