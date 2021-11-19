@@ -31,8 +31,8 @@ export class PlaceLetter extends Action {
         // const previousGrid = copyGrid(game.board.grid);
         const validWordList = this.wordSearcher.listOfValidWord(this, game.board.grid);
         const formedWords = validWordList.map((validWord) => validWord.letters);
-        // this.putLettersOnBoard(game);
-        const currentGrid = game.board.grid;
+        this.putLettersOnBoard(game);
+        // const currentGrid = game.board.grid;
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
         const wordValid = validWordList.length !== 0;
         if (wordValid) {
