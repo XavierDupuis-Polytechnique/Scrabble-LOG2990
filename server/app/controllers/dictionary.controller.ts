@@ -1,5 +1,5 @@
-import { DictionaryDb } from '@app/db-manager-services/dictionary-db-manager/default-dictionary';
-import { DictionaryDbService } from '@app/db-manager-services/dictionary-db-manager/dictionary-db.service';
+import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
+import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 export class DictionaryController {
     router: Router;
 
-    constructor(private dictionaryDbService: DictionaryDbService) {
+    constructor(private dictionaryServerService: DictionaryServerService) {
         this.configureRouter();
     }
 
@@ -18,10 +18,14 @@ export class DictionaryController {
         this.router.get('/', async (req, res) => {
             try {
                 if (req.body.title) {
-                    const dict = await this.dictionaryDbService.getDictByTitle(req.body.title);
-                    res.json(dict);
+                    const dict = this.dictionaryServerService.getDictByTitle(req.body.title);
+                    if (dict === undefined) {
+                        res.sendStatus(StatusCodes.NOT_FOUND);
+                    } else {
+                        res.json(dict);
+                    }
                 } else {
-                    const dicts = await this.dictionaryDbService.getDictsList();
+                    const dicts = this.dictionaryServerService.getDictsList();
                     res.json(dicts);
                 }
             } catch (e) {
@@ -31,13 +35,13 @@ export class DictionaryController {
 
         this.router.post('/', async (req, res) => {
             try {
-                const clientDict = req.body as DictionaryDb;
-                const isDictExist = await this.dictionaryDbService.isDictExist(clientDict.title);
+                const clientDict = req.body as DictionaryServer;
+                const isDictExist = this.dictionaryServerService.isDictExist(clientDict.title);
                 if (isDictExist) {
                     res.send(false);
                 } else {
                     clientDict.canEdit = true;
-                    await this.dictionaryDbService.addDict(clientDict);
+                    this.dictionaryServerService.addDict(clientDict);
                     res.send(true);
                 }
             } catch (e) {
@@ -48,8 +52,7 @@ export class DictionaryController {
         this.router.delete('/:title', async (req, res) => {
             try {
                 const title = req.params.title;
-                const dict = await this.dictionaryDbService.getDictByTitle(title);
-                this.dictionaryDbService.deleteDict(dict);
+                this.dictionaryServerService.deleteDict(title);
                 res.sendStatus(StatusCodes.OK);
             } catch (error) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
@@ -58,8 +61,9 @@ export class DictionaryController {
 
         this.router.put('/', async (req, res) => {
             try {
-                const clientDict = req.body as DictionaryDb[];
-                const ans = await this.dictionaryDbService.updateDict(clientDict[0], clientDict[1]);
+                const clientDict = req.body as DictionaryServer[];
+                // TODO Validate whether the dict sent contain words or not
+                const ans = this.dictionaryServerService.updateDict(clientDict[0], clientDict[1]);
                 res.send(ans);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
