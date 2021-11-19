@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
+import { BOARD_DIMENSION } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Game } from '@app/game-logic/game/games/game';
@@ -75,6 +76,59 @@ export class GameManagerService {
         this.info.receiveGame(this.game);
     }
 
+    createLoadedGame(forfeitedGameState: ForfeitedGameSate) {
+        if (!this.game) {
+            return;
+        }
+
+        if (this.game && this.game instanceof OfflineGame) {
+            this.stopGame();
+        }
+        const timePerTurn = (this.game as OnlineGame).timePerTurn;
+        const userName = (this.game as OnlineGame).userName;
+        const offlineGame = new OfflineGame(
+            forfeitedGameState.randomBonus,
+            timePerTurn,
+            this.timer,
+            this.pointCalculator,
+            this.boardService,
+            this.messageService,
+            true,
+        );
+        const oldBoard = this.boardService.board;
+        offlineGame.board = oldBoard;
+        // const letterRackRef = this.info.user.letterRack;
+        this.game = offlineGame;
+
+        const playerName = userName;
+        const botDifficulty = 'Easy';
+        const players = this.createPlayers(playerName, botDifficulty);
+        this.allocatePlayers(players);
+
+        const nRows = BOARD_DIMENSION;
+        const nCols = BOARD_DIMENSION;
+        const newGrid = forfeitedGameState.grid;
+
+        for (let i = 0; i < nRows; i++) {
+            for (let j = 0; j < nCols; j++) {
+                this.boardService.board.grid[i][j] = newGrid[i][j];
+            }
+        }
+
+        offlineGame.letterBag.gameLetters = forfeitedGameState.letterBag;
+        offlineGame.consecutivePass = forfeitedGameState.consecutivePass;
+        const playerInfo = forfeitedGameState.players;
+        // TODO fix this
+        for (let i = 0; i < 0; i++) {
+            this.game.players[i].points = playerInfo[i].points;
+            for (let j = 0; j < playerInfo[i].letterRack.length; j++) {
+                this.game.players[i].letterRack[j] = playerInfo[i].letterRack[j];
+            }
+        }
+        this.info.receiveGame(this.game);
+        this.startGame();
+    }
+
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
         if (this.game) {
             this.stopGame();
@@ -120,32 +174,41 @@ export class GameManagerService {
     }
 
     toOfflineGame(forfeitedGameState: ForfeitedGameSate) {
-        if (!(this.game instanceof OnlineGame)) {
-            return;
-        }
-        const playerInfo = forfeitedGameState.players;
-        const playerName = this.game.userName;
+        this.createLoadedGame(forfeitedGameState);
+        // if (!(this.game instanceof OnlineGame)) {
+        //     return;
+        // }
+        // const playerInfo = forfeitedGameState.players;
+        // const playerName = this.game.userName;
 
-        const newGameSettings: GameSettings = {
-            playerName,
-            botDifficulty: 'EasyBot',
-            timePerTurn: this.game.timePerTurn,
-            randomBonus: forfeitedGameState.randomBonus,
-        };
+        // const newGameSettings: GameSettings = {
+        //     playerName,
+        //     botDifficulty: 'EasyBot',
+        //     timePerTurn: this.game.timePerTurn,
+        //     randomBonus: forfeitedGameState.randomBonus,
+        // };
+        // this.createGame(newGameSettings);
 
-        this.createGame(newGameSettings);
-        if (!(this.game instanceof OfflineGame)) {
-            return;
-        }
-        const offlineGame = this.game as OfflineGame;
-        offlineGame.board.grid = forfeitedGameState.grid;
-        offlineGame.letterBag.gameLetters = forfeitedGameState.letterBag;
-        offlineGame.consecutivePass = forfeitedGameState.consecutivePass;
-        for (let i = 0; i < 0; i++) {
-            offlineGame.players[i].points = playerInfo[i].points;
-            offlineGame.players[i].letterRack = playerInfo[i].letterRack;
-        }
-        this.startGame();
+        // if (!(this.game instanceof OfflineGame)) {
+        //     return;
+        // }
+        // const offlineGame = this.game as OfflineGame;
+        // const nRows = BOARD_DIMENSION;
+        // const nCols = BOARD_DIMENSION;
+        // const newGrid = forfeitedGameState.grid;
+        // for (let i = 0; i < nRows; i++) {
+        //     for (let j = 0; j < nCols; j++) {
+        //         this.boardService.board.grid[i][j] = newGrid[i][j];
+        //     }
+        // }
+        // // offlineGame.board.grid = forfeitedGameState.grid;
+        // offlineGame.letterBag.gameLetters = forfeitedGameState.letterBag;
+        // offlineGame.consecutivePass = forfeitedGameState.consecutivePass;
+        // for (let i = 0; i < 0; i++) {
+        //     offlineGame.players[i].points = playerInfo[i].points;
+        //     offlineGame.players[i].letterRack = playerInfo[i].letterRack;
+        // }
+        // this.startGame();
     }
 
     stopGame(): void {

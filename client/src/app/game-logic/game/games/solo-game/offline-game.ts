@@ -28,8 +28,12 @@ export class OfflineGame extends Game {
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
         private messagesService: MessagesService,
+        loadGame: boolean = false,
     ) {
         super();
+        if (loadGame) {
+            return;
+        }
         this.board = new Board(randomBonus);
         this.boardService.board = this.board;
     }

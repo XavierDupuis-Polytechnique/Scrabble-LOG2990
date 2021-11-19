@@ -133,9 +133,9 @@ export class GameManagerService {
             return;
         }
 
+        this.createTransitionGameState(game);
         this.activePlayers.delete(playerId);
 
-        this.createTransitionGameState(game);
         this.endForfeitedGame(game, playerRef.player.name);
         this.deleteGame(gameToken);
     }
