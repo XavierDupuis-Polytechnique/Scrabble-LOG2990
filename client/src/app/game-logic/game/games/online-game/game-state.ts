@@ -7,6 +7,14 @@ export interface LightPlayer {
     letterRack: Letter[];
 }
 
+export interface LightObjective {
+    name: string;
+    description: string;
+    points: number;
+    owner: string | undefined;
+    progressions: Map<string, number>;
+}
+
 export interface GameState {
     players: LightPlayer[];
     activePlayerIndex: number;
@@ -14,4 +22,9 @@ export interface GameState {
     lettersRemaining: number;
     isEndOfGame: boolean;
     winnerIndex: number[];
+}
+
+export interface SpecialGameState extends GameState {
+    publicObjectives: LightObjective[];
+    privateObjectives: Map<string, LightObjective[]>;
 }

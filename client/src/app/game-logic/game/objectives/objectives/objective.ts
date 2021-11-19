@@ -4,9 +4,9 @@ import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objective
 export abstract class Objective {
     readonly name: string;
     readonly description: string;
+    readonly points: number;
     owner: string | undefined;
-    points: number;
-    protected progressions = new Map<string, number>();
+    progressions = new Map<string, number>();
 
     get isCompleted(): boolean {
         for (const [, progression] of this.progressions) {

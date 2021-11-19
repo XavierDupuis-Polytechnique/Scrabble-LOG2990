@@ -127,10 +127,10 @@ export class ClassicGameComponent {
     }
 
     startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
-        // TODO: join special game if special game is selected
-        if (this.specialGame) {
-            throw Error('not implemented yet');
-        }
+        // // TODO: join special game if special game is selected
+        // if (this.specialGame) {
+        //     throw Error('not implemented yet');
+        // }
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();

@@ -8,6 +8,7 @@ import { GameSettings } from '@app/game-logic/game/games/game-settings.interface
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -17,6 +18,7 @@ import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { Observable, Subject } from 'rxjs';
@@ -104,15 +106,28 @@ export class GameManagerService {
         }
         const userName = userAuth.playerName;
         const timerPerTurn = Number(gameSettings.timePerTurn);
-        this.game = new OnlineGame(
-            gameSettings.id,
-            timerPerTurn,
-            userName,
-            this.timer,
-            this.gameSocketHandler,
-            this.boardService,
-            this.onlineActionCompiler,
-        );
+        if (gameSettings.gameMode === GameMode.Classic) {
+            this.game = new OnlineGame(
+                gameSettings.id,
+                timerPerTurn,
+                userName,
+                this.timer,
+                this.gameSocketHandler,
+                this.boardService,
+                this.onlineActionCompiler,
+            );
+        } else {
+            this.game = new SpecialOnlineGame(
+                gameSettings.id,
+                timerPerTurn,
+                userName,
+                this.timer,
+                this.gameSocketHandler,
+                this.boardService,
+                this.onlineActionCompiler,
+                this.objectiveCreator,
+            );
+        }
 
         const onlineGame = this.game as OnlineGame;
 

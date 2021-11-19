@@ -11,6 +11,7 @@ import { SameWordTwice } from '@app/game-logic/game/objectives/objectives/same-w
 import { TenWords } from '@app/game-logic/game/objectives/objectives/ten-words/ten-words';
 import { ThreeSameLetters } from '@app/game-logic/game/objectives/objectives/three-same-letters/three-same-letters';
 import { TripleBonus } from '@app/game-logic/game/objectives/objectives/triple-bonus/triple-bonus';
+import { OnlineObjective } from '@app/game-logic/game/objectives/online-objective/online-objective';
 import { getRandomInt } from '@app/game-logic/utils';
 
 @Injectable({
@@ -42,6 +43,10 @@ export class ObjectiveCreator {
             this.availableObjectivesIndex.splice(randomInt, 1);
         }
         return createdObjectives;
+    }
+
+    createOnlineObjective(name: string, description: string, points: number): OnlineObjective {
+        return new OnlineObjective(this.objectiveNotifier, name, description, points);
     }
 
     private createObjective(objectiveIndex: number): Objective {

@@ -1,17 +1,24 @@
 import { Tile } from '@app/game/game-logic/board/tile';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
-import { GameState, LightPlayer } from '@app/game/game-logic/interface/game-state.interface';
+import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
+import { GameState, LightObjective, LightPlayer, SpecialGameState } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { Service } from 'typedi';
 
 @Service()
 export class GameCompiler {
-    compile(game: ServerGame): GameState {
+    compile(game: ServerGame): GameState | SpecialGameState {
+        const gameState = this.compileGameState(game);
+        if (game instanceof SpecialServerGame) {
+            return this.compileSpecialGameState(game, gameState);
+        }
+        return gameState;
+    }
+
+    private compileGameState(game: ServerGame): GameState {
         const lightPlayers: LightPlayer[] = this.fillPlayer(game.players);
         const activePlayer = game.activePlayerIndex;
-
         const lightGrid: Tile[][] = game.board.grid;
-
         let lightEndOfGame = false;
         let lightWinnerIndex: number[] = [];
         if (game.isEndOfGame()) {
@@ -36,6 +43,51 @@ export class GameCompiler {
             winnerIndex: lightWinnerIndex,
         };
         return lg;
+    }
+
+    private compileSpecialGameState(game: SpecialServerGame, gameState: GameState): SpecialGameState {
+        const publicObjectives = this.compilePublicObjectives(game as SpecialServerGame);
+        const privateObjectives = this.compilePrivateObjectives(game as SpecialServerGame);
+        const specialGameState: SpecialGameState = {
+            ...gameState,
+            publicObjectives,
+            privateObjectives,
+        };
+        return specialGameState;
+    }
+
+    private compilePublicObjectives(specialGame: SpecialServerGame): LightObjective[] {
+        const createdLightObjectives: LightObjective[] = [];
+        for (const objective of specialGame.publicObjectives) {
+            const lightObjective: LightObjective = {
+                name: objective.name,
+                description: objective.description,
+                points: objective.points,
+                owner: objective.owner ? objective.owner : undefined,
+                progressions: objective.progressions,
+            };
+            createdLightObjectives.push(lightObjective);
+        }
+        return createdLightObjectives;
+    }
+
+    private compilePrivateObjectives(specialGame: SpecialServerGame): Map<string, LightObjective[]> {
+        const createdLightObjectivesMap: Map<string, LightObjective[]> = new Map<string, LightObjective[]>();
+        for (const [playerName, objectiveList] of specialGame.privateObjectives) {
+            const createdLightObjectives: LightObjective[] = [];
+            for (const objective of objectiveList) {
+                const lightObjective: LightObjective = {
+                    name: objective.name,
+                    description: objective.description,
+                    points: objective.points,
+                    owner: objective.owner ? objective.owner : undefined,
+                    progressions: objective.progressions,
+                };
+                createdLightObjectives.push(lightObjective);
+            }
+            createdLightObjectivesMap.set(playerName, createdLightObjectives);
+        }
+        return createdLightObjectivesMap;
     }
 
     private fillPlayer(players: Player[]): LightPlayer[] {

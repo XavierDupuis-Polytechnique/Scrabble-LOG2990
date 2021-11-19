@@ -7,7 +7,7 @@ export abstract class Objective {
     readonly description: string;
     owner: string | undefined;
     points: number;
-    protected progressions = new Map<string, number>();
+    progressions = new Map<string, number>();
 
     get isCompleted(): boolean {
         for (const [, progression] of this.progressions) {

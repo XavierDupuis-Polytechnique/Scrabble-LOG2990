@@ -118,6 +118,14 @@ export class OnlineGame extends Game {
         return winners;
     }
 
+    protected updateClient(gameState: GameState) {
+        this.updateBoard(gameState);
+        this.updateActivePlayer(gameState);
+        this.updatePlayers(gameState);
+        this.updateLettersRemaining(gameState);
+        this.updateEndOfGame(gameState);
+    }
+
     private setupPlayersWithIndex() {
         for (let index = 0; index < this.players.length; index++) {
             const player = this.players[index];
@@ -198,14 +206,6 @@ export class OnlineGame extends Game {
         if (timerControl === TimerControls.Stop) {
             this.timer.stop();
         }
-    }
-
-    private updateClient(gameState: GameState) {
-        this.updateBoard(gameState);
-        this.updateActivePlayer(gameState);
-        this.updatePlayers(gameState);
-        this.updateLettersRemaining(gameState);
-        this.updateEndOfGame(gameState);
     }
 
     private updateBoard(gameState: GameState) {
