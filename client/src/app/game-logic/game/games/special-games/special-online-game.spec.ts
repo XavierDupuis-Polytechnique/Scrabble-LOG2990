@@ -3,6 +3,7 @@ import { OnlineActionCompilerService } from '@app/game-logic/actions/online-acti
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
@@ -34,6 +35,7 @@ describe('OnlineGame', () => {
             gameSocketHandlerService,
             boardService,
             TestBed.inject(OnlineActionCompilerService),
+            TestBed.inject(ObjectiveCreator),
         );
         player1 = new User('p1');
         player2 = new User('p2');
