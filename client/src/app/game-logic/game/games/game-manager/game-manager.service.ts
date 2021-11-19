@@ -123,10 +123,7 @@ export class GameManagerService {
         if (!this.game) {
             throw Error('No game created yet');
         }
-
-        if (this.game) {
-            this.game.start();
-        }
+        this.game.start();
     }
 
     stopGame(): void {
