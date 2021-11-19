@@ -5,6 +5,7 @@ export interface DictionaryServer {
     description: string;
     words?: string[];
     canEdit?: boolean;
+    date?: Date;
 }
 
 export const DEFAULT_DICTIONARY = data as DictionaryServer;

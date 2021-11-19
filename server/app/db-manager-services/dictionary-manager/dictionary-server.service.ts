@@ -20,12 +20,6 @@ export class DictionaryServerService {
             const dictObj = JSON.parse(dictData);
             this.allDictionary.push(dictObj);
         });
-        console.log(this.allDictionary);
-        // this.saveToFile(this.allDictionary[1].title);
-        // console.log(this.allDictionary);
-        this.deleteDict(this.allDictionary[3].title);
-        console.log('aslkdnlasdnjasndkja');
-        console.log(this.allDictionary);
     }
 
     isDictExist(dictName: string): boolean {
@@ -47,27 +41,32 @@ export class DictionaryServerService {
         return dictsList;
     }
 
-    getDictByTitle(dictTitle: string): DictionaryServer | undefined {
+    getDictByTitle(dictTitle: string): DictionaryServer | boolean {
         for (const dict of this.allDictionary) {
             if (dict.title === dictTitle) {
                 return dict;
             }
         }
-        return undefined;
+        return false;
     }
 
-    addDict(dict: DictionaryServer) {
-        this.formatDict(dict);
+    addDict(dictToAdd: DictionaryServer) {
+        const dict = this.formatDict(dictToAdd);
         this.allDictionary.push(dict);
         this.saveToFile(dict.title);
     }
 
-    updateDict(oldDict: DictionaryServer, newDict: DictionaryServer) {
+    updateDict(oldDict: DictionaryServer, newDict: DictionaryServer): boolean {
         const index = this.allDictionary.findIndex((dict) => dict.title === oldDict.title);
-        const tmp = this.allDictionary[index];
-        tmp.title = newDict.title;
-        tmp.description = newDict.description;
-        this.saveToFile(tmp.title);
+        const currentDict = this.allDictionary[index];
+        if (currentDict.canEdit) {
+            currentDict.title = newDict.title;
+            currentDict.description = newDict.description;
+            currentDict.date = new Date();
+            this.saveToFile(currentDict.title);
+            return true;
+        }
+        return false;
     }
 
     deleteDict(dictTitle: string): boolean {
@@ -75,18 +74,17 @@ export class DictionaryServerService {
         if (index === NOT_FOUND) {
             return false;
         }
+        if (!this.allDictionary[index].canEdit) {
+            return false;
+        }
         this.allDictionary.splice(index, 1);
         this.deleteFile(dictTitle);
         return true;
     }
 
-    private deleteFile(dictTitle: string): boolean {
-        const filePath = folderPath + dictTitle + '.json';
-        if (!fs.existsSync(filePath)) {
-            return false;
-        }
+    private deleteFile(dictTitle: string) {
+        const filePath = (folderPath + dictTitle + '.json').replace(/\s/g, '');
         fs.rmSync(filePath);
-        return true;
     }
 
     private saveToFile(dictTitle: string) {
@@ -97,7 +95,7 @@ export class DictionaryServerService {
     }
 
     private formatDict(dict: DictionaryServer): DictionaryServer {
-        const tmpDict = { title: dict.title, description: dict.description, words: dict.words, canEdit: true };
+        const tmpDict = { title: dict.title, description: dict.description, words: dict.words, canEdit: true, date: new Date() };
         return tmpDict;
     }
 
