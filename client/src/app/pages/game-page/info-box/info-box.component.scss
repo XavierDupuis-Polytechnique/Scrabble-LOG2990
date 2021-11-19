@@ -5,14 +5,12 @@ mat-card {
     color: var(--black-chocolate);
 }
 
-// TODO try to do this without ng-deep
 ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
     stroke: var(--black-chocolate);
 }
 
 ::ng-deep .mat-progress-spinner circle {
     transition: none !important;
-
 }
 
 #timer-less-one-minute {
@@ -30,6 +28,7 @@ mat-card {
 .game-info {
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: flex-start;
     font-size: 125%;
 }
@@ -37,4 +36,12 @@ mat-card {
 .name {
     font-size: 100%;
     font-weight: 700;
+}
+
+.timer {
+    justify-content: center;
+}
+
+#letters-in-bag {
+    font-size: 120% !important;
 }
