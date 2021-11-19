@@ -37,6 +37,10 @@ export class SpecialServerGame extends ServerGame {
             endGameSubject,
         );
     }
+    start() {
+        this.allocateObjectives();
+        super.start();
+    }
 
     allocateObjectives() {
         this.allocatePrivateObjectives();

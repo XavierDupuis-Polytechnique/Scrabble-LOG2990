@@ -12,7 +12,12 @@ export interface LightObjective {
     description: string;
     points: number;
     owner: string | undefined;
-    progressions: Map<string, number>;
+    progressions: PlayerProgression[];
+}
+
+export interface PlayerProgression {
+    playerName: string;
+    progression: number;
 }
 
 export interface GameState {
@@ -26,5 +31,10 @@ export interface GameState {
 
 export interface SpecialGameState extends GameState {
     publicObjectives: LightObjective[];
-    privateObjectives: Map<string, LightObjective[]>;
+    privateObjectives: PrivateLightObjectives[];
+}
+
+export interface PrivateLightObjectives {
+    playerName: string;
+    privateObjectives: LightObjective[];
 }

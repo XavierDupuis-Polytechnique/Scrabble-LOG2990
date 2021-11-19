@@ -1,6 +1,6 @@
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { BoardService } from '@app/game-logic/game/board/board.service';
-import { LightObjective, SpecialGameState } from '@app/game-logic/game/games/online-game/game-state';
+import { LightObjective, PrivateLightObjectives, SpecialGameState } from '@app/game-logic/game/games/online-game/game-state';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
@@ -24,9 +24,13 @@ export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
         super(gameToken, timePerTurn, userName, timer, onlineSocket, boardService, onlineActionCompiler);
     }
 
+    get hasObjectives(): boolean {
+        return this.publicObjectives.length > 0 && this.privateObjectives.size > 0;
+    }
+
     protected updateClient(gameState: SpecialGameState) {
         super.updateClient(gameState);
-        if (gameState.publicObjectives.length === 0) {
+        if (!this.hasObjectives) {
             this.publicObjectives = this.createPublicObjectives(gameState.publicObjectives);
             this.privateObjectives = this.createPrivateObjectives(gameState.privateObjectives);
         }
@@ -39,16 +43,27 @@ export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
             const name = objective.name;
             const points = objective.points;
             const description = objective.description;
-            this.publicObjectives.push(this.objectiveCreator.createOnlineObjective(name, description, points));
+            createdObjectives.push(this.objectiveCreator.createOnlineObjective(name, description, points));
         }
         return createdObjectives;
     }
 
-    private createPrivateObjectives(privateObjectives: Map<string, LightObjective[]>): Map<string, Objective[]> {
-        throw new Error('Method not implemented.');
+    private createPrivateObjectives(privateObjectives: PrivateLightObjectives[]): Map<string, Objective[]> {
+        const createdObjectives: Map<string, Objective[]> = new Map<string, Objective[]>();
+        for (const serverPrivateObjectives of privateObjectives) {
+            const createdObjectivesForPlayer: Objective[] = [];
+            for (const objective of serverPrivateObjectives.privateObjectives) {
+                const name = objective.name;
+                const points = objective.points;
+                const description = objective.description;
+                createdObjectivesForPlayer.push(this.objectiveCreator.createOnlineObjective(name, description, points));
+            }
+            createdObjectives.set(serverPrivateObjectives.playerName, createdObjectivesForPlayer);
+        }
+        return createdObjectives;
     }
 
-    private updateObjectives(privateObjectives: Map<string, LightObjective[]>, publicObjectives: LightObjective[]) {
+    private updateObjectives(privateObjectives: PrivateLightObjectives[], publicObjectives: LightObjective[]) {
         this.updatePrivateObjectives(privateObjectives);
         this.updatePublicObjectives(publicObjectives);
     }
@@ -60,23 +75,31 @@ export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
                 throw new Error('Cannot find public objective with name ' + serverPublicObjective.name);
             }
             clientPublicObjective.owner = serverPublicObjective.owner;
-            clientPublicObjective.progressions = serverPublicObjective.progressions;
+            for (const playerProgression of serverPublicObjective.progressions) {
+                const playerName = playerProgression.playerName;
+                const progression = playerProgression.progression;
+                clientPublicObjective.progressions.set(playerName, progression);
+            }
         }
     }
 
-    private updatePrivateObjectives(privateObjectives: Map<string, LightObjective[]>) {
-        for (const [playerName, serverPrivateObjectives] of privateObjectives) {
-            const clientPublicObjectives = this.privateObjectives.get(playerName);
+    private updatePrivateObjectives(privateObjectives: PrivateLightObjectives[]) {
+        for (const serverPrivateObjectives of privateObjectives) {
+            const clientPublicObjectives = this.privateObjectives.get(serverPrivateObjectives.playerName);
             if (!clientPublicObjectives) {
-                throw new Error('Cannot find private objectives for player ' + playerName);
+                throw new Error('Cannot find private objectives for player ' + serverPrivateObjectives.playerName);
             }
-            for (const serverPrivateObjective of serverPrivateObjectives) {
+            for (const serverPrivateObjective of serverPrivateObjectives.privateObjectives) {
                 const clientPrivateObjective = clientPublicObjectives.find((objective) => objective.name === serverPrivateObjective.name);
                 if (!clientPrivateObjective) {
                     throw new Error('Cannot find private objective with name ' + serverPrivateObjective.name);
                 }
                 clientPrivateObjective.owner = serverPrivateObjective.owner;
-                clientPrivateObjective.progressions = serverPrivateObjective.progressions;
+                for (const playerProgression of serverPrivateObjective.progressions) {
+                    const playerName = playerProgression.playerName;
+                    const progression = playerProgression.progression;
+                    clientPrivateObjective.progressions.set(playerName, progression);
+                }
             }
         }
     }

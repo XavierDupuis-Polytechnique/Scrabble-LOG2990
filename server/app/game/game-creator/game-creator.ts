@@ -28,7 +28,6 @@ export class GameCreator {
         const newServerGame = this.createNewGame(onlineGameSettings, gameToken);
         // TODO remove this
         if (!newServerGame) {
-            console.log('special game created');
             return this.createClassicServerGame(onlineGameSettings, gameToken);
         }
         // remove this END
