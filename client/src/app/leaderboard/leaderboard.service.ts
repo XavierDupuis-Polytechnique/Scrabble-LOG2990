@@ -10,7 +10,7 @@ export class LeaderboardService {
     url = `${environment.serverUrl}/scores`;
     constructor(private http: HttpClient) {}
 
-    getLeaderBoard(gameMode: GameMode): Observable<Score[]> {
+    getLeaderboard(gameMode: GameMode): Observable<Score[]> {
         const params = new HttpParams().set('gameMode', gameMode);
         return this.http.get(`${this.url}/gameMode?`, { params }) as Observable<Score[]>;
     }

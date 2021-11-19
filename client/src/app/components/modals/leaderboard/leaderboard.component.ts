@@ -51,7 +51,7 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
 
     private getHighScores(gameMode: GameMode) {
         const tableSource = gameMode === GameMode.Classic ? this.dataSourceClassic : this.dataSourceLog;
-        this.leaderboardService.getLeaderBoard(gameMode).subscribe((scoresData: Score[]) => {
+        this.leaderboardService.getLeaderboard(gameMode).subscribe((scoresData: Score[]) => {
             this.scores$.next(scoresData);
         });
         this.scores$.subscribe((scoresData: Score[]) => {

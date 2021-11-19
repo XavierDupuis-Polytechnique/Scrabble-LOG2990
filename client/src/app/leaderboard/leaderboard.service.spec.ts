@@ -28,7 +28,7 @@ describe('JvHttpService', () => {
             { name: 'Player1', point: 50 },
             { name: 'Player2', point: 500 },
         ];
-        service.getLeaderBoard(gameMode).subscribe((data: Score[]) => {
+        service.getLeaderboard(gameMode).subscribe((data: Score[]) => {
             expect(data).toEqual(scores);
         });
         const req = httpClientMock.expectOne('http://localhost:3000/api/scores/gameMode?gameMode=classic');
