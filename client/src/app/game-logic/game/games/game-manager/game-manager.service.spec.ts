@@ -138,12 +138,14 @@ describe('GameManagerService Online Edition', () => {
     let service: GameManagerService;
     let gameSocketHandler: GameSocketHandlerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
+    const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
+                { provide: LeaderboardService, useValue: leaderboardServiceMock },
             ],
         });
         service = TestBed.inject(GameManagerService);
