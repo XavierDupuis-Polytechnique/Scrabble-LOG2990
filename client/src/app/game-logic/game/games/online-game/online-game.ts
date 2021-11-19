@@ -30,7 +30,6 @@ export class OnlineGame extends Game {
     hasGameEnded: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
-    lastGameState: GameState;
     private letterCreator = new LetterCreator();
 
     private gameState$$: Subscription;
@@ -206,7 +205,6 @@ export class OnlineGame extends Game {
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
         this.updateEndOfGame(gameState);
-        this.lastGameState = gameState;
     }
 
     private updateBoard(gameState: GameState) {

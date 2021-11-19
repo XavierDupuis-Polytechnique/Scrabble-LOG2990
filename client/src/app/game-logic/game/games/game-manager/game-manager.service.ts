@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { BoardService } from '@app/game-logic/game/board/board.service';
-import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
+import { ForfeitedGameSate } from '@app/game-logic/game/games/online-game/game-state';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
@@ -24,7 +24,6 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class GameManagerService {
-    forfeitedLetterBag: Letter[];
     private game: Game | null;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
@@ -50,13 +49,14 @@ export class GameManagerService {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
         });
-        this.gameSocketHandler.forfeitLetterBag$.subscribe((letterBag: Letter[]) => {
-            this.toOfflineGame(this.game as OnlineGame, letterBag);
+
+        this.gameSocketHandler.forfeitGameState$.subscribe((forfeitedGameState: ForfeitedGameSate) => {
+            this.toOfflineGame(forfeitedGameState);
         });
     }
 
     createGame(gameSettings: GameSettings): void {
-        if (this.game) {
+        if (this.game && this.game instanceof OfflineGame) {
             this.stopGame();
         }
         this.game = new OfflineGame(
@@ -119,31 +119,32 @@ export class GameManagerService {
         }
     }
 
-    toOfflineGame(game: OnlineGame, letterBag: Letter[]) {
-        const lastGameState = game.lastGameState;
-        const playerInfo = lastGameState.players;
-        const clientPlayer = playerInfo[lastGameState.winnerIndex[0]];
-
-        const newPlayers = this.createPlayers(clientPlayer.name, 'easy');
-
-        for (let i = 0; i < 0; i++) {
-            newPlayers[i].points = playerInfo[i].points;
-            newPlayers[i].letterRack = playerInfo[i].letterRack;
+    toOfflineGame(forfeitedGameState: ForfeitedGameSate) {
+        if (!(this.game instanceof OnlineGame)) {
+            return;
         }
+        const playerInfo = forfeitedGameState.players;
+        const playerName = this.game.userName;
 
         const newGameSettings: GameSettings = {
-            playerName: clientPlayer.name,
+            playerName,
             botDifficulty: 'EasyBot',
-            timePerTurn: game.timePerTurn,
-            randomBonus: true, // TODO: trouver comment l'enlever
+            timePerTurn: this.game.timePerTurn,
+            randomBonus: forfeitedGameState.randomBonus,
         };
 
         this.createGame(newGameSettings);
+        if (!(this.game instanceof OfflineGame)) {
+            return;
+        }
         const offlineGame = this.game as OfflineGame;
-        offlineGame.board.grid = lastGameState.grid;
-        offlineGame.letterBag.gameLetters = letterBag;
-        offlineGame.players = newPlayers;
-        offlineGame.timePerTurn = game.timePerTurn;
+        offlineGame.board.grid = forfeitedGameState.grid;
+        offlineGame.letterBag.gameLetters = forfeitedGameState.letterBag;
+        offlineGame.consecutivePass = forfeitedGameState.consecutivePass;
+        for (let i = 0; i < 0; i++) {
+            offlineGame.players[i].points = playerInfo[i].points;
+            offlineGame.players[i].letterRack = playerInfo[i].letterRack;
+        }
         this.startGame();
     }
 

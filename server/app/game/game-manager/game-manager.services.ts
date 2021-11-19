@@ -127,13 +127,15 @@ export class GameManagerService {
         if (!playerRef) {
             return;
         }
-        this.activePlayers.delete(playerId);
-
         const gameToken = playerRef.gameToken;
         const game = this.activeGames.get(gameToken);
         if (!game) {
             return;
         }
+
+        this.activePlayers.delete(playerId);
+
+        this.createTransitionGameState(game);
         this.endForfeitedGame(game, playerRef.player.name);
         this.deleteGame(gameToken);
     }
@@ -167,7 +169,6 @@ export class GameManagerService {
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
-        this.createTransitionGameState(game);
         game.stop();
     }
 
@@ -179,7 +180,7 @@ export class GameManagerService {
             grid: gameState.grid,
             isEndOfGame: gameState.isEndOfGame,
             letterBag: game.letterBag.gameLetters,
-            players: [],
+            players: gameState.players,
             lettersRemaining: gameState.lettersRemaining,
             winnerIndex: gameState.winnerIndex,
             randomBonus: game.randomBonus,

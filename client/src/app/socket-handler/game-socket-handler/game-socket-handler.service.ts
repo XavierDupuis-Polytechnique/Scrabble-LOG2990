@@ -22,7 +22,7 @@ export class GameSocketHandlerService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket: Socket | any;
     private lastGameState$ = new Subject<ForfeitedGameSate>();
-    get forfeitLetterBag$(): Subject<ForfeitedGameSate> {
+    get forfeitGameState$(): Subject<ForfeitedGameSate> {
         return this.lastGameState$;
     }
     private gameStateSubject = new Subject<GameState>();
@@ -59,17 +59,17 @@ export class GameSocketHandlerService {
             this.receiveTimerControl(timerControl);
         });
 
-        this.socket.on('timerControl', (timerControl: TimerControls) => {
-            this.receiveTimerControl(timerControl);
-        });
-
         this.socket.on('connect_error', () => {
             this.disconnectedFromServerSubject.next();
             // this.socket.disconnect();
         });
-        this.socket.on('disconnected', (lastGameState: ForfeitedGameSate) => {
+        this.socket.on('disconnected', () => {
             this.disconnectedFromServerSubject.next();
+            // this.socket.disconnect();
+        });
+        this.socket.on('transitionGameState', (lastGameState: ForfeitedGameSate) => {
             this.receiveTransitionGameState(lastGameState);
+            console.log(lastGameState);
             // this.socket.disconnect();
         });
     }
@@ -106,6 +106,6 @@ export class GameSocketHandlerService {
     }
 
     receiveTransitionGameState(transitionGameState: ForfeitedGameSate) {
-        this.forfeitLetterBag$.next(transitionGameState);
+        this.forfeitGameState$.next(transitionGameState);
     }
 }
