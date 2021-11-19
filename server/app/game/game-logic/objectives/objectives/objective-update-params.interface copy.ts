@@ -1,6 +1,6 @@
-import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { Tile } from '@app/game-logic/game/board/tile';
-import { Vec2 } from '@app/game-logic/interfaces/vec2';
+import { Vec2 } from '@app/classes/vec2';
+import { Letter } from '@app/game/game-logic/board/letter.interface';
+import { Tile } from '@app/game/game-logic/board/tile';
 
 export interface ObjectiveUpdateParams {
     previousGrid: Tile[][];
