@@ -26,12 +26,6 @@ export class GameCreator {
 
     createGame(onlineGameSettings: OnlineGameSettings, gameToken: string): ServerGame {
         const newServerGame = this.createNewGame(onlineGameSettings, gameToken);
-        // TODO remove this
-        if (!newServerGame) {
-            return this.createClassicServerGame(onlineGameSettings, gameToken);
-        }
-        // remove this END
-
         const firstPlayerName = onlineGameSettings.playerName;
         let secondPlayerName = onlineGameSettings.opponentName;
         if (!secondPlayerName) {

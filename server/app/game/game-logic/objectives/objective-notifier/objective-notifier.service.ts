@@ -1,16 +1,24 @@
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
-import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
+import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
+
+export interface ObjectiveCompletion {
+    gameToken: string;
+    message: string;
+}
 
 @Service()
 export class ObjectiveNotifierService {
-    constructor(private messagesService: SystemMessagesService) {}
+    private objectiveCompletionSubject = new Subject<ObjectiveCompletion>();
+    get objectiveCompletion$(): Observable<ObjectiveCompletion> {
+        return this.objectiveCompletionSubject.asObservable();
+    }
 
     sendObjectiveNotification(gameToken: string, objective: Objective) {
         const ownerName = objective.owner;
         const objectiveName = objective.name;
         const points = objective.points;
         const message = `${ownerName} a complété l'objectif '${objectiveName}' (${points} points)`;
-        this.messagesService.sendGlobal(gameToken, message);
+        this.objectiveCompletionSubject.next({ gameToken, message });
     }
 }

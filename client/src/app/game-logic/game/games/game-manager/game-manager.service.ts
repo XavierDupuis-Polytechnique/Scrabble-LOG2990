@@ -27,7 +27,7 @@ import { Observable, Subject } from 'rxjs';
     providedIn: 'root',
 })
 export class GameManagerService {
-    private game: Game | null;
+    private game: Game | undefined;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
@@ -104,6 +104,10 @@ export class GameManagerService {
         if (!gameSettings.opponentName) {
             throw Error('No opponent name was entered');
         }
+        if (!gameSettings.playerName) {
+            throw Error('player name not entered');
+        }
+        console.log(userAuth, gameSettings);
         const userName = userAuth.playerName;
         const timerPerTurn = Number(gameSettings.timePerTurn);
         if (gameSettings.gameMode === GameMode.Classic) {
@@ -161,6 +165,7 @@ export class GameManagerService {
         }
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
+        this.game = undefined;
     }
 
     private createPlayers(playerName: string, botDifficulty: string): Player[] {

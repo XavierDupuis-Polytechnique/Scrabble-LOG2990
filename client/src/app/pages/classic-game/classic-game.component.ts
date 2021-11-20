@@ -12,7 +12,7 @@ import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/in
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subscription } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { first, takeWhile } from 'rxjs/operators';
 
 // TODO: change name to new-game-component (page)
 @Component({
@@ -73,6 +73,7 @@ export class ClassicGameComponent {
     }
 
     openWaitingForPlayer(username: string) {
+        this.startGame$$?.unsubscribe();
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
         secondDialogConfig.disableClose = true;
@@ -85,13 +86,13 @@ export class ClassicGameComponent {
                     this.socketHandler.disconnectSocket();
                 }
             });
-            this.startGame$$?.unsubscribe();
             this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
                 if (!gameSettings) {
                     return;
                 }
                 secondDialogRef.close();
                 this.startOnlineGame(username, gameSettings);
+                this.socketHandler.disconnectSocket();
             });
         });
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
@@ -109,28 +110,31 @@ export class ClassicGameComponent {
     }
 
     openPendingGames() {
+        this.startGame$$?.unsubscribe();
         const pendingGamesDialogConfig = new MatDialogConfig();
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
         pendingGamesDialogConfig.minWidth = 550;
         pendingGamesDialogConfig.data = this.gameMode;
         const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
-        dialogRef.afterClosed().subscribe((name: string) => {
-            this.startGame$$?.unsubscribe();
-            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
-                if (!onlineGameSettings) {
+        dialogRef
+            .afterClosed()
+            .pipe(first())
+            .subscribe((name: string) => {
+                if (!name) {
                     return;
                 }
-                this.startOnlineGame(name, onlineGameSettings);
+                this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+                    if (!onlineGameSettings) {
+                        return;
+                    }
+                    this.startOnlineGame(name, onlineGameSettings);
+                    this.socketHandler.disconnectSocket();
+                });
             });
-        });
     }
 
     startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
-        // // TODO: join special game if special game is selected
-        // if (this.specialGame) {
-        //     throw Error('not implemented yet');
-        // }
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
@@ -139,7 +143,6 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        // TODO: create special game if special game is selected
         if (this.specialGame) {
             this.gameManager.createSpecialGame(this.gameSettings);
         } else {
