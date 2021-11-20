@@ -14,27 +14,21 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
     columnsToDisplay = ['playerName', 'points'];
     dataSourceClassic = new MatTableDataSource<HighScore>();
     dataSourceLog = new MatTableDataSource<HighScore>();
-    columns: {
-        columnDef: string;
-        header: string;
-        cell: (score: HighScore) => string;
-    }[];
+    columns = [
+        {
+            columnDef: 'playerName',
+            header: 'Nom des joueurs',
+            cell: (score: HighScore) => `${score.names}`,
+        },
+        {
+            columnDef: 'points',
+            header: 'Score',
+            cell: (score: HighScore) => `${score.point}`,
+        },
+    ];
     private scores$ = new BehaviorSubject<Score[]>([]);
 
-    constructor(private leaderboardService: LeaderboardService, private cdref: ChangeDetectorRef) {
-        this.columns = [
-            {
-                columnDef: 'playerName',
-                header: 'Nom des joueurs',
-                cell: (score: HighScore) => `${score.names}`,
-            },
-            {
-                columnDef: 'points',
-                header: 'Score',
-                cell: (score: HighScore) => `${score.point}`,
-            },
-        ];
-    }
+    constructor(private leaderboardService: LeaderboardService, private cdref: ChangeDetectorRef) {}
 
     ngOnInit() {
         this.refresh();

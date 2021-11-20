@@ -11,15 +11,12 @@ describe('LeaderboardComponent', () => {
     let testScores: Score[];
     let mockHttpClient: HttpTestingController;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         TestBed.configureTestingModule({
             imports: [AppMaterialModule, HttpClientTestingModule],
             declarations: [LeaderboardComponent],
         }).compileComponents();
         mockHttpClient = TestBed.inject(HttpTestingController);
-    });
-
-    beforeEach(async () => {
         fixture = TestBed.createComponent(LeaderboardComponent);
         component = fixture.componentInstance;
         await fixture.whenStable();
@@ -28,6 +25,20 @@ describe('LeaderboardComponent', () => {
 
     it('should create', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('OnInit should work', () => {
+        testScores = [
+            { name: 'Player0', point: 200 },
+            { name: 'Player1', point: 100 },
+            { name: 'Player2', point: 50 },
+            { name: 'Player3', point: 10 },
+            { name: 'Player4', point: 5 },
+        ];
+        const req = mockHttpClient.expectOne('http://localhost:3000/api/scores/gameMode?gameMode=classic');
+        req.flush(testScores);
+        component.ngOnInit();
+        expect(component.dataSourceClassic.data.length).toEqual(testScores.length);
     });
 
     it('should return 5 highest scores in correct format', () => {
