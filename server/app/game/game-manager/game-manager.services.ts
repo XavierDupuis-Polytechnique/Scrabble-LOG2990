@@ -1,5 +1,6 @@
 import { NEW_GAME_TIMEOUT } from '@app/constants';
-import { GameMode, LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
+import { GameMode } from '@app/database/leaderboard-service/game-mode.enum';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';

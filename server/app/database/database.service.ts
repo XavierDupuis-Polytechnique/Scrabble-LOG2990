@@ -2,7 +2,7 @@ import {
     DEFAULT_LEADERBOARD,
     LEADERBOARD_CLASSIC_COLLECTION,
     LEADERBOARD_LOG_COLLECTION,
-} from '@app/database/leaderboard-service/leaderboard.service';
+} from '@app/database/leaderboard-service/leaderboard-constants';
 import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
