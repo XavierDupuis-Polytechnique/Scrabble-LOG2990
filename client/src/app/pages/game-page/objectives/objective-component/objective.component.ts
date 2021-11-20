@@ -41,4 +41,8 @@ export class ObjectiveComponent {
     get description(): string {
         return this.objective.description;
     }
+
+    get points(): number {
+        return this.objective.points;
+    }
 }
