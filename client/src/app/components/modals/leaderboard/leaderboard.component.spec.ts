@@ -53,9 +53,9 @@ describe('LeaderboardComponent', () => {
         ];
         const playersInFirstPos = 2;
         const tableLength = 5;
+        // eslint-disable-next-line dot-notation
         highScores = component['filterScores'](testScores);
         expect(highScores[0].names.length).toEqual(playersInFirstPos);
-        console.log(highScores);
         expect(highScores.length).toEqual(tableLength);
     });
 
@@ -77,6 +77,7 @@ describe('LeaderboardComponent', () => {
 
     it('should be a full table ', () => {
         component.refresh();
+        // eslint-disable-next-line dot-notation
         component['scores$'].next([
             { name: 'Player3', point: 10 },
             { name: 'Player4', point: 5 },
