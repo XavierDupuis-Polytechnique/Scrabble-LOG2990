@@ -1,25 +1,48 @@
 export const LEADERBOARD_CLASSIC_COLLECTION = 'leaderboardClassic';
 export const LEADERBOARD_LOG_COLLECTION = 'leaderboardLog';
 
-export const DEFAULT_LEADERBOARD = [
+export const DEFAULT_LEADERBOARD_CLASSIC = [
     {
-        name: 'Player0',
-        point: 200,
+        name: 'Annabelle',
+        point: 151,
     },
     {
-        name: 'Player1',
-        point: 100,
+        name: 'Max',
+        point: 108,
     },
     {
-        name: 'Player2',
-        point: 50,
+        name: 'Igor',
+        point: 76,
     },
     {
-        name: 'Player3',
-        point: 10,
+        name: 'Clément',
+        point: 82,
     },
     {
-        name: 'Player4',
-        point: 5,
+        name: 'Olga',
+        point: 53,
+    },
+];
+
+export const DEFAULT_LEADERBOARD_LOG = [
+    {
+        name: 'Annabelle',
+        point: 65,
+    },
+    {
+        name: 'Max',
+        point: 94,
+    },
+    {
+        name: 'Igor',
+        point: 123,
+    },
+    {
+        name: 'Clément',
+        point: 169,
+    },
+    {
+        name: 'Olga',
+        point: 201,
     },
 ];

@@ -1,5 +1,6 @@
 import {
-    DEFAULT_LEADERBOARD,
+    DEFAULT_LEADERBOARD_CLASSIC,
+    DEFAULT_LEADERBOARD_LOG,
     LEADERBOARD_CLASSIC_COLLECTION,
     LEADERBOARD_LOG_COLLECTION,
 } from '@app/database/leaderboard-service/leaderboard-constants';
@@ -38,8 +39,9 @@ export class DatabaseService {
 
     async populateLeaderboardCollection(name: string): Promise<void> {
         try {
+            const defaultPopulation = name === LEADERBOARD_CLASSIC_COLLECTION ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
             if ((await this.db.collection(name).countDocuments()) === 0) {
-                await this.db.collection(name).insertMany(DEFAULT_LEADERBOARD);
+                await this.db.collection(name).insertMany(defaultPopulation);
             }
         } catch (e) {
             throw Error('Data base collection population error');

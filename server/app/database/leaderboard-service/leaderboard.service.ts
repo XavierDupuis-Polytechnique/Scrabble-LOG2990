@@ -1,7 +1,8 @@
 import { DatabaseService } from '@app/database/database.service';
 import { GameMode } from '@app/database/leaderboard-service/game-mode.enum';
 import {
-    DEFAULT_LEADERBOARD,
+    DEFAULT_LEADERBOARD_CLASSIC,
+    DEFAULT_LEADERBOARD_LOG,
     LEADERBOARD_CLASSIC_COLLECTION,
     LEADERBOARD_LOG_COLLECTION,
 } from '@app/database/leaderboard-service/leaderboard-constants';
@@ -65,7 +66,8 @@ export class LeaderboardService {
     }
 
     private async populateCollection(mode: GameMode): Promise<void> {
+        const defaultPopulation = mode === GameMode.Classic ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
         const collection = this.getLeaderboardCollection(mode);
-        await collection.insertMany(DEFAULT_LEADERBOARD);
+        await collection.insertMany(defaultPopulation);
     }
 }
