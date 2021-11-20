@@ -12,7 +12,7 @@ import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/in
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subscription } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { first, takeWhile } from 'rxjs/operators';
 
 // TODO: change name to new-game-component (page)
 @Component({
@@ -115,15 +115,21 @@ export class ClassicGameComponent {
         pendingGamesDialogConfig.minWidth = 550;
         pendingGamesDialogConfig.data = this.gameMode;
         const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
-        dialogRef.afterClosed().subscribe((name: string) => {
-            this.startGame$$?.unsubscribe();
-            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
-                if (!onlineGameSettings) {
+        dialogRef
+            .afterClosed()
+            .pipe(first())
+            .subscribe((name: string) => {
+                if (!name) {
                     return;
                 }
-                this.startOnlineGame(name, onlineGameSettings);
+                this.startGame$$?.unsubscribe();
+                this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+                    if (!onlineGameSettings) {
+                        return;
+                    }
+                    this.startOnlineGame(name, onlineGameSettings);
+                });
             });
-        });
     }
 
     startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
@@ -132,6 +138,7 @@ export class ClassicGameComponent {
         //     throw Error('not implemented yet');
         // }
         const gameToken = onlineGameSettings.id;
+        console.log('starte online game username', userName);
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
         this.gameManager.joinOnlineGame(userAuth, onlineGameSettings);
