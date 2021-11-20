@@ -23,9 +23,6 @@ describe('ObjectiveComponent', () => {
             declarations: [ObjectiveComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
-    });
-
-    beforeEach(() => {
         fixture = TestBed.createComponent(ObjectiveComponent);
         component = fixture.componentInstance;
         component.objective = new MockObjective(TestBed.inject(ObjectiveNotifierService));
@@ -35,4 +32,6 @@ describe('ObjectiveComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+
 });
