@@ -4,7 +4,6 @@ import { HIGHSCORES_TO_DISPLAY, NOT_FOUND } from '@app/game-logic/constants';
 import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { HighScore, Score } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
-import { BehaviorSubject } from 'rxjs';
 @Component({
     selector: 'app-leaderboard',
     templateUrl: './leaderboard.component.html',
@@ -26,7 +25,7 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
             cell: (score: HighScore) => `${score.point}`,
         },
     ];
-    private scores$ = new BehaviorSubject<Score[]>([]);
+    // private scores$ = new BehaviorSubject<Score[]>([]);
 
     constructor(private leaderboardService: LeaderboardService, private cdref: ChangeDetectorRef) {}
 
@@ -46,11 +45,12 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
     private getHighScores(gameMode: GameMode) {
         const tableSource = gameMode === GameMode.Classic ? this.dataSourceClassic : this.dataSourceLog;
         this.leaderboardService.getLeaderboard(gameMode).subscribe((scoresData: Score[]) => {
-            this.scores$.next(scoresData);
-        });
-        this.scores$.subscribe((scoresData: Score[]) => {
             tableSource.data = this.filterScores(scoresData);
         });
+        // this.scores$.subscribe((scoresData: Score[]) => {
+        //     console.log('Scores$:', gameMode);
+
+        // });
     }
 
     private filterScores(scores: Score[]): HighScore[] {
