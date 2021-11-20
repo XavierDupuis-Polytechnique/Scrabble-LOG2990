@@ -73,6 +73,7 @@ export class ClassicGameComponent {
     }
 
     openWaitingForPlayer(username: string) {
+        this.startGame$$?.unsubscribe();
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
         secondDialogConfig.disableClose = true;
@@ -85,13 +86,13 @@ export class ClassicGameComponent {
                     this.socketHandler.disconnectSocket();
                 }
             });
-            this.startGame$$?.unsubscribe();
             this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
                 if (!gameSettings) {
                     return;
                 }
                 secondDialogRef.close();
                 this.startOnlineGame(username, gameSettings);
+                this.socketHandler.disconnectSocket();
             });
         });
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
@@ -109,6 +110,7 @@ export class ClassicGameComponent {
     }
 
     openPendingGames() {
+        this.startGame$$?.unsubscribe();
         const pendingGamesDialogConfig = new MatDialogConfig();
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
@@ -122,23 +124,18 @@ export class ClassicGameComponent {
                 if (!name) {
                     return;
                 }
-                this.startGame$$?.unsubscribe();
                 this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
                     if (!onlineGameSettings) {
                         return;
                     }
                     this.startOnlineGame(name, onlineGameSettings);
+                    this.socketHandler.disconnectSocket();
                 });
             });
     }
 
     startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
-        // // TODO: join special game if special game is selected
-        // if (this.specialGame) {
-        //     throw Error('not implemented yet');
-        // }
         const gameToken = onlineGameSettings.id;
-        console.log('starte online game username', userName);
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
         this.gameManager.joinOnlineGame(userAuth, onlineGameSettings);
@@ -146,7 +143,6 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        // TODO: create special game if special game is selected
         if (this.specialGame) {
             this.gameManager.createSpecialGame(this.gameSettings);
         } else {

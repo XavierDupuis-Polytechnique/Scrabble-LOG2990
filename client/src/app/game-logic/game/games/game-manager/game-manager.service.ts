@@ -165,6 +165,7 @@ export class GameManagerService {
         }
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
+        this.game = undefined;
     }
 
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
