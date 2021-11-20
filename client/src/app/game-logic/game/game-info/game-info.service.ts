@@ -81,6 +81,10 @@ export class GameInfoService {
         return this.timer.timeLeft$;
     }
 
+    get timeLeftPercentForTurn(): Observable<number | undefined> {
+        return this.timer.timeLeftPercentage$;
+    }
+
     get numberOfLettersRemaining(): number {
         if (!this.game) {
             throw Error('No Game in GameInfo');
