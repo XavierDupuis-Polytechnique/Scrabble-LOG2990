@@ -218,7 +218,16 @@ describe('GameInfoService', () => {
     });
 
     it('should return isSpecial game properly', () => {
-        service.receiveGame(specialGame);
+        const realSpecialGame = new SpecialOfflineGame(
+            false,
+            1000,
+            jasmine.createSpyObj('TimerService', ['start']),
+            jasmine.createSpyObj('PointCalculatorService', ['placeLetterCalculation']),
+            jasmine.createSpyObj('BoardService', [], ['board']),
+            jasmine.createSpyObj('MessagesService', ['receiveMessage']),
+            jasmine.createSpyObj('ObjectiveCreator', ['chooseObjectives']),
+        );
+        service.receiveGame(realSpecialGame);
         expect(service.isSpecialGame).toBeTrue();
     });
 
