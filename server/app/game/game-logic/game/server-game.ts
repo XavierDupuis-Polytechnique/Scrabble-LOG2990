@@ -24,7 +24,7 @@ export class ServerGame {
     winnerByForfeitedIndex: number;
 
     isEnded$ = new Subject<undefined>();
-    endState: EndOfGameReason;
+    endReason: EndOfGameReason;
 
     constructor(
         timerController: TimerController,
@@ -52,7 +52,7 @@ export class ServerGame {
     }
 
     stop() {
-        this.endState = EndOfGameReason.Other;
+        this.endReason = EndOfGameReason.Other;
         this.isEnded$.next(undefined);
     }
 
@@ -60,7 +60,7 @@ export class ServerGame {
         this.winnerByForfeitedIndex = this.players.findIndex((player) => {
             return player.name !== playerName;
         });
-        this.endState = EndOfGameReason.Forfeit;
+        this.endReason = EndOfGameReason.Forfeit;
         this.isEnded$.next(undefined);
     }
 
@@ -69,9 +69,6 @@ export class ServerGame {
     }
 
     isEndOfGame() {
-        // if (this.isEndedValue) {
-        //     return true;
-        // }
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
                 if (player.isLetterRackEmpty) {
@@ -144,8 +141,8 @@ export class ServerGame {
     }
 
     private startTurn() {
-        if (this.endState) {
-            this.onEndOfGame(this.endState);
+        if (this.endReason !== undefined) {
+            this.onEndOfGame(this.endReason);
             return;
         }
         const activePlayer = this.players[this.activePlayerIndex];
@@ -161,8 +158,8 @@ export class ServerGame {
             return;
         }
 
-        if (this.endState) {
-            this.onEndOfGame(this.endState);
+        if (this.endReason !== undefined) {
+            this.onEndOfGame(this.endReason);
             return;
         }
 

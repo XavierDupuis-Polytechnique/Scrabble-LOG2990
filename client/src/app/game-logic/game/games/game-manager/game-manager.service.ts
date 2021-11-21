@@ -78,7 +78,7 @@ export class GameManagerService {
             if (this.game === undefined) {
                 return;
             }
-            // TODO: unComment when merge branch Objective
+            // TODO: unComment when merge branch Objective and delete line 83
             // const mode = this.game instanceof SpecialOffline ? GameMode.Classic : GameMode.Log;
             const mode = GameMode.Classic;
             this.updateLeaderboard(this.game.players, mode);
@@ -136,7 +136,7 @@ export class GameManagerService {
         this.game = undefined;
     }
 
-    updateLeaderboard(players: Player[], mode: GameMode) {
+    private updateLeaderboard(players: Player[], mode: GameMode) {
         if (players === undefined) {
             return;
         }
