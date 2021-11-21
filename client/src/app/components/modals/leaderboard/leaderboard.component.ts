@@ -4,6 +4,9 @@ import { HIGHSCORES_TO_DISPLAY, NOT_FOUND } from '@app/game-logic/constants';
 import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { HighScore, Score } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
+import { timer } from 'rxjs';
+
+const DELAY = 500;
 @Component({
     selector: 'app-leaderboard',
     templateUrl: './leaderboard.component.html',
@@ -25,12 +28,12 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
             cell: (score: HighScore) => `${score.point}`,
         },
     ];
-    // private scores$ = new BehaviorSubject<Score[]>([]);
+    loading = false;
 
     constructor(private leaderboardService: LeaderboardService, private cdref: ChangeDetectorRef) {}
 
     ngOnInit() {
-        this.refresh();
+        this.getAllHighScores();
     }
 
     ngAfterContentChecked() {
@@ -38,6 +41,14 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
     }
 
     refresh() {
+        this.loading = true;
+        this.getAllHighScores();
+        timer(DELAY).subscribe(() => {
+            this.loading = false;
+        });
+    }
+
+    private getAllHighScores() {
         this.getHighScores(GameMode.Classic);
         this.getHighScores(GameMode.Log);
     }
@@ -47,10 +58,6 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
         this.leaderboardService.getLeaderboard(gameMode).subscribe((scoresData: Score[]) => {
             tableSource.data = this.filterScores(scoresData);
         });
-        // this.scores$.subscribe((scoresData: Score[]) => {
-        //     console.log('Scores$:', gameMode);
-
-        // });
     }
 
     private filterScores(scores: Score[]): HighScore[] {

@@ -2,7 +2,7 @@
     <div class="header">
         <div></div>
         <h3>Meilleurs Scores</h3>
-        <mat-icon (click)="refresh()">refresh</mat-icon>
+        <mat-icon [ngClass]="{ loading: loading }" (click)="refresh()">refresh</mat-icon>
     </div>
     <mat-tab-group mat-align-tabs="start" headerPosition="below">
         <mat-tab class="tab-classic" label="Mode Classique">
