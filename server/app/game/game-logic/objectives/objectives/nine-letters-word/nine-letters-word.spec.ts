@@ -44,7 +44,7 @@ describe('NineLettersWord', () => {
     });
 
     it('should be created', () => {
-        expect(objective).to.be.equal(true);
+        expect(objective).to.be.instanceof(NineLettersWord);
     });
 
     it('should not complete if no 9 letters word are formed', () => {

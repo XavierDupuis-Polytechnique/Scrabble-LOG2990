@@ -44,7 +44,7 @@ describe('TenWords', () => {
     });
 
     it('should be created', () => {
-        expect(objective).to.be.equal(true);
+        expect(objective).to.be.instanceof(TenWords);
     });
 
     it('should not complete when less than 10 placeLetter action are executed (for the same player)', () => {

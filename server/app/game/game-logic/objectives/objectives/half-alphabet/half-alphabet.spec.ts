@@ -38,7 +38,7 @@ describe('HalfAlphabet', () => {
     });
 
     it('should be created', () => {
-        expect(objective).to.be.equal(true);
+        expect(objective).to.be.instanceof(HalfAlphabet);
     });
 
     it('should update progression properly', () => {

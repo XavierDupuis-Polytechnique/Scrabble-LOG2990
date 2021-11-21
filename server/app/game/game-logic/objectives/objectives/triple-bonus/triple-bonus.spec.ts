@@ -53,7 +53,7 @@ describe('TripleBonus', () => {
     });
 
     it('should be created', () => {
-        expect(objective).to.be.equal(true);
+        expect(objective).to.be.instanceof(TripleBonus);
     });
 
     it('should not complete when only 2 bonus are used (2 bonus available and 3 affected coords)', () => {

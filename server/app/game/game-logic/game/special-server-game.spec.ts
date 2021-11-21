@@ -60,7 +60,7 @@ describe('SpecialServerGame', () => {
     });
 
     it('should be created', () => {
-        expect(game).to.be.equal(true);
+        expect(game).to.be.instanceof(SpecialServerGame);
     });
 
     it('should allocate private and public objectives', () => {

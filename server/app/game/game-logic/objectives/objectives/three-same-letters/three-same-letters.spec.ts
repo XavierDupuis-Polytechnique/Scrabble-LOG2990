@@ -43,7 +43,7 @@ describe('ThreeSameLetters', () => {
     });
 
     it('should be created', () => {
-        expect(objective).to.be.equal(true);
+        expect(objective).to.be.instanceof(ThreeSameLetters);
     });
 
     it('should not complete when only 2 of the same letter are in the same word', () => {

@@ -14,7 +14,7 @@ describe('ObjectiveCreator', () => {
     });
 
     it('should be created', () => {
-        expect(service).to.be.equal(true);
+        expect(service).to.be.instanceof(ObjectiveCreator);
     });
 
     it('should to create N unique objective', () => {
