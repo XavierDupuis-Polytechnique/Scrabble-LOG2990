@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -12,6 +13,7 @@ import { GameInfoService } from '@app/game-logic/game/game-info/game-info.servic
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -50,11 +52,12 @@ describe('EasyBot', () => {
             'test',
             boardService,
             dict,
-            pointCalculator,
+            TestBed.inject(BotCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BotMessagesService),
             gameInfo,
             TestBed.inject(CommandExecuterService),
+            TestBed.inject(ActionCreatorService),
         );
     });
 

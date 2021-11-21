@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TIME_BUFFER_BEFORE_ACTION } from '@app/game-logic/constants';
@@ -8,6 +10,7 @@ import { GameInfoService } from '@app/game-logic/game/game-info/game-info.servic
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -46,11 +49,12 @@ describe('HardBot', () => {
             'test',
             boardService,
             dict,
-            pointCalculator,
+            TestBed.inject(BotCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BotMessagesService),
             gameInfo,
             TestBed.inject(CommandExecuterService),
+            TestBed.inject(ActionCreatorService),
         );
     });
 
@@ -103,6 +107,20 @@ describe('HardBot', () => {
         const letters: Letter[] = [{ char: 'A', value: 1 }];
         hardBot.letterRack = letters;
         const exchangeSpy = spyOn(hardBot, 'exchangeAction').and.callThrough();
+
+        hardBot.setActive();
+        tick(TIME_BUFFER_BEFORE_ACTION);
+
+        expect(exchangeSpy).toHaveBeenCalled();
+        tick(TIME_BEFORE_PICKING_ACTION);
+        tick(TIME_BEFORE_PASS);
+    }));
+
+    it('should exchange letters because it cant play and >0 <7 letters left)', fakeAsync(() => {
+        const letters: Letter[] = [{ char: 'A', value: 1 }];
+        hardBot.letterRack = letters;
+        const exchangeSpy = spyOn(hardBot, 'exchangeAction').and.callThrough();
+        spyOnProperty(gameInfo, 'numberOfLettersRemaining').and.returnValue(5);
 
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);

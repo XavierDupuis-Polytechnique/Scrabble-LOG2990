@@ -1,7 +1,4 @@
 import { Action } from '@app/game-logic/actions/action';
-import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
-import { PassTurn } from '@app/game-logic/actions/pass-turn';
-import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { LetterBag } from '@app/game-logic/game/board/letter-bag';
@@ -98,12 +95,9 @@ export class EasyBot extends Bot {
                 y: pickedWord.startingTileY,
                 direction: pickedWord.isVertical ? Direction.Vertical : Direction.Horizontal,
             };
-            const action = new PlaceLetter(this, pickedWord.word, placeSetting, this.pointCalculatorService, this.wordValidator);
-            return action;
-        } else {
-            const action = new PassTurn(this);
-            return action;
+            return this.actionCreator.createPlaceLetter(this, pickedWord.word, placeSetting);
         }
+        return this.passAction();
     }
 
     exchangeAction(): Action {
@@ -121,13 +115,11 @@ export class EasyBot extends Bot {
             indexArray.splice(randomInt, 1);
             lettersToExchange.push(this.letterRack[lettersToExchangeIndex]);
         }
-        const action = new ExchangeLetter(this, lettersToExchange);
-        return action;
+        return this.actionCreator.createExchange(this, lettersToExchange);
     }
 
     passAction(): Action {
-        const action = new PassTurn(this);
-        return action;
+        return this.actionCreator.createPassTurn(this);
     }
 
     private wordPicker(list: ValidWord[]): ValidWord {

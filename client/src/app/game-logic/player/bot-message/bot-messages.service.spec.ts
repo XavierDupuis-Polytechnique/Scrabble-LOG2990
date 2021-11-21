@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { LocationStrategy } from '@angular/common';
+import { MockLocationStrategy } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
@@ -10,20 +12,28 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
+import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.service';
+import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
+import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 
 describe('bot message service', () => {
     let service: BotMessagesService;
-    const commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
-    const messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
+    let commandExecuterServiceMock: CommandExecuterService;
+    let messagesService: MessagesService;
+    const dict = new DictionaryService();
     beforeEach(() => {
+        commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
+        messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
         TestBed.configureTestingModule({
             providers: [
+                { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesService },
                 { provide: CommandExecuterService, useValue: commandExecuterServiceMock },
+                { provide: LocationStrategy, useClass: MockLocationStrategy },
             ],
         });
         service = TestBed.inject(BotMessagesService);
@@ -78,17 +88,35 @@ describe('bot message service', () => {
         expect(messagesService.receiveMessageOpponent).toHaveBeenCalled();
     });
 
-    it('sendExchangeLetter shoudl call receiveMessageOpponent', () => {
+    it('sendExchangeLetter should call receiveMessageOpponent', () => {
         const lettersToExchange: Letter[] = [{ char: 'V', value: 1 }];
 
         service.sendExchangeLettersMessage(lettersToExchange, 'houla');
         expect(messagesService.receiveMessageOpponent).toHaveBeenCalled();
     });
 
-    it('sendPlaceLetter shoudl call receiveMessageOpponent', () => {
+    it('sendPlaceLetter should call receiveMessageOpponent', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 7, y: 7 };
         service.sendPlaceLetterMessage('allo', placement, 'houla');
         expect(messagesService.receiveMessageOpponent).toHaveBeenCalled();
+    });
+
+    it('sendAction should call sendNextBestWords if the player is a hardBot', () => {
+        spyOn(service, 'formatAlternativeWord').and.returnValue('somethingValid');
+        const player = TestBed.inject(BotCreatorService).createBot('Bot', 'hard');
+        (Object.getOwnPropertyDescriptor(commandExecuterServiceMock, 'isDebugModeActivated')?.get as jasmine.Spy<() => boolean>).and.returnValue(
+            true,
+        );
+        (player as HardBot).bestWordList = [new ValidWord('second'), new ValidWord('third')];
+        const action = new PlaceLetter(
+            player as HardBot,
+            'allo',
+            { direction: Direction.Horizontal, x: 7, y: 7 },
+            TestBed.inject(PointCalculatorService),
+            TestBed.inject(WordSearcher),
+        );
+        service.sendAction(action);
+        expect(messagesService.receiveSystemMessage).toHaveBeenCalled();
     });
 
     it('formAlternativeWord should return correct output (Horizontal)', () => {
@@ -114,6 +142,32 @@ describe('bot message service', () => {
             { wordsPoints: [{ word: stringWordAvion, points: 25 }], totalPoints: 25, isBingo: true },
         );
         const expected = 'H8:A H9:V H10:I H11:O H12:N (25) \\n#A##V##I##O##N# (25) \\nBingo! (50)\\n\\n';
+        expect(service.formatAlternativeWord(validWordAvion)).toEqual(expected);
+    });
+
+    it('formAlternativeWord should return correct output (Horizontal) (no index)', () => {
+        const wordLettersAvion = [
+            { letterObject: { char: 'A', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+            { letterObject: { char: 'V', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+            { letterObject: { char: 'I', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+            { letterObject: { char: 'O', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+            { letterObject: { char: 'N', value: 1 }, letterMultiplicator: 1, wordMultiplicator: 1 },
+        ];
+        const stringWordAvion = 'avion';
+        const validWordAvion = new ValidWord(
+            stringWordAvion,
+            0,
+            stringWordAvion.length,
+            0,
+            0,
+            HORIZONTAL,
+            Math.floor(BOARD_DIMENSION / 2),
+            Math.floor(BOARD_DIMENSION / 2),
+            stringWordAvion.length,
+            [{ letters: wordLettersAvion, index: [] }],
+            { wordsPoints: [{ word: stringWordAvion, points: 25 }], totalPoints: 25, isBingo: true },
+        );
+        const expected = '(25) \\nAVION (25) \\nBingo! (50)\\n\\n';
         expect(service.formatAlternativeWord(validWordAvion)).toEqual(expected);
     });
 
