@@ -65,7 +65,7 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
         scores.forEach((scoreData: Score) => {
             const indexOfScore = highScores.findIndex((score: HighScore) => scoreData.point === score.point);
             if (indexOfScore !== NOT_FOUND) {
-                highScores[indexOfScore].names.push(scoreData.name);
+                highScores[indexOfScore].names.push(' ' + scoreData.name);
             } else {
                 highScores.push({ names: [scoreData.name], point: scoreData.point });
             }
