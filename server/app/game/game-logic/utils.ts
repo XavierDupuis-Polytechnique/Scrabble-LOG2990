@@ -1,4 +1,5 @@
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
+import { Tile } from '@app/game/game-logic/board/tile';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/game/game-logic/constants';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
 import { OnlineGameSettingsUI } from '@app/new-game/online-game.interface';
@@ -51,4 +52,60 @@ export const isGameSettings = (obj: unknown) => {
         (obj as OnlineGameSettingsUI).timePerTurn !== undefined &&
         typeof (obj as OnlineGameSettingsUI).timePerTurn === 'number'
     );
+};
+
+export const isStringAnUpperCaseLetter = (string: string): boolean => {
+    if (string.length !== 1) {
+        return false;
+    }
+    const charCode = string.charCodeAt(0);
+    return charCode >= 'A'.charCodeAt(0) && charCode <= 'Z'.charCodeAt(0);
+};
+
+export const convertToProperLetter = (string: string): string => {
+    return string.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+};
+
+export const copyGrid = (grid: Tile[][]): Tile[][] => {
+    const copiedGrid = [];
+    for (const row of grid) {
+        const copiedRow = [];
+        for (const tile of row) {
+            const copiedTile = new Tile();
+            copiedTile.letterMultiplicator = tile.letterMultiplicator;
+            copiedTile.letterObject = { ...tile.letterObject };
+            copiedTile.wordMultiplicator = tile.wordMultiplicator;
+            copiedRow.push(copiedTile);
+        }
+        copiedGrid.push(copiedRow);
+    }
+    return copiedGrid;
+};
+
+export const isPalindrome = (word: string): boolean => {
+    const length = word.length;
+    for (let i = 0; i < length / 2; i++) {
+        const leftLetter = word[i];
+        const rightLetter = word[length - i - 1];
+        if (leftLetter !== rightLetter) {
+            return false;
+        }
+    }
+    return true;
+};
+
+export const stringifyWord = (word: Tile[]): string => {
+    const letters: string[] = word.map((tile: Tile) => tile.letterObject.char);
+    const stringifiedWord = letters.join('');
+    return stringifiedWord;
+};
+
+export const wordifyString = (word: string): Tile[] => {
+    const stringList = word.split('');
+    const tileList: Tile[] = stringList.map((char: string) => {
+        const newTile = new Tile();
+        newTile.letterObject.char = char;
+        return newTile;
+    });
+    return tileList;
 };

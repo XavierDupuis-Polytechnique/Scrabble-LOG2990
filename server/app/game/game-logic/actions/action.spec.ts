@@ -36,7 +36,7 @@
 //     });
 
 //     it('should create instance', () => {
-//         expect(new TestAction(user)).toBeTruthy();
+//         expect(new TestAction(user)).to.be.equal(true);
 //     });
 
 //     it('should call #doAction from game when executed', () => {

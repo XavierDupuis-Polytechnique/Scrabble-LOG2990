@@ -6,6 +6,7 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -53,6 +54,7 @@ export class GameManagerService {
         private gameCompiler: GameCompiler,
         private timerController: TimerController,
         private gameActionNotifier: GameActionNotifierService,
+        private objectiveCreator: ObjectiveCreator,
     ) {
         this.gameCreator = new GameCreator(
             this.pointCalculator,
@@ -61,6 +63,7 @@ export class GameManagerService {
             this.newGameStateSubject,
             this.endGame$,
             this.timerController,
+            this.objectiveCreator,
         );
 
         this.endGame$.subscribe((gameToken: string) => {
@@ -69,7 +72,7 @@ export class GameManagerService {
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
-        const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
+        const newServerGame = this.gameCreator.createGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
         this.startInactiveGameDestructionTimer(gameToken);

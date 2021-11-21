@@ -9,11 +9,13 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { GameManagerService, PlayerRef } from '@app/game/game-manager/game-manager.services';
+import { GameMode } from '@app/game/game-mode.enum';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
@@ -32,6 +34,7 @@ describe('GameManagerService', () => {
     let stubTimerController: TimerController;
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
+    let stubObjectiveCreator: ObjectiveCreator;
     let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
@@ -40,6 +43,7 @@ describe('GameManagerService', () => {
         stubGameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
         stubTimerController = createSinonStubInstance<TimerController>(TimerController);
         stubGameActionNotifierService = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
+        stubObjectiveCreator = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
     });
 
     afterEach(() => {
@@ -55,6 +59,7 @@ describe('GameManagerService', () => {
             stubGameCompiler,
             stubTimerController,
             stubGameActionNotifierService,
+            stubObjectiveCreator,
         );
     });
 
@@ -64,12 +69,14 @@ describe('GameManagerService', () => {
         const timePerTurn = 60000;
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn,
             playerName,
             opponentName,
             randomBonus,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -92,12 +99,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -126,12 +135,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -149,12 +160,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -172,12 +185,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -197,12 +212,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -221,12 +238,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -249,12 +268,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -272,12 +293,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -301,12 +324,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -324,12 +349,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -343,12 +370,14 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -372,6 +401,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
         clock.tick(NEW_GAME_TIMEOUT);
@@ -386,6 +416,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
         service.linkedClients.clear();
@@ -404,6 +435,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            gameMode: GameMode.Classic,
         };
         service.createGame(gameToken, gameSettings);
 
@@ -430,6 +462,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
         service.activeGames.delete('1');
@@ -456,6 +489,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
 
@@ -488,6 +522,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
+            gameMode: GameMode.Classic,
         };
         service.createGame(gameToken, gameSettings);
         // eslint-disable-next-line dot-notation
