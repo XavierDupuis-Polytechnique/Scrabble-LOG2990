@@ -6,7 +6,6 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Tile } from '@app/game-logic/game/board/tile';
-import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
@@ -59,11 +58,8 @@ describe('PlaceLetter', () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
-                BoardService,
                 { provide: PointCalculatorService, useValue: pointCalculatorSpy },
                 { provide: WordSearcher, useClass: MockWordSearcher },
-                GameInfoService,
-                MessagesService,
             ],
         });
         const boardService = TestBed.inject(BoardService);

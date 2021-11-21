@@ -1,0 +1,28 @@
+.objective {
+    cursor: pointer;
+}
+
+.mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-left: -15%;
+    margin-bottom: 2.5%;
+}
+
+.mat-card-content {
+    display: flex;
+    flex-direction: row;
+}
+
+.progression-percentage {
+    margin-top: -3% !important;
+    margin-left: 2%;
+}
+
+.mat-card {
+    margin: 5%;
+}
+
+.points {
+    color: rgba(255, 255, 255, 0.7);
+}

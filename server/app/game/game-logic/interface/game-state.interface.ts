@@ -7,6 +7,18 @@ export interface LightPlayer {
     letterRack: Letter[];
 }
 
+export interface LightObjective {
+    name: string;
+    description: string;
+    points: number;
+    owner: string | undefined;
+    progressions: PlayerProgression[];
+}
+
+export interface PlayerProgression {
+    playerName: string;
+    progression: number;
+}
 export interface GameState {
     players: LightPlayer[];
     activePlayerIndex: number;
@@ -15,7 +27,15 @@ export interface GameState {
     isEndOfGame: boolean;
     winnerIndex: number[];
 }
+export interface SpecialGameState extends GameState {
+    publicObjectives: LightObjective[];
+    privateObjectives: PrivateLightObjectives[];
+}
 
+export interface PrivateLightObjectives {
+    playerName: string;
+    privateObjectives: LightObjective[];
+}
 export interface GameStateToken {
     gameState: GameState;
     gameToken: string;
