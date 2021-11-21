@@ -122,14 +122,14 @@ describe('GameManagerService', () => {
 
     it('should not updateLeaderboard if players are undefined', () => {
         const players = undefined as unknown;
-        service.updateLeaderboard(players as Player[], GameMode.Classic);
+        service['updateLeaderboard'](players as Player[], GameMode.Classic);
         expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
     });
 
     it('should not updateLeaderboard if player is bot', () => {
         const mockbot = jasmine.createSpyObj(EasyBot, ['setActive']);
         const players: Player[] = [mockbot];
-        service.updateLeaderboard(players, GameMode.Classic);
+        service['updateLeaderboard'](players, GameMode.Classic);
         expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
     });
 });

@@ -42,7 +42,7 @@ export class PointCalculatorService {
 
     endOfGamePointDeduction(game: ServerGame): void {
         const activePlayer = game.getActivePlayer();
-        if (game.consecutivePass >= ServerGame.maxConsecutivePass || game.endState === EndOfGameReason.Forfeit) {
+        if (game.consecutivePass >= ServerGame.maxConsecutivePass || game.endReason === EndOfGameReason.Forfeit) {
             for (const player of game.players) {
                 player.points -= this.calculatePointsOfRack(player);
             }
