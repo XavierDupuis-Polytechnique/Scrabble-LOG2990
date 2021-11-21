@@ -4,23 +4,23 @@ export const LEADERBOARD_LOG_COLLECTION = 'leaderboardLog';
 export const DEFAULT_LEADERBOARD_CLASSIC = [
     {
         name: 'Annabelle',
-        point: 151,
+        point: 28,
     },
     {
         name: 'Max',
-        point: 108,
+        point: 32,
     },
     {
         name: 'Igor',
-        point: 76,
+        point: 56,
     },
     {
         name: 'Clément',
-        point: 82,
+        point: 24,
     },
     {
         name: 'Olga',
-        point: 53,
+        point: 43,
     },
 ];
 
@@ -31,18 +31,18 @@ export const DEFAULT_LEADERBOARD_LOG = [
     },
     {
         name: 'Max',
-        point: 94,
+        point: 45,
     },
     {
         name: 'Igor',
-        point: 123,
+        point: 12,
     },
     {
         name: 'Clément',
-        point: 169,
+        point: 23,
     },
     {
         name: 'Olga',
-        point: 201,
+        point: 39,
     },
 ];
