@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-classes-per-file */
-import { TestBed } from '@angular/core/testing';
-import { Action } from '@app/game-logic/actions/action';
-import { HALF_ALPHABET_COMPLETION_PERCENTAGE, N_LETTERS_IN_ALPHABET } from '@app/game-logic/constants';
-import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
-import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
-import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
-import { Player } from '@app/game-logic/player/player';
+
+import { HALF_ALPHABET_COMPLETION_PERCENTAGE, N_LETTERS_IN_ALPHABET } from '@app/constants';
+import { Action } from '@app/game/game-logic/actions/action';
+import { Letter } from '@app/game/game-logic/board/letter.interface';
+import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
+import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-alphabet/half-alphabet';
+import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
+import { Player } from '@app/game/game-logic/player/player';
+import { createSinonStubInstance } from '@app/test.util';
+import { expect } from 'chai';
 
 class MockAction extends Action {
     protected perform(): void {
@@ -16,6 +18,7 @@ class MockAction extends Action {
 }
 
 class MockPlayer extends Player {
+    name = 'MockPlayer';
     setActive(): void {
         return;
     }
@@ -25,18 +28,17 @@ describe('HalfAlphabet', () => {
     let objective: HalfAlphabet;
     let player: Player;
     let action: Action;
-    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+    const gameToken = 'gameToken';
+    const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
 
     beforeEach(() => {
-        objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
-        TestBed.configureTestingModule({ providers: [{ provide: ObjectiveNotifierService, useValue: objectiveNotifierSpy }] });
-        objective = new HalfAlphabet(TestBed.inject(ObjectiveNotifierService));
-        player = new MockPlayer();
+        objective = new HalfAlphabet(gameToken, objectiveNotifierStub);
+        player = new MockPlayer('MockPlayer');
         action = new MockAction(player);
     });
 
     it('should be created', () => {
-        expect(objective).toBeTruthy();
+        expect(objective).to.be.equal(true);
     });
 
     it('should update progression properly', () => {
@@ -58,7 +60,7 @@ describe('HalfAlphabet', () => {
         };
         objective.update(action, params);
         const expectedProgression = 5 / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
-        expect(objective.getPlayerProgression(action.player.name)).toBe(expectedProgression);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(expectedProgression);
 
         const lettersToPlace2 = [
             { char: 'F', value: 0 },
@@ -78,6 +80,6 @@ describe('HalfAlphabet', () => {
             affectedCoords: [],
         };
         objective.update(action, params2);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(1);
     });
 });

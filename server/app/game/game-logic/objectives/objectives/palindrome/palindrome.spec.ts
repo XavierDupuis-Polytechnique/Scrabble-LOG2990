@@ -1,11 +1,12 @@
 /* eslint-disable max-classes-per-file */
-import { TestBed } from '@angular/core/testing';
-import { Action } from '@app/game-logic/actions/action';
-import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
-import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
-import { Palindrome } from '@app/game-logic/game/objectives/objectives/palindrome/palindrome';
-import { Player } from '@app/game-logic/player/player';
-import { wordifyString } from '@app/game-logic/utils';
+import { Action } from '@app/game/game-logic/actions/action';
+import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
+import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
+import { Palindrome } from '@app/game/game-logic/objectives/objectives/palindrome/palindrome';
+import { Player } from '@app/game/game-logic/player/player';
+import { wordifyString } from '@app/game/game-logic/utils';
+import { createSinonStubInstance } from '@app/test.util';
+import { expect } from 'chai';
 
 class MockAction extends Action {
     protected perform(): void {
@@ -23,14 +24,13 @@ describe('Palindrome', () => {
     let objective: Palindrome;
     let player: Player;
     let action: Action;
-    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+    const gameToken = 'gameToken';
+    const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
     let params: ObjectiveUpdateParams;
 
     beforeEach(() => {
-        objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
-        TestBed.configureTestingModule({ providers: [{ provide: ObjectiveNotifierService, useValue: objectiveNotifierSpy }] });
-        objective = new Palindrome(TestBed.inject(ObjectiveNotifierService));
-        player = new MockPlayer();
+        objective = new Palindrome(gameToken, objectiveNotifierStub);
+        player = new MockPlayer('MockPlayer');
         action = new MockAction(player);
         params = {
             previousGrid: [],
@@ -42,51 +42,46 @@ describe('Palindrome', () => {
     });
 
     it('should be created', () => {
-        expect(objective).toBeTruthy();
+        expect(objective).to.be.equal(true);
     });
 
     it('should complete the objective with ABCBA', () => {
         params.formedWords.push(wordifyString('ABCBA'));
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
-        expect(objective.owner).toBe(player.name);
-        expect(player.points).toBe(objective.points);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(1);
+        expect(objective.owner).to.be.equal(player.name);
+        expect(player.points).to.be.equal(objective.points);
     });
 
     it('should complete the objective with ABCCBA', () => {
         params.formedWords.push(wordifyString('ABCCBA'));
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
-        expect(objective.owner).toBe(player.name);
-        expect(player.points).toBe(objective.points);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(1);
+        expect(objective.owner).to.be.equal(player.name);
+        expect(player.points).to.be.equal(objective.points);
     });
 
     it('should not complete the objective with AABCCBA', () => {
         params.formedWords.push(wordifyString('AABCCBA'));
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
-        expect(objective.owner).toBeUndefined();
-        expect(player.points).toBe(0);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(0);
+        expect(objective.owner).to.be.equal(undefined);
+        expect(player.points).to.be.equal(0);
     });
 
     it('should not complete the objective with ABCBW', () => {
         params.formedWords.push(wordifyString('ABCBW'));
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
-        expect(objective.owner).toBeUndefined();
-        expect(player.points).toBe(0);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(0);
+        expect(objective.owner).to.be.equal(undefined);
+        expect(player.points).to.be.equal(0);
     });
 
     it('should not complete the objective with ABCCBW', () => {
         params.formedWords.push(wordifyString('ABCCBW'));
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
-        expect(objective.owner).toBeUndefined();
-        expect(player.points).toBe(0);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(0);
+        expect(objective.owner).to.be.equal(undefined);
+        expect(player.points).to.be.equal(0);
     });
 });

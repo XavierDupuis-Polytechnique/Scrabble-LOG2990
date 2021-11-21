@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { TestBed } from '@angular/core/testing';
-import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
-import { MessagesService } from '@app/game-logic/messages/messages.service';
-import { ObjectiveNotifierService } from './objective-notifier.service';
+
+import { ObjectiveCompletion, ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
+import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
+import { expect } from 'chai';
 
 class MockObjective extends Objective {
     owner = 'playerName';
@@ -15,24 +15,24 @@ class MockObjective extends Objective {
 
 describe('ObjectiveNotifierService', () => {
     let service: ObjectiveNotifierService;
-    let messagesServiceSpy: jasmine.SpyObj<MessagesService>;
     let objective: Objective;
+    const gameToken = 'gameToken';
 
     beforeEach(() => {
-        messagesServiceSpy = jasmine.createSpyObj(MessagesService, ['receiveSystemMessage']);
-        TestBed.configureTestingModule({ providers: [{ provide: MessagesService, useValue: messagesServiceSpy }] });
-        service = TestBed.inject(ObjectiveNotifierService);
-        objective = new MockObjective(service);
+        service = new ObjectiveNotifierService();
+        objective = new MockObjective(gameToken, service);
     });
 
     it('should be created', () => {
-        expect(service).toBeTruthy();
+        expect(service instanceof ObjectiveNotifierService).to.be.equal(true);
     });
 
     it('should send the correct message for an objective completion', () => {
-        service.sendObjectiveNotification(objective);
         const expected = `${objective.owner} a complété l'objectif '${objective.name}' (${objective.points} points)`;
-        expect(messagesServiceSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
-        expect(service).toBeTruthy();
+        service.objectiveCompletion$.subscribe((objectiveCompletion: ObjectiveCompletion) => {
+            expect(objectiveCompletion.gameToken).to.be.equal(gameToken);
+            expect(objectiveCompletion.message).to.be.equal(expected);
+        });
+        service.sendObjectiveNotification(gameToken, objective);
     });
 });

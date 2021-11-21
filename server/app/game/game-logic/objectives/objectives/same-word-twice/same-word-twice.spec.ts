@@ -1,11 +1,13 @@
 /* eslint-disable max-classes-per-file */
-import { TestBed } from '@angular/core/testing';
-import { Action } from '@app/game-logic/actions/action';
-import { Tile } from '@app/game-logic/game/board/tile';
-import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
-import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
-import { SameWordTwice } from '@app/game-logic/game/objectives/objectives/same-word-twice/same-word-twice';
-import { Player } from '@app/game-logic/player/player';
+
+import { Action } from '@app/game/game-logic/actions/action';
+import { Tile } from '@app/game/game-logic/board/tile';
+import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
+import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
+import { SameWordTwice } from '@app/game/game-logic/objectives/objectives/same-word-twice/same-word-twice';
+import { Player } from '@app/game/game-logic/player/player';
+import { createSinonStubInstance } from '@app/test.util';
+import { expect } from 'chai';
 
 class MockAction extends Action {
     protected perform(): void {
@@ -23,18 +25,17 @@ describe('SameWordTwice', () => {
     let objective: SameWordTwice;
     let player: Player;
     let action: Action;
-    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+    const gameToken = 'gameToken';
+    const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
 
     beforeEach(() => {
-        objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
-        TestBed.configureTestingModule({ providers: [{ provide: ObjectiveNotifierService, useValue: objectiveNotifierSpy }] });
-        objective = new SameWordTwice(TestBed.inject(ObjectiveNotifierService));
-        player = new MockPlayer();
+        objective = new SameWordTwice(gameToken, objectiveNotifierStub);
+        player = new MockPlayer('MockPlayer');
         action = new MockAction(player);
     });
 
     it('should be created', () => {
-        expect(objective).toBeTruthy();
+        expect(objective).to.be.equal(true);
     });
 
     it('should be completed', () => {
@@ -53,10 +54,9 @@ describe('SameWordTwice', () => {
             affectedCoords: [],
         };
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
-        expect(objective.owner).toBe(player.name);
-        expect(player.points).toBe(objective.points);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(1);
+        expect(objective.owner).to.be.equal(player.name);
+        expect(player.points).to.be.equal(objective.points);
     });
 
     it('should not be completed', () => {
@@ -75,9 +75,8 @@ describe('SameWordTwice', () => {
             affectedCoords: [],
         };
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
-        expect(objective.owner).toBeUndefined();
-        expect(player.points).toBe(0);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(0);
+        expect(objective.owner).to.be.equal(undefined);
+        expect(player.points).to.be.equal(0);
     });
 });

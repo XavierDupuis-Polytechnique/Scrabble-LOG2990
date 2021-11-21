@@ -1,13 +1,16 @@
 /* eslint-disable max-classes-per-file */
-import { TestBed } from '@angular/core/testing';
-import { Action } from '@app/game-logic/actions/action';
-import { BOARD_DIMENSION } from '@app/game-logic/constants';
-import { Tile } from '@app/game-logic/game/board/tile';
-import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
-import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
-import { TripleBonus } from '@app/game-logic/game/objectives/objectives/triple-bonus/triple-bonus';
-import { Player } from '@app/game-logic/player/player';
-import { copyGrid, wordifyString } from '@app/game-logic/utils';
+
+import { Action } from '@app/game/game-logic/actions/action';
+import { Tile } from '@app/game/game-logic/board/tile';
+import { BOARD_DIMENSION } from '@app/game/game-logic/constants';
+import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
+import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
+import { TripleBonus } from '@app/game/game-logic/objectives/objectives/triple-bonus/triple-bonus';
+import { Player } from '@app/game/game-logic/player/player';
+import { copyGrid, wordifyString } from '@app/game/game-logic/utils';
+import { createSinonStubInstance } from '@app/test.util';
+import { expect } from 'chai';
+
 class MockAction extends Action {
     protected perform(): void {
         return;
@@ -24,7 +27,8 @@ describe('TripleBonus', () => {
     let objective: TripleBonus;
     let player: Player;
     let action: Action;
-    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+    const gameToken = 'gameToken';
+    const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
     let params: ObjectiveUpdateParams;
     const emptyGrid: Tile[][] = [];
     for (let i = 0; i < BOARD_DIMENSION; i++) {
@@ -36,10 +40,8 @@ describe('TripleBonus', () => {
     }
 
     beforeEach(() => {
-        objectiveNotifierSpy = jasmine.createSpyObj(ObjectiveNotifierService, ['sendObjectiveNotification']);
-        TestBed.configureTestingModule({ providers: [{ provide: ObjectiveNotifierService, useValue: objectiveNotifierSpy }] });
-        objective = new TripleBonus(TestBed.inject(ObjectiveNotifierService));
-        player = new MockPlayer();
+        objective = new TripleBonus(gameToken, objectiveNotifierStub);
+        player = new MockPlayer('MockPlayer');
         action = new MockAction(player);
         params = {
             previousGrid: copyGrid(emptyGrid),
@@ -51,7 +53,7 @@ describe('TripleBonus', () => {
     });
 
     it('should be created', () => {
-        expect(objective).toBeTruthy();
+        expect(objective).to.be.equal(true);
     });
 
     it('should not complete when only 2 bonus are used (2 bonus available and 3 affected coords)', () => {
@@ -64,10 +66,9 @@ describe('TripleBonus', () => {
         params.previousGrid[0][1].letterMultiplicator = 1;
         params.previousGrid[0][2].letterMultiplicator = 2;
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
-        expect(objective.owner).toBeUndefined();
-        expect(player.points).toBe(0);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(0);
+        expect(objective.owner).to.be.equal(undefined);
+        expect(player.points).to.be.equal(0);
     });
 
     it('should not complete when only 2 bonus are used (3 bonus available and 2 affected coords)', () => {
@@ -79,10 +80,9 @@ describe('TripleBonus', () => {
         params.previousGrid[0][1].letterMultiplicator = 2;
         params.previousGrid[0][2].letterMultiplicator = 2;
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(0);
-        expect(objective.owner).toBeUndefined();
-        expect(player.points).toBe(0);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(0);
+        expect(objective.owner).to.be.equal(undefined);
+        expect(player.points).to.be.equal(0);
     });
 
     it('should complete when 3 bonus are used (3 bonus available and 3 affected coords)', () => {
@@ -96,10 +96,9 @@ describe('TripleBonus', () => {
         params.previousGrid[0][2].letterMultiplicator = 2;
         params.formedWords = [wordifyString('acabacb')];
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
-        expect(objective.owner).toBe(player.name);
-        expect(player.points).toBe(objective.points);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(1);
+        expect(objective.owner).to.be.equal(player.name);
+        expect(player.points).to.be.equal(objective.points);
     });
 
     it('should complete when 3 bonus of different types are used', () => {
@@ -113,9 +112,8 @@ describe('TripleBonus', () => {
         params.previousGrid[0][2].letterMultiplicator = 2;
         params.formedWords = [wordifyString('acabacb')];
         objective.update(action, params);
-        expect(objective.getPlayerProgression(action.player.name)).toBe(1);
-        expect(objective.owner).toBe(player.name);
-        expect(player.points).toBe(objective.points);
-        expect(objectiveNotifierSpy.sendObjectiveNotification).toHaveBeenCalledOnceWith(objective);
+        expect(objective.getPlayerProgression(action.player.name)).to.be.equal(1);
+        expect(objective.owner).to.be.equal(player.name);
+        expect(player.points).to.be.equal(objective.points);
     });
 });

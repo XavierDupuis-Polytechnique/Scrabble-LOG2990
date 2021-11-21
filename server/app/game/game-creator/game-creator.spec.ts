@@ -1,7 +1,7 @@
-import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -9,9 +9,9 @@ import { getRandomInt } from '@app/game/game-logic/utils';
 import { GameMode } from '@app/game/game-mode.enum';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
+import { createSinonStubInstance } from '@app/test.util';
 import { expect } from 'chai';
 import { Subject } from 'rxjs';
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
 describe('GameCreator', () => {
     let gameCreator: GameCreator;
@@ -23,7 +23,12 @@ describe('GameCreator', () => {
     let randomBonus: boolean;
     let gameMode: GameMode;
     let gameToken: string;
-    const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
+    const pointCalculatorStub = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
+    const gameCompilerStub = createSinonStubInstance<GameCompiler>(GameCompiler);
+    const systemMessagesServiceStub = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
+    const timerControllerStub = createSinonStubInstance<TimerController>(TimerController);
+    const objectiveCreatorStub = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
+
     const newGameStateSubject = new Subject<GameStateToken>();
     const endGameSubject = new Subject<string>();
     beforeEach(() => {
@@ -36,11 +41,12 @@ describe('GameCreator', () => {
         gameMode = GameMode.Classic;
         gameCreator = new GameCreator(
             pointCalculatorStub,
-            new GameCompiler(),
-            new SystemMessagesService(new GameActionNotifierService()),
+            gameCompilerStub,
+            systemMessagesServiceStub,
             newGameStateSubject,
             endGameSubject,
-            new TimerController(),
+            timerControllerStub,
+            objectiveCreatorStub,
         );
     });
 

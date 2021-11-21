@@ -33,6 +33,5 @@ describe('ObjectiveNotifierService', () => {
         service.sendObjectiveNotification(objective);
         const expected = `${objective.owner} a complété l'objectif '${objective.name}' (${objective.points} points)`;
         expect(messagesServiceSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
-        expect(service).toBeTruthy();
     });
 });

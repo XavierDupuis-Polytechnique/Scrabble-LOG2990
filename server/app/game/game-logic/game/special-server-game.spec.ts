@@ -1,17 +1,21 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { TestBed } from '@angular/core/testing';
-import { Action } from '@app/game-logic/actions/action';
-import { BoardService } from '@app/game-logic/game/board/board.service';
-import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
-import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
-import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
-import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
-import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
-import { TimerService } from '@app/game-logic/game/timer/timer.service';
-import { MessagesService } from '@app/game-logic/messages/messages.service';
-import { Player } from '@app/game-logic/player/player';
-import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
+
+import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
+import { Action } from '@app/game/game-logic/actions/action';
+import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
+import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
+import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
+import { Player } from '@app/game/game-logic/player/player';
+import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
+import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
+import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
+import { createSinonStubInstance } from '@app/test.util';
+import { expect } from 'chai';
+import { Subject } from 'rxjs';
+
 const TIME_PER_TURN = 10;
 
 class MockAction extends Action {
@@ -24,61 +28,46 @@ class MockPlayer extends Player {
         return;
     }
 }
-class MockObjective extends Objective {
-    name = 'mockObjective';
-    points = 123;
-    completed = false;
-    get isCompleted(): boolean {
-        return this.completed;
-    }
-    update(): void {
-        this.completed = true;
-    }
-    protected updateProgression(): void {
-        return;
-    }
-}
 
-describe('SpecialOfflineGame', () => {
-    let game: SpecialOfflineGame;
-    let timerSpy: TimerService;
+describe('SpecialServerGame', () => {
+    let game: SpecialServerGame;
     const randomBonus = false;
-    let pointCalculatorSpy: jasmine.SpyObj<PointCalculatorService>;
-    let boardSpy: jasmine.SpyObj<BoardService>;
-    let messageSpy: jasmine.SpyObj<MessagesService>;
-    let objectiveCreator: ObjectiveCreator;
-    let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
+    const pointCalculatorStub = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
+    const gameCompilerStub = createSinonStubInstance<GameCompiler>(GameCompiler);
+    const systemMessagesServiceStub = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
+    const timerControllerStub = createSinonStubInstance<TimerController>(TimerController);
+    const objectiveCreatorStub = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
+    const newGameStateSubject = new Subject<GameStateToken>();
+    const endGameSubject = new Subject<string>();
+    const gameToken = 'gameToken';
     const p1 = new MockPlayer('p1');
     const p2 = new MockPlayer('p2');
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
-        timerSpy = TestBed.inject(TimerService);
-        pointCalculatorSpy = jasmine.createSpyObj('PointCalculatorService', ['endOfGamePointDeduction']);
-        boardSpy = jasmine.createSpyObj('BoardService', ['board']);
-        messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
-        objectiveNotifierSpy = jasmine.createSpyObj('ObjectiveNotifierService', ['sendObjectiveNotification']);
-        objectiveCreator = TestBed.inject(ObjectiveCreator);
-        spyOn(objectiveCreator, 'chooseObjectives').and.callFake((count: number) => {
-            const createdObjectives = [];
-            for (let i = 0; i < count; i++) {
-                createdObjectives.push(new MockObjective(objectiveNotifierSpy));
-            }
-            return createdObjectives;
-        });
-        game = new SpecialOfflineGame(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy, objectiveCreator);
+        game = new SpecialServerGame(
+            timerControllerStub,
+            randomBonus,
+            TIME_PER_TURN,
+            gameToken,
+            pointCalculatorStub,
+            gameCompilerStub,
+            systemMessagesServiceStub,
+            newGameStateSubject,
+            endGameSubject,
+            objectiveCreatorStub,
+        );
         game.players = [p1, p2];
     });
 
     it('should be created', () => {
-        expect(game).toBeTruthy();
+        expect(game).to.be.equal(true);
     });
 
     it('should allocate private and public objectives', () => {
         game.allocateObjectives();
-        expect(game.publicObjectives.length).toBe(ObjectiveCreator.publicObjectiveCount);
+        expect(game.publicObjectives.length).to.be.equal(ObjectiveCreator.publicObjectiveCount);
         for (const player of game.players) {
-            expect(game.privateObjectives.get(player.name)?.length).toBe(ObjectiveCreator.privateObjectiveCount);
+            expect(game.privateObjectives.get(player.name)?.length).to.be.equal(ObjectiveCreator.privateObjectiveCount);
         }
     });
 
@@ -95,11 +84,11 @@ describe('SpecialOfflineGame', () => {
         game.updateObjectives(action, params);
 
         for (const publicObjective of game.publicObjectives) {
-            expect(publicObjective.isCompleted).toBeTruthy();
+            expect(publicObjective.isCompleted).to.be.equal(true);
         }
         const p1Objective = (game.privateObjectives.get(p1.name) as Objective[])[0];
-        expect(p1Objective.isCompleted).toBeTruthy();
+        expect(p1Objective.isCompleted).to.be.equal(true);
         const p2Objective = (game.privateObjectives.get(p2.name) as Objective[])[0];
-        expect(p2Objective.isCompleted).toBeFalsy();
+        expect(p2Objective.isCompleted).to.be.equal(false);
     });
 });

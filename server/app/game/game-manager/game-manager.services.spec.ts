@@ -9,6 +9,7 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -33,6 +34,7 @@ describe('GameManagerService', () => {
     let stubTimerController: TimerController;
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
+    let stubObjectiveCreator: ObjectiveCreator;
     let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
@@ -41,6 +43,7 @@ describe('GameManagerService', () => {
         stubGameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
         stubTimerController = createSinonStubInstance<TimerController>(TimerController);
         stubGameActionNotifierService = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
+        stubObjectiveCreator = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
     });
 
     afterEach(() => {
@@ -56,6 +59,7 @@ describe('GameManagerService', () => {
             stubGameCompiler,
             stubTimerController,
             stubGameActionNotifierService,
+            stubObjectiveCreator,
         );
     });
 
