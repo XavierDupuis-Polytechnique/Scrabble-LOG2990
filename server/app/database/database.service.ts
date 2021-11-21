@@ -54,7 +54,7 @@ export class DatabaseService {
             if (!checkCollectionExists) {
                 await this.db.createCollection(collectionName);
                 await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
-                this.populateLeaderboardCollection(collectionName);
+                await this.populateLeaderboardCollection(collectionName);
             }
         } catch (e) {
             throw Error('Data base collection creation error');
