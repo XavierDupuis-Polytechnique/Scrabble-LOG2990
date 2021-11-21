@@ -2,7 +2,9 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable dot-notation */
 import { DatabaseServiceMock } from '@app/database/database.service.mock';
-import { GameMode, LeaderboardService, Score } from '@app/database/leaderboard-service/leaderboard.service';
+import { GameMode } from '@app/database/leaderboard-service/game-mode.enum';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
+import { Score } from '@app/database/leaderboard-service/score.interface';
 import { expect } from 'chai';
 import { MongoClient } from 'mongodb';
 
