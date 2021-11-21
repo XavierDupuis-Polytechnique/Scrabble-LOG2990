@@ -34,7 +34,6 @@ export class GameSocketsHandler {
             if ('letterBag' in gameState) {
                 console.log(gameState);
                 this.emitTransitionGameState(gameState, gameToken);
-                this.sio.to(gameToken).emit('transitionGameState', gameState);
             }
         });
     }

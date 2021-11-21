@@ -27,6 +27,10 @@ import { Observable, Subject } from 'rxjs';
 export class GameManagerService {
     private game: Game | null;
     private newGameSubject = new Subject<void>();
+    private transition = new Subject<void>();
+    get transition$(): Observable<void> {
+        return this.transition;
+    }
     get newGame$(): Observable<void> {
         return this.newGameSubject;
     }
@@ -34,7 +38,9 @@ export class GameManagerService {
     get disconnectedFromServer$(): Observable<void> {
         return this.disconnectedFromServerSubject;
     }
-
+    get disconnectedState$(): Observable<ForfeitedGameSate> {
+        return this.gameSocketHandler.forfeitGameState$;
+    }
     constructor(
         private botService: BotCreatorService,
         private timer: TimerService,
@@ -51,7 +57,7 @@ export class GameManagerService {
             this.disconnectedFromServerSubject.next();
         });
 
-        this.gameSocketHandler.forfeitGameState$.subscribe((forfeitedGameState: ForfeitedGameSate) => {
+        this.disconnectedState$.subscribe((forfeitedGameState: ForfeitedGameSate) => {
             this.toOfflineGame(forfeitedGameState);
         });
     }
@@ -86,7 +92,7 @@ export class GameManagerService {
         }
         const timePerTurn = (this.game as OnlineGame).timePerTurn;
         const userName = (this.game as OnlineGame).userName;
-        const offlineGame = new OfflineGame(
+        this.game = new OfflineGame(
             forfeitedGameState.randomBonus,
             timePerTurn,
             this.timer,
@@ -95,14 +101,17 @@ export class GameManagerService {
             this.messageService,
             true,
         );
+        const offlineGame = this.game as OfflineGame;
         const oldBoard = this.boardService.board;
         offlineGame.board = oldBoard;
         // const letterRackRef = this.info.user.letterRack;
         this.game = offlineGame;
 
+        console.log(forfeitedGameState.players);
         const playerName = userName;
         const botDifficulty = 'Easy';
         const players = this.createPlayers(playerName, botDifficulty);
+        console.log(players);
         this.allocatePlayers(players);
 
         const nRows = BOARD_DIMENSION;
@@ -118,14 +127,17 @@ export class GameManagerService {
         offlineGame.letterBag.gameLetters = forfeitedGameState.letterBag;
         offlineGame.consecutivePass = forfeitedGameState.consecutivePass;
         const playerInfo = forfeitedGameState.players;
+        console.log(playerInfo);
         // TODO fix this
         for (let i = 0; i < 0; i++) {
-            this.game.players[i].points = playerInfo[i].points;
+            offlineGame.players[i].points = playerInfo[i].points;
             for (let j = 0; j < playerInfo[i].letterRack.length; j++) {
-                this.game.players[i].letterRack[j] = playerInfo[i].letterRack[j];
+                offlineGame.players[i].letterRack[j] = playerInfo[i].letterRack[j];
             }
         }
-        this.info.receiveGame(this.game);
+        console.log(players);
+        this.info.receiveGame(offlineGame);
+        this.transition.next();
         this.startGame();
     }
 
