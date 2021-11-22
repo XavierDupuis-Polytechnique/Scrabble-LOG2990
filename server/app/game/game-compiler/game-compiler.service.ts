@@ -7,7 +7,7 @@ import {
     LightPlayer,
     PlayerProgression,
     PrivateLightObjectives,
-    SpecialGameState
+    SpecialGameState,
 } from '@app/game/game-logic/interface/game-state.interface';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { Player } from '@app/game/game-logic/player/player';
