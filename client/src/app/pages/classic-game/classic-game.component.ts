@@ -13,7 +13,7 @@ import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subscription } from 'rxjs';
 import { first, takeWhile } from 'rxjs/operators';
-//125,147,159-162
+
 // TODO: change name to new-game-component (page)
 @Component({
     selector: 'app-classic-game',
