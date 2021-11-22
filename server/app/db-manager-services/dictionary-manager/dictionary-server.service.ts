@@ -63,6 +63,7 @@ export class DictionaryServerService {
             currentDict.title = newDict.title;
             currentDict.description = newDict.description;
             currentDict.date = new Date();
+            this.deleteFile(oldDict.title);
             this.saveToFile(currentDict.title);
             return true;
         }
