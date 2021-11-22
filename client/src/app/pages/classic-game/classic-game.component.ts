@@ -13,7 +13,7 @@ import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Subscription } from 'rxjs';
 import { first, takeWhile } from 'rxjs/operators';
-
+//125,147,159-162
 // TODO: change name to new-game-component (page)
 @Component({
     selector: 'app-classic-game',
@@ -143,7 +143,7 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        if (this.specialGame) {
+        if (this.isSpecialGame) {
             this.gameManager.createSpecialGame(this.gameSettings);
         } else {
             this.gameManager.createGame(this.gameSettings);
@@ -151,11 +151,11 @@ export class ClassicGameComponent {
         this.router.navigate(['/game']);
     }
 
-    get specialGame() {
+    get isSpecialGame() {
         return this.gameMode === GameMode.Special;
     }
 
-    set specialGame(value: boolean) {
+    set isSpecialGame(value: boolean) {
         if (value) {
             this.gameMode = GameMode.Special;
         } else {

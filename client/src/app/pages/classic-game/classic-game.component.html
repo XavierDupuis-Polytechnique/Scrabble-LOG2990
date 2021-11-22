@@ -3,7 +3,7 @@
     <div class="justified">
         <!-- TODO find better place for toggle and remove style-->
         <div style="color: green">NOT DEFINITIVE VERY UGLY</div>
-        <mat-slide-toggle [(ngModel)]="specialGame" style="color: white">Changer de mode de jeux</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="isSpecialGame" style="color: white">Changer de mode de jeux</mat-slide-toggle>
         <h1 style="color: white">Mode de jeu : {{specialGame ? 'Special' : 'Classic'}}</h1>
         <button mat-flat-button color="primary" (click)="openSoloGameForm()">Jouer une partie en solo</button>
         <button mat-flat-button color="primary" (click)="openMultiGameForm()">Créer une partie multijoueur</button>
