@@ -1,14 +1,26 @@
 mat-dialog-content {
     max-height: 450;
-    // overflow: hidden;
 }
+
+mat-dialog-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+h5 {
+    font-size: large;
+    font-weight: 500;
+}
+
 table {
     width: 100%;
 }
+
 .table-container {
     max-height: 350;
     overflow: auto;
 }
+
 .mat-row .mat-cell {
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
@@ -22,8 +34,8 @@ table {
 }
 
 .row-is-clicked {
-    // font-weight: bold;
-    background-color: white;
+    animation: setRow 200ms 1;
+    animation-fill-mode: forwards;
     .mat-cell {
         color: black;
     }
@@ -31,4 +43,29 @@ table {
 
 .mat-button-focus-overlay {
     background-color: transparent !important;
+}
+
+.hidden {
+    display: none;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.mat-flat-button {
+    line-height: 0;
+    padding: 3px;
+    height: 25px;
+}
+
+@keyframes setRow {
+    from {
+        background-color: transparent;
+    }
+    to {
+        background-color: white;
+    }
 }
