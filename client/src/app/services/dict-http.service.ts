@@ -8,55 +8,29 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root',
 })
 export class DictHttpService {
-    templist: Dictionary[] = [
-        { title: 'French', description: 'Dictionnaire francais', words: ['wow'], id: 1 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 2 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 3 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 4 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 5 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 6 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 7 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 8 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 9 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 10 },
-        { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 11 },
-    ];
-
     constructor(private http: HttpClient) {}
 
-    // TODO create and return HTTP request to the server
-    getListDict(): Dictionary[] {
-        return this.templist;
+    getDict(dictTitle: string) {
+        return this.http.get(`${environment.serverUrl}/dictionary/${dictTitle}`);
     }
 
-    // TODO create and return HTTP request to the server
     getDictInfoList() {
-        // return [
-        //     { title: 'Francais', description: 'test', canEdit: false, id: 1 },
-        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        // ];
-
         return this.http.get(`${environment.serverUrl}/dictionary`);
     }
-    // TODO create POST HTTP request to the server
-    uploadDict(dict: Dictionary): boolean {
-        return true;
+
+    uploadDict(dict: Dictionary) {
+        return this.http.post(`${environment.serverUrl}/dictionary`, dict);
     }
-    // TODO create PUT HTTP request to the server
-    editDict(dict: DictInfo): boolean {
-        return true;
+
+    editDict(oldDict: DictInfo, newDict: DictInfo) {
+        return this.http.put(`${environment.serverUrl}/dictionary`, [oldDict, newDict]);
     }
-    // TODO create DELETE HTTP request to the server
-    delete(dict: DictInfo): boolean {
-        return false;
+
+    deleteDict(dictTitle: string) {
+        return this.http.delete(`${environment.serverUrl}/dictionary/${dictTitle}`, { responseType: 'text' });
     }
 
     dropTable() {
-        return true;
+        return this.http.get(`${environment.serverUrl}/dictionary/drop`);
     }
 }

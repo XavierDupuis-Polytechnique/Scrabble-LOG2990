@@ -50,7 +50,7 @@ export class AdminDictComponent implements OnInit {
     }
 
     deleteDict(dict: DictInfo): void {
-        this.dictHttpService.delete(dict);
+        this.dictHttpService.deleteDict(dict.title);
         this.updateDictMap();
     }
 

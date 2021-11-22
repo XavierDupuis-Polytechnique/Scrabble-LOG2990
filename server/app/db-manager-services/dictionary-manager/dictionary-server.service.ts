@@ -93,6 +93,14 @@ export class DictionaryServerService {
         return true;
     }
 
+    dropDelete() {
+        for (const dict of this.allDictionary) {
+            if (dict.canEdit) {
+                this.deleteDict(dict.title);
+            }
+        }
+    }
+
     private deleteFile(dictTitle: string) {
         const filePath = (folderPath + dictTitle + '.json').replace(/\s/g, '');
         fs.rmSync(filePath);
