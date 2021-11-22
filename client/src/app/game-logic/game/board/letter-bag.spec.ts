@@ -76,7 +76,7 @@ describe('LetterBag', () => {
         const LETTER_A_CODE = 'A'.charCodeAt(0);
         const LETTER_Z_CODE = 'Z'.charCodeAt(0);
         const initialLetterCounts: [string, number][] = [['*', 0]];
-        for (let code = LETTER_A_CODE; code < LETTER_Z_CODE; code++) {
+        for (let code = LETTER_A_CODE; code <= LETTER_Z_CODE; code++) {
             initialLetterCounts.push([String.fromCharCode(code), 0]);
         }
         const expectedMap = new Map(initialLetterCounts);
