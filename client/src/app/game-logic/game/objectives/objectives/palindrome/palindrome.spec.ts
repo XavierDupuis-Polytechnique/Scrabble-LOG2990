@@ -89,4 +89,12 @@ describe('Palindrome', () => {
         expect(player.points).toBe(0);
         expect(objectiveNotifierSpy.sendObjectiveNotification).not.toHaveBeenCalled();
     });
+
+    it('should do nothing when the objective is already completed', () => {
+        params.formedWords.push(wordifyString('ABCBA'));
+        objective.update(action, params);
+        expect(objective.isCompleted).toBeTrue();
+        objective.update(action, params);
+        expect(objective.isCompleted).toBeTrue();
+    });
 });
