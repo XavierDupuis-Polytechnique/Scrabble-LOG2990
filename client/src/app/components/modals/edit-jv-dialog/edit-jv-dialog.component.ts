@@ -29,7 +29,11 @@ export class EditJvDialogComponent {
             if (ans === false) {
                 this.dialog.open(AlertDialogComponent, {
                     width: '250px',
-                    data: 'Le nom du joueur virtuel est déjà utilisé',
+                    data: {
+                        message: 'Le nom du joueur virtuel est déjà utilisé',
+                        button1: 'Ok',
+                        button2: '',
+                    },
                 });
             } else this.dialogRef.close();
         });
@@ -41,7 +45,11 @@ export class EditJvDialogComponent {
             if (ans === false) {
                 this.dialog.open(AlertDialogComponent, {
                     width: '250px',
-                    data: 'Le nom du joueur virtuel est déjà utilisé',
+                    data: {
+                        message: 'Le nom du joueur virtuel est déjà utilisé',
+                        button1: 'Ok',
+                        button2: '',
+                    },
                 });
             } else this.dialogRef.close();
         });

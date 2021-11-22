@@ -1,4 +1,5 @@
 <mat-dialog-content>
-    <p>{{message}}</p>
-    <button mat-button mat-dialog-close>Ok</button>
+    <p>{{ data.message }}</p>
+    <button mat-button [mat-dialog-close]="false">{{ data.button1 }}</button>
+    <button mat-button *ngIf="data.button2 !== ''" [mat-dialog-close]="true" style="background-color: red">{{ data.button2 }}</button>
 </mat-dialog-content>

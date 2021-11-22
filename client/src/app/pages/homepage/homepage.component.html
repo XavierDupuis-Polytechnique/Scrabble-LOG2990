@@ -3,6 +3,6 @@
     <div class="justified">
         <button mat-flat-button color="primary" [routerLink]="['/classic']">Partie Classique</button>
         <button mat-flat-button color="primary" [routerLink]="['/log2990']">Partie LOG2990</button>
-        <button mat-flat-button color="primary" [routerLink]="['/leaderboard']">Meilleurs Scores</button>
+        <button mat-flat-button color="primary" (click)="openLeaderboard()">Meilleurs Scores</button>
     </div>
 </div>

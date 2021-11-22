@@ -1,6 +1,6 @@
 import { Application } from '@app/app';
-import { BotInfoService } from '@app/db-manager-services/bot-info-db-manager/bot-info.service';
-import { BotInfo, BotType } from '@app/db-manager-services/bot-name-db-manager/bot-info';
+import { BotInfo, BotType } from '@app/database/bot-info/bot-info';
+import { BotInfoService } from '@app/database/bot-info/bot-info.service';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import * as sinon from 'sinon';

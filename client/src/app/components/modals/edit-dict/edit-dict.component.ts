@@ -31,7 +31,11 @@ export class EditDictDialogComponent {
             this.dialog.open(AlertDialogComponent, {
                 width: '400px',
                 disableClose: true,
-                data: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
+                data: {
+                    message: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
+                    button1: 'Ok',
+                    button2: '',
+                },
             });
             this.isEditedCorrectly = false;
             this.tempDict = this.dictionary;

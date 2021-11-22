@@ -9,6 +9,7 @@ import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-so
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
+import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderboard.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -35,6 +36,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
 import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
+import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -66,6 +68,7 @@ import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-j
         JoinOnlineGameComponent,
         DisconnectedFromServerComponent,
         ErrorDialogComponent,
+        LeaderboardComponent,
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
@@ -74,6 +77,7 @@ import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-j
         AlertDialogComponent,
         AdminJoueurVirtuelComponent,
         EditJvDialogComponent,
+        AdminDropDbComponent,
     ],
     imports: [
         AppMaterialModule,

@@ -33,4 +33,8 @@ export class JvHttpService {
     getDataInfo() {
         return this.http.get(`${environment.serverUrl}/botinfo`);
     }
+
+    dropTable() {
+        return this.http.get(`${environment.serverUrl}/botinfo/drop`);
+    }
 }

@@ -48,4 +48,8 @@ export class DictHttpService {
     delete(dict: DictInfo): boolean {
         return false;
     }
+
+    dropTable() {
+        return true;
+    }
 }

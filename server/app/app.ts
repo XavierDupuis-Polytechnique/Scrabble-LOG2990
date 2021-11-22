@@ -1,7 +1,7 @@
 import { HttpException } from '@app/classes/http.exception';
 import { BotInfoController } from '@app/controllers/bot-info.controller';
-import { BotNamesController } from '@app/controllers/bot-names.controller';
 import { DebugController } from '@app/controllers/debug.controller';
+import { LeaderboardController } from '@app/database/leaderboard-controller/leaderboard.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
@@ -19,7 +19,7 @@ export class Application {
 
     constructor(
         private readonly debugController: DebugController,
-        private readonly botNamesController: BotNamesController,
+        private readonly leaderboardController: LeaderboardController,
         private readonly botInfoController: BotInfoController,
     ) {
         this.app = express();
@@ -43,7 +43,7 @@ export class Application {
     bindRoutes(): void {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/servergame', this.debugController.router);
-        this.app.use('/api/botnames', this.botNamesController.router);
+        this.app.use('/api/scores', this.leaderboardController.router);
         this.app.use('/api/botinfo', this.botInfoController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
