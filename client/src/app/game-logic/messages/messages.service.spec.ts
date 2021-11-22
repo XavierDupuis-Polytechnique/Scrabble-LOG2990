@@ -214,4 +214,11 @@ describe('Service: Messages', () => {
         mockErrorMessage$.next(errorContent);
         expect(spy).toHaveBeenCalledOnceWith(errorContent);
     });
+
+    it('should receive online system message properly', () => {
+        const spy = spyOn(service, 'receiveSystemMessage');
+        const content = 'this is a string';
+        mockSystemMessage$.next(content);
+        expect(spy).toHaveBeenCalledOnceWith(content);
+    });
 });
