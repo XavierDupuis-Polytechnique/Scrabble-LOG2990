@@ -101,13 +101,15 @@ export class GameManagerService {
         if (this.game) {
             this.stopGame();
         }
+
         if (!gameSettings.opponentName) {
             throw Error('No opponent name was entered');
         }
+
         if (!gameSettings.playerName) {
             throw Error('player name not entered');
         }
-        console.log(userAuth, gameSettings);
+
         const userName = userAuth.playerName;
         const timerPerTurn = Number(gameSettings.timePerTurn);
         if (gameSettings.gameMode === GameMode.Classic) {
