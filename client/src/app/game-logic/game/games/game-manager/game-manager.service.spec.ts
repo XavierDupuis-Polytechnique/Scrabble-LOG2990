@@ -10,6 +10,7 @@ import { JvHttpService } from '@app/services/jv-http.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
+import { of } from 'rxjs';
 import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
@@ -17,6 +18,10 @@ describe('GameManagerService', () => {
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
     const botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+
+    const obs = of(["Test1", "Test2", "Test3"])
+    botHttpService.getDataInfo.and.returnValue(obs);
+
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -97,6 +102,8 @@ describe('GameManagerService Online Edition', () => {
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
     const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+    const obs = of(["Test1", "Test2", "Test3"])
+    mockBotHttpService.getDataInfo.and.returnValue(obs);
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({

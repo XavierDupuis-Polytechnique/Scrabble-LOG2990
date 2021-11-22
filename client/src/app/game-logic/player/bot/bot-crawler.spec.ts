@@ -13,6 +13,7 @@ import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/vali
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { JvHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
     const letterCreator = new LetterCreator();
@@ -39,6 +40,9 @@ describe('BotCrawler1', () => {
 
     beforeEach(async () => {
         botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+
+        const obs = of(["Test1", "Test2", "Test3"])
+        botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, { provide: JvHttpService, useValue: botHttpService }],
         });
@@ -126,6 +130,9 @@ describe('BotCrawler2', () => {
     let botHttpService: jasmine.SpyObj<JvHttpService>;
     beforeEach(async () => {
         botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+
+        const obs = of(["Test1", "Test2", "Test3"])
+        botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },

@@ -3,6 +3,7 @@ import { CommandExecuterService } from '@app/game-logic/commands/command-execute
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { JvHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 import { BotCreatorService } from './bot-creator.service';
 
 describe('BotCreatorService', () => {
@@ -11,6 +12,8 @@ describe('BotCreatorService', () => {
     const mockBotMessageService = jasmine.createSpyObj('BotMessagesService', ['sendAction']);
     const mockCommandExecuter = jasmine.createSpyObj('CommandExecuterService', ['resetDebug']);
     const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+    const obs = of(["Test1", "Test2", "Test3"])
+    mockBotHttpService.getDataInfo.and.returnValue(obs);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [

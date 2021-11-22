@@ -5,6 +5,7 @@ import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 
+// C'est freaking bad d'avoir les credentials dans le code XD
 const DB_USER = 'server';
 const DB_PSW = 'ACyZhkpcAUT812QB';
 const CLUSTER_URL = 'scrabblecluster.mqtnr.mongodb.net';
