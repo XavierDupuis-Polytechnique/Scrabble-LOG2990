@@ -55,4 +55,17 @@ describe('ObjectiveCreator', () => {
             service.chooseObjectives(TOTAL_OBJECTIVE_COUNT + 1);
         }).toThrow();
     });
+
+    it('should throw when the objective to create undefined', () => {
+        const objectiveIndex = 100;
+        expect(() => {
+            // eslint-disable-next-line dot-notation
+            service['createObjective'](objectiveIndex);
+        }).toThrow();
+    });
+
+    it('#chooseObjective should work with default value', () => {
+        const objective = service.chooseObjectives();
+        expect(objective).toBeTruthy();
+    });
 });
