@@ -126,9 +126,13 @@ export class ClassicGameComponent {
 
     startSoloGame() {
         const gameReady$ = this.gameManager.createGame(this.gameSettings);
-        gameReady$.subscribe(() => {
+        if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
-        });
+        } else {
+            gameReady$.subscribe(() => {
+                this.router.navigate(['/game']);
+            });
+        }
         // TODO - add loading screen?
     }
 }

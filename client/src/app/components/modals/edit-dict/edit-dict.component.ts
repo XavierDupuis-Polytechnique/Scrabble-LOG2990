@@ -25,21 +25,23 @@ export class EditDictDialogComponent {
     }
 
     uploadEdit(): void {
-        if (this.dictHttpService.editDict(this.dictionary, this.tempDict)) {
-            this.close();
-        } else {
-            this.dialog.open(AlertDialogComponent, {
-                width: '400px',
-                disableClose: true,
-                data: {
-                    message: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-            this.isEditedCorrectly = false;
-            this.tempDict = this.dictionary;
-        }
+        this.dictHttpService.editDict(this.dictionary, this.tempDict).subscribe((res) => {
+            if (res) {
+                this.close();
+            } else {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '400px',
+                    disableClose: true,
+                    data: {
+                        message: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
+                this.isEditedCorrectly = false;
+                this.tempDict = this.dictionary;
+            }
+        });
     }
 
     private close(): void {

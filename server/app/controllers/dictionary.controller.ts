@@ -35,6 +35,7 @@ export class DictionaryController {
 
         this.router.post('/', async (req, res) => {
             try {
+                console.log(req.body);
                 const clientDict = req.body as DictionaryServer;
                 const isDictExist = this.dictionaryServerService.isDictExist(clientDict.title);
                 if (isDictExist) {

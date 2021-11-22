@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { ARRAY_BEGIN, FIRST_LETTER_INDEX, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/game-logic/constants';
+import {
+    ARRAY_BEGIN,
+    DEFAULT_DICTIONARY_TITLE,
+    FIRST_LETTER_INDEX,
+    MAX_WORD_LENGTH,
+    NOT_FOUND,
+    RACK_LETTER_COUNT,
+    RESET,
+    START_OF_STRING
+} from '@app/game-logic/constants';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import {
@@ -10,13 +19,13 @@ import {
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import data from 'src/assets/dictionary.json';
 @Injectable({
     providedIn: 'root',
 })
 export class DictionaryService {
-    dictReady$ = new Subject<void>();
+    dictReady$ = new BehaviorSubject<boolean>(false);
     dynamicWordList: Set<string>[] = [];
     constructor(private dictHttpService: DictHttpService) {
         this.addDefault();
@@ -27,7 +36,11 @@ export class DictionaryService {
         this.addWords(dict);
     }
 
-    fetchDictionary(dictTitle: string): Subject<void> {
+    fetchDictionary(dictTitle: string): BehaviorSubject<boolean> {
+        if (dictTitle === DEFAULT_DICTIONARY_TITLE) {
+            this.dictReady$.next(true);
+            return this.dictReady$;
+        }
         this.dictHttpService.getDict(dictTitle).subscribe((res) => {
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
@@ -43,7 +56,7 @@ export class DictionaryService {
                 this.dynamicWordList[wordLength].add(word);
             }
         });
-        this.dictReady$.next();
+        this.dictReady$.next(true);
         this.dictReady$.complete();
     }
 

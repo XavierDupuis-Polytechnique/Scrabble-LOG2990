@@ -20,7 +20,7 @@ import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Injectable({
@@ -57,7 +57,7 @@ export class GameManagerService {
         });
     }
 
-    createGame(gameSettings: GameSettings): Observable<void> {
+    createGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
         if (this.game) {
             this.stopGame();
         }
