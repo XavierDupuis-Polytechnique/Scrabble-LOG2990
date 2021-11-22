@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdminDropDbComponent } from './admin-drop-db.component';
-import { JvHttpService } from '@app/services/jv-http.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { DictHttpService } from '@app/services/dict-http.service';
+import { JvHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
+import { AdminDropDbComponent } from './admin-drop-db.component';
 
 describe('AdminDropDbComponent', () => {
     let component: AdminDropDbComponent;
@@ -20,7 +20,7 @@ describe('AdminDropDbComponent', () => {
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         const dummyAnswer = of(true);
         jvHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
-        dictHttpServiceMock.dropTable.and.returnValue(true);
+        dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
 
         await TestBed.configureTestingModule({
             declarations: [AdminDropDbComponent],
@@ -66,10 +66,10 @@ describe('AdminDropDbComponent', () => {
         expect(dictHttpServiceMock.dropTable).not.toHaveBeenCalled();
     });
 
-    it('dropTables cover if path', () => {
+    it('dropTables cover if path', async () => {
         const dummyAnswer = of(false);
         jvHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
-        dictHttpServiceMock.dropTable.and.returnValue(false);
+        dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
         matDialogMock.open.and.returnValue({
             afterClosed: () => {
                 return of(true);

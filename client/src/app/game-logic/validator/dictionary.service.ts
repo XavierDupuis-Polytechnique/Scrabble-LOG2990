@@ -42,7 +42,6 @@ export class DictionaryService {
             return this.dictReady$;
         }
         this.dictHttpService.getDict(dictTitle).subscribe((res) => {
-            console.log(res);
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
             this.ready();
@@ -133,6 +132,7 @@ export class DictionaryService {
     }
 
     private clearWords() {
+        this.dynamicWordList = [];
         for (let i = 0; i <= MAX_WORD_LENGTH; i++) {
             this.dynamicWordList.push(new Set());
         }

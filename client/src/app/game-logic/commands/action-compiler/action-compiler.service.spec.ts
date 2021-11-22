@@ -14,6 +14,7 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('ActionCompilerService', () => {
     let service: ActionCompilerService;
@@ -21,7 +22,7 @@ describe('ActionCompilerService', () => {
     let player: Player;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, ActionCreatorService],

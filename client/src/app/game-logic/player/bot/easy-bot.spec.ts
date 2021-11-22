@@ -19,6 +19,7 @@ import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 import { EasyBot } from './easy-bot';
 
 describe('EasyBot', () => {
@@ -28,7 +29,7 @@ describe('EasyBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     let newGame: OfflineGame;
     const randomBonus = false;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);

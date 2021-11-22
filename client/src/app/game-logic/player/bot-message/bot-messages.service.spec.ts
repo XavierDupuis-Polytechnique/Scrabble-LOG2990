@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
@@ -19,11 +20,13 @@ describe('bot message service', () => {
     let service: BotMessagesService;
     const commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
     const messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
+    const httpClient = jasmine.createSpyObj('HttpClient', ['get']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: MessagesService, useValue: messagesService },
                 { provide: CommandExecuterService, useValue: commandExecuterServiceMock },
+                { provide: HttpClient, useValue: httpClient },
             ],
         });
         service = TestBed.inject(BotMessagesService);

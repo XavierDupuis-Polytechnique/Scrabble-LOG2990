@@ -14,6 +14,7 @@ import { MockPlaceLetter } from '@app/game-logic/point-calculator/mock-place-let
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('PointCalculatorService', () => {
     let pointCalculator: PointCalculatorService;
@@ -40,7 +41,7 @@ describe('PointCalculatorService', () => {
     let listOfWord: Tile[][];
     let word: Tile[];
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [

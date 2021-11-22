@@ -12,8 +12,10 @@ describe('admin-dictionary component', () => {
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
     let matDialog: jasmine.SpyObj<MatDialog>;
     beforeEach(async () => {
+        // eslint-disable-next-line no-unused-vars
         dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict', 'getDictInfoList', 'delete']);
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
+        jasmine.createSpyObj('AdminDictComponent', ['ngOnInit']);
         await TestBed.configureTestingModule({
             declarations: [AdminDictComponent],
             providers: [
@@ -23,6 +25,7 @@ describe('admin-dictionary component', () => {
         });
 
         fixture = TestBed.createComponent(AdminDictComponent);
+        jasmine.createSpyObj('fixture.componentInstance', ['ngOnInit']);
         component = fixture.componentInstance;
     });
 
@@ -43,10 +46,12 @@ describe('admin-dictionary component', () => {
         inputDebugEl.nativeElement.files = dataTransfer.files;
 
         inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        dictHttpServiceMock.getDict.and.returnValue([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        const dummyDict = of([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        dictHttpServiceMock.getDict.and.returnValue(dummyDict);
         fixture.detectChanges();
 
-        dictHttpServiceMock.uploadDict.and.returnValue(false);
+        const dummyAnswer = of(false);
+        dictHttpServiceMock.uploadDict.and.returnValue(dummyAnswer);
         await component.loadFile();
         expect(matDialog.open).toHaveBeenCalled();
     });
@@ -64,10 +69,12 @@ describe('admin-dictionary component', () => {
         inputDebugEl.nativeElement.files = dataTransfer.files;
 
         inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        dictHttpServiceMock.getDict.and.returnValue([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        const dummyDict = of([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        dictHttpServiceMock.getDict.and.returnValue(dummyDict);
         fixture.detectChanges();
 
-        dictHttpServiceMock.uploadDict.and.returnValue(true);
+        const dummyAnswer = of(true);
+        dictHttpServiceMock.uploadDict.and.returnValue(dummyAnswer);
         await component.loadFile();
         expect(matDialog.open).not.toHaveBeenCalled();
     });
@@ -90,6 +97,6 @@ describe('admin-dictionary component', () => {
     it('deleteDict should call http service', () => {
         const dictInfoMock: DictInfo = { id: 1, canEdit: true, description: 'test', title: 'test' };
         component.deleteDict(dictInfoMock);
-        expect(dictHttpServiceMock.delete).toHaveBeenCalledWith(dictInfoMock);
+        expect(dictHttpServiceMock.deleteDict).toHaveBeenCalledWith(dictInfoMock.title);
     });
 });

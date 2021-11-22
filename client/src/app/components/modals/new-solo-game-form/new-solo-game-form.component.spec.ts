@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { NewSoloGameFormComponent } from './new-solo-game-form.component';
 
@@ -61,6 +61,7 @@ describe('NewSoloGameFormComponent', () => {
             botDifficulty: 'easy',
             timePerTurn: 60000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         });
         component.soloGameSettingsForm.updateValueAndValidity();
         fixture.detectChanges();
@@ -79,6 +80,7 @@ describe('NewSoloGameFormComponent', () => {
             botDifficulty: 'hard',
             timePerTurn: 60000,
             randomBonus: true,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         });
         component.soloGameSettingsForm.updateValueAndValidity();
         fixture.detectChanges();
@@ -94,6 +96,7 @@ describe('NewSoloGameFormComponent', () => {
             botDifficulty: 'easy',
             timePerTurn: 60000,
             randomBonus: true,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         component.soloGameSettingsForm.setValue(setting);
         expect(component.settings).toEqual(setting);
@@ -110,6 +113,7 @@ describe('NewSoloGameFormComponent', () => {
             botDifficulty: 'easy',
             timePerTurn: 60000,
             randomBonus: true,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         component.soloGameSettingsForm.setValue(setting);
         spyOn(mockDialog, 'close');

@@ -8,7 +8,7 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -19,6 +19,7 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { getRandomInt } from '@app/game-logic/utils';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 import { UIPlace } from './ui-place';
 
 class MockGameInfoService {
@@ -37,7 +38,7 @@ describe('UIPlace', () => {
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
     let info: GameInfoService;
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [

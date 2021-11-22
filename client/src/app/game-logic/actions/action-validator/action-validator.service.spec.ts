@@ -14,7 +14,7 @@ import {
     DEFAULT_TIME_PER_TURN,
     EMPTY_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -28,6 +28,7 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -41,7 +42,7 @@ describe('ActionValidatorService', () => {
     let info: GameInfoService;
     let messagesSpy: MessagesService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 

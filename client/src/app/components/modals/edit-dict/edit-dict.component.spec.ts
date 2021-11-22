@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
+import { of } from 'rxjs';
 
 describe('EditDictDialogComponent', () => {
     let component: EditDictDialogComponent;
@@ -35,14 +36,17 @@ describe('EditDictDialogComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('uploadEdit should close dialog if ok', () => {
-        dictHttpMock.editDict.and.returnValue(true);
+    it('uploadEdit should close dialog if ok', async () => {
+        const dummyAnswer = of(true);
+        dictHttpMock.editDict.and.returnValue(dummyAnswer);
         component.uploadEdit();
         expect(dialogRef.close).toHaveBeenCalled();
     });
 
-    it('uploadedit should open alert dialog if not ok', () => {
-        dictHttpMock.editDict.and.returnValue(false);
+    it('uploadedit should open alert dialog if not ok', async () => {
+        const dummyAnswer = of(false);
+
+        dictHttpMock.editDict.and.returnValue(dummyAnswer);
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();
     });

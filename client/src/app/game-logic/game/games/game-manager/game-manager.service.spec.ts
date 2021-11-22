@@ -1,11 +1,12 @@
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
-import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
@@ -15,8 +16,8 @@ describe('GameManagerService', () => {
     let service: GameManagerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
 
-    const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -47,6 +48,7 @@ describe('GameManagerService', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameSettings);
         service.startGame();
@@ -60,6 +62,7 @@ describe('GameManagerService', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameSettings);
         const gameSpy = spyOn(service, 'stopGame').and.callFake(() => {
@@ -94,7 +97,7 @@ describe('GameManagerService Online Edition', () => {
     let gameSocketHandler: GameSocketHandlerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -132,6 +135,7 @@ describe('GameManagerService Online Edition', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameSettings);

@@ -23,11 +23,12 @@ describe('HardBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
-    const dict = new DictionaryService();
     let newGame: OfflineGame;
     const randomBonus = false;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
 
     beforeEach(() => {
         TestBed.configureTestingModule({

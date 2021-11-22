@@ -11,12 +11,13 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
+import { DictHttpService } from '@app/services/dict-http.service';
 import { BoardComponent } from './board.component';
 
 describe('BoardComponent', () => {
     let component: BoardComponent;
     let fixture: ComponentFixture<BoardComponent>;
-    const dict = new DictionaryService();
+    const dict = new DictionaryService(TestBed.inject(DictHttpService));
     let canvasDrawerMock: CanvasDrawer;
     let inputControllerMock: UIInputControllerService;
     beforeEach(async () => {

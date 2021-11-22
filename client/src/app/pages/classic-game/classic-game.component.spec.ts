@@ -10,12 +10,13 @@ import { HeaderBarComponent } from '@app/components/header-bar/header-bar.compon
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
-import { Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 
 describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
@@ -35,6 +36,7 @@ describe('ClassicGameComponent', () => {
             ['isDisconnected$', 'startGame$'],
         );
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame']);
+        gameManagerSpy.createGame.and.returnValue(new BehaviorSubject<boolean>(true));
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
@@ -107,7 +109,7 @@ describe('ClassicGameComponent', () => {
         expect(component.openSoloGameForm).toHaveBeenCalled();
     });
 
-    it('start solo game should create a game', () => {
+    it('start solo game should create a game', async () => {
         spyOn(router, 'navigate');
         component.startSoloGame();
         expect(gameManagerSpy.createGame).toHaveBeenCalled();
@@ -120,6 +122,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         matDialog.open.and.returnValue({
@@ -160,6 +163,7 @@ describe('ClassicGameComponent', () => {
             botDifficulty: '',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         matDialog.open.and.returnValue({
@@ -189,6 +193,7 @@ describe('ClassicGameComponent', () => {
             botDifficulty: '',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         matDialog.open.and.returnValue({
             afterOpened: () => {
@@ -245,6 +250,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         matDialog.open.and.returnValue({
             afterClosed: () => {
