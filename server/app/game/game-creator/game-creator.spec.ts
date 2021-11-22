@@ -1,5 +1,6 @@
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
+import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
@@ -66,5 +67,16 @@ describe('GameCreator', () => {
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(GameCreator.defaultOpponentName)]);
         expect(createdGame.timePerTurn).to.be.equal(timePerTurn);
         expect(createdGame.randomBonus).to.be.equal(randomBonus);
+    });
+
+    it('should create a special server game with requested parameters and default opponent name', () => {
+        gameMode = GameMode.Special;
+        onlineGameSettings = { id, playerName, randomBonus, timePerTurn, gameMode };
+        const createdGame = gameCreator.createGame(onlineGameSettings, gameToken);
+        expect(createdGame.gameToken).to.be.equal(gameToken);
+        expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(GameCreator.defaultOpponentName)]);
+        expect(createdGame.timePerTurn).to.be.equal(timePerTurn);
+        expect(createdGame.randomBonus).to.be.equal(randomBonus);
+        expect(createdGame as SpecialServerGame).instanceof(SpecialServerGame);
     });
 });

@@ -25,7 +25,7 @@ export class SystemMessagesService {
                 this.sendIndividual(playerName, gameToken, notification.content);
             }
         });
-        this.objectiveNotifier.objectiveCompletion$.subscribe((objectiveCompletion: ObjectiveCompletion) => {
+        this.objectiveNotifier.notification$.subscribe((objectiveCompletion: ObjectiveCompletion) => {
             const gameToken = objectiveCompletion.gameToken;
             const content = objectiveCompletion.message;
             this.sendGlobal(gameToken, content);

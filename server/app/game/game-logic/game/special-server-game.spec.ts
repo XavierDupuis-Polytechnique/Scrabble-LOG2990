@@ -6,6 +6,7 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
+import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -18,6 +19,20 @@ import { Subject } from 'rxjs';
 
 const TIME_PER_TURN = 10;
 
+class MockObjective extends Objective {
+    name = 'mockObjective';
+    points = 123;
+    completed = false;
+    get isCompleted(): boolean {
+        return this.completed;
+    }
+    update(): void {
+        this.completed = true;
+    }
+    protected updateProgression(): void {
+        return;
+    }
+}
 class MockAction extends Action {
     protected perform(): void {
         return;
@@ -36,7 +51,15 @@ describe('SpecialServerGame', () => {
     const gameCompilerStub = createSinonStubInstance<GameCompiler>(GameCompiler);
     const systemMessagesServiceStub = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerControllerStub = createSinonStubInstance<TimerController>(TimerController);
+    const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
     const objectiveCreatorStub = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
+    objectiveCreatorStub.chooseObjectives.callsFake((localGameToken: string, count: number) => {
+        const createdObjectives = [];
+        for (let i = 0; i < count; i++) {
+            createdObjectives.push(new MockObjective(localGameToken, objectiveNotifierStub));
+        }
+        return createdObjectives;
+    });
     const newGameStateSubject = new Subject<GameStateToken>();
     const endGameSubject = new Subject<string>();
     const gameToken = 'gameToken';
@@ -61,6 +84,13 @@ describe('SpecialServerGame', () => {
 
     it('should be created', () => {
         expect(game).to.be.instanceof(SpecialServerGame);
+    });
+
+    it('should start a game through super.start', () => {
+        game.start();
+        expect(game.activePlayerIndex).to.not.be.an('undefined');
+        expect(game.publicObjectives).to.not.be.an('undefined');
+        expect(game.privateObjectives).to.not.be.an('undefined');
     });
 
     it('should allocate private and public objectives', () => {
