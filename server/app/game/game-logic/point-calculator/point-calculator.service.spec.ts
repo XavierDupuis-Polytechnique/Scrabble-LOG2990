@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
@@ -39,7 +38,7 @@ describe('PointCalculatorService', () => {
     ];
     let listOfWord: Tile[][];
     let word: Tile[];
-    const dict = new DictionaryService(new DictionaryServerService());
+    const dict = new DictionaryService();
     const wordSearcher: WordSearcher = new WordSearcher(dict);
 
     let randomBonus: boolean;

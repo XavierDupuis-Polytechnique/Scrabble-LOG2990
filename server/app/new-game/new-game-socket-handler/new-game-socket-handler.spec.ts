@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
-import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
@@ -110,7 +109,7 @@ describe('New Online Game Service', () => {
 
     it('should send gameSettings to players on joinGame', (done) => {
         const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
-        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000, dictionaryTitle: DEFAULT_DICTIONARY_TITLE };
+        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000 };
 
         newGameManagerService.createPendingGame.returns('a');
         newGameManagerService.joinPendingGame.returns('id'); // ?

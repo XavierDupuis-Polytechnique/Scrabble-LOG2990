@@ -42,4 +42,3 @@ export const ENTER = 'Enter';
 export const ARROWRIGHT = 'ArrowRight';
 export const ARROWLEFT = 'ArrowLeft';
 export const SHIFT = 'Shift';
-export const DEFAULT_DICTIONARY_TITLE = 'Mon dictionnaire';

@@ -9,14 +9,12 @@ import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
-import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
-import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameManagerService, PlayerRef } from '@app/game/game-manager/game-manager.services';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
@@ -37,7 +35,6 @@ describe('GameManagerService', () => {
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
     let stubLeaderboardService: LeaderboardService;
-    let stubDictionaryService: DictionaryService;
     let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
@@ -47,7 +44,6 @@ describe('GameManagerService', () => {
         stubTimerController = createSinonStubInstance<TimerController>(TimerController);
         stubGameActionNotifierService = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
         stubLeaderboardService = createSinonStubInstance<LeaderboardService>(LeaderboardService);
-        stubDictionaryService = createSinonStubInstance<DictionaryService>(DictionaryService);
     });
 
     afterEach(() => {
@@ -64,7 +60,6 @@ describe('GameManagerService', () => {
             stubTimerController,
             stubGameActionNotifierService,
             stubLeaderboardService,
-            stubDictionaryService,
         );
     });
 
@@ -80,7 +75,6 @@ describe('GameManagerService', () => {
             playerName,
             opponentName,
             randomBonus,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -109,7 +103,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -144,7 +137,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -168,7 +160,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -192,7 +183,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -218,7 +208,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -243,7 +232,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -272,7 +260,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -296,7 +283,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -326,7 +312,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -350,7 +335,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -370,7 +354,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -394,7 +377,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
         clock.tick(NEW_GAME_TIMEOUT);
@@ -409,7 +391,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
         service.linkedClients.clear();
@@ -428,7 +409,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
 
@@ -455,7 +435,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
         service.activeGames.delete('1');
@@ -482,7 +461,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
 
@@ -515,7 +493,6 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
         // eslint-disable-next-line dot-notation

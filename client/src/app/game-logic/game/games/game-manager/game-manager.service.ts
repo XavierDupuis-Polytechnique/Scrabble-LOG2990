@@ -14,7 +14,6 @@ import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.servic
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
-import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { GameMode } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
@@ -50,20 +49,16 @@ export class GameManagerService {
         private onlineChat: OnlineChatHandlerService,
         private onlineActionCompiler: OnlineActionCompilerService,
         private leaderboardService: LeaderboardService,
-        private dictionaryService: DictionaryService,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
         });
     }
 
-    createGame(gameSettings: GameSettings): Observable<void> {
+    createGame(gameSettings: GameSettings): void {
         if (this.game) {
             this.stopGame();
         }
-
-        const dictReady$ = this.dictionaryService.fetchDictionary(gameSettings.dictTitle);
-
         this.game = new OfflineGame(
             gameSettings.randomBonus,
             gameSettings.timePerTurn,
@@ -87,11 +82,6 @@ export class GameManagerService {
                 this.updateLeaderboard(this.game.players, mode);
             }
         });
-
-        return dictReady$;
-        // TODO uncomment when merge branch Objective
-        // const botNameReady$ = ...
-        // return forkJoin(dictReady$, botNameReady$); (
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {

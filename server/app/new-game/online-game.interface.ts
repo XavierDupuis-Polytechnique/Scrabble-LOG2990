@@ -7,5 +7,4 @@ export interface OnlineGameSettingsUI {
 
 export interface OnlineGameSettings extends OnlineGameSettingsUI {
     id: string;
-    dictionaryTitle: string;
 }
