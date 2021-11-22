@@ -92,6 +92,7 @@ export class ClassicGameComponent {
                     botDifficulty,
                     randomBonus: this.gameSettings.randomBonus,
                     timePerTurn: this.gameSettings.timePerTurn,
+                    dictTitle: this.gameSettings.dictTitle,
                 };
                 this.startSoloGame();
             }
@@ -124,7 +125,10 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        this.gameManager.createGame(this.gameSettings);
-        this.router.navigate(['/game']);
+        const gameReady$ = this.gameManager.createGame(this.gameSettings);
+        gameReady$.subscribe(() => {
+            this.router.navigate(['/game']);
+        });
+        // TODO - add loading screen?
     }
 }

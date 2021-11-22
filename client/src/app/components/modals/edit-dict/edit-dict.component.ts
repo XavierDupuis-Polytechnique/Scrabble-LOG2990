@@ -25,7 +25,7 @@ export class EditDictDialogComponent {
     }
 
     uploadEdit(): void {
-        if (this.dictHttpService.editDict(this.tempDict)) {
+        if (this.dictHttpService.editDict(this.dictionary, this.tempDict)) {
             this.close();
         } else {
             this.dialog.open(AlertDialogComponent, {
