@@ -86,6 +86,13 @@ describe('SpecialServerGame', () => {
         expect(game).to.be.instanceof(SpecialServerGame);
     });
 
+    it('should start a game through super.start', () => {
+        game.start();
+        expect(game.activePlayerIndex).to.not.be.an('undefined');
+        expect(game.publicObjectives).to.not.be.an('undefined');
+        expect(game.privateObjectives).to.not.be.an('undefined');
+    });
+
     it('should allocate private and public objectives', () => {
         game.allocateObjectives();
         expect(game.publicObjectives.length).to.be.equal(ObjectiveCreator.publicObjectiveCount);
