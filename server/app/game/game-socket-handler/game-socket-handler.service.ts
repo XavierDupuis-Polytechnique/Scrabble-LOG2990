@@ -18,7 +18,6 @@ export class GameSocketsHandler {
         this.gameManager.newGameState$.subscribe((gameStateToken: GameStateToken) => {
             const gameToken = gameStateToken.gameToken;
             const gameState = gameStateToken.gameState;
-            console.log(gameState);
             this.emitGameState(gameState, gameToken);
         });
 
@@ -32,7 +31,6 @@ export class GameSocketsHandler {
             const gameToken = forfeitedGameState.gameToken;
             const gameState = forfeitedGameState.gameState;
             if ('letterBag' in gameState) {
-                console.log(gameState);
                 this.emitTransitionGameState(gameState, gameToken);
             }
         });
