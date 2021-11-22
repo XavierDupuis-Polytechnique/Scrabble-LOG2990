@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root',
@@ -19,22 +21,27 @@ export class DictHttpService {
         { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 10 },
         { title: 'English', description: 'Dictionnaire anglais', words: ['wow'], id: 11 },
     ];
+
+    constructor(private http: HttpClient) {}
+
     // TODO create and return HTTP request to the server
     getListDict(): Dictionary[] {
         return this.templist;
     }
 
     // TODO create and return HTTP request to the server
-    getDictInfoList(): DictInfo[] {
-        return [
-            { title: 'Francais', description: 'test', canEdit: false, id: 1 },
-            { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-            { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-            { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-            { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-            { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-            { title: 'Francais', description: 'test', canEdit: true, id: 2 },
-        ];
+    getDictInfoList() {
+        // return [
+        //     { title: 'Francais', description: 'test', canEdit: false, id: 1 },
+        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
+        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
+        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
+        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
+        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
+        //     { title: 'Francais', description: 'test', canEdit: true, id: 2 },
+        // ];
+
+        return this.http.get(`${environment.serverUrl}/dictionary`);
     }
     // TODO create POST HTTP request to the server
     uploadDict(dict: Dictionary): boolean {

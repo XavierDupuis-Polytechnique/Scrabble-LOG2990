@@ -17,17 +17,18 @@ export class DictionaryController {
 
         this.router.get('/', async (req, res) => {
             try {
-                if (req.body.title) {
-                    const dict = this.dictionaryServerService.getDictByTitle(req.body.title);
-                    if (dict === undefined) {
-                        res.sendStatus(StatusCodes.NOT_FOUND);
-                    } else {
-                        res.json(dict);
-                    }
-                } else {
-                    const dicts = this.dictionaryServerService.getDictsList();
-                    res.json(dicts);
-                }
+                // if (req.body.title) {
+                // const dict = this.dictionaryServerService.getDictByTitle(req.body.title);
+                // if (dict === undefined) {
+                // res.sendStatus(StatusCodes.NOT_FOUND);
+                // } else {
+                // res.json(dict);
+                // }
+                // } else {
+                const dicts = JSON.stringify(this.dictionaryServerService.getDictsList());
+                res.json(dicts);
+                // res.send();
+                // }
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
