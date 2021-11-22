@@ -7,6 +7,11 @@ mat-dialog-actions {
     justify-content: space-between;
 }
 
+.header {
+    display: flex;
+    justify-content: center !important;
+}
+
 h5 {
     font-size: large;
     font-weight: 500;

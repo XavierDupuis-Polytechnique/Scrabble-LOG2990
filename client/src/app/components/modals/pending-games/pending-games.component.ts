@@ -11,7 +11,7 @@ import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { BehaviorSubject, timer } from 'rxjs';
 
-const DELAY = 100;
+export const DELAY = 100;
 @Component({
     selector: 'app-pending-games',
     templateUrl: './pending-games.component.html',
@@ -104,7 +104,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         return row === this.selectedRow;
     }
 
-    randomGame(): void {
+    pickRandomGame(): void {
         if (this.isClicked) {
             return;
         }

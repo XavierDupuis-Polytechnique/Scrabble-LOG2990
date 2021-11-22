@@ -1,6 +1,6 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -10,7 +10,7 @@ import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable, of, Subject } from 'rxjs';
-import { PendingGamesComponent } from './pending-games.component';
+import { DELAY, PendingGamesComponent } from './pending-games.component';
 
 const mockDialogRef = {
     close: jasmine.createSpy('close').and.returnValue(() => {
@@ -178,4 +178,26 @@ describe('PendingGamesComponent', () => {
         component.announceSortChange(sortState);
         expect(mockLiveAnnouncer.announce).toHaveBeenCalled();
     });
+
+    it('should allocate a game and open modal for join game', fakeAsync(() => {
+        spyOn(component, 'joinGame');
+        matDialog.open.and.returnValue({
+            beforeClosed: () => {
+                return of(undefined);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<JoinOnlineGameComponent>);
+        testPendingGames$.next([
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+        ]);
+        component.pickRandomGame();
+        tick(DELAY);
+        expect(component.selectedRow).not.toBeUndefined();
+        expect(component.joinGame).toHaveBeenCalled();
+        component.pickRandomGame();
+        expect(component.joinGame).not.toHaveBeenCalledTimes(2);
+    }));
 });
