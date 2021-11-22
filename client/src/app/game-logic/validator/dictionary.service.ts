@@ -45,6 +45,7 @@ export class DictionaryService {
             console.log(res);
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
+            this.ready();
         });
         return this.dictReady$;
     }
@@ -57,8 +58,6 @@ export class DictionaryService {
                 this.dynamicWordList[wordLength].add(word);
             }
         });
-        this.dictReady$.next(true);
-        this.dictReady$.complete();
     }
 
     isWordInDict(word: string): boolean {
@@ -126,6 +125,11 @@ export class DictionaryService {
         } else {
             return 'false';
         }
+    }
+
+    private ready() {
+        this.dictReady$.next(true);
+        this.dictReady$.complete();
     }
 
     private clearWords() {
