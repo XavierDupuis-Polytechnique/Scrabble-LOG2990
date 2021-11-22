@@ -15,10 +15,10 @@ export class DictionaryController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get('/', async (req, res) => {
+        this.router.get('/:title', async (req, res) => {
             try {
-                if (req.body.title) {
-                    const dict = this.dictionaryServerService.getDictByTitle(req.body.title);
+                if (req.query.title) {
+                    const dict = this.dictionaryServerService.getDictByTitle(req.query.title as string);
                     if (dict === undefined) {
                         res.sendStatus(StatusCodes.NOT_FOUND);
                     } else {

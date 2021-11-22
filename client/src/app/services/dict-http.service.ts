@@ -11,7 +11,7 @@ export class DictHttpService {
     constructor(private http: HttpClient) {}
 
     getDict(dictTitle: string) {
-        return this.http.get(`${environment.serverUrl}/dictionary/${dictTitle}`);
+        return this.http.get(`${environment.serverUrl}/dictionary?title=${dictTitle}`);
     }
 
     getDictInfoList() {

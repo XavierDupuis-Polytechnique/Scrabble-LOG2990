@@ -2,7 +2,6 @@ import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angu
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
-    DEFAULT_DICTIONARY_TITLE,
     DEFAULT_TIME_PER_TURN,
     MAX_NAME_LENGTH,
     MAX_TIME_PER_TURN,
@@ -34,7 +33,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             Validators.max(MAX_TIME_PER_TURN),
         ]),
         randomBonus: new FormControl(false, [Validators.required]),
-        dictTitle: new FormControl(DEFAULT_DICTIONARY_TITLE),
+        dictTitle: new FormControl('Test2'),
     });
 
     minTimePerTurn = MIN_TIME_PER_TURN;

@@ -42,6 +42,7 @@ export class DictionaryService {
             return this.dictReady$;
         }
         this.dictHttpService.getDict(dictTitle).subscribe((res) => {
+            console.log(res);
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
         });
