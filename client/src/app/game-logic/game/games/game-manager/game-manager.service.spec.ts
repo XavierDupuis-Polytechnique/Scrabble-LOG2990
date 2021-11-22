@@ -6,6 +6,7 @@ import { GameSettings } from '@app/game-logic/game/games/game-settings.interface
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
+import { JvHttpService } from '@app/services/jv-http.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
@@ -15,7 +16,7 @@ describe('GameManagerService', () => {
     let service: GameManagerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
-
+    const botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -23,6 +24,7 @@ describe('GameManagerService', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: LeaderboardService, useValue: leaderboardServiceMock },
+                { provide: JvHttpService, useValue: botHttpService },
             ],
         });
         service = TestBed.inject(GameManagerService);
@@ -94,6 +96,7 @@ describe('GameManagerService Online Edition', () => {
     let gameSocketHandler: GameSocketHandlerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
+    const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
     const dict = new DictionaryService();
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -101,6 +104,7 @@ describe('GameManagerService Online Edition', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: LeaderboardService, useValue: leaderboardServiceMock },
+                { provide: JvHttpService, useValue: mockBotHttpService },
             ],
         });
         service = TestBed.inject(GameManagerService);

@@ -19,6 +19,7 @@ import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { JvHttpService } from '@app/services/jv-http.service';
 import { EasyBot } from './easy-bot';
 
 describe('EasyBot', () => {
@@ -33,12 +34,14 @@ describe('EasyBot', () => {
     const randomBonus = false;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
+    const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: BotMessagesService, useValue: botMessageMock },
+                { provide: JvHttpService, useValue: mockBotHttpService },
             ],
         });
         boardService = TestBed.inject(BoardService);
@@ -58,6 +61,7 @@ describe('EasyBot', () => {
             gameInfo,
             TestBed.inject(CommandExecuterService),
             TestBed.inject(ActionCreatorService),
+            TestBed.inject(JvHttpService),
         );
     });
 

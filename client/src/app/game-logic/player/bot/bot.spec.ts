@@ -10,19 +10,21 @@ import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messa
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { JvHttpService } from '@app/services/jv-http.service';
 
 describe('Bot', () => {
     const dict = new DictionaryService();
     let bot: EasyBot;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
-
+    const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: BotMessagesService, useValue: botMessageMock },
+                { provide: JvHttpService, useValue: mockBotHttpService },
             ],
         });
         bot = new EasyBot(
@@ -35,6 +37,7 @@ describe('Bot', () => {
             TestBed.inject(GameInfoService),
             TestBed.inject(CommandExecuterService),
             TestBed.inject(ActionCreatorService),
+            TestBed.inject(JvHttpService),
         );
     });
 

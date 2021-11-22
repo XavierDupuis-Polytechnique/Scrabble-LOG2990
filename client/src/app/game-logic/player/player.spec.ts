@@ -14,6 +14,7 @@ import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { JvHttpService } from '@app/services/jv-http.service';
 
 describe('Player', () => {
     const dict = new DictionaryService();
@@ -25,6 +26,7 @@ describe('Player', () => {
     let gameInfo: GameInfoService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
+    const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
     const randomBonus = false;
 
     beforeEach(() => {
@@ -33,6 +35,7 @@ describe('Player', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: BotMessagesService, useValue: botMessageMock },
+                { provide: JvHttpService, useValue: mockBotHttpService },
             ],
         });
         boardService = TestBed.inject(BoardService);
@@ -50,6 +53,7 @@ describe('Player', () => {
             gameInfo,
             TestBed.inject(CommandExecuterService),
             TestBed.inject(ActionCreatorService),
+            TestBed.inject(JvHttpService),
         );
         gameInfo.receiveGame(new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
     });
