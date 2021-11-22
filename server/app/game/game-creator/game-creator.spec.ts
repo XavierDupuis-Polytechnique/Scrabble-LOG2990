@@ -1,6 +1,7 @@
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -22,6 +23,7 @@ describe('GameCreator', () => {
     let opponentName: string;
     let randomBonus: boolean;
     let gameToken: string;
+    let dictionaryTitle: string;
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
     const newGameStateSubject = new Subject<GameStateToken>();
     const endGameSubject = new Subject<EndOfGame>();
@@ -32,6 +34,7 @@ describe('GameCreator', () => {
         playerName = 'p1';
         opponentName = 'p2';
         randomBonus = getRandomInt(1) === 0;
+        dictionaryTitle = DEFAULT_DICTIONARY_TITLE;
         gameCreator = new GameCreator(
             pointCalculatorStub,
             new GameCompiler(),
@@ -43,7 +46,7 @@ describe('GameCreator', () => {
     });
 
     it('should create a server game with requested parameters', () => {
-        onlineGameSettings = { id, playerName, opponentName, randomBonus, timePerTurn };
+        onlineGameSettings = { id, playerName, opponentName, randomBonus, timePerTurn, dictionaryTitle };
         const createdGame = gameCreator.createServerGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(opponentName)]);
@@ -52,7 +55,7 @@ describe('GameCreator', () => {
     });
 
     it('should create a server game with requested parameters and default opponent name', () => {
-        onlineGameSettings = { id, playerName, randomBonus, timePerTurn };
+        onlineGameSettings = { id, playerName, randomBonus, timePerTurn, dictionaryTitle };
         const createdGame = gameCreator.createServerGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(GameCreator.defaultOpponentName)]);

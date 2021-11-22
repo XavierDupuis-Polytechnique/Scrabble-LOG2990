@@ -41,6 +41,16 @@ export class DictionaryServerService {
         return dictsList;
     }
 
+    getUniqueName(dictTitle: string): string {
+        for (const dict of this.allDictionary) {
+            if (dict.title === dictTitle) {
+                const uniqueName = dictTitle + '_' + dict.date;
+                return uniqueName;
+            }
+        }
+        return '';
+    }
+
     getDictByTitle(dictTitle: string): DictionaryServer | boolean {
         for (const dict of this.allDictionary) {
             if (dict.title === dictTitle) {

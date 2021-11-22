@@ -8,4 +8,9 @@ export interface DictionaryServer {
     date?: Date;
 }
 
+export interface LiveDict {
+    currentUsage: number;
+    dynamicWordList: Set<string>[];
+}
+
 export const DEFAULT_DICTIONARY = data as DictionaryServer;

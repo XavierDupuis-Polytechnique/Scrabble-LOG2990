@@ -12,6 +12,7 @@ import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
@@ -51,6 +52,7 @@ export class GameManagerService {
         private timerController: TimerController,
         private gameActionNotifier: GameActionNotifierService,
         private leaderboardService: LeaderboardService,
+        private dictionaryService: DictionaryService,
     ) {
         this.gameCreator = new GameCreator(
             this.pointCalculator,
@@ -78,6 +80,7 @@ export class GameManagerService {
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
         this.startInactiveGameDestructionTimer(gameToken);
+        this.dictionaryService.makeGameDictionary(gameToken, onlineGameSettings.dictionaryTitle);
     }
 
     addPlayerToGame(playerId: string, userAuth: UserAuth) {
@@ -185,6 +188,7 @@ export class GameManagerService {
     private deleteGame(gameToken: string) {
         this.activeGames.delete(gameToken);
         this.linkedClients.delete(gameToken);
+        this.dictionaryService.deleteGameDictionary(gameToken);
     }
 
     private updateLeaderboard(players: Player[]) {
