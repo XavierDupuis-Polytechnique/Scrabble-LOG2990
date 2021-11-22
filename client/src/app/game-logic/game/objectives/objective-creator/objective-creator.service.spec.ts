@@ -17,6 +17,16 @@ describe('ObjectiveCreator', () => {
         expect(service).toBeTruthy();
     });
 
+    it('should be abble to create objectives for the online mode', () => {
+        const objectiveName = 'objectiveName';
+        const objectiveDescription = 'objectiveDescription';
+        const objectivePoints = 10;
+        const onlineObjective = service.createOnlineObjective(objectiveName, objectiveDescription, objectivePoints);
+        expect(onlineObjective.name).toEqual(objectiveName);
+        expect(onlineObjective.description).toEqual(objectiveDescription);
+        expect(onlineObjective.points).toEqual(objectivePoints);
+    });
+
     it('should to create N unique objective', () => {
         const createdObjectives = service.chooseObjectives(TOTAL_OBJECTIVE_COUNT);
         const objectiveNamesSet = new Set<string>(createdObjectives.map((objective) => objective.name));
