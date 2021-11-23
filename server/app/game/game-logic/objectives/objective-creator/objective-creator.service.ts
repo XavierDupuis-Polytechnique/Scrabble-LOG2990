@@ -1,4 +1,5 @@
 import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/constants';
+import { GeneratedObjectives } from '@app/game/game-logic/objectives/objective-creator/generated-objectives.interface';
 import { ObjectiveType } from '@app/game/game-logic/objectives/objective-creator/objective-type';
 import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
 import { FourCorners } from '@app/game/game-logic/objectives/objectives/four-corners/four-corners';
@@ -15,31 +16,34 @@ import { Service } from 'typedi';
 
 @Service()
 export class ObjectiveCreator {
-    static privateObjectiveCount = PRIVATE_OBJECTIVE_COUNT;
-    static publicObjectiveCount = PUBLIC_OBJECTIVE_COUNT;
-    private static objectiveCount = TOTAL_OBJECTIVE_COUNT;
-    availableObjectivesIndex: number[];
 
-    constructor(private objectiveNotifier: ObjectiveNotifierService) {
-        this.availableObjectivesIndex = [];
-        for (let index = 0; index < ObjectiveCreator.objectiveCount; index++) {
-            this.availableObjectivesIndex.push(index);
-        }
+    constructor(private objectiveNotifier: ObjectiveNotifierService) {}
+
+    chooseObjectives(gameToken: string): GeneratedObjectives {
+        const availableObjectivesIndex = this.getAvailableObjectivesIndex();
+
+        const privateObjectives1 = this.createObjectives(gameToken, PRIVATE_OBJECTIVE_COUNT, availableObjectivesIndex);
+        const privateObjectives2 = this.createObjectives(gameToken, PRIVATE_OBJECTIVE_COUNT, availableObjectivesIndex);
+        const privateObjectives = [privateObjectives1, privateObjectives2];
+
+        const publicObjectives = this.createObjectives(gameToken, PUBLIC_OBJECTIVE_COUNT, availableObjectivesIndex);
+        return { privateObjectives, publicObjectives };
     }
 
-    chooseObjectives(gameToken: string, count: number = 1): Objective[] {
-        if (this.availableObjectivesIndex.length < count) {
-            throw new Error('Cannot create ' + count + ' unique objectives : only ' + this.availableObjectivesIndex.length + ' available');
-        }
+    private createObjectives(gameToken: string, count: number, availableObjectivesIndex: number[]) {
         const createdObjectives: Objective[] = [];
         for (let index = 0; index < count; index++) {
-            const randomInt = getRandomInt(this.availableObjectivesIndex.length);
-            const randomObjectiveIndex = this.availableObjectivesIndex[randomInt];
+            const randomInt = getRandomInt(availableObjectivesIndex.length);
+            const randomObjectiveIndex = availableObjectivesIndex[randomInt];
             const createdObjective = this.createObjective(gameToken, randomObjectiveIndex);
             createdObjectives.push(createdObjective);
-            this.availableObjectivesIndex.splice(randomInt, 1);
+            availableObjectivesIndex.splice(randomInt, 1);
         }
         return createdObjectives;
+    }
+
+    private getAvailableObjectivesIndex() {
+        return [...Array(TOTAL_OBJECTIVE_COUNT).keys()];
     }
 
     private createObjective(gameToken: string, objectiveIndex: number): Objective {
