@@ -1,5 +1,7 @@
 <mat-dialog-content>
-    <h3>Joindre une partie</h3>
+    <div class="header">
+        <h5>Joindre une partie</h5>
+    </div>
     <div class="table-container">
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort (matSortChange)="announceSortChange($event)" matSortDisableClear>
             <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
@@ -26,6 +28,11 @@
     </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button mat-button color="primary" [mat-dialog-close] (click)="cancel()">Annuler</button>
-    <button mat-button color="primary" [disabled]="selectedRow === undefined" (click)="joinGame()">Rejoindre la partie</button>
+    <div>
+        <button mat-button color="primary" [mat-dialog-close] (click)="cancel()">Annuler</button>
+        <button mat-button color="primary" [disabled]="selectedRow === undefined" (click)="joinGame()">Rejoindre la partie</button>
+    </div>
+    <button mat-flat-button color="accent" [ngClass]="{ hidden: isTableEmpty === true }" [disabled]="isTableOneGame" (click)="pickRandomGame()">
+        Placement aléatoire
+    </button>
 </mat-dialog-actions>
