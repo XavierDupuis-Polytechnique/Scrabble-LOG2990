@@ -20,7 +20,7 @@ export interface DictInfo {
 })
 export class AdminDictComponent implements OnInit {
     listDict: Dictionary[];
-    selectedFile: string;
+    selectedFile: string = '';
     displayedColumns: string[] = ['position', 'name', 'weight', 'edit', 'delete'];
 
     dictDataSource: DictInfo[];
@@ -43,6 +43,22 @@ export class AdminDictComponent implements OnInit {
     showUpdateMenu(dict: DictInfo): void {
         this.dialog
             .open(EditDictDialogComponent, { width: '250px', data: dict })
+            .afterClosed()
+            .subscribe(() => {
+                this.updateDictMap();
+            });
+    }
+
+    showAddMenu(): void {
+        this.dialog
+            .open(AlertDialogComponent, {
+                width: '250px',
+                data: {
+                    message: 'Hello darkness my old friend',
+                    button1: 'Ok',
+                    button2: '',
+                },
+            })
             .afterClosed()
             .subscribe(() => {
                 this.updateDictMap();
