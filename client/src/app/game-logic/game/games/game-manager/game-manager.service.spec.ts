@@ -20,7 +20,7 @@ import { GameManagerService } from './game-manager.service';
 describe('GameManagerService', () => {
     let service: GameManagerService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
-    const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
+    let leaderboardServiceMock: jasmine.SpyObj<LeaderboardService>;
     const botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
 
     const obs = of(['Test1', 'Test2', 'Test3']);
@@ -28,6 +28,7 @@ describe('GameManagerService', () => {
 
     const dict = new DictionaryService();
     beforeEach(() => {
+        leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
