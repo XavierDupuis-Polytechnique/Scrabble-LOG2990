@@ -20,7 +20,7 @@ export class CanvasDrawer {
     fontSize = 20;
     private tileSize: number;
     private scale: number = 0.5;
-    private offset: number = 0; //
+    private offset: number = 3;
     private font = 'Arial';
 
     private indicatorPos: Vec2 = { x: -1, y: -1 };
@@ -31,13 +31,11 @@ export class CanvasDrawer {
         this.canvas.lineWidth = 1;
         this.width = w;
         this.height = h;
-        // this.canvas.lineWidth = 1;
+        this.canvas.lineWidth = 1;
         this.tileSize = (this.width - this.canvas.lineWidth * 15) / 16;
         this.offset = this.tileSize;
     }
     drawGrid(board: Board, fontsize: number): void {
-        // this.canvas.imageSmoothingEnabled = false;
-
         this.canvas.clearRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = TILE_COLOR;
         this.canvas.fillRect(0, 0, this.width, this.height);
@@ -50,6 +48,7 @@ export class CanvasDrawer {
         }
         this.drawColumnIdentifier();
         this.drawRowIdentifier();
+        // this.drawborder();
 
         for (let i = 0; i < board.grid.length; i++) {
             for (let j = 0; j < board.grid.length; j++) {
@@ -63,7 +62,6 @@ export class CanvasDrawer {
                 } else if (board.grid[i][j].wordMultiplicator !== 1) {
                     this.drawBonus(j, i, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
                 }
-                // logs
             }
         }
 
@@ -122,8 +120,14 @@ export class CanvasDrawer {
     private drawTile(letter: string, value: number, i: number, j: number) {
         const pos = this.tilePositionToCoord(j, i);
         this.canvas.fillStyle = TILE_COLOR;
-        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
-
+        this.canvas.fillRect(
+            pos.x + 2 * this.canvas.lineWidth,
+            pos.y + 2 * this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+        );
+        this.canvas.fillStyle = ' #000000';
+        this.canvas.strokeRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         this.canvas.fillStyle = '#000000';
 
@@ -131,10 +135,10 @@ export class CanvasDrawer {
         this.canvas.textBaseline = 'alphabetic';
         const letterWidth = this.canvas.measureText(letter).width;
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
-        const valueWidth = this.canvas.measureText(value.toString()).width;
-        const tileWidth = letterWidth + valueWidth;
+        // const valueWidth = this.canvas.measureText(value.toString()).width;
+        // const tileWidth = letterWidth + valueWidth;
 
-        const offset = (this.tileSize - tileWidth) / 2;
+        const offset = this.tileSize / 3;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         pos.x += offset;
         pos.y += this.tileSize * 0.7;
@@ -147,16 +151,24 @@ export class CanvasDrawer {
         this.canvas.fillText(value.toString(), pos.x, pos.y);
     }
 
+    // private drawborder() {
+    //     this.canvas.fillStyle = '#000000';
+    //     this.canvas.fillRect(0, 0, this.width + this.offset, this.offset);
+    //     this.canvas.fillRect(0, 0, this.offset, this.height + this.offset);
+    //     this.canvas.fillRect(0 + this.offset, this.height + this.offset, this.width + this.offset, this.offset);
+    //     this.canvas.fillRect(this.width + this.offset, 0 + this.offset, this.offset, this.height + this.offset);
+    // }
+
     private drawColumnIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         this.canvas.fillStyle = '#000000';
 
         for (let i = 0; i < 15; i++) {
             const letter = String.fromCharCode(i + 65);
-            const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 3;
+            const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 4;
             this.canvas.textBaseline = 'top';
             this.canvas.textAlign = 'center';
-            this.canvas.fillText(letter, this.tileSize / 3, offset);
+            this.canvas.fillText(letter, this.tileSize / 2, offset);
         }
     }
 
@@ -174,7 +186,7 @@ export class CanvasDrawer {
 
     private drawBonus(i: number, j: number, type: BonusType, mul: number) {
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
-        this.canvas.textAlign = 'start';
+        this.canvas.textAlign = 'center';
         let s = '';
         const pos = this.tilePositionToCoord(i, j);
 
@@ -193,16 +205,16 @@ export class CanvasDrawer {
                 this.canvas.fillStyle = '#D1002D';
             }
         }
-        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+        this.canvas.fillRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
         this.canvas.fillStyle = '#FFFFFF';
-        this.canvas.fillText(s, pos.x, pos.y);
-        this.canvas.fillText(`X${mul}`, pos.x, pos.y + this.tileSize / 2);
+        this.canvas.fillText(s, pos.x + this.tileSize / 2, pos.y + this.tileSize / 5);
+        this.canvas.fillText(`X${mul}`, pos.x + this.tileSize / 2, pos.y + this.tileSize / 2);
     }
 
     private drawIndicator() {
         const pos = this.tilePositionToCoord(this.indicatorPos.x, this.indicatorPos.y);
         this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
-        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+        this.canvas.fillRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
 
         this.canvas.fillStyle = '#90FF00';
         if (this.indicatorDir === Direction.Horizontal) {
