@@ -34,4 +34,12 @@ describe('HomepageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('should open mat-dialog', () => {
+        // eslint-disable-next-line dot-notation
+        spyOn(component['matDialog'], 'open');
+        component.openLeaderboard();
+        // eslint-disable-next-line dot-notation
+        expect(component['matDialog'].open).toHaveBeenCalled();
+    });
 });

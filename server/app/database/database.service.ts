@@ -1,6 +1,11 @@
 import { BOT_INFO_COLLECTION } from '@app/constants';
 import { DEFAULT_EASY_BOT } from '@app/database/bot-info/default-bot-names';
-import { DEFAULT_LEADERBOARD, LEADERBOARD_CLASSIC_COLLECTION, LEADERBOARD_LOG_COLLECTION } from '@app/database/leaderboard.service';
+import {
+    DEFAULT_LEADERBOARD_CLASSIC,
+    DEFAULT_LEADERBOARD_LOG,
+    LEADERBOARD_CLASSIC_COLLECTION,
+    LEADERBOARD_LOG_COLLECTION,
+} from '@app/database/leaderboard-service/leaderboard-constants';
 import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
@@ -10,7 +15,7 @@ const DB_USER = 'server';
 const DB_PSW = 'ACyZhkpcAUT812QB';
 const CLUSTER_URL = 'scrabblecluster.mqtnr.mongodb.net';
 
-// CHANGE the URL for your database information
+// TODO: CHANGE the URL for your database information
 export const DATABASE_URL = `mongodb+srv://${DB_USER}:${DB_PSW}@${CLUSTER_URL}/<dbname>?retryWrites=true&w=majority`;
 export const DATABASE_NAME = 'scrabble';
 
@@ -39,7 +44,10 @@ export class DatabaseService {
 
     async populateLeaderboardCollection(name: string): Promise<void> {
         try {
-            await this.db.collection(name).insertMany(DEFAULT_LEADERBOARD);
+            const defaultPopulation = name === LEADERBOARD_CLASSIC_COLLECTION ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
+            if ((await this.db.collection(name).countDocuments()) === 0) {
+                await this.db.collection(name).insertMany(defaultPopulation);
+            }
         } catch (e) {
             throw Error('Data base collection population error');
         }
@@ -49,9 +57,9 @@ export class DatabaseService {
         try {
             const checkCollectionExists = await this.collectionExists(collectionName);
             if (!checkCollectionExists) {
-                await this.database.createCollection(collectionName);
-                await this.database.collection(collectionName).createIndex({ name: 1 }, { unique: true });
-                this.populateLeaderboardCollection(collectionName);
+                await this.db.createCollection(collectionName);
+                await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
+                await this.populateLeaderboardCollection(collectionName);
             }
         } catch (e) {
             throw Error('Data base collection creation error');
@@ -61,10 +69,10 @@ export class DatabaseService {
     private async collectionExists(name: string): Promise<boolean> {
         const collections = await this.db.listCollections().toArray();
         const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === name);
-        if (isCollectionExist) {
-            return true;
+        if (isCollectionExist === undefined) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     private async createBotInfoCollection() {

@@ -1,7 +1,33 @@
-.leaderboards-container {
+.header {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading {
+    animation-name: rotate;
+    animation-duration: 500ms;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-play-state: running;
+}
+
+.mat-icon {
+    vertical-align: middle;
+    color: #ffffff;
+}
+
+.mat-icon:hover {
+    cursor: pointer;
 }
 
 h3 {
@@ -10,13 +36,8 @@ h3 {
     display: flex;
     justify-content: center;
 }
-h4 {
-    font-weight: 100;
-    display: flex;
-    justify-content: center;
-}
 
-mat-dialog-content {
+.mat-dialog-content {
     max-height: 450;
 }
 
@@ -29,12 +50,16 @@ table {
     max-height: 350;
     overflow: auto;
 }
-.mat-header-cell {
-    border-bottom: 2px solid rgba($color: #9d19bed3, $alpha: 1);
-}
-.mat-row .mat-cell {
-    border-bottom: 1px solid;
-    border-top: 1px solid transparent;
+
+.mat-row .mat-cell .mat-header-cell {
     padding: 1%;
     padding-left: 3%;
+}
+
+.header-classic {
+    border-bottom: 3px solid rgba($color: royalblue, $alpha: 1);
+}
+
+.header-log {
+    border-bottom: 3px solid rgba($color: #b61fdbd3, $alpha: 1);
 }

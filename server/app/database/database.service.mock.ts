@@ -1,5 +1,6 @@
-import { Db, MongoClient, MongoClientOptions } from 'mongodb';
-import { MongoMemoryServer } from 'mongodb-memory-server-core';
+import { Db, MongoClient } from 'mongodb';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+
 const DATABASE_NAME = 'database';
 
 export class DatabaseServiceMock {
@@ -7,16 +8,11 @@ export class DatabaseServiceMock {
     private db: Db;
     private client: MongoClient;
 
-    private options: MongoClientOptions = {
-        // useNewUrlParser: true,
-        // useUnifiedTopology: true,
-    };
-
     async start(): Promise<MongoClient | null> {
         if (!this.client) {
             this.mongoServer = await MongoMemoryServer.create();
             const mongoUri = this.mongoServer.getUri();
-            this.client = await MongoClient.connect(mongoUri, this.options);
+            this.client = await MongoClient.connect(mongoUri);
             this.db = this.client.db(DATABASE_NAME);
         }
 

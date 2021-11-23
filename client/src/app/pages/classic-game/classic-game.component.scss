@@ -12,12 +12,26 @@ button {
     margin: 0.5%;
 }
 
-.container {
+.classic-container {
     width: 100vw;
     height: 100vh;
     background: url('^assets/img/classic-bg.jpg') no-repeat center top;
     background-size: 100vw 100vh;
 }
+
+// TODO: change style
+.special-container {
+    width: 100vw;
+    height: 100vh;
+    background: url('^assets/img/classic-bg.jpg') no-repeat center top;
+    background-size: 100vw 100vh;
+    button {
+        background-color: var(--darkgray);
+        border: 2px linear !important;
+        color: var(--white);
+    }
+}
+
 .justified {
     display: flex;
     flex-direction: column;

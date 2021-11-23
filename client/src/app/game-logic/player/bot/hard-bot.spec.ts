@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -114,6 +115,20 @@ describe('HardBot', () => {
         const letters: Letter[] = [{ char: 'A', value: 1 }];
         hardBot.letterRack = letters;
         const exchangeSpy = spyOn(hardBot, 'exchangeAction').and.callThrough();
+
+        hardBot.setActive();
+        tick(TIME_BUFFER_BEFORE_ACTION);
+
+        expect(exchangeSpy).toHaveBeenCalled();
+        tick(TIME_BEFORE_PICKING_ACTION);
+        tick(TIME_BEFORE_PASS);
+    }));
+
+    it('should exchange letters because it cant play and >0 <7 letters left)', fakeAsync(() => {
+        const letters: Letter[] = [{ char: 'A', value: 1 }];
+        hardBot.letterRack = letters;
+        const exchangeSpy = spyOn(hardBot, 'exchangeAction').and.callThrough();
+        spyOnProperty(gameInfo, 'numberOfLettersRemaining').and.returnValue(5);
 
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);

@@ -8,8 +8,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ActionValidatorService } from '@app/game-logic/actions/action-validator/action-validator.service';
 import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
+import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
+import { Player } from '@app/game-logic/player/player';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -23,6 +25,7 @@ describe('GamePageComponent', () => {
     let uiInput: UIInput;
     let mockObservableDisconnect: Subject<void>;
     let mockClosedModal$: Subject<void>;
+    let mockInfo: jasmine.SpyObj<GameInfoService>;
     class ActionValidatorServiceMock {
         sendAction() {
             return;
@@ -59,6 +62,7 @@ describe('GamePageComponent', () => {
         gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
+        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, DisconnectedFromServerComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
@@ -68,6 +72,7 @@ describe('GamePageComponent', () => {
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
                 { provide: MatDialog, useClass: MatDialogMock },
                 { provide: UIInputControllerService, useClass: UIInputControllerServiceMock },
+                { provide: GameInfoService, useValue: mockInfo },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
@@ -166,5 +171,28 @@ describe('GamePageComponent', () => {
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(2);
         expect(component.dialogRef).toBeDefined();
+    });
+
+    it('should open disconnected modal', () => {
+        const spy = spyOn(component, 'openDisconnected');
+        mockObservableDisconnect.next();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('#isItMyTurn should work properly', () => {
+        const mockUser = {} as unknown as Player;
+        mockInfo.user = mockUser;
+        (Object.getOwnPropertyDescriptor(mockInfo, 'activePlayer')?.get as jasmine.Spy<() => Player>).and.returnValue(mockUser);
+        expect(component.isItMyTurn).toBeFalse();
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
+        expect(component.isItMyTurn).toBeFalse();
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
+        (Object.getOwnPropertyDescriptor(mockInfo, 'activePlayer')?.get as jasmine.Spy<() => Player>).and.throwError('error');
+        expect(component.isItMyTurn).toBeFalse();
+    });
+
+    it('#isEndOfGame should work properly', () => {
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.throwError('error');
+        expect(component.isEndOfGame).toBeFalse();
     });
 });

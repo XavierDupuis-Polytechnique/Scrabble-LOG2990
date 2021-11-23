@@ -59,17 +59,10 @@ describe('Router: App', () => {
         });
     }));
 
-    it('navigate to "classic" takes you to /classic', fakeAsync(() => {
-        router.navigate(['/classic']).then(() => {
+    it('navigate to "new-game" takes you to /new-game', fakeAsync(() => {
+        router.navigate(['/new-game']).then(() => {
             tick(1);
-            expect(location.path()).toBe('/classic');
-        });
-    }));
-
-    it('navigate to "log2990" takes you to /log2990', fakeAsync(() => {
-        router.navigate(['/log2990']).then(() => {
-            tick(1);
-            expect(location.path()).toBe('/log2990');
+            expect(location.path()).toBe('/new-game');
         });
     }));
 

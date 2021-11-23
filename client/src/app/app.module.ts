@@ -30,6 +30,7 @@ import { ChatBoxComponent } from '@app/pages/game-page/chat-box/chat-box.compone
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { HorseComponent } from '@app/pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.component';
+import { ObjectiveComponent } from '@app/pages/game-page/objectives/objective-component/objective.component';
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
@@ -37,6 +38,8 @@ import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dia
 import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
 import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
+import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
+
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
@@ -78,6 +81,8 @@ import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-dro
         AdminJoueurVirtuelComponent,
         EditJvDialogComponent,
         AdminDropDbComponent,
+        ObjectivesListComponent,
+        ObjectiveComponent,
     ],
     imports: [
         AppMaterialModule,

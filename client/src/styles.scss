@@ -114,9 +114,13 @@ body {
 h1 {
     display: flex;
     justify-content: center;
-    background-color: rgb(43, 0, 112, 0.9);
     color: rgb(233, 231, 231);
-    border-radius: 0.6rem;
+}
+h2 {
+    margin-bottom: 0px !important;
+    display: flex;
+    justify-content: center;
+    color: rgb(233, 231, 231);
 }
 
 // Font

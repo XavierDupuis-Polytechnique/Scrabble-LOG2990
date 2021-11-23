@@ -160,9 +160,9 @@ describe('ServerGame', () => {
         expect(game.getWinner()[0]).to.be.deep.equal(p2);
     });
 
-    it('endOfTurn should return true and call onEndOfGame if the endState is defined', () => {
+    it('endOfTurn should return true and call onEndOfGame if the endReason is defined', () => {
         game.stop();
-        expect(game.endState).to.be.equal(EndOfGameReason.Other);
+        expect(game.endReason).to.be.equal(EndOfGameReason.Other);
         const gameSpy = spy(game, 'onEndOfGame');
         game['startTurn']();
         expect(gameSpy.called).to.be.equal(true);
@@ -170,17 +170,17 @@ describe('ServerGame', () => {
 
     it('forfeit should return reason forfeit and isEndOFgame should return false', () => {
         game.forfeit('blabla');
-        expect(game.endState).to.be.equal(EndOfGameReason.Forfeit);
+        expect(game.endReason).to.be.equal(EndOfGameReason.Forfeit);
         const result = game['isEndOfGame']();
         expect(result).to.be.equal(false);
     });
 
-    it('endOfTurn should return and call onEndOfGame if the endState is defined', () => {
+    it('endOfTurn should return and call onEndOfGame if the endReason is defined', () => {
         const action = new PassTurn(p1);
         const actionSpy = spy(action, 'execute');
         game.start();
         game.consecutivePass = 6;
-        game.endState = EndOfGameReason.GameEnded;
+        game.endReason = EndOfGameReason.GameEnded;
         const gameSpy = spy(game, 'onEndOfGame');
         game['endOfTurn'](action);
         expect(gameSpy.called).to.be.equal(true);

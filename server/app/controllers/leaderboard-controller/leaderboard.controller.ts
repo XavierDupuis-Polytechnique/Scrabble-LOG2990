@@ -1,4 +1,5 @@
-import { GameMode, LeaderboardService } from '@app/database/leaderboard.service';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
+import { GameMode } from '@app/game/game-mode.enum';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { Service } from 'typedi';
@@ -18,6 +19,10 @@ export class LeaderboardController {
             const gameMode = req.query.gameMode;
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
+                if (scores.length === 0) {
+                    res.sendStatus(StatusCodes.BAD_REQUEST);
+                    return;
+                }
                 res.send(scores);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
@@ -28,7 +33,11 @@ export class LeaderboardController {
             const gameMode = req.query.gameMode;
             try {
                 const score = { name: req.body.name, point: req.body.point };
-                await this.leaderboardService.updateLeaderboard(score, gameMode as GameMode);
+                const isSuccesful = await this.leaderboardService.updateLeaderboard(score, gameMode as GameMode);
+                if (!isSuccesful) {
+                    res.sendStatus(StatusCodes.BAD_REQUEST);
+                    return;
+                }
                 res.sendStatus(StatusCodes.OK);
             } catch (e) {
                 res.sendStatus(StatusCodes.BAD_REQUEST);
@@ -37,7 +46,11 @@ export class LeaderboardController {
 
         this.router.delete('/', async (req: Request, res: Response) => {
             try {
-                await this.leaderboardService.deleteScores();
+                const isSuccessful = await this.leaderboardService.deleteScores();
+                if (!isSuccessful) {
+                    res.sendStatus(StatusCodes.BAD_REQUEST);
+                    return;
+                }
                 res.sendStatus(StatusCodes.OK);
             } catch (e) {
                 res.sendStatus(StatusCodes.BAD_REQUEST);
