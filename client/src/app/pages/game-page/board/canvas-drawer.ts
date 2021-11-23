@@ -1,6 +1,6 @@
 import { Direction } from '@app/game-logic/direction.enum';
 import { Board } from '@app/game-logic/game/board/board';
-import { BORDER, TILE_COLOR } from '@app/pages/game-page/board/canvas-colors';
+import { BORDER_COLOR, TILE_COLOR } from '@app/pages/game-page/board/canvas-colors';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -124,34 +124,40 @@ export class CanvasDrawer {
         this.canvas.fillRect(
             pos.x + 2 * this.canvas.lineWidth,
             pos.y + 2 * this.canvas.lineWidth,
+            this.tileSize - 2 * this.canvas.lineWidth,
+            this.tileSize - 2 * this.canvas.lineWidth,
+        );
+        this.canvas.fillStyle = ' #000000';
+        this.canvas.strokeRect(
+            pos.x + this.canvas.lineWidth,
+            pos.y + this.canvas.lineWidth,
             this.tileSize - this.canvas.lineWidth,
             this.tileSize - this.canvas.lineWidth,
         );
-        this.canvas.fillStyle = ' #000000';
-        this.canvas.strokeRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         this.canvas.fillStyle = '#000000';
 
         this.canvas.textAlign = 'center';
         this.canvas.textBaseline = 'alphabetic';
         const letterWidth = this.canvas.measureText(letter).width;
-        this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
+        // this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
 
         const offset = this.tileSize / 3;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         pos.x += offset;
-        pos.y += this.tileSize * 0.7;
+        pos.y += this.borderWidth + this.tileSize / 2;
         this.canvas.textBaseline = 'bottom';
         this.canvas.fillText(letter, pos.x, pos.y);
 
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
-        pos.x += letterWidth;
+        pos.x += letterWidth * 0.7;
+        pos.y -= this.borderWidth;
         this.canvas.textBaseline = 'top';
         this.canvas.fillText(value.toString(), pos.x, pos.y);
     }
 
     private drawborder() {
-        this.canvas.fillStyle = BORDER;
+        this.canvas.fillStyle = BORDER_COLOR;
         this.canvas.fillRect(0, 0, this.width, this.height);
     }
 
@@ -201,6 +207,7 @@ export class CanvasDrawer {
                 this.canvas.fillStyle = '#D1002D';
             }
         }
+
         this.canvas.fillRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
         this.canvas.fillStyle = '#FFFFFF';
         this.canvas.fillText(s, pos.x + this.tileSize / 2, pos.y + this.tileSize / 5);
