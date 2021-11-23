@@ -205,8 +205,8 @@ describe('PendingGamesComponent', () => {
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
         testPendingGames$.next([
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ]);
         component.pickRandomGame();
         tick(DELAY);

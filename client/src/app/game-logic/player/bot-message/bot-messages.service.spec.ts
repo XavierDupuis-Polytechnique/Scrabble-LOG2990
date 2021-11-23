@@ -52,7 +52,8 @@ describe('bot message service', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('sendAction should call the correct function base on the instance of the action', () => {
+    it('sendAction should call the correct function base on the instance of the action 1/2', () => {
+        spyOn(service, 'sendAlternativeWords');
         const spy = spyOn(service, 'sendPlaceLetterMessage');
         const player = {
             name: 'test',
@@ -62,7 +63,14 @@ describe('bot message service', () => {
         service.sendAction(action);
 
         expect(spy).toHaveBeenCalled();
+    });
 
+    it('sendAction should call the correct function base on the instance of the action 2/2', () => {
+        const player = {
+            name: 'test',
+        };
+        const placement: PlacementSetting = { direction: Direction.Horizontal, x: 7, y: 7 };
+        const action = new PlaceLetter(player as Player, 'allo', placement, TestBed.inject(PointCalculatorService), TestBed.inject(WordSearcher));
         (Object.getOwnPropertyDescriptor(commandExecuterServiceMock, 'isDebugModeActivated')?.get as jasmine.Spy<() => boolean>).and.returnValue(
             true,
         );

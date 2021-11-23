@@ -17,12 +17,14 @@ import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
     let service: GameManagerService;
-    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
-    const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
+    let commandExecuterMock: CommandExecuterService;
+    let leaderboardServiceMock: LeaderboardService;
     const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
     const dict = new DictionaryService(dictHttpServiceMock);
 
     beforeEach(() => {
+        commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
+        leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
