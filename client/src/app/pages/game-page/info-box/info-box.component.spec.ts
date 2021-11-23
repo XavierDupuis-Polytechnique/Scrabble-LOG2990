@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { CommonModule } from '@angular/common';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
@@ -17,6 +18,8 @@ class MockGameInfoService {
     ];
     // eslint-disable-next-line no-invalid-this
     activePlayer = this.players[0];
+    private t = new BehaviorSubject<number | undefined>(2000);
+    private p = new BehaviorSubject<number | undefined>(0.1);
     getPlayerScore(index: number): number {
         return this.players[index].points;
     }
@@ -24,29 +27,30 @@ class MockGameInfoService {
         return this.players.length;
     }
     get timeLeftForTurn(): Observable<number | undefined> {
-        const t = new BehaviorSubject<number | undefined>(undefined);
-        t.next(2000);
-        return t;
+        return this.t;
+    }
+    get timeLeftPercentForTurn(): Observable<number | undefined> {
+        return this.p;
     }
     get numberOfLettersRemaining(): number {
         return LetterCreator.defaultNumberOfLetters;
     }
-
     get winner() {
         return [this.players[0]];
     }
 }
 
-const testMock: MockGameInfoService = new MockGameInfoService();
 describe('InfoBoxComponent', () => {
     let component: InfoBoxComponent;
     let fixture: ComponentFixture<InfoBoxComponent>;
-
+    let testMock: MockGameInfoService;
     beforeEach(async () => {
+        testMock = new MockGameInfoService();
         await TestBed.configureTestingModule({
             imports: [AppMaterialModule, CommonModule],
             declarations: [InfoBoxComponent],
             providers: [{ provide: GameInfoService, useValue: testMock }],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
         fixture = TestBed.createComponent(InfoBoxComponent);
         component = fixture.componentInstance;
@@ -79,5 +83,35 @@ describe('InfoBoxComponent', () => {
     it('timerIsLessThenOneMinute should return false', () => {
         testMock.timeLeft$ = 2 * MILISECONDS_IN_MINUTE;
         expect(component.timerIsLessOneMinute(testMock.timeLeft$)).toBeFalse();
+    });
+
+    it('should not do anything when timerleft is undefined', (done) => {
+        // eslint-disable-next-line dot-notation
+        testMock['t'].next(undefined);
+        component.timeLeft$.subscribe((val) => {
+            expect(val).toBe(undefined);
+            done();
+        });
+    });
+
+    it('should receive time left percent correctly', (done) => {
+        component.timeLeftPercent$.subscribe((val) => {
+            expect(val).toBe(10);
+            done();
+        });
+    });
+
+    it('should receive time left percent undefined correctly', (done) => {
+        // eslint-disable-next-line dot-notation
+        testMock['p'].next(undefined);
+        component.timeLeftPercent$.subscribe((val) => {
+            expect(val).toBe(undefined);
+            done();
+        });
+    });
+
+    it('timer is less than one minute should return true when values are undefined and null', () => {
+        expect(component.timerIsLessOneMinute(null)).toBe(true);
+        expect(component.timerIsLessOneMinute(undefined)).toBe(true);
     });
 });

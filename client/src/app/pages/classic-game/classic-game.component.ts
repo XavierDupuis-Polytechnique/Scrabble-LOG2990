@@ -7,12 +7,14 @@ import { PendingGamesComponent } from '@app/components/modals/pending-games/pend
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
-import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
-import { Subscription } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, of, Subscription } from 'rxjs';
+import { first, takeWhile } from 'rxjs/operators';
 
+// TODO: change name to new-game-component (page)
 @Component({
     selector: 'app-classic-game',
     templateUrl: './classic-game.component.html',
@@ -21,6 +23,8 @@ import { takeWhile } from 'rxjs/operators';
 export class ClassicGameComponent {
     gameSettings: GameSettings;
     startGame$$: Subscription;
+    gameMode = GameMode.Classic;
+
     constructor(
         private router: Router,
         private gameManager: GameManagerService,
@@ -56,13 +60,20 @@ export class ClassicGameComponent {
                 return;
             }
             this.gameSettings = formOnline;
-            this.socketHandler.createGameMulti(formOnline);
+            const onlineGameSettings: OnlineGameSettingsUI = {
+                gameMode: this.gameMode,
+                timePerTurn: formOnline.timePerTurn,
+                playerName: formOnline.playerName,
+                randomBonus: formOnline.randomBonus,
+            };
+            this.socketHandler.createGameMulti(onlineGameSettings);
             const username = formOnline.playerName;
             this.openWaitingForPlayer(username);
         });
     }
 
     openWaitingForPlayer(username: string) {
+        this.startGame$$?.unsubscribe();
         const secondDialogConfig = new MatDialogConfig();
         secondDialogConfig.autoFocus = true;
         secondDialogConfig.disableClose = true;
@@ -75,13 +86,13 @@ export class ClassicGameComponent {
                     this.socketHandler.disconnectSocket();
                 }
             });
-            this.startGame$$?.unsubscribe();
             this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((gameSettings) => {
                 if (!gameSettings) {
                     return;
                 }
                 secondDialogRef.close();
                 this.startOnlineGame(username, gameSettings);
+                this.socketHandler.disconnectSocket();
             });
         });
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
@@ -100,20 +111,28 @@ export class ClassicGameComponent {
     }
 
     openPendingGames() {
+        this.startGame$$?.unsubscribe();
         const pendingGamesDialogConfig = new MatDialogConfig();
         pendingGamesDialogConfig.autoFocus = true;
         pendingGamesDialogConfig.disableClose = true;
         pendingGamesDialogConfig.minWidth = 550;
+        pendingGamesDialogConfig.data = this.gameMode;
         const dialogRef = this.dialog.open(PendingGamesComponent, pendingGamesDialogConfig);
-        dialogRef.afterClosed().subscribe((name: string) => {
-            this.startGame$$?.unsubscribe();
-            this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
-                if (!onlineGameSettings) {
+        dialogRef
+            .afterClosed()
+            .pipe(first())
+            .subscribe((name: string) => {
+                if (!name) {
                     return;
                 }
-                this.startOnlineGame(name, onlineGameSettings);
+                this.startGame$$ = this.socketHandler.startGame$.pipe(takeWhile((val) => !val, true)).subscribe((onlineGameSettings) => {
+                    if (!onlineGameSettings) {
+                        return;
+                    }
+                    this.startOnlineGame(name, onlineGameSettings);
+                    this.socketHandler.disconnectSocket();
+                });
             });
-        });
     }
 
     startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
@@ -125,7 +144,14 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        const gameReady$ = this.gameManager.createGame(this.gameSettings);
+        let gameReady$ = new BehaviorSubject(true);
+        if (this.isSpecialGame) {
+            gameReady$ = this.gameManager.createSpecialGame(this.gameSettings);
+        } else {
+            gameReady$ = this.gameManager.createGame(this.gameSettings);
+
+        }         
+
         if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
         } else {
@@ -134,5 +160,18 @@ export class ClassicGameComponent {
             });
         }
         // TODO - add loading screen?
+        
+    }
+
+    get isSpecialGame() {
+        return this.gameMode === GameMode.Special;
+    }
+
+    set isSpecialGame(value: boolean) {
+        if (value) {
+            this.gameMode = GameMode.Special;
+        } else {
+            this.gameMode = GameMode.Classic;
+        }
     }
 }

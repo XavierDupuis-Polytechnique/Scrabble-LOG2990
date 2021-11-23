@@ -2,7 +2,7 @@ import { HttpException } from '@app/classes/http.exception';
 import { BotInfoController } from '@app/controllers/bot-info.controller';
 import { DebugController } from '@app/controllers/debug.controller';
 import { DictionaryController } from '@app/controllers/dictionary.controller';
-import { LeaderboardController } from '@app/database/leaderboard-controller/leaderboard.controller';
+import { LeaderboardController } from '@app/controllers/leaderboard-controller/leaderboard.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';

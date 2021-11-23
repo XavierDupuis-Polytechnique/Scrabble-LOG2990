@@ -1,12 +1,14 @@
-<h1>Chat</h1>
 <div class="chatContainer" appClickAndClickout [inputComponent]="self" (click)="click()">
     <mat-card #chat class="sharedChat">
         <div
             *ngFor="let message of messages$ | async"
-            [ngClass]="{ System: message.type === 'System', Player1: message.type === 'Player1', Player2: message.type === 'Player2' }"
-            [innerHTML]="generateMessageHTML(message)"
+            class="message"
+            [ngClass]="{ system: message.type === 'System', player1: message.type === 'Player1', player2: message.type === 'Player2' }"
         >
-            {{ message.from }} : {{ message.content }}
+            <b>{{ message.from }} : </b>
+            <span
+                [innerHTML]="generateMessageContentHTML(message.content)"
+            ></span>
         </div>
     </mat-card>
     <mat-form-field appearance="fill">

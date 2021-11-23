@@ -91,6 +91,7 @@
         "eslint-plugin-unicorn": "^35.0.0",
         "mocha": "^9.0.3",
         "mongodb": "^4.1.4",
+        "mongodb-memory-server": "^8.0.2",
         "nodemon": "^2.0.12",
         "nyc": "^15.1.0",
         "rimraf": "3.0.2",

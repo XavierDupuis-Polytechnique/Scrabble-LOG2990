@@ -10,6 +10,7 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Bot } from '@app/game-logic/player/bot/bot';
+import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { placementSettingsToString } from '@app/game-logic/utils';
 
@@ -35,7 +36,11 @@ export class BotMessagesService {
             const pickedWord = action.word;
             this.sendPlaceLetterMessage(pickedWord, placement, name);
             if (this.commandExecuter.isDebugModeActivated) {
-                this.sendAlternativeWords((action.player as Bot).validWordList);
+                if (action.player instanceof HardBot) {
+                    this.sendNextBestWords((action.player as HardBot).bestWordList);
+                } else {
+                    this.sendAlternativeWords((action.player as Bot).validWordList);
+                }
             }
         }
     }
@@ -91,6 +96,15 @@ export class BotMessagesService {
             }
             const subMax = Math.ceil((validWordList.length * i) / DEBUG_ALTERNATIVE_WORDS_COUNT);
             const word = validWordList[subMax];
+            content = content.concat(this.formatAlternativeWord(word));
+        }
+        this.messagesService.receiveSystemMessage(content);
+    }
+
+    sendNextBestWords(bestWordList: ValidWord[]) {
+        let content = END_LINE;
+        for (let i = 1; i < bestWordList.length; i++) {
+            const word = bestWordList[i];
             content = content.concat(this.formatAlternativeWord(word));
         }
         this.messagesService.receiveSystemMessage(content);

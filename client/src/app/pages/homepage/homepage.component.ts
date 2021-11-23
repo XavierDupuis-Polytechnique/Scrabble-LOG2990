@@ -11,7 +11,7 @@ export class HomepageComponent {
     constructor(private matDialog: MatDialog) {}
     openLeaderboard() {
         this.matDialog.open(LeaderboardComponent, {
-            width: '700px',
+            width: '500px',
         });
     }
 }

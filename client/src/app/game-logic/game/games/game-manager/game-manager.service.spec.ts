@@ -2,11 +2,15 @@
 import { TestBed } from '@angular/core/testing';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
+import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
+import { Player } from '@app/game-logic/player/player';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { GameManagerService } from './game-manager.service';
@@ -80,6 +84,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -90,6 +95,48 @@ describe('GameManagerService', () => {
         service.joinOnlineGame(userAuth, onlineGameSettings);
         service.startGame();
         expect().nothing();
+    });
+
+    it('should updateLeaderboard when game is done', () => {
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+            randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
+        service.createGame(gameSettings);
+        (service['game'] as Game)['isEndOfGameSubject'].next();
+        expect(leaderboardServiceMock.updateLeaderboard).toHaveBeenCalled();
+    });
+
+    it('should not updateLeaderboard if game is undefined', () => {
+        const gameSettings: GameSettings = {
+            timePerTurn: 10,
+            playerName: 'allo',
+            botDifficulty: 'easy',
+            randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
+        service.createGame(gameSettings);
+        const game = service['game'] as Game;
+        service['game'] = undefined;
+        service['createOnlinePlayers'](gameSettings.playerName, 'opponentName');
+        game['isEndOfGameSubject'].next();
+        expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
+    });
+
+    it('should not updateLeaderboard if players are undefined', () => {
+        const players = undefined as unknown;
+        service['updateLeaderboard'](players as Player[], GameMode.Classic);
+        expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
+    });
+
+    it('should not updateLeaderboard if player is bot', () => {
+        const mockbot = jasmine.createSpyObj(EasyBot, ['setActive']);
+        const players: Player[] = [mockbot];
+        service['updateLeaderboard'](players, GameMode.Classic);
+        expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
     });
 });
 
@@ -120,6 +167,7 @@ describe('GameManagerService Online Edition', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -150,6 +198,7 @@ describe('GameManagerService Online Edition', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -169,6 +218,7 @@ describe('GameManagerService Online Edition', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -191,6 +241,7 @@ describe('GameManagerService Online Edition', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -215,6 +266,7 @@ describe('GameManagerService Online Edition', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         const userAuth: UserAuth = {
@@ -235,6 +287,7 @@ describe('GameManagerService Online Edition', () => {
             randomBonus: false,
             id: '0',
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         const userAuth: UserAuth = {
             playerName: 'p1',

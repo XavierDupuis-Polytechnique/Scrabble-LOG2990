@@ -8,8 +8,7 @@ import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 export const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
     { path: 'home', component: HomepageComponent },
-    { path: 'classic', component: ClassicGameComponent },
-    { path: 'log2990', component: HomepageComponent },
+    { path: 'new-game', component: ClassicGameComponent },
     { path: 'leaderboard', component: HomepageComponent },
     { path: 'game', component: GamePageComponent },
     { path: 'admin', component: AdminPageComponent },

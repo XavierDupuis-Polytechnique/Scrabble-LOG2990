@@ -14,6 +14,7 @@ import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
@@ -35,7 +36,7 @@ describe('ClassicGameComponent', () => {
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames', 'resetGameToken'],
             ['isDisconnected$', 'startGame$'],
         );
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame']);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame']);
         gameManagerSpy.createGame.and.returnValue(new BehaviorSubject<boolean>(true));
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
@@ -123,6 +124,7 @@ describe('ClassicGameComponent', () => {
             timePerTurn: 3000,
             randomBonus: false,
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
 
         matDialog.open.and.returnValue({
@@ -222,6 +224,7 @@ describe('ClassicGameComponent', () => {
             timePerTurn: 3000,
             randomBonus: false,
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         matDialog.open.and.returnValue({
             afterOpened: () => {
@@ -252,6 +255,7 @@ describe('ClassicGameComponent', () => {
             timePerTurn: 3000,
             randomBonus: false,
             dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         matDialog.open.and.returnValue({
             afterClosed: () => {
@@ -284,5 +288,34 @@ describe('ClassicGameComponent', () => {
         mockStartGame$.next(undefined);
         expect(matDialog.open).toHaveBeenCalled();
         expect(component.startOnlineGame).not.toHaveBeenCalled();
+    });
+
+    it('openPendingGames should not do anything when closing pending name with an undefined name', () => {
+        spyOn(component, 'startOnlineGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of(undefined as unknown as string);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<WaitingForPlayerComponent>);
+        component.openPendingGames();
+        mockStartGame$.next(undefined);
+        expect(matDialog.open).toHaveBeenCalled();
+        expect(component.startOnlineGame).not.toHaveBeenCalled();
+    });
+
+    it('#startSoloGame should create special game', () => {
+        component.gameMode = GameMode.Special;
+        component.startSoloGame();
+        expect(gameManagerSpy.createSpecialGame).toHaveBeenCalled();
+    });
+
+    it('should set isSpecial game properly', () => {
+        component.isSpecialGame = false;
+        expect(component.gameMode).toBe(GameMode.Classic);
+        component.isSpecialGame = true;
+        expect(component.gameMode).toBe(GameMode.Special);
     });
 });

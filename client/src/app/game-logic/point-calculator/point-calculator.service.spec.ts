@@ -320,7 +320,7 @@ describe('PointCalculatorService', () => {
         expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
         const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + pointCalculator.calculatePointsOfRack(game.otherPlayer);
         const otherPlayerEOGamePoints = initialPointPlayer2 - pointCalculator.calculatePointsOfRack(game.otherPlayer);
-        pointCalculator.endOfGamePointDeduction(game as unknown as OfflineGame);
+        pointCalculator.endOfGamePointDeduction(game as OfflineGame);
         expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
         expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);
     });
@@ -339,7 +339,7 @@ describe('PointCalculatorService', () => {
         game.otherPlayer.points = 100;
         game.activePlayer.letterRack = rack;
         game.otherPlayer.letterRack = threeLetterRack;
-        pointCalculator.endOfGamePointDeduction(game as unknown as OfflineGame);
+        pointCalculator.endOfGamePointDeduction(game as OfflineGame);
         expect(game.activePlayer.points).toBe(totalPointsActivePlayer);
         expect(game.otherPlayer.points).toBe(totalPointsOtherPlayer);
     });
