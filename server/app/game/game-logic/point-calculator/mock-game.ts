@@ -2,6 +2,7 @@ import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Board } from '@app/game/game-logic/board/board';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -26,7 +27,7 @@ export class MockGame extends ServerGame {
         gameCompiler: GameCompiler,
         messagesService: SystemMessagesService,
         newGameStateSubject: Subject<GameStateToken>,
-        endGameSubject: Subject<string>,
+        endGameSubject: Subject<EndOfGame>,
     ) {
         super(
             timerController,

@@ -1,6 +1,7 @@
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
@@ -31,7 +32,7 @@ describe('GameCreator', () => {
     const objectiveCreatorStub = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
 
     const newGameStateSubject = new Subject<GameStateToken>();
-    const endGameSubject = new Subject<string>();
+    const endGameSubject = new Subject<EndOfGame>();
     beforeEach(() => {
         id = getRandomInt(Number.MAX_SAFE_INTEGER).toString();
         gameToken = id + 'token';

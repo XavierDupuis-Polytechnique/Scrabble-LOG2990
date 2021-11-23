@@ -5,6 +5,7 @@ import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
 import { RACK_LETTER_COUNT } from '@app/game/game-logic/constants';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { MockGame } from '@app/game/game-logic/point-calculator/mock-game';
@@ -48,7 +49,7 @@ describe('PointCalculatorService', () => {
     const gameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
     const messagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     let newGameStateSubject: Subject<GameStateToken>;
-    let endGameSubject: Subject<string>;
+    let endGameSubject: Subject<EndOfGame>;
     beforeEach(() => {
         game = new MockGame(
             timerController,
