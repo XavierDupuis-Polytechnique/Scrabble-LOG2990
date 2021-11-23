@@ -16,7 +16,6 @@ import { Service } from 'typedi';
 
 @Service()
 export class ObjectiveCreator {
-
     constructor(private objectiveNotifier: ObjectiveNotifierService) {}
 
     chooseObjectives(gameToken: string): GeneratedObjectives {
