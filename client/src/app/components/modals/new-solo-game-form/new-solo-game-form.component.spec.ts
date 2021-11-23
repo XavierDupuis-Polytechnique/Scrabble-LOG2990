@@ -5,11 +5,15 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { DictHttpService } from '@app/services/dict-http.service';
+import { of } from 'rxjs';
 import { NewSoloGameFormComponent } from './new-solo-game-form.component';
 
 describe('NewSoloGameFormComponent', () => {
     let component: NewSoloGameFormComponent;
     let fixture: ComponentFixture<NewSoloGameFormComponent>;
+    const dictHttpServiceSpy = jasmine.createSpyObj('DictHttpService', ['getDictInfoList']);
+    dictHttpServiceSpy.getDictInfoList.and.returnValue(of([{ title: 'testTitle', description: 'testDescription' }]));
 
     const mockDialog = {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -24,6 +28,7 @@ describe('NewSoloGameFormComponent', () => {
                     useValue: {},
                 },
                 { provide: MatDialogRef, useValue: mockDialog },
+                { provide: DictHttpService, useValue: dictHttpServiceSpy },
             ],
             declarations: [NewSoloGameFormComponent],
         }).compileComponents();
