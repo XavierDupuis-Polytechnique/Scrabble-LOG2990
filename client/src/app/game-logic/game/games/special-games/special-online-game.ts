@@ -28,8 +28,8 @@ export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
         return this.publicObjectives.length > 0 && this.privateObjectives.size > 0;
     }
 
-    protected updateClient(gameState: SpecialGameState) {
-        super.updateClient(gameState);
+    receiveState(gameState: SpecialGameState) {
+        super.receiveState(gameState);
         if (!this.hasObjectives) {
             this.publicObjectives = this.createPublicObjectives(gameState.publicObjectives);
             this.privateObjectives = this.createPrivateObjectives(gameState.privateObjectives);
