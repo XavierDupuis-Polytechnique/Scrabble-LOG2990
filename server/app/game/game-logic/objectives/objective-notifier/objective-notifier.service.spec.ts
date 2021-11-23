@@ -29,7 +29,7 @@ describe('ObjectiveNotifierService', () => {
 
     it('should send the correct message for an objective completion', () => {
         const expected = `${objective.owner} a complété l'objectif '${objective.name}' (${objective.points} points)`;
-        service.objectiveCompletion$.subscribe((objectiveCompletion: ObjectiveCompletion) => {
+        service.notification$.subscribe((objectiveCompletion: ObjectiveCompletion) => {
             expect(objectiveCompletion.gameToken).to.be.equal(gameToken);
             expect(objectiveCompletion.message).to.be.equal(expected);
         });

@@ -10,7 +10,7 @@ export interface ObjectiveCompletion {
 @Service()
 export class ObjectiveNotifierService {
     private objectiveCompletionSubject = new Subject<ObjectiveCompletion>();
-    get objectiveCompletion$(): Observable<ObjectiveCompletion> {
+    get notification$(): Observable<ObjectiveCompletion> {
         return this.objectiveCompletionSubject.asObservable();
     }
 

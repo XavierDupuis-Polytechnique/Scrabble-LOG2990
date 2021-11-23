@@ -1,11 +1,13 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 
+import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/constants';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
+import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
 import { Player } from '@app/game/game-logic/player/player';
@@ -18,6 +20,20 @@ import { Subject } from 'rxjs';
 
 const TIME_PER_TURN = 10;
 
+class MockObjective extends Objective {
+    name = 'mockObjective';
+    points = 123;
+    completed = false;
+    get isCompleted(): boolean {
+        return this.completed;
+    }
+    update(): void {
+        this.completed = true;
+    }
+    protected updateProgression(): void {
+        return;
+    }
+}
 class MockAction extends Action {
     protected perform(): void {
         return;
@@ -36,7 +52,25 @@ describe('SpecialServerGame', () => {
     const gameCompilerStub = createSinonStubInstance<GameCompiler>(GameCompiler);
     const systemMessagesServiceStub = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
     const timerControllerStub = createSinonStubInstance<TimerController>(TimerController);
+    const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
     const objectiveCreatorStub = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
+    objectiveCreatorStub.chooseObjectives.callsFake((localGameToken: string) => {
+        const publicObjectives = [];
+        for (let i = 0; i < PUBLIC_OBJECTIVE_COUNT; i++) {
+            publicObjectives.push(new MockObjective(localGameToken, objectiveNotifierStub));
+        }
+
+        const private1 = [];
+        for (let j = 0; j < PRIVATE_OBJECTIVE_COUNT; j++) {
+            private1.push(new MockObjective(localGameToken, objectiveNotifierStub));
+        }
+
+        const private2 = [];
+        for (let j = 0; j < PRIVATE_OBJECTIVE_COUNT; j++) {
+            private2.push(new MockObjective(localGameToken, objectiveNotifierStub));
+        }
+        return { privateObjectives: [private1, private2], publicObjectives };
+    });
     const newGameStateSubject = new Subject<GameStateToken>();
     const endGameSubject = new Subject<string>();
     const gameToken = 'gameToken';
@@ -63,11 +97,18 @@ describe('SpecialServerGame', () => {
         expect(game).to.be.instanceof(SpecialServerGame);
     });
 
+    it('should start a game through super.start', () => {
+        game.start();
+        expect(game.activePlayerIndex).to.not.be.an('undefined');
+        expect(game.publicObjectives).to.not.be.an('undefined');
+        expect(game.privateObjectives).to.not.be.an('undefined');
+    });
+
     it('should allocate private and public objectives', () => {
         game.allocateObjectives();
-        expect(game.publicObjectives.length).to.be.equal(ObjectiveCreator.publicObjectiveCount);
+        expect(game.publicObjectives.length).to.be.equal(PUBLIC_OBJECTIVE_COUNT);
         for (const player of game.players) {
-            expect(game.privateObjectives.get(player.name)?.length).to.be.equal(ObjectiveCreator.privateObjectiveCount);
+            expect(game.privateObjectives.get(player.name)?.length).to.be.equal(PRIVATE_OBJECTIVE_COUNT);
         }
     });
 

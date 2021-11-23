@@ -336,4 +336,15 @@ describe('GameInfoService Online Edition', () => {
         const expected = '0';
         expect(result).toEqual(expected);
     });
+
+    it('#isEndGame should throw when there is no game', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.isEndOfGame;
+        }).toThrow();
+    });
+
+    it('#is special game should return false when there is no game', () => {
+        expect(service.isSpecialGame).toBeFalse();
+    });
 });

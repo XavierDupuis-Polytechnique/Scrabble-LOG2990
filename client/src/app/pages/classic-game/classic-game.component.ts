@@ -143,7 +143,7 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
-        if (this.specialGame) {
+        if (this.isSpecialGame) {
             this.gameManager.createSpecialGame(this.gameSettings);
         } else {
             this.gameManager.createGame(this.gameSettings);
@@ -151,11 +151,11 @@ export class ClassicGameComponent {
         this.router.navigate(['/game']);
     }
 
-    get specialGame() {
+    get isSpecialGame() {
         return this.gameMode === GameMode.Special;
     }
 
-    set specialGame(value: boolean) {
+    set isSpecialGame(value: boolean) {
         if (value) {
             this.gameMode = GameMode.Special;
         } else {

@@ -26,8 +26,15 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
     }
 
     allocateObjectives() {
-        this.allocatePrivateObjectives();
-        this.allocatePublicObjectives();
+        const generatedObjectives = this.objectiveCreator.chooseObjectives();
+        this.publicObjectives = generatedObjectives.publicObjectives;
+
+        this.privateObjectives = new Map<string, Objective[]>();
+        for (let index = 0; index < this.players.length; index++) {
+            const playerName = this.players[index].name;
+            const privateObjectives = generatedObjectives.privateObjectives[index];
+            this.privateObjectives.set(playerName, privateObjectives);
+        }
     }
 
     updateObjectives(action: Action, params: ObjectiveUpdateParams) {
@@ -43,19 +50,5 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         for (const privateObjective of playerObjectives) {
             privateObjective.update(action, params);
         }
-    }
-
-    private allocatePrivateObjectives() {
-        this.privateObjectives = new Map<string, Objective[]>();
-        for (const player of this.players) {
-            const playerPrivateObjectives = this.objectiveCreator.chooseObjectives(ObjectiveCreator.privateObjectiveCount);
-            this.privateObjectives.set(player.name, playerPrivateObjectives);
-        }
-    }
-
-    private allocatePublicObjectives() {
-        this.publicObjectives = [];
-        const publicObjectives = this.objectiveCreator.chooseObjectives(ObjectiveCreator.publicObjectiveCount);
-        this.publicObjectives = publicObjectives;
     }
 }

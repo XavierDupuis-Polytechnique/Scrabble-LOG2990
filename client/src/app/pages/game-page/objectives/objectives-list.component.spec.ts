@@ -4,7 +4,6 @@ import { ObjectivesListComponent } from './objectives-list.component';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 
-
 describe('ObjectivesListComponent', () => {
     let component: ObjectivesListComponent;
     let fixture: ComponentFixture<ObjectivesListComponent>;

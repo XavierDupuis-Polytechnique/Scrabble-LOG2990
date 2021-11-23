@@ -43,8 +43,15 @@ export class SpecialServerGame extends ServerGame {
     }
 
     allocateObjectives() {
-        this.allocatePrivateObjectives();
-        this.allocatePublicObjectives();
+        const generatedObjectives = this.objectiveCreator.chooseObjectives(this.gameToken);
+        this.publicObjectives = generatedObjectives.publicObjectives;
+
+        this.privateObjectives = new Map<string, Objective[]>();
+        for (let index = 0; index < this.players.length; index++) {
+            const playerName = this.players[index].name;
+            const privateObjectives = generatedObjectives.privateObjectives[index];
+            this.privateObjectives.set(playerName, privateObjectives);
+        }
     }
 
     updateObjectives(action: Action, params: ObjectiveUpdateParams) {
@@ -60,19 +67,5 @@ export class SpecialServerGame extends ServerGame {
         for (const privateObjective of playerObjectives) {
             privateObjective.update(action, params);
         }
-    }
-
-    private allocatePrivateObjectives() {
-        this.privateObjectives = new Map<string, Objective[]>();
-        for (const player of this.players) {
-            const playerPrivateObjectives = this.objectiveCreator.chooseObjectives(this.gameToken, ObjectiveCreator.privateObjectiveCount);
-            this.privateObjectives.set(player.name, playerPrivateObjectives);
-        }
-    }
-
-    private allocatePublicObjectives() {
-        this.publicObjectives = [];
-        const publicObjectives = this.objectiveCreator.chooseObjectives(this.gameToken, ObjectiveCreator.publicObjectiveCount);
-        this.publicObjectives = publicObjectives;
     }
 }
