@@ -1,6 +1,16 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
-import { PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/game-logic/constants';
+import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
+import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners/four-corners';
+import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
+import { NineLettersWord } from '@app/game-logic/game/objectives/objectives/nine-letters-word/nine-letters-word';
+import { Palindrome } from '@app/game-logic/game/objectives/objectives/palindrome/palindrome';
+import { SameWordTwice } from '@app/game-logic/game/objectives/objectives/same-word-twice/same-word-twice';
+import { TenWords } from '@app/game-logic/game/objectives/objectives/ten-words/ten-words';
+import { ThreeSameLetters } from '@app/game-logic/game/objectives/objectives/three-same-letters/three-same-letters';
+import { TripleBonus } from '@app/game-logic/game/objectives/objectives/triple-bonus/triple-bonus';
 import { ObjectiveCreator } from './objective-creator.service';
 
 describe('ObjectiveCreator', () => {
@@ -28,44 +38,54 @@ describe('ObjectiveCreator', () => {
     });
 
     it('should to create N unique objective', () => {
-        const createdObjectives = service.chooseObjectives(TOTAL_OBJECTIVE_COUNT);
-        const objectiveNamesSet = new Set<string>(createdObjectives.map((objective) => objective.name));
-        expect(createdObjectives.length).toBe(TOTAL_OBJECTIVE_COUNT);
-        expect(objectiveNamesSet.size).toBe(TOTAL_OBJECTIVE_COUNT);
-        expect(service.availableObjectivesIndex.length).toBe(0);
-    });
-
-    it('should to create N unique objective and then M unique objectives with no overlap', () => {
-        const createdObjectives1 = service.chooseObjectives(PUBLIC_OBJECTIVE_COUNT);
-        const objectiveNamesSet1 = new Set<string>(createdObjectives1.map((objective) => objective.name));
-        expect(objectiveNamesSet1.size).toBe(PUBLIC_OBJECTIVE_COUNT);
-
-        const createdObjectives2 = service.chooseObjectives(PUBLIC_OBJECTIVE_COUNT);
-        const objectiveNamesSet2 = new Set<string>(createdObjectives2.map((objective) => objective.name));
-        expect(objectiveNamesSet2.size).toBe(PUBLIC_OBJECTIVE_COUNT);
-
-        expect(service.availableObjectivesIndex.length).toBe(TOTAL_OBJECTIVE_COUNT - 2 * PUBLIC_OBJECTIVE_COUNT);
-        for (const objective of objectiveNamesSet2) {
-            expect(objectiveNamesSet1.has(objective)).toBeFalsy();
+        const createdObjectives = service.chooseObjectives();
+        const publicObjectives = createdObjectives.publicObjectives;
+        const objectivesNamesSet = new Set<string>(publicObjectives.map((objective) => objective.name));
+        for (const privateObjectiveList of createdObjectives.privateObjectives) {
+            for (const privateObjective of privateObjectiveList) {
+                objectivesNamesSet.add(privateObjective.name);
+            }
         }
+        expect(objectivesNamesSet.size).toEqual(PRIVATE_OBJECTIVE_COUNT * 2 + PUBLIC_OBJECTIVE_COUNT);
     });
 
-    it('should throw error when requesting more than TOTAL_OBJECTIVE_COUNT unique objectives', () => {
-        expect(() => {
-            service.chooseObjectives(TOTAL_OBJECTIVE_COUNT + 1);
-        }).toThrow();
+    it('should to create N unique objective and then N unique objectives with no overlap', () => {
+        const createdObjectives1 = service.chooseObjectives();
+        const publicObjectives1 = createdObjectives1.publicObjectives;
+        const objectivesNamesSet1 = new Set<string>(publicObjectives1.map((objective) => objective.name));
+        for (const privateObjectiveList of createdObjectives1.privateObjectives) {
+            for (const privateObjective of privateObjectiveList) {
+                objectivesNamesSet1.add(privateObjective.name);
+            }
+        }
+        expect(objectivesNamesSet1.size).toEqual(PRIVATE_OBJECTIVE_COUNT * 2 + PUBLIC_OBJECTIVE_COUNT);
+
+        const createdObjectives2 = service.chooseObjectives();
+        const publicObjectives2 = createdObjectives2.publicObjectives;
+        const objectivesNamesSet2 = new Set<string>(publicObjectives2.map((objective) => objective.name));
+        for (const privateObjectiveList of createdObjectives2.privateObjectives) {
+            for (const privateObjective of privateObjectiveList) {
+                objectivesNamesSet2.add(privateObjective.name);
+            }
+        }
+        expect(objectivesNamesSet2.size).toEqual(PRIVATE_OBJECTIVE_COUNT * 2 + PUBLIC_OBJECTIVE_COUNT);
     });
 
-    it('should throw when the objective to create undefined', () => {
-        const objectiveIndex = 100;
+    it('should create the requested objective with corresponding index', () => {
+        expect(service['createObjective'](0)).toBeInstanceOf(FourCorners);
+        expect(service['createObjective'](1)).toBeInstanceOf(TripleBonus);
+        expect(service['createObjective'](2)).toBeInstanceOf(Palindrome);
+        expect(service['createObjective'](3)).toBeInstanceOf(TenWords);
+        expect(service['createObjective'](4)).toBeInstanceOf(NineLettersWord);
+        expect(service['createObjective'](5)).toBeInstanceOf(HalfAlphabet);
+        expect(service['createObjective'](6)).toBeInstanceOf(SameWordTwice);
+        expect(service['createObjective'](7)).toBeInstanceOf(ThreeSameLetters);
+    });
+
+    it('should throw error when requesting an unknown objective index', () => {
         expect(() => {
             // eslint-disable-next-line dot-notation
-            service['createObjective'](objectiveIndex);
+            service['createObjective'](TOTAL_OBJECTIVE_COUNT + 1);
         }).toThrow();
-    });
-
-    it('#chooseObjective should work with default value', () => {
-        const objective = service.chooseObjectives();
-        expect(objective).toBeTruthy();
     });
 });

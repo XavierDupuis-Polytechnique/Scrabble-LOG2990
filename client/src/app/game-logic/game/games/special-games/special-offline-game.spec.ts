@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { TestBed } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
+import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
@@ -59,12 +60,22 @@ describe('SpecialOfflineGame', () => {
         messageSpy = jasmine.createSpyObj('MessagesService', ['receiveSystemMessage', 'onEndOfGame']);
         objectiveNotifierSpy = jasmine.createSpyObj('ObjectiveNotifierService', ['sendObjectiveNotification']);
         objectiveCreator = TestBed.inject(ObjectiveCreator);
-        spyOn(objectiveCreator, 'chooseObjectives').and.callFake((count: number) => {
-            const createdObjectives = [];
-            for (let i = 0; i < count; i++) {
-                createdObjectives.push(new MockObjective(objectiveNotifierSpy));
+        spyOn(objectiveCreator, 'chooseObjectives').and.callFake(() => {
+            const publicObjectives = [];
+            for (let i = 0; i < PUBLIC_OBJECTIVE_COUNT; i++) {
+                publicObjectives.push(new MockObjective(objectiveNotifierSpy));
             }
-            return createdObjectives;
+
+            const private1 = [];
+            for (let j = 0; j < PRIVATE_OBJECTIVE_COUNT; j++) {
+                private1.push(new MockObjective(objectiveNotifierSpy));
+            }
+
+            const private2 = [];
+            for (let j = 0; j < PRIVATE_OBJECTIVE_COUNT; j++) {
+                private2.push(new MockObjective(objectiveNotifierSpy));
+            }
+            return { privateObjectives: [private1, private2], publicObjectives };
         });
         game = new SpecialOfflineGame(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy, objectiveCreator);
         game.players = [p1, p2];
@@ -76,9 +87,9 @@ describe('SpecialOfflineGame', () => {
 
     it('should allocate private and public objectives', () => {
         game.allocateObjectives();
-        expect(game.publicObjectives.length).toBe(ObjectiveCreator.publicObjectiveCount);
+        expect(game.publicObjectives.length).toBe(PUBLIC_OBJECTIVE_COUNT);
         for (const player of game.players) {
-            expect(game.privateObjectives.get(player.name)?.length).toBe(ObjectiveCreator.privateObjectiveCount);
+            expect(game.privateObjectives.get(player.name)?.length).toBe(PRIVATE_OBJECTIVE_COUNT);
         }
     });
 
