@@ -83,4 +83,10 @@ describe('Database service', () => {
         scores = await databaseService.database.collection(LEADERBOARD_LOG_COLLECTION).find({}).toArray();
         expect(scores.length).to.equal(5);
     });
+
+    it('should create the botinfo collection', async () => {
+        const client = await MongoClient.connect(mongoUri);
+        databaseService['db'] = client.db('scrabble');
+        await databaseService['createBotInfoCollection']();
+    });
 });
