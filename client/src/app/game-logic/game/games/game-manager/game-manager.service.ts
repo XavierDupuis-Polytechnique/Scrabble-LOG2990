@@ -7,6 +7,9 @@ import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
@@ -14,9 +17,9 @@ import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.servic
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
-import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { Observable, Subject } from 'rxjs';
@@ -48,6 +51,7 @@ export class GameManagerService {
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
         private onlineActionCompiler: OnlineActionCompilerService,
+        private objectiveCreator: ObjectiveCreator,
         private leaderboardService: LeaderboardService,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
@@ -68,6 +72,7 @@ export class GameManagerService {
             this.messageService,
         );
 
+        // TODO: remove code repetition
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
         const players = this.createPlayers(playerName, botDifficulty);
@@ -85,30 +90,69 @@ export class GameManagerService {
         });
     }
 
+    createSpecialGame(gameSettings: GameSettings): void {
+        this.game = new SpecialOfflineGame(
+            gameSettings.randomBonus,
+            gameSettings.timePerTurn,
+            this.timer,
+            this.pointCalculator,
+            this.boardService,
+            this.messageService,
+            this.objectiveCreator,
+        );
+
+        // TODO remove code repetition
+        const playerName = gameSettings.playerName;
+        const botDifficulty = gameSettings.botDifficulty;
+        const players = this.createPlayers(playerName, botDifficulty);
+        this.allocatePlayers(players);
+        this.info.receiveGame(this.game);
+        (this.game as SpecialOfflineGame).allocateObjectives();
+    }
+
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
         if (this.game) {
             this.stopGame();
         }
+
         if (!gameSettings.opponentName) {
             throw Error('No opponent name was entered');
         }
+
+        if (!gameSettings.playerName) {
+            throw Error('player name not entered');
+        }
+
         const userName = userAuth.playerName;
         const timerPerTurn = Number(gameSettings.timePerTurn);
-        this.game = new OnlineGame(
-            gameSettings.id,
-            timerPerTurn,
-            userName,
-            this.timer,
-            this.gameSocketHandler,
-            this.boardService,
-            this.onlineActionCompiler,
-        );
+        if (gameSettings.gameMode === GameMode.Classic) {
+            this.game = new OnlineGame(
+                gameSettings.id,
+                timerPerTurn,
+                userName,
+                this.timer,
+                this.gameSocketHandler,
+                this.boardService,
+                this.onlineActionCompiler,
+            );
+        } else {
+            this.game = new SpecialOnlineGame(
+                gameSettings.id,
+                timerPerTurn,
+                userName,
+                this.timer,
+                this.gameSocketHandler,
+                this.boardService,
+                this.onlineActionCompiler,
+                this.objectiveCreator,
+            );
+        }
 
         const onlineGame = this.game as OnlineGame;
 
         const opponentName = gameSettings.playerName === userName ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(userName, opponentName);
-        this.allocateOnlinePlayers(players);
+        this.allocatePlayers(players);
         onlineGame.handleUserActions();
 
         this.info.receiveGame(this.game);
@@ -154,10 +198,6 @@ export class GameManagerService {
         return [user, bot];
     }
 
-    private allocatePlayers(players: Player[]) {
-        (this.game as OfflineGame).players = players;
-    }
-
     private createOnlinePlayers(userName: string, opponentName: string): Player[] {
         const user = new User(userName);
         const opponent = new User(opponentName);
@@ -165,7 +205,7 @@ export class GameManagerService {
         return [user, opponent];
     }
 
-    private allocateOnlinePlayers(players: Player[]) {
+    private allocatePlayers(players: Player[]) {
         if (!this.game) {
             return;
         }

@@ -61,11 +61,10 @@ export class GameSocketHandlerService {
 
         this.socket.on('connect_error', () => {
             this.disconnectedFromServerSubject.next();
-            // this.socket.disconnect();
         });
+
         this.socket.on('disconnected', () => {
             this.disconnectedFromServerSubject.next();
-            // this.socket.disconnect();
         });
     }
 

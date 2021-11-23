@@ -254,4 +254,47 @@ describe('CommandParser', () => {
         });
         service.parse(message.content, message.from);
     });
+
+    it('should send error message when message content is empty', () => {
+        errorMessage = 'erreur de syntax: les paramètres sont invalides';
+        service.errorMessage$.subscribe((error) => {
+            errorMessageTest(error, errorMessage);
+        });
+        const placeLetterParams: string[] = [];
+        service['formatPlaceLetter'](placeLetterParams);
+    });
+
+    it('should send error when place letter params arent valid', () => {
+        errorMessage = 'erreur de syntax: les paramètres sont invalides';
+        service.errorMessage$.subscribe((error) => {
+            errorMessageTest(error, errorMessage);
+        });
+        const placeLetterParams = ['aaa', 'b', 'c', 'd'];
+        service['formatPlaceLetter'](placeLetterParams);
+    });
+
+    it('column validation should return false if the columns lenght is not the max place letter args size', () => {
+        const columnsParams = 'h882dsf';
+        expect(service['isValidColumnsFormat'](columnsParams)).toBeFalse();
+    });
+
+    it('should not validate a row with a undefined value', () => {
+        const row = undefined as unknown as number;
+        expect(service['isValidRow'](row)).toBeFalse();
+    });
+
+    it('should not validate a row with a value more then o', () => {
+        const row = 'p'.charCodeAt(0);
+        expect(service['isValidRow'](row)).toBeFalse();
+    });
+
+    it('should not validate word when word is undefined', () => {
+        const word = undefined as unknown as string;
+        expect(service['isValidWord'](word)).toBeFalse();
+    });
+
+    it('should not validate direction when direction is undefined', () => {
+        const direction = undefined as unknown as number;
+        expect(service['isValidDirection'](direction)).toBeFalse();
+    });
 });

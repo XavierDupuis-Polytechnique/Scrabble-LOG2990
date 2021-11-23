@@ -1,5 +1,4 @@
 import { NEW_GAME_TIMEOUT } from '@app/constants';
-import { GameMode } from '@app/database/leaderboard-service/game-mode.enum';
 import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
@@ -9,11 +8,13 @@ import { ActionCompilerService } from '@app/game/game-logic/actions/action-compi
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
+import { GameMode } from '@app/game/game-mode.enum';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
@@ -51,6 +52,7 @@ export class GameManagerService {
         private gameCompiler: GameCompiler,
         private timerController: TimerController,
         private gameActionNotifier: GameActionNotifierService,
+        private objectiveCreator: ObjectiveCreator,
         private leaderboardService: LeaderboardService,
     ) {
         this.gameCreator = new GameCreator(
@@ -60,6 +62,7 @@ export class GameManagerService {
             this.newGameStateSubject,
             this.endGame$,
             this.timerController,
+            this.objectiveCreator,
         );
 
         this.endGame$.subscribe((endOfGame: EndOfGame) => {
@@ -75,7 +78,7 @@ export class GameManagerService {
     }
 
     createGame(gameToken: string, onlineGameSettings: OnlineGameSettings) {
-        const newServerGame = this.gameCreator.createServerGame(onlineGameSettings, gameToken);
+        const newServerGame = this.gameCreator.createGame(onlineGameSettings, gameToken);
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
         this.startInactiveGameDestructionTimer(gameToken);

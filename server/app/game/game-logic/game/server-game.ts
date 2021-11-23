@@ -33,7 +33,7 @@ export class ServerGame {
         public gameToken: string,
         private pointCalculator: PointCalculatorService,
         private gameCompiler: GameCompiler,
-        private messagesService: SystemMessagesService,
+        protected messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
         private endGameSubject: Subject<EndOfGame>,
     ) {
