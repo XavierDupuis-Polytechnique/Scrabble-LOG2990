@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
-import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
 
 @Component({
     selector: 'app-edit-jv-dialog',
@@ -14,7 +14,7 @@ export class EditJvDialogComponent {
     isEdit: boolean = false;
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: BotInfo,
-        private readonly jvHttpService: JvHttpService,
+        private readonly botHttpService: BotHttpService,
         private dialog: MatDialog,
         private dialogRef: MatDialogRef<EditJvDialogComponent>,
     ) {
@@ -24,7 +24,7 @@ export class EditJvDialogComponent {
     }
 
     editBot() {
-        this.jvHttpService.editBot(this.editBotInfo, this.bot).subscribe((res) => {
+        this.botHttpService.editBot(this.editBotInfo, this.bot).subscribe((res) => {
             const ans = JSON.parse(res.toString());
             if (ans === false) {
                 this.dialog.open(AlertDialogComponent, {
@@ -40,7 +40,7 @@ export class EditJvDialogComponent {
     }
 
     addBot() {
-        this.jvHttpService.addBot(this.bot).subscribe((res) => {
+        this.botHttpService.addBot(this.bot).subscribe((res) => {
             const ans = JSON.parse(res.toString());
             if (ans === false) {
                 this.dialog.open(AlertDialogComponent, {

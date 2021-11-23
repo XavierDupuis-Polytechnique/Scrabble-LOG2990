@@ -1,16 +1,16 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { BotInfo, BotType, JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
 
-describe('JvHttpService', () => {
-    let service: JvHttpService;
+describe('BotHttpService', () => {
+    let service: BotHttpService;
     let httpClientMock: HttpTestingController;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
         });
-        service = TestBed.inject(JvHttpService);
+        service = TestBed.inject(BotHttpService);
         httpClientMock = TestBed.inject(HttpTestingController);
     });
 

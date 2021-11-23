@@ -16,7 +16,7 @@ export interface BotInfo {
 @Injectable({
     providedIn: 'root',
 })
-export class JvHttpService {
+export class BotHttpService {
     constructor(private http: HttpClient) {}
     editBot(oldBot: BotInfo, newBot: BotInfo) {
         return this.http.put(`${environment.serverUrl}/botinfo`, [oldBot, newBot]);

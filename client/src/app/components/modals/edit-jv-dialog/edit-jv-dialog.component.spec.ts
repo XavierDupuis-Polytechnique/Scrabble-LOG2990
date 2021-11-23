@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BotType, JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotType } from '@app/services/jv-http.service';
 import { Observable } from 'rxjs';
 import { EditJvDialogComponent } from './edit-jv-dialog.component';
 
@@ -11,11 +11,11 @@ describe('EditJvDialogComponent', () => {
     let matDialogMock: jasmine.SpyObj<MatDialog>;
     let matDialogRefMock: jasmine.SpyObj<MatDialogRef<EditJvDialogComponent>>;
 
-    let jvHttpMock: jasmine.SpyObj<JvHttpService>;
+    let jvHttpMock: jasmine.SpyObj<BotHttpService>;
     beforeEach(async () => {
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         matDialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
-        jvHttpMock = jasmine.createSpyObj('JvHttpService', ['editBot', 'addBot']);
+        jvHttpMock = jasmine.createSpyObj('BotHttpService', ['editBot', 'addBot']);
 
         await TestBed.configureTestingModule({
             declarations: [EditJvDialogComponent],
@@ -23,7 +23,7 @@ describe('EditJvDialogComponent', () => {
                 { provide: MAT_DIALOG_DATA, useValue: String },
                 { provide: MatDialog, useValue: matDialogMock },
                 { provide: MatDialogRef, useValue: matDialogRefMock },
-                { provide: JvHttpService, useValue: jvHttpMock },
+                { provide: BotHttpService, useValue: jvHttpMock },
             ],
         }).compileComponents();
     });

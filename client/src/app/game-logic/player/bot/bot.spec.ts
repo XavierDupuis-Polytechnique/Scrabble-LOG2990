@@ -10,7 +10,7 @@ import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messa
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
 
 describe('Bot', () => {
@@ -18,7 +18,7 @@ describe('Bot', () => {
     let bot: EasyBot;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
-    const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+    const mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
     const obs = of(['Test1', 'Test2', 'Test3']);
     mockBotHttpService.getDataInfo.and.returnValue(obs);
     beforeEach(() => {
@@ -27,7 +27,7 @@ describe('Bot', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: BotMessagesService, useValue: botMessageMock },
-                { provide: JvHttpService, useValue: mockBotHttpService },
+                { provide: BotHttpService, useValue: mockBotHttpService },
             ],
         });
         bot = new EasyBot(
@@ -40,7 +40,7 @@ describe('Bot', () => {
             TestBed.inject(GameInfoService),
             TestBed.inject(CommandExecuterService),
             TestBed.inject(ActionCreatorService),
-            TestBed.inject(JvHttpService),
+            TestBed.inject(BotHttpService),
         );
     });
 

@@ -19,22 +19,22 @@ import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotInfo, BotType, JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
 import { Observable } from 'rxjs';
 
 describe('bot message service', () => {
     let service: BotMessagesService;
     let commandExecuterServiceMock: CommandExecuterService;
     let messagesService: MessagesService;
-    let mockJvHttpService: jasmine.SpyObj<JvHttpService>;
+    let mockBotHttpService: jasmine.SpyObj<BotHttpService>;
     const dict = new DictionaryService();
     beforeEach(() => {
-        mockJvHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+        mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
         const dummyData: BotInfo[] = [{ name: 'Test', canEdit: true, type: BotType.Easy }];
         const obs = new Observable<BotInfo[]>((sub) => {
             sub.next(dummyData);
         });
-        mockJvHttpService.getDataInfo.and.returnValue(obs);
+        mockBotHttpService.getDataInfo.and.returnValue(obs);
 
         commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
         messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
@@ -44,7 +44,7 @@ describe('bot message service', () => {
                 { provide: MessagesService, useValue: messagesService },
                 { provide: CommandExecuterService, useValue: commandExecuterServiceMock },
                 { provide: LocationStrategy, useClass: MockLocationStrategy },
-                { provide: JvHttpService, useValue: mockJvHttpService },
+                { provide: BotHttpService, useValue: mockBotHttpService },
             ],
         });
         service = TestBed.inject(BotMessagesService);

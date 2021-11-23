@@ -1,31 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { AdminDropDbComponent } from './admin-drop-db.component';
-import { JvHttpService } from '@app/services/jv-http.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { DictHttpService } from '@app/services/dict-http.service';
+import { BotHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
+import { AdminDropDbComponent } from './admin-drop-db.component';
 
 describe('AdminDropDbComponent', () => {
     let component: AdminDropDbComponent;
 
-    let jvHttpServiceMock: jasmine.SpyObj<JvHttpService>;
+    let botHttpServiceMock: jasmine.SpyObj<BotHttpService>;
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
     let matDialogMock: jasmine.SpyObj<MatDialog>;
     let fixture: ComponentFixture<AdminDropDbComponent>;
 
     beforeEach(async () => {
-        jvHttpServiceMock = jasmine.createSpyObj('JvHttpService', ['dropTable']);
+        botHttpServiceMock = jasmine.createSpyObj('BotHttpService', ['dropTable']);
         dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['dropTable']);
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         const dummyAnswer = of(true);
-        jvHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
+        botHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
         dictHttpServiceMock.dropTable.and.returnValue(true);
 
         await TestBed.configureTestingModule({
             declarations: [AdminDropDbComponent],
             providers: [
-                { provide: JvHttpService, useValue: jvHttpServiceMock },
+                { provide: BotHttpService, useValue: botHttpServiceMock },
                 { provide: DictHttpService, useValue: dictHttpServiceMock },
                 { provide: MatDialog, useValue: matDialogMock },
             ],
@@ -51,7 +51,7 @@ describe('AdminDropDbComponent', () => {
         component.dropTables();
 
         expect(matDialogMock.open).toHaveBeenCalled();
-        expect(jvHttpServiceMock.dropTable).toHaveBeenCalled();
+        expect(botHttpServiceMock.dropTable).toHaveBeenCalled();
     });
 
     it('dropTables should not call dropTable to service', () => {
@@ -62,13 +62,13 @@ describe('AdminDropDbComponent', () => {
         } as MatDialogRef<AlertDialogComponent>);
         component.dropTables();
 
-        expect(jvHttpServiceMock.dropTable).not.toHaveBeenCalled();
+        expect(botHttpServiceMock.dropTable).not.toHaveBeenCalled();
         expect(dictHttpServiceMock.dropTable).not.toHaveBeenCalled();
     });
 
     it('dropTables cover if path', () => {
         const dummyAnswer = of(false);
-        jvHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
+        botHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
         dictHttpServiceMock.dropTable.and.returnValue(false);
         matDialogMock.open.and.returnValue({
             afterClosed: () => {

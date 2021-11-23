@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
-import { BotInfo, JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
 
 @Component({
     selector: 'app-admin-jv',
@@ -13,7 +13,7 @@ export class AdminJoueurVirtuelComponent implements OnInit {
     dataSource: BotInfo[];
     botDisplayedColumns: string[] = ['name', 'type', 'edit', 'delete'];
 
-    constructor(private readonly jvHttpService: JvHttpService, private dialog: MatDialog) {}
+    constructor(private readonly botHttpService: BotHttpService, private dialog: MatDialog) {}
 
     ngOnInit(): void {
         this.updateList();
@@ -44,13 +44,13 @@ export class AdminJoueurVirtuelComponent implements OnInit {
     }
 
     deleteBot(bot: BotInfo) {
-        this.jvHttpService.deleteBot(bot).subscribe(() => {
+        this.botHttpService.deleteBot(bot).subscribe(() => {
             this.updateList();
         });
     }
 
     private updateList() {
-        this.jvHttpService.getDataInfo().subscribe((res) => {
+        this.botHttpService.getDataInfo().subscribe((res) => {
             const list = res as BotInfo[];
             this.botDataInfo = list;
             this.dataSource = [...this.botDataInfo];

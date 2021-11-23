@@ -12,7 +12,7 @@ import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
@@ -36,15 +36,15 @@ describe('BotCrawler1', () => {
     let boardService: BoardService;
     let botCalculator: BotCalculatorService;
     let actionFactory: ActionCreatorService;
-    let botHttpService: jasmine.SpyObj<JvHttpService>;
+    let botHttpService: jasmine.SpyObj<BotHttpService>;
 
     beforeEach(async () => {
-        botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+        botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
 
         const obs = of(['Test1', 'Test2', 'Test3']);
         botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, { provide: JvHttpService, useValue: botHttpService }],
+            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, { provide: BotHttpService, useValue: botHttpService }],
         });
         boardService = TestBed.inject(BoardService);
         botCalculator = TestBed.inject(BotCalculatorService);
@@ -127,9 +127,9 @@ describe('BotCrawler2', () => {
     let boardService: BoardService;
     let botCalculator: BotCalculatorService;
     let actionFactory: ActionCreatorService;
-    let botHttpService: jasmine.SpyObj<JvHttpService>;
+    let botHttpService: jasmine.SpyObj<BotHttpService>;
     beforeEach(async () => {
-        botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+        botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
 
         const obs = of(['Test1', 'Test2', 'Test3']);
         botHttpService.getDataInfo.and.returnValue(obs);
@@ -138,7 +138,7 @@ describe('BotCrawler2', () => {
                 { provide: DictionaryService, useValue: dict },
                 BotCreatorService,
                 ActionCreatorService,
-                { provide: JvHttpService, useValue: botHttpService },
+                { provide: BotHttpService, useValue: botHttpService },
             ],
         });
         boardService = TestBed.inject(BoardService);

@@ -2,7 +2,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
-import { BotInfo, BotType, JvHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
 import { Observable, of } from 'rxjs';
 import { AdminJoueurVirtuelComponent } from './admin-jv.component';
 
@@ -10,21 +10,21 @@ describe('AdminJvComponent', () => {
     let component: AdminJoueurVirtuelComponent;
     let fixture: ComponentFixture<AdminJoueurVirtuelComponent>;
     let matDialogMock: jasmine.SpyObj<MatDialog>;
-    let jvHttpServiceMock: jasmine.SpyObj<JvHttpService>;
+    let botHttpServiceMock: jasmine.SpyObj<BotHttpService>;
     beforeEach(() => {
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
-        jvHttpServiceMock = jasmine.createSpyObj('JvHttpService', ['deleteBot', 'getDataInfo']);
+        botHttpServiceMock = jasmine.createSpyObj('BotHttpService', ['deleteBot', 'getDataInfo']);
 
         const dummyData: BotInfo[] = [{ name: 'Test', canEdit: true, type: BotType.Easy }];
         const obs = new Observable<BotInfo[]>((sub) => {
             sub.next(dummyData);
         });
-        jvHttpServiceMock.getDataInfo.and.returnValue(obs);
+        botHttpServiceMock.getDataInfo.and.returnValue(obs);
         TestBed.configureTestingModule({
             declarations: [AdminJoueurVirtuelComponent],
             providers: [
                 { provide: MatDialog, useValue: matDialogMock },
-                { provide: JvHttpService, useValue: jvHttpServiceMock },
+                { provide: BotHttpService, useValue: botHttpServiceMock },
             ],
         }).compileComponents();
     });
@@ -55,9 +55,9 @@ describe('AdminJvComponent', () => {
         const obs = new Observable<string>((subscribe) => {
             subscribe.next('');
         });
-        jvHttpServiceMock.deleteBot.and.returnValue(obs);
+        botHttpServiceMock.deleteBot.and.returnValue(obs);
         component.deleteBot(jvMock);
-        expect(jvHttpServiceMock.deleteBot).toHaveBeenCalledWith(jvMock);
+        expect(botHttpServiceMock.deleteBot).toHaveBeenCalledWith(jvMock);
     });
 
     it('showUpdateMenu should open dialog', () => {
