@@ -22,7 +22,7 @@ export class CanvasDrawer {
     private scale: number = 0.5;
     private offset: number;
     private font = 'Arial';
-    // private borderWidth: number = 4;
+    private borderWidth: number = 4;
 
     private indicatorPos: Vec2 = { x: -1, y: -1 };
     private indicatorDir: Direction;
@@ -33,14 +33,14 @@ export class CanvasDrawer {
         this.width = w;
         this.height = h;
         this.canvas.lineWidth = 1;
-        this.tileSize = (this.width - this.canvas.lineWidth * 15) / 16;
-        this.offset = this.tileSize;
+        this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 16) / 16;
+        this.offset = this.tileSize + this.borderWidth;
     }
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
-        // this.drawborder();
+        this.drawborder();
         this.canvas.fillStyle = TILE_COLOR;
-        this.canvas.fillRect(0, 0, this.width, this.height);
+        this.canvas.fillRect(this.borderWidth, this.borderWidth, this.width - 2 * this.borderWidth, this.height - 2 * this.borderWidth);
         this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
@@ -95,27 +95,15 @@ export class CanvasDrawer {
     }
 
     private drawRow(i: number) {
-        const offset = i * (this.canvas.lineWidth + this.tileSize);
+        const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
         this.canvas.fillStyle = '#FFFFFF';
-        this.canvas.fillRect(0, offset, this.width, this.canvas.lineWidth);
-        // const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
-        // this.canvas.strokeStyle = '#000000';
-        // this.canvas.beginPath();
-        // this.canvas.moveTo(this.offset, offset);
-        // this.canvas.lineTo(this.width, offset);
-        // this.canvas.stroke();
+        this.canvas.fillRect(this.borderWidth, offset, this.width - 2 * this.borderWidth - this.canvas.lineWidth, this.canvas.lineWidth);
     }
 
     private drawColumn(i: number) {
-        const offset = i * (this.canvas.lineWidth + this.tileSize);
+        const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
         this.canvas.fillStyle = '#FFFFFF';
-        this.canvas.fillRect(offset, 0, this.canvas.lineWidth, this.height);
-        // const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
-        // this.canvas.strokeStyle = '#000000';
-        // this.canvas.beginPath();
-        // this.canvas.moveTo(offset, this.offset);
-        // this.canvas.lineTo(offset, this.height);
-        // this.canvas.stroke();
+        this.canvas.fillRect(offset, this.borderWidth, this.canvas.lineWidth, this.height - 2 * this.borderWidth - this.canvas.lineWidth);
     }
 
     private drawTile(letter: string, value: number, i: number, j: number) {
@@ -136,10 +124,10 @@ export class CanvasDrawer {
         this.canvas.textBaseline = 'alphabetic';
         const letterWidth = this.canvas.measureText(letter).width;
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
-        // const valueWidth = this.canvas.measureText(value.toString()).width;
-        // const tileWidth = letterWidth + valueWidth;
+        const valueWidth = this.canvas.measureText(value.toString()).width;
+        const tileWidth = letterWidth + valueWidth;
 
-        const offset = this.tileSize / 3;
+        const offset = this.tileSize + tileWidth / 3;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         pos.x += offset;
         pos.y += this.tileSize * 0.7;
@@ -154,11 +142,7 @@ export class CanvasDrawer {
 
     private drawborder() {
         this.canvas.fillStyle = '#000000';
-        this.canvas.fillRect(-5, -5, this.width + 2 * 5, this.height + 2 * 5);
-
-        // this.canvas.fillRect(0, 0, this.offset, this.height + this.offset);
-        // this.canvas.fillRect(0 + this.offset, this.height + this.offset, this.width + this.offset, this.offset);
-        // this.canvas.fillRect(this.width + this.offset, 0 + this.offset, this.offset, this.height + this.offset);
+        this.canvas.fillRect(0, 0, this.width, this.height);
     }
 
     private drawColumnIdentifier() {
@@ -167,7 +151,7 @@ export class CanvasDrawer {
 
         for (let i = 0; i < 15; i++) {
             const letter = String.fromCharCode(i + 65);
-            const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 4;
+            const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 3;
             this.canvas.textBaseline = 'top';
             this.canvas.textAlign = 'center';
             this.canvas.fillText(letter, this.tileSize / 2, offset);
@@ -182,7 +166,7 @@ export class CanvasDrawer {
             const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 2;
             this.canvas.textBaseline = 'top';
             this.canvas.textAlign = 'center';
-            this.canvas.fillText((i + 1).toString(), offset, this.tileSize / 4);
+            this.canvas.fillText((i + 1).toString(), offset, this.tileSize / 3);
         }
     }
 
