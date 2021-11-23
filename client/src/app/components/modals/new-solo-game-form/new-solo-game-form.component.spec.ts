@@ -124,6 +124,7 @@ describe('NewSoloGameFormComponent', () => {
             botDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
             randomBonus: false,
+            dictTitle: '',
         });
     });
 });

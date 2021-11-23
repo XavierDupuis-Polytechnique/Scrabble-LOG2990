@@ -12,7 +12,6 @@ import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
     const letterCreator = new LetterCreator();
@@ -103,7 +102,8 @@ describe('BotCrawler1', () => {
 });
 
 describe('BotCrawler2', () => {
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
     const gameInfo = new GameInfoService(new TimerService());
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);

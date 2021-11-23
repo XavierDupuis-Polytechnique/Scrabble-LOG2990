@@ -16,7 +16,6 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { getRandomInt } from '@app/game-logic/utils';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { UIInputControllerService } from './ui-input-controller.service';
 
 class MockGameInfoService {
@@ -31,7 +30,7 @@ class MockGameInfoService {
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let info: GameInfoService;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;

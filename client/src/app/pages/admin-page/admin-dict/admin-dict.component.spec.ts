@@ -13,7 +13,8 @@ describe('admin-dictionary component', () => {
     let matDialog: jasmine.SpyObj<MatDialog>;
     beforeEach(async () => {
         // eslint-disable-next-line no-unused-vars
-        dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict', 'getDictInfoList', 'delete']);
+        dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict', 'getDictInfoList', 'deleteDict']);
+        dictHttpServiceMock.getDictInfoList.and.returnValue(of([{ id: 1, canEdit: true, description: 'test', title: 'test' }]));
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         jasmine.createSpyObj('AdminDictComponent', ['ngOnInit']);
         await TestBed.configureTestingModule({

@@ -19,7 +19,6 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { OnlineAction, OnlineActionType } from '@app/socket-handler/interfaces/online-action.interface';
 
 class UnknownAction extends Action {
@@ -48,7 +47,7 @@ describe('Service: OnlineActionCompiler', () => {
     let wordSearcher: WordSearcher;
     let letters: Letter[];
     let pointCalculator: PointCalculatorService;
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
 
     beforeEach(() => {

@@ -2,12 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { BotCreatorService } from './bot-creator.service';
 
 describe('BotCreatorService', () => {
     let botCreator: BotCreatorService;
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const mockBotMessageService = jasmine.createSpyObj('BotMessagesService', ['sendAction']);
     const mockCommandExecuter = jasmine.createSpyObj('CommandExecuterService', ['resetDebug']);
     beforeEach(() => {

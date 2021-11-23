@@ -9,21 +9,20 @@ import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('PassTurn', () => {
     let game: OfflineGame;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     const randomBonus = false;
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     beforeEach(() => {
         TestBed.configureTestingModule({ providers: [{ provide: DictionaryService, useValue: dict }] });
         const messageService = TestBed.inject(MessagesService);
         const timerService = TestBed.inject(TimerService);
-        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const pointCalculatorService = TestBed.inject(PointCalculatorService);
         const boardService = TestBed.inject(BoardService);
-        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalculatorService, boardService, messageService);
         game.players.push(player1);
         game.players.push(player2);
     });

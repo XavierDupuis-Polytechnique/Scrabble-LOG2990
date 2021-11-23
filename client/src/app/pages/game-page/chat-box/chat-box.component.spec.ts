@@ -20,7 +20,7 @@ describe('ChatBoxComponent', () => {
     let messageServiceSpy: jasmine.SpyObj<MessagesService>;
     let gameInfoServiceSpy: jasmine.SpyObj<GameInfoService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
-    const httpClient = TestBed.inject(HttpClient);
+    const httpClient = jasmine.createSpyObj('HttpClient', ['get']);
 
     beforeEach(() => {
         messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveMessagePlayer']);

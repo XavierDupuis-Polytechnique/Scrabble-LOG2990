@@ -5,14 +5,14 @@ import { Tile } from '@app/game-logic/game/board/tile';
 import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { MockBoard } from '@app/game-logic/validator/word-search/mocks/mock-board';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('BotCalculatorService', () => {
     let botCalculator: BotCalculatorService;
     let grid: Tile[][];
     let listOfWord: Tile[][];
     let word: Tile[];
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }],

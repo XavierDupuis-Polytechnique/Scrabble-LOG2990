@@ -61,6 +61,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
             botDifficulty: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
             randomBonus: false,
+            dictTitle: '',
         });
     }
 

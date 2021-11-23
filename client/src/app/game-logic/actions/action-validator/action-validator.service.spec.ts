@@ -28,7 +28,6 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -42,7 +41,7 @@ describe('ActionValidatorService', () => {
     let info: GameInfoService;
     let messagesSpy: MessagesService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 

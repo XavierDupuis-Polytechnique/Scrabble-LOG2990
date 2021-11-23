@@ -28,6 +28,14 @@
         [formControlName]="'timePerTurn'"
     ></mat-slider
     ><br />
+    ><br />
+    <mat-form-field>
+        <mat-label>Dictionnaire de la partie</mat-label>
+        <mat-select [formControlName]="'dictTitle'">
+            <mat-option matNativeControl required value="Mon dictionnaire">Dictionnaire par défaut</mat-option>
+            <mat-option matNativeControl required value="Test2">Test2</mat-option>
+        </mat-select>
+    </mat-form-field>
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>

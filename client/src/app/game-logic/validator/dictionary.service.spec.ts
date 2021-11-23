@@ -1,13 +1,12 @@
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
-import { TestBed } from '@angular/core/testing';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('DictionaryService', () => {
-    const dictionaryService = new DictionaryService(TestBed.inject(DictHttpService));
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dictionaryService = new DictionaryService(dictHttpServiceMock);
 
     it('should be created', () => {
         expect(dictionaryService).toBeTruthy();

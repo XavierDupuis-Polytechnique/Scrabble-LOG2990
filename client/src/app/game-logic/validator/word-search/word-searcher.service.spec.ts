@@ -11,14 +11,14 @@ import { DictionaryService } from '@app/game-logic/validator/dictionary.service'
 import { MockBoard } from '@app/game-logic/validator/word-search/mocks/mock-board';
 import { MockDictionaryService } from '@app/game-logic/validator/word-search/mocks/mock-dictionary-service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('WordSearcher', () => {
     let wordSearcher: WordSearcher;
     let mockBoard: MockBoard;
     let boardService: BoardService;
     let pointCalculator: PointCalculatorService;
-    const mockDict = new MockDictionaryService(TestBed.inject(DictHttpService));
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const mockDict = new MockDictionaryService(dictHttpServiceMock);
     let player: Player;
 
     beforeEach(() => {

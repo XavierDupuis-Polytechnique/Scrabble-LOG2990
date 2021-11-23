@@ -18,7 +18,6 @@ import { isCharUpperCase } from '@app/game-logic/utils';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { Word } from '@app/game-logic/validator/word-search/word';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 @Injectable()
 class MockWordSearcher extends WordSearcher {
     validity = true;
@@ -46,7 +45,8 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     const randomBonus = false;
     beforeEach(() => {
         timer = new TimerService();

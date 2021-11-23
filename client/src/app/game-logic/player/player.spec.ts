@@ -14,10 +14,9 @@ import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 
 describe('Player', () => {
-    const dict = new DictionaryService(TestBed.inject(DictHttpService));
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let bot: EasyBot;
     let boardService: BoardService;
     let timer: TimerService;
