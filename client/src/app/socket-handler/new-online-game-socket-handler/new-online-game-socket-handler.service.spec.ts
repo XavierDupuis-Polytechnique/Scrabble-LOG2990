@@ -32,7 +32,13 @@ describe('NewOnlineGameSocketHandler', () => {
 
     it('createGame should emit createGame if game settings are valid and receive pendingGameId', () => {
         const spyWaitingForPlayer = spyOn(service, 'waitForSecondPlayer').and.callThrough();
-        const gameSettings = { playerName: 'allo', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE };
+        const gameSettings = {
+            playerName: 'allo',
+            randomBonus: false,
+            timePerTurn: 65000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
         service.createGameMulti(gameSettings);
         expect(spyWaitingForPlayer).toHaveBeenCalled();
         service.pendingGameId$.pipe(first()).subscribe((value) => {

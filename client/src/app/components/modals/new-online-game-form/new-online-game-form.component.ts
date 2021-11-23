@@ -8,7 +8,7 @@ import {
     MAX_TIME_PER_TURN,
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
-    STEP_TIME_PER_TURN
+    STEP_TIME_PER_TURN,
 } from '@app/game-logic/constants';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';

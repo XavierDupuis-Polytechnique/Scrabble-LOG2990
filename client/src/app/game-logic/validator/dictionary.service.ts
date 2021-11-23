@@ -6,7 +6,7 @@ import {
     DictInitialSearchSettings,
     DictRegexSettings,
     DictSubSearchSettings,
-    DictWholeSearchSettings
+    DictWholeSearchSettings,
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictionaryHelper } from '@app/game-logic/validator/dictionary-helper';

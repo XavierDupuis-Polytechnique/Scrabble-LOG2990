@@ -110,8 +110,21 @@ describe('New Online Game Service', () => {
     });
 
     it('should send gameSettings to players on joinGame', (done) => {
-        const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE };
-        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE };
+        const gameSettingsUI = {
+            playerName: 'name',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
+        const gameSettings = {
+            id: 'a',
+            playerName: 'name',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
 
         newGameManagerService.createPendingGame.returns('a');
         newGameManagerService.joinPendingGame.returns('id'); // ?
