@@ -20,8 +20,9 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         boardService: BoardService,
         messagesService: MessagesService,
         private objectiveCreator: ObjectiveCreator,
+        loadGame: boolean = false,
     ) {
-        super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService);
+        super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService, loadGame);
     }
 
     allocateObjectives() {

@@ -69,7 +69,6 @@ export class GameSocketHandlerService {
         });
         this.socket.on('transitionGameState', (lastGameState: ForfeitedGameSate) => {
             this.receiveTransitionGameState(lastGameState);
-            console.log(lastGameState);
             // this.socket.disconnect();
         });
     }
