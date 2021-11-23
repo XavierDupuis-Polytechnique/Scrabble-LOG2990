@@ -1,5 +1,6 @@
 import { Direction } from '@app/game-logic/direction.enum';
 import { Board } from '@app/game-logic/game/board/board';
+import { TILE_COLOR } from '@app/pages/game-page/board/canvas-colors';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -19,7 +20,7 @@ export class CanvasDrawer {
     fontSize = 20;
     private tileSize: number;
     private scale: number = 0.5;
-    private offset: number = 50;
+    private offset: number = 0; //
     private font = 'Arial';
 
     private indicatorPos: Vec2 = { x: -1, y: -1 };
@@ -30,17 +31,20 @@ export class CanvasDrawer {
         this.canvas.lineWidth = 1;
         this.width = w;
         this.height = h;
-        this.canvas.lineWidth = 1;
-        this.tileSize = (this.width - this.offset - this.canvas.lineWidth * 16) / 15;
+        // this.canvas.lineWidth = 1;
+        this.tileSize = (this.width - this.canvas.lineWidth * 15) / 16;
+        this.offset = this.tileSize;
     }
     drawGrid(board: Board, fontsize: number): void {
+        // this.canvas.imageSmoothingEnabled = false;
+
         this.canvas.clearRect(0, 0, this.width, this.height);
-        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillStyle = TILE_COLOR;
         this.canvas.fillRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        for (let i = 0; i < 16; i++) {
+        for (let i = 1; i < 16; i++) {
             this.drawRow(i);
             this.drawColumn(i);
         }
@@ -92,31 +96,38 @@ export class CanvasDrawer {
     }
 
     private drawRow(i: number) {
-        const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
-        this.canvas.strokeStyle = '#000000';
-        this.canvas.beginPath();
-        this.canvas.moveTo(this.offset, offset);
-        this.canvas.lineTo(this.width, offset);
-        this.canvas.stroke();
+        const offset = i * (this.canvas.lineWidth + this.tileSize);
+        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillRect(0, offset, this.width, this.canvas.lineWidth);
+        // const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
+        // this.canvas.strokeStyle = '#000000';
+        // this.canvas.beginPath();
+        // this.canvas.moveTo(this.offset, offset);
+        // this.canvas.lineTo(this.width, offset);
+        // this.canvas.stroke();
     }
 
     private drawColumn(i: number) {
-        const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
-        this.canvas.strokeStyle = '#000000';
-        this.canvas.beginPath();
-        this.canvas.moveTo(offset, this.offset);
-        this.canvas.lineTo(offset, this.height);
-        this.canvas.stroke();
+        const offset = i * (this.canvas.lineWidth + this.tileSize);
+        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillRect(offset, 0, this.canvas.lineWidth, this.height);
+        // const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset;
+        // this.canvas.strokeStyle = '#000000';
+        // this.canvas.beginPath();
+        // this.canvas.moveTo(offset, this.offset);
+        // this.canvas.lineTo(offset, this.height);
+        // this.canvas.stroke();
     }
+
     private drawTile(letter: string, value: number, i: number, j: number) {
         const pos = this.tilePositionToCoord(j, i);
-        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillStyle = TILE_COLOR;
         this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
 
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         this.canvas.fillStyle = '#000000';
 
-        this.canvas.textAlign = 'start';
+        this.canvas.textAlign = 'center';
         this.canvas.textBaseline = 'alphabetic';
         const letterWidth = this.canvas.measureText(letter).width;
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
@@ -145,7 +156,7 @@ export class CanvasDrawer {
             const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 3;
             this.canvas.textBaseline = 'top';
             this.canvas.textAlign = 'center';
-            this.canvas.fillText(letter, 20, offset);
+            this.canvas.fillText(letter, this.tileSize / 3, offset);
         }
     }
 
@@ -157,9 +168,10 @@ export class CanvasDrawer {
             const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 2;
             this.canvas.textBaseline = 'top';
             this.canvas.textAlign = 'center';
-            this.canvas.fillText((i + 1).toString(), offset, 20);
+            this.canvas.fillText((i + 1).toString(), offset, this.tileSize / 4);
         }
     }
+
     private drawBonus(i: number, j: number, type: BonusType, mul: number) {
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
         this.canvas.textAlign = 'start';

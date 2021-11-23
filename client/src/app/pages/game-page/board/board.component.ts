@@ -8,7 +8,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 import { CanvasDrawer } from '@app/pages/game-page/board/canvas-drawer';
 
-const MAX_FONT_SIZE = 25;
+const MAX_FONT_SIZE = 22;
 const MIN_FONT_SIZE = 14;
 
 @Component({
@@ -50,10 +50,25 @@ export class BoardComponent implements AfterViewInit, DoCheck {
 
     setupCanvasDrawer() {
         if (this.canvasElement) {
-            this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
-            this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
+            const canvasHeight = document.getElementById('canvas')?.offsetHeight as number;
+            const canvasWidth = document.getElementById('canvas')?.offsetWidth as number;
+            console.log(canvasHeight, canvasWidth);
+            console.log(document.getElementById('canvas')?.clientHeight, document.getElementById('canvas')?.clientWidth);
+            this.canvasElement.style.width = '750px';
+            this.canvasElement.style.height = this.canvasElement.style.width;
 
-            this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
+            this.canvasElement.setAttribute('width', '1500px');
+            this.canvasElement.setAttribute('height', '1500px'); // TODO
+            // this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
+            // this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
+
+            this.canvasDrawer = new CanvasDrawer(
+                this.canvasContext,
+                Math.floor(this.canvasElement.clientWidth),
+                Math.floor(this.canvasElement.clientHeight),
+            );
+
+            this.canvasContext.scale(2, 2);
         }
     }
 
