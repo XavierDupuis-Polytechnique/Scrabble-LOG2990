@@ -50,20 +50,9 @@ export class BoardComponent implements AfterViewInit, DoCheck {
 
     setupCanvasDrawer() {
         if (this.canvasElement) {
-            // this.canvasElement.style.width = '50%';
-            // this.canvasElement.style.height = this.canvasElement.style.width;
-
-            // this.canvasElement.setAttribute('width', '100%');
-            // this.canvasElement.setAttribute('height', '100%'); // TODO
-
             this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
             this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
-
-            console.log(this.canvasElement.clientHeight, this.canvasElement.clientWidth);
-
             this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
-
-            // this.canvasContext.scale(2, 2);
         }
     }
 
