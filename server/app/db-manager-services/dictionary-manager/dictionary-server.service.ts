@@ -108,8 +108,8 @@ export class DictionaryServerService {
 
     private saveToFile(dictTitle: string) {
         const fileName = (folderPath + dictTitle + '.json').replace(/\s/g, '');
-        fs.writeFile(fileName, JSON.stringify(this.getDictByTitle(dictTitle)), (err: unknown) => {
-            if (err) return false; // TODO Do something if fail?
+        fs.writeFile(fileName, JSON.stringify(this.getDictByTitle(dictTitle)), () => {
+            return false; // TODO Do something if fail?
         });
     }
 
