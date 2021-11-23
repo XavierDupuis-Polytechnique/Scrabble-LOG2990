@@ -14,16 +14,19 @@ import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.servic
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
+import { GameMode } from '@app/leaderboard/game-mode.enum';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { Observable, Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root',
 })
 export class GameManagerService {
-    private game: Game | null;
+    private game: Game | undefined;
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
@@ -45,6 +48,7 @@ export class GameManagerService {
         private gameSocketHandler: GameSocketHandlerService,
         private onlineChat: OnlineChatHandlerService,
         private onlineActionCompiler: OnlineActionCompilerService,
+        private leaderboardService: LeaderboardService,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -69,6 +73,16 @@ export class GameManagerService {
         const players = this.createPlayers(playerName, botDifficulty);
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
+
+        this.game.isEndOfGame$.pipe(first()).subscribe(() => {
+            if (this.game === undefined) {
+                return;
+            }
+            // TODO: unComment when merge branch Objective and delete line 83
+            // const mode = this.game instanceof SpecialOffline ? GameMode.Classic : GameMode.Log;
+            const mode = GameMode.Classic;
+            this.updateLeaderboard(this.game.players, mode);
+        });
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -109,10 +123,7 @@ export class GameManagerService {
         if (!this.game) {
             throw Error('No game created yet');
         }
-
-        if (this.game) {
-            this.game.start();
-        }
+        this.game.start();
     }
 
     stopGame(): void {
@@ -122,8 +133,20 @@ export class GameManagerService {
         }
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
+        this.game = undefined;
     }
 
+    private updateLeaderboard(players: Player[], mode: GameMode) {
+        if (players === undefined) {
+            return;
+        }
+        for (const player of players) {
+            if (player instanceof User) {
+                const score = { mode: GameMode.Classic, name: player.name, point: player.points };
+                this.leaderboardService.updateLeaderboard(mode, score);
+            }
+        }
+    }
     private createPlayers(playerName: string, botDifficulty: string): Player[] {
         const user = new User(playerName);
         const bot = this.botService.createBot(playerName, botDifficulty);

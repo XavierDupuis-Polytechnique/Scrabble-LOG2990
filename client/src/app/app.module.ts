@@ -8,6 +8,7 @@ import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-so
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
+import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderboard.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -59,6 +60,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
         JoinOnlineGameComponent,
         DisconnectedFromServerComponent,
         ErrorDialogComponent,
+        LeaderboardComponent,
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,

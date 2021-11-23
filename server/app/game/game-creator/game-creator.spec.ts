@@ -1,6 +1,7 @@
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -23,7 +24,7 @@ describe('GameCreator', () => {
     let gameToken: string;
     const pointCalculatorStub: SinonStubbedInstance<PointCalculatorService> = createStubInstance(PointCalculatorService);
     const newGameStateSubject = new Subject<GameStateToken>();
-    const endGameSubject = new Subject<string>();
+    const endGameSubject = new Subject<EndOfGame>();
     beforeEach(() => {
         id = getRandomInt(Number.MAX_SAFE_INTEGER).toString();
         gameToken = id + 'token';

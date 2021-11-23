@@ -12,6 +12,7 @@ import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { GameInfoService } from './game-info.service';
 
@@ -185,9 +186,12 @@ describe('GameInfoService Online Edition', () => {
     let onlineGame: OnlineGame;
     let timer: TimerService;
     let board: BoardService;
+    const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: LeaderboardService, useValue: leaderboardServiceMock }],
+        });
         service = TestBed.inject(GameInfoService);
         timer = TestBed.inject(TimerService);
         board = TestBed.inject(BoardService);
