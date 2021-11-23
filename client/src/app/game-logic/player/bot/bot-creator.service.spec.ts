@@ -12,7 +12,7 @@ describe('BotCreatorService', () => {
     const mockBotMessageService = jasmine.createSpyObj('BotMessagesService', ['sendAction']);
     const mockCommandExecuter = jasmine.createSpyObj('CommandExecuterService', ['resetDebug']);
     const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
-    const obs = of(["Test1", "Test2", "Test3"])
+    const obs = of(['Test1', 'Test2', 'Test3']);
     mockBotHttpService.getDataInfo.and.returnValue(obs);
     beforeEach(() => {
         TestBed.configureTestingModule({

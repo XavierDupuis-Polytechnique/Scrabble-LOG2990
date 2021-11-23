@@ -33,7 +33,7 @@ describe('HardBot', () => {
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
 
     const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
-    const obs = of(["Test1", "Test2", "Test3"])
+    const obs = of(['Test1', 'Test2', 'Test3']);
     mockBotHttpService.getDataInfo.and.returnValue(obs);
 
     beforeEach(() => {

@@ -31,6 +31,8 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotInfo, BotType, JvHttpService } from '@app/services/jv-http.service';
+import { Observable } from 'rxjs';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -61,8 +63,15 @@ describe('ActionValidatorService', () => {
             return;
         }
     }
-
+    let mockJvHttpService: jasmine.SpyObj<JvHttpService>;
     beforeEach(() => {
+        mockJvHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
+        const dummyData: BotInfo[] = [{ name: 'Test', canEdit: true, type: BotType.Easy }];
+        const obs = new Observable<BotInfo[]>((sub) => {
+            sub.next(dummyData);
+        });
+        mockJvHttpService.getDataInfo.and.returnValue(obs);
+
         messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
         commandExecuterSpy = jasmine.createSpyObj(CommandExecuterService, ['any']);
         TestBed.configureTestingModule({
@@ -70,6 +79,7 @@ describe('ActionValidatorService', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesSpy },
                 { provide: CommandExecuterService, useValue: commandExecuterSpy },
+                { provide: JvHttpService, useValue: mockJvHttpService },
             ],
         });
         service = TestBed.inject(ActionValidatorService);

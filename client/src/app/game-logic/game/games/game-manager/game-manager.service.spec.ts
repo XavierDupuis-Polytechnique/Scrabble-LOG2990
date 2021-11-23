@@ -23,12 +23,11 @@ describe('GameManagerService', () => {
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
     const botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
 
-    const obs = of(["Test1", "Test2", "Test3"])
+    const obs = of(['Test1', 'Test2', 'Test3']);
     botHttpService.getDataInfo.and.returnValue(obs);
 
     const dict = new DictionaryService();
     beforeEach(() => {
-        leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
@@ -148,7 +147,7 @@ describe('GameManagerService Online Edition', () => {
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
     const mockBotHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
-    const obs = of(["Test1", "Test2", "Test3"])
+    const obs = of(['Test1', 'Test2', 'Test3']);
     mockBotHttpService.getDataInfo.and.returnValue(obs);
     const dict = new DictionaryService();
     beforeEach(() => {

@@ -41,7 +41,7 @@ describe('BotCrawler1', () => {
     beforeEach(async () => {
         botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
 
-        const obs = of(["Test1", "Test2", "Test3"])
+        const obs = of(['Test1', 'Test2', 'Test3']);
         botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, { provide: JvHttpService, useValue: botHttpService }],
@@ -131,7 +131,7 @@ describe('BotCrawler2', () => {
     beforeEach(async () => {
         botHttpService = jasmine.createSpyObj('JvHttpService', ['getDataInfo']);
 
-        const obs = of(["Test1", "Test2", "Test3"])
+        const obs = of(['Test1', 'Test2', 'Test3']);
         botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
             providers: [

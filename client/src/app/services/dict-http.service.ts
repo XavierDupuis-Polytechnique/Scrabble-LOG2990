@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Injectable } from '@angular/core';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
