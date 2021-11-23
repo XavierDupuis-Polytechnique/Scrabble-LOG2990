@@ -20,8 +20,9 @@ export class CanvasDrawer {
     fontSize = 20;
     private tileSize: number;
     private scale: number = 0.5;
-    private offset: number = 3;
+    private offset: number;
     private font = 'Arial';
+    // private borderWidth: number = 4;
 
     private indicatorPos: Vec2 = { x: -1, y: -1 };
     private indicatorDir: Direction;
@@ -37,6 +38,7 @@ export class CanvasDrawer {
     }
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
+        // this.drawborder();
         this.canvas.fillStyle = TILE_COLOR;
         this.canvas.fillRect(0, 0, this.width, this.height);
         this.canvas.fillStyle = '#000000';
@@ -48,7 +50,6 @@ export class CanvasDrawer {
         }
         this.drawColumnIdentifier();
         this.drawRowIdentifier();
-        // this.drawborder();
 
         for (let i = 0; i < board.grid.length; i++) {
             for (let j = 0; j < board.grid.length; j++) {
@@ -151,13 +152,14 @@ export class CanvasDrawer {
         this.canvas.fillText(value.toString(), pos.x, pos.y);
     }
 
-    // private drawborder() {
-    //     this.canvas.fillStyle = '#000000';
-    //     this.canvas.fillRect(0, 0, this.width + this.offset, this.offset);
-    //     this.canvas.fillRect(0, 0, this.offset, this.height + this.offset);
-    //     this.canvas.fillRect(0 + this.offset, this.height + this.offset, this.width + this.offset, this.offset);
-    //     this.canvas.fillRect(this.width + this.offset, 0 + this.offset, this.offset, this.height + this.offset);
-    // }
+    private drawborder() {
+        this.canvas.fillStyle = '#000000';
+        this.canvas.fillRect(-5, -5, this.width + 2 * 5, this.height + 2 * 5);
+
+        // this.canvas.fillRect(0, 0, this.offset, this.height + this.offset);
+        // this.canvas.fillRect(0 + this.offset, this.height + this.offset, this.width + this.offset, this.offset);
+        // this.canvas.fillRect(this.width + this.offset, 0 + this.offset, this.offset, this.height + this.offset);
+    }
 
     private drawColumnIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
