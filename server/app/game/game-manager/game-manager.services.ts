@@ -1,10 +1,12 @@
 import { NEW_GAME_TIMEOUT } from '@app/constants';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
@@ -12,6 +14,7 @@ import { PointCalculatorService } from '@app/game/game-logic/point-calculator/po
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { BindedSocket } from '@app/game/game-manager/binded-client.interface';
+import { GameMode } from '@app/game/game-mode.enum';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
@@ -30,7 +33,7 @@ export class GameManagerService {
     activePlayers = new Map<string, PlayerRef>(); // gameToken => PlayerRef[]
     linkedClients = new Map<string, BindedSocket[]>(); // gameToken => BindedSocket[]
 
-    private endGame$ = new Subject<string>(); // gameToken
+    private endGame$ = new Subject<EndOfGame>(); // gameToken
 
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
@@ -50,6 +53,7 @@ export class GameManagerService {
         private timerController: TimerController,
         private gameActionNotifier: GameActionNotifierService,
         private objectiveCreator: ObjectiveCreator,
+        private leaderboardService: LeaderboardService,
     ) {
         this.gameCreator = new GameCreator(
             this.pointCalculator,
@@ -61,7 +65,14 @@ export class GameManagerService {
             this.objectiveCreator,
         );
 
-        this.endGame$.subscribe((gameToken: string) => {
+        this.endGame$.subscribe((endOfGame: EndOfGame) => {
+            const gameToken = endOfGame.gameToken;
+            if (endOfGame.reason === EndOfGameReason.GameEnded) {
+                this.updateLeaderboard(endOfGame.players);
+            }
+            if (endOfGame.reason === EndOfGameReason.Forfeit) {
+                this.updateLeaderboard(endOfGame.players);
+            }
             this.deleteGame(gameToken);
         });
     }
@@ -165,7 +176,6 @@ export class GameManagerService {
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
-        game.stop();
     }
 
     private deleteInactiveGame(gameToken: string) {
@@ -179,5 +189,12 @@ export class GameManagerService {
     private deleteGame(gameToken: string) {
         this.activeGames.delete(gameToken);
         this.linkedClients.delete(gameToken);
+    }
+
+    private updateLeaderboard(players: Player[]) {
+        for (const player of players) {
+            const score = { name: player.name, point: player.points };
+            this.leaderboardService.updateLeaderboard(score, GameMode.Classic);
+        }
     }
 }

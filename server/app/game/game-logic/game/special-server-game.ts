@@ -1,6 +1,7 @@
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
@@ -22,7 +23,7 @@ export class SpecialServerGame extends ServerGame {
         gameCompiler: GameCompiler,
         messagesService: SystemMessagesService,
         newGameStateSubject: Subject<GameStateToken>,
-        endGameSubject: Subject<string>,
+        endGameSubject: Subject<EndOfGame>,
         private objectiveCreator: ObjectiveCreator,
     ) {
         super(
@@ -43,8 +44,15 @@ export class SpecialServerGame extends ServerGame {
     }
 
     allocateObjectives() {
-        this.allocatePrivateObjectives();
-        this.allocatePublicObjectives();
+        const generatedObjectives = this.objectiveCreator.chooseObjectives(this.gameToken);
+        this.publicObjectives = generatedObjectives.publicObjectives;
+
+        this.privateObjectives = new Map<string, Objective[]>();
+        for (let index = 0; index < this.players.length; index++) {
+            const playerName = this.players[index].name;
+            const privateObjectives = generatedObjectives.privateObjectives[index];
+            this.privateObjectives.set(playerName, privateObjectives);
+        }
     }
 
     updateObjectives(action: Action, params: ObjectiveUpdateParams) {
@@ -60,19 +68,5 @@ export class SpecialServerGame extends ServerGame {
         for (const privateObjective of playerObjectives) {
             privateObjective.update(action, params);
         }
-    }
-
-    private allocatePrivateObjectives() {
-        this.privateObjectives = new Map<string, Objective[]>();
-        for (const player of this.players) {
-            const playerPrivateObjectives = this.objectiveCreator.chooseObjectives(this.gameToken, ObjectiveCreator.privateObjectiveCount);
-            this.privateObjectives.set(player.name, playerPrivateObjectives);
-        }
-    }
-
-    private allocatePublicObjectives() {
-        this.publicObjectives = [];
-        const publicObjectives = this.objectiveCreator.chooseObjectives(this.gameToken, ObjectiveCreator.publicObjectiveCount);
-        this.publicObjectives = publicObjectives;
     }
 }

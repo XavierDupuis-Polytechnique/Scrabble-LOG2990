@@ -1,6 +1,7 @@
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
@@ -19,7 +20,7 @@ export class GameCreator {
         private gameCompiler: GameCompiler,
         private messagesService: SystemMessagesService,
         private newGameStateSubject: Subject<GameStateToken>,
-        private endGameSubject: Subject<string>,
+        private endGameSubject: Subject<EndOfGame>,
         private timerController: TimerController,
         private objectiveCreator: ObjectiveCreator,
     ) {}

@@ -35,7 +35,7 @@ describe('ClassicGameComponent', () => {
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames', 'resetGameToken'],
             ['isDisconnected$', 'startGame$'],
         );
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame']);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame']);
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
@@ -281,5 +281,34 @@ describe('ClassicGameComponent', () => {
         mockStartGame$.next(undefined);
         expect(matDialog.open).toHaveBeenCalled();
         expect(component.startOnlineGame).not.toHaveBeenCalled();
+    });
+
+    it('openPendingGames should not do anything when closing pending name with an undefined name', () => {
+        spyOn(component, 'startOnlineGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of(undefined as unknown as string);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<WaitingForPlayerComponent>);
+        component.openPendingGames();
+        mockStartGame$.next(undefined);
+        expect(matDialog.open).toHaveBeenCalled();
+        expect(component.startOnlineGame).not.toHaveBeenCalled();
+    });
+
+    it('#startSoloGame should create special game', () => {
+        component.gameMode = GameMode.Special;
+        component.startSoloGame();
+        expect(gameManagerSpy.createSpecialGame).toHaveBeenCalled();
+    });
+
+    it('should set isSpecial game properly', () => {
+        component.isSpecialGame = false;
+        expect(component.gameMode).toBe(GameMode.Classic);
+        component.isSpecialGame = true;
+        expect(component.gameMode).toBe(GameMode.Special);
     });
 });

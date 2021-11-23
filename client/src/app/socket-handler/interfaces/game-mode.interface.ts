@@ -1,4 +1,4 @@
 export enum GameMode {
-    Classic = 'Classic',
-    Special = 'Special',
+    Classic = 'classic',
+    Special = 'special',
 }

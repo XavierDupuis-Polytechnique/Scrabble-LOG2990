@@ -2,6 +2,6 @@
     <app-header-bar></app-header-bar>
     <div class="justified">
         <button mat-flat-button color="primary" [routerLink]="['/new-game']">Nouvelle Partie</button>
-        <button mat-flat-button color="primary" [routerLink]="['/leaderboard']">Meilleurs Scores</button>
+        <button mat-flat-button color="primary" (click)="openLeaderboard()">Meilleurs Scores</button>
     </div>
 </div>

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT, TOTAL_OBJECTIVE_COUNT } from '@app/game-logic/constants';
+import { GeneratedObjectives } from '@app/game-logic/game/objectives/objective-creator/generated-objectives.interface';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { FourCorners } from '@app/game-logic/game/objectives/objectives/four-corners/four-corners';
@@ -18,35 +19,37 @@ import { getRandomInt } from '@app/game-logic/utils';
     providedIn: 'root',
 })
 export class ObjectiveCreator {
-    static privateObjectiveCount = PRIVATE_OBJECTIVE_COUNT;
-    static publicObjectiveCount = PUBLIC_OBJECTIVE_COUNT;
-    private static objectiveCount = TOTAL_OBJECTIVE_COUNT;
-    availableObjectivesIndex: number[];
+    constructor(private objectiveNotifier: ObjectiveNotifierService) {}
 
-    constructor(private objectiveNotifier: ObjectiveNotifierService) {
-        this.availableObjectivesIndex = [];
-        for (let index = 0; index < ObjectiveCreator.objectiveCount; index++) {
-            this.availableObjectivesIndex.push(index);
-        }
-    }
+    chooseObjectives(): GeneratedObjectives {
+        const availableObjectivesIndex = this.getAvailableObjectivesIndex();
 
-    chooseObjectives(count: number = 1): Objective[] {
-        if (this.availableObjectivesIndex.length < count) {
-            throw new Error('Cannot create ' + count + ' unique objectives : only ' + this.availableObjectivesIndex.length + ' available');
-        }
-        const createdObjectives: Objective[] = [];
-        for (let index = 0; index < count; index++) {
-            const randomInt = getRandomInt(this.availableObjectivesIndex.length);
-            const randomObjectiveIndex = this.availableObjectivesIndex[randomInt];
-            const createdObjective = this.createObjective(randomObjectiveIndex);
-            createdObjectives.push(createdObjective);
-            this.availableObjectivesIndex.splice(randomInt, 1);
-        }
-        return createdObjectives;
+        const privateObjectives1 = this.createObjectives(PRIVATE_OBJECTIVE_COUNT, availableObjectivesIndex);
+        const privateObjectives2 = this.createObjectives(PRIVATE_OBJECTIVE_COUNT, availableObjectivesIndex);
+        const privateObjectives = [privateObjectives1, privateObjectives2];
+
+        const publicObjectives = this.createObjectives(PUBLIC_OBJECTIVE_COUNT, availableObjectivesIndex);
+        return { privateObjectives, publicObjectives };
     }
 
     createOnlineObjective(name: string, description: string, points: number): OnlineObjective {
         return new OnlineObjective(this.objectiveNotifier, name, description, points);
+    }
+
+    private createObjectives(count: number, availableObjectivesIndex: number[]) {
+        const createdObjectives: Objective[] = [];
+        for (let index = 0; index < count; index++) {
+            const randomInt = getRandomInt(availableObjectivesIndex.length);
+            const randomObjectiveIndex = availableObjectivesIndex[randomInt];
+            const createdObjective = this.createObjective(randomObjectiveIndex);
+            createdObjectives.push(createdObjective);
+            availableObjectivesIndex.splice(randomInt, 1);
+        }
+        return createdObjectives;
+    }
+
+    private getAvailableObjectivesIndex() {
+        return [...Array(TOTAL_OBJECTIVE_COUNT).keys()];
     }
 
     private createObjective(objectiveIndex: number): Objective {

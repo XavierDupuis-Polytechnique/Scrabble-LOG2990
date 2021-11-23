@@ -7,6 +7,8 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -37,6 +39,7 @@ describe('PlaceLetter', () => {
         direction: Direction.Horizontal,
     };
     let game: OfflineGame;
+    let specialGame: SpecialOfflineGame;
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     let wordSearcher: WordSearcher;
@@ -44,6 +47,7 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
+    let objectiveCreatorSpy: jasmine.SpyObj<ObjectiveCreator>;
     const dict = new DictionaryService();
     const randomBonus = false;
     beforeEach(() => {
@@ -55,11 +59,14 @@ describe('PlaceLetter', () => {
             player.points = points;
             return points;
         });
+
+        objectiveCreatorSpy = jasmine.createSpyObj(ObjectiveCreator, ['updateObjectives']);
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
                 { provide: PointCalculatorService, useValue: pointCalculatorSpy },
                 { provide: WordSearcher, useClass: MockWordSearcher },
+                { provide: ObjectiveCreator, useValue: objectiveCreatorSpy },
             ],
         });
         const boardService = TestBed.inject(BoardService);
@@ -67,6 +74,15 @@ describe('PlaceLetter', () => {
         const dictionaryService = TestBed.inject(DictionaryService);
         wordSearcher = new MockWordSearcher(boardService, dictionaryService);
         game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculatorSpy, boardService, messages);
+        specialGame = new SpecialOfflineGame(
+            randomBonus,
+            DEFAULT_TIME_PER_TURN,
+            timer,
+            pointCalculatorSpy,
+            boardService,
+            messages,
+            objectiveCreatorSpy,
+        );
         game.players.push(player1);
         game.players.push(player2);
         game.start();
@@ -146,5 +162,11 @@ describe('PlaceLetter', () => {
         for (let i = 0; i < lettersToPlace.length; i++) {
             expect(game.board.grid[0][i].letterObject.char).toBe(lettersToPlace.charAt(i).toUpperCase());
         }
+    });
+
+    it('should call update objective if the game the action is performing on is special', () => {
+        const spy = spyOn(specialGame, 'updateObjectives');
+        placeLetter.execute(specialGame);
+        expect(spy).toHaveBeenCalled();
     });
 });

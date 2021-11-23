@@ -1,9 +1,11 @@
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 
+import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/constants';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
@@ -53,15 +55,25 @@ describe('SpecialServerGame', () => {
     const timerControllerStub = createSinonStubInstance<TimerController>(TimerController);
     const objectiveNotifierStub = createSinonStubInstance<ObjectiveNotifierService>(ObjectiveNotifierService);
     const objectiveCreatorStub = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
-    objectiveCreatorStub.chooseObjectives.callsFake((localGameToken: string, count: number) => {
-        const createdObjectives = [];
-        for (let i = 0; i < count; i++) {
-            createdObjectives.push(new MockObjective(localGameToken, objectiveNotifierStub));
+    objectiveCreatorStub.chooseObjectives.callsFake((localGameToken: string) => {
+        const publicObjectives = [];
+        for (let i = 0; i < PUBLIC_OBJECTIVE_COUNT; i++) {
+            publicObjectives.push(new MockObjective(localGameToken, objectiveNotifierStub));
         }
-        return createdObjectives;
+
+        const private1 = [];
+        for (let j = 0; j < PRIVATE_OBJECTIVE_COUNT; j++) {
+            private1.push(new MockObjective(localGameToken, objectiveNotifierStub));
+        }
+
+        const private2 = [];
+        for (let j = 0; j < PRIVATE_OBJECTIVE_COUNT; j++) {
+            private2.push(new MockObjective(localGameToken, objectiveNotifierStub));
+        }
+        return { privateObjectives: [private1, private2], publicObjectives };
     });
     const newGameStateSubject = new Subject<GameStateToken>();
-    const endGameSubject = new Subject<string>();
+    const endGameSubject = new Subject<EndOfGame>();
     const gameToken = 'gameToken';
     const p1 = new MockPlayer('p1');
     const p2 = new MockPlayer('p2');
@@ -95,9 +107,9 @@ describe('SpecialServerGame', () => {
 
     it('should allocate private and public objectives', () => {
         game.allocateObjectives();
-        expect(game.publicObjectives.length).to.be.equal(ObjectiveCreator.publicObjectiveCount);
+        expect(game.publicObjectives.length).to.be.equal(PUBLIC_OBJECTIVE_COUNT);
         for (const player of game.players) {
-            expect(game.privateObjectives.get(player.name)?.length).to.be.equal(ObjectiveCreator.privateObjectiveCount);
+            expect(game.privateObjectives.get(player.name)?.length).to.be.equal(PRIVATE_OBJECTIVE_COUNT);
         }
     });
 
