@@ -11,6 +11,8 @@ import {
     STEP_TIME_PER_TURN
 } from '@app/game-logic/constants';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
+import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { DictHttpService } from '@app/services/dict-http.service';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 
@@ -40,17 +42,28 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     minTimePerTurn = MIN_TIME_PER_TURN;
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
+    dictList: DictInfo[];
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: GameSettings,
         private dialogRef: MatDialogRef<NewSoloGameFormComponent>,
         private cdref: ChangeDetectorRef,
-    ) {}
+        private dictHttpService: DictHttpService,
+    ) {
+        this.onInit();
+    }
+    onInit() {
+        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
+            this.dictList = dictList as DictInfo[];
+        });
+    }
 
     ngAfterContentChecked() {
         this.cdref.detectChanges();
     }
+
     playGame(): void {
+        // TODO Add error message if Dictionary has been deleted in the meantime
         this.dialogRef.close(this.soloGameSettingsForm.value);
     }
 
