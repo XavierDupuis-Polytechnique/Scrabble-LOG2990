@@ -5,6 +5,7 @@ import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/constants'
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
@@ -72,7 +73,7 @@ describe('SpecialServerGame', () => {
         return { privateObjectives: [private1, private2], publicObjectives };
     });
     const newGameStateSubject = new Subject<GameStateToken>();
-    const endGameSubject = new Subject<string>();
+    const endGameSubject = new Subject<EndOfGame>();
     const gameToken = 'gameToken';
     const p1 = new MockPlayer('p1');
     const p2 = new MockPlayer('p2');

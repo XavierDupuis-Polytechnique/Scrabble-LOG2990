@@ -1,9 +1,9 @@
 import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { HIGHSCORES_TO_DISPLAY, NOT_FOUND } from '@app/game-logic/constants';
-import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { HighScore, Score } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { timer } from 'rxjs';
 
 const DELAY = 500;
@@ -50,7 +50,7 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
 
     private getAllHighScores() {
         this.getHighScores(GameMode.Classic);
-        this.getHighScores(GameMode.Log);
+        this.getHighScores(GameMode.Special);
     }
 
     private getHighScores(gameMode: GameMode) {

@@ -2,9 +2,9 @@
 
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { Score } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 
 describe('JvHttpService', () => {
     let service: LeaderboardService;

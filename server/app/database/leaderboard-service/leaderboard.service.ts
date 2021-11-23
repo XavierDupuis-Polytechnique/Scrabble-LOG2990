@@ -1,12 +1,12 @@
 import { DatabaseService } from '@app/database/database.service';
-import { GameMode } from '@app/database/leaderboard-service/game-mode.enum';
 import {
     DEFAULT_LEADERBOARD_CLASSIC,
     DEFAULT_LEADERBOARD_LOG,
     LEADERBOARD_CLASSIC_COLLECTION,
-    LEADERBOARD_LOG_COLLECTION,
+    LEADERBOARD_LOG_COLLECTION
 } from '@app/database/leaderboard-service/leaderboard-constants';
 import { Score } from '@app/database/leaderboard-service/score.interface';
+import { GameMode } from '@app/game/game-mode.enum';
 import { Collection } from 'mongodb';
 import { Service } from 'typedi';
 
@@ -28,9 +28,9 @@ export class LeaderboardService {
     async deleteScores(): Promise<boolean> {
         try {
             await this.getLeaderboardCollection(GameMode.Classic).deleteMany({});
-            await this.getLeaderboardCollection(GameMode.Log).deleteMany({});
+            await this.getLeaderboardCollection(GameMode.Special).deleteMany({});
             await this.populateCollection(GameMode.Classic);
-            await this.populateCollection(GameMode.Log);
+            await this.populateCollection(GameMode.Special);
             return true;
         } catch (e) {
             return false;
@@ -41,10 +41,11 @@ export class LeaderboardService {
         try {
             const collection = this.getLeaderboardCollection(mode);
             const currentScore = await collection.findOne({ name: score.name });
-            if (currentScore === undefined) {
+            if (currentScore === undefined || currentScore === null) {
                 await this.addScore(score, mode);
                 return true;
             }
+
             if (score.point > currentScore.point) {
                 await this.modifyScore(score, mode);
                 return true;

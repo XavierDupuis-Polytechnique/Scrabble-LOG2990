@@ -8,7 +8,6 @@ import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { Player } from '@app/game-logic/player/player';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
-import { GameMode } from '@app/leaderboard/game-mode.enum';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
@@ -117,7 +116,7 @@ describe('GameManagerService', () => {
         service.createGame(gameSettings);
         const game = service['game'] as Game;
         service['game'] = undefined;
-        service['allocateOnlinePlayers']([]);
+        service['createOnlinePlayers'](gameSettings.playerName, 'opponentName');
         game['isEndOfGameSubject'].next();
         expect(leaderboardServiceMock.updateLeaderboard).not.toHaveBeenCalled();
     });
