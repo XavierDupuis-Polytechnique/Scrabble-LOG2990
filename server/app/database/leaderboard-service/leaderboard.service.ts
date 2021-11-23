@@ -3,7 +3,7 @@ import {
     DEFAULT_LEADERBOARD_CLASSIC,
     DEFAULT_LEADERBOARD_LOG,
     LEADERBOARD_CLASSIC_COLLECTION,
-    LEADERBOARD_LOG_COLLECTION
+    LEADERBOARD_LOG_COLLECTION,
 } from '@app/database/leaderboard-service/leaderboard-constants';
 import { Score } from '@app/database/leaderboard-service/score.interface';
 import { GameMode } from '@app/game/game-mode.enum';

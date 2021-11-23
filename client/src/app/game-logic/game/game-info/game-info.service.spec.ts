@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable dot-notation */
@@ -7,6 +8,8 @@ import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
@@ -17,8 +20,6 @@ import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { Observable, Subject } from 'rxjs';
 import { GameInfoService } from './game-info.service';
-import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
-import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 
 const passThrough = (map: Map<string, number>): Map<string, number> => {
     return map;
