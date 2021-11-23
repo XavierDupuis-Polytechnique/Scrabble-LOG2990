@@ -52,6 +52,14 @@ export class GameInfoService {
         return this.players[index].points;
     }
 
+    get opponent(): User {
+        if (!this.players) {
+            throw new Error('No Players in GameInfo');
+        }
+        const opponent = this.user === this.players[0] ? this.players[1] : this.players[0];
+        return opponent;
+    }
+
     get letterOccurences(): Map<string, number> {
         if (!this.game) {
             throw Error('No Game in GameInfo');
@@ -128,12 +136,12 @@ export class GameInfoService {
         return this.game instanceof SpecialOfflineGame || this.game instanceof SpecialOnlineGame;
     }
 
-    get privateObjectives(): Objective[] {
+    getPrivateObjectives(playerName: string): Objective[] {
         if (!this.game || !this.user) {
             throw Error('No Game or User in GameInfo');
         }
         const specialGame = this.game as SpecialGame;
-        const privateObjectives = specialGame.privateObjectives.get(this.user.name);
+        const privateObjectives = specialGame.privateObjectives.get(playerName);
         if (!privateObjectives) {
             return [];
         }

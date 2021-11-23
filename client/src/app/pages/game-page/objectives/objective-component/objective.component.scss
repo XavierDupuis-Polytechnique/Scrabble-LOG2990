@@ -14,13 +14,18 @@
     flex-direction: row;
 }
 
+.mat-card-subtitle {
+    font-size: 12px;
+}
+
 .progression-percentage {
     margin-top: -3% !important;
     margin-left: 2%;
 }
 
 .mat-card {
-    margin: 5%;
+    margin: 4%;
+    padding: 4%;
 }
 
 .points {

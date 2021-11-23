@@ -10,6 +10,7 @@ import { ObjectiveStatus } from '@app/pages/game-page/objectives/objectives-stat
 })
 export class ObjectiveComponent {
     @Input() objective: Objective;
+    @Input() hidden: boolean = false;
 
     showDescription = false;
 
