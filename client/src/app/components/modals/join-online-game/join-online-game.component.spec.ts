@@ -88,7 +88,8 @@ describe('JoinOnlineGameComponent', () => {
     it('startGame not responsive if second player name is playerName', () => {
         const dom = fixture.nativeElement as HTMLElement;
         const startGameButton = dom.querySelectorAll('button')[1];
-        component.playerName = 'Simon';
+        // eslint-disable-next-line dot-notation
+        component['playerName'] = 'Simon';
         component.oppName.setValue('Simon');
         component.oppName.updateValueAndValidity();
         fixture.detectChanges();

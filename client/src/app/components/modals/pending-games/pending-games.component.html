@@ -32,7 +32,7 @@
         <button mat-button color="primary" [mat-dialog-close] (click)="cancel()">Annuler</button>
         <button mat-button color="primary" [disabled]="selectedRow === undefined" (click)="joinGame()">Rejoindre la partie</button>
     </div>
-    <button mat-flat-button color="accent" [ngClass]="{ hidden: isTableEmpty === true }" [disabled]="isTableOneGame" (click)="pickRandomGame()">
+    <button mat-flat-button color="accent" [ngClass]="{ hidden: isTableEmpty }" [disabled]="isTableOneGame" (click)="pickRandomGame()">
         Placement aléatoire
     </button>
 </mat-dialog-actions>

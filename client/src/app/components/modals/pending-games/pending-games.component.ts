@@ -20,10 +20,10 @@ export const DELAY = 100;
 export class PendingGamesComponent implements AfterContentChecked, OnInit, AfterViewInit {
     @ViewChild(MatSort) tableSort: MatSort;
     columnsToDisplay = ['id', 'playerName', 'randomBonus', 'timePerTurn'];
-    selectedRow: OnlineGameSettings | undefined;
     dataSource = new MatTableDataSource<OnlineGameSettings>();
     columns: { columnDef: string; header: string; cell: (form: OnlineGameSettings) => string }[];
     datePipe = new DatePipe('en_US');
+    selectedRow: OnlineGameSettings | undefined;
     private isClicked: boolean = false;
 
     constructor(
@@ -48,7 +48,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
             {
                 columnDef: 'randomBonus',
                 header: 'Bonus Aléatoire',
-                cell: (form: OnlineGameSettings) => (form.randomBonus === true ? 'activé' : 'désactivé'),
+                cell: (form: OnlineGameSettings) => (form.randomBonus ? 'activé' : 'désactivé'),
             },
             {
                 columnDef: 'timePerTurn',
