@@ -99,7 +99,7 @@ describe('CommandParser', () => {
     it('testArg should be equal to expectedArg', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
-        expect(service['formatPlaceLetter'](testArg)).toEqual(expectedArg);
+        expect(service['toFormatPlaceLetter'](testArg)).toEqual(expectedArg);
     });
 
     it('should send error message ' + syntaxError1, () => {
@@ -256,16 +256,15 @@ describe('CommandParser', () => {
     });
 
     it('should send error message when message content is empty', () => {
-        errorMessage = 'erreur de syntax: les paramètres sont invalides';
         service.errorMessage$.subscribe((error) => {
-            errorMessageTest(error, errorMessage);
+            errorMessageTest(error, syntaxError1);
         });
         const placeLetterParams: string[] = [];
         service['formatPlaceLetter'](placeLetterParams);
     });
 
     it('should send error when place letter params arent valid', () => {
-        errorMessage = 'erreur de syntax: les paramètres sont invalides';
+        errorMessage = 'erreur de syntax: colonne invalide';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, errorMessage);
         });
