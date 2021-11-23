@@ -37,6 +37,7 @@
             <tr mat-row *matRowDef="let row; columns: botDisplayedColumns"></tr>
         </table>
     </div>
-
-    <button mat-button (click)="addBot()">Ajouter Bot</button>
+    <div class="buttoncontainer">
+        <button mat-button (click)="addBot()" class="button">Ajouter Bot</button>
+    </div>
 </div>

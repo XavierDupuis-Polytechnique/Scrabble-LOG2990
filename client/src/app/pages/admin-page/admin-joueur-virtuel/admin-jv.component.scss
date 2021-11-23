@@ -8,3 +8,15 @@
     flex-direction: column;
     height: 93vh !important;
 }
+
+.buttoncontainer {
+    display: flex;
+    height: 93vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.button {
+    background: white;
+    color: black;
+}
