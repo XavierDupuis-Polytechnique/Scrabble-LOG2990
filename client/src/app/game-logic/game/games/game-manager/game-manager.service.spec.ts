@@ -79,6 +79,7 @@ describe('GameManagerService', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         const userAuth: UserAuth = {
@@ -118,6 +119,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         const userAuth: UserAuth = {
@@ -147,6 +149,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         const userAuth: UserAuth = {
@@ -165,6 +168,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         const userAuth: UserAuth = {
@@ -186,6 +190,7 @@ describe('GameManagerService Online Edition', () => {
             playerName: 'p1',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         const userAuth: UserAuth = {
@@ -209,6 +214,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p1',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         const userAuth: UserAuth = {
@@ -228,6 +234,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p1',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         const userAuth: UserAuth = {
             playerName: 'p1',

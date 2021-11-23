@@ -6,7 +6,7 @@ import {
     DictInitialSearchSettings,
     DictRegexSettings,
     DictSubSearchSettings,
-    DictWholeSearchSettings,
+    DictWholeSearchSettings
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictionaryHelper } from '@app/game-logic/validator/dictionary-helper';
@@ -45,6 +45,7 @@ export class DictionaryService {
         this.dictHttpService.getDict(dictTitle).subscribe((res) => {
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
+            this.isDefaultDict = false;
             this.ready();
         });
         return this.dictReady$;

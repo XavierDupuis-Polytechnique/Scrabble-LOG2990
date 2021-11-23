@@ -17,6 +17,22 @@
     <mat-checkbox color="accent" formControlName="randomBonus">Bonus aléatoire</mat-checkbox>
     <br />
     <br />
+    <mat-form-field>
+        <mat-label>Dictionnaire de la partie</mat-label>
+        <mat-select [formControlName]="'dictTitle'">
+            <mat-option
+                *ngFor="let dict of dictList"
+                matNativeControl
+                required
+                [value]="dict.title"
+                [matTooltip]="dict.description"
+                matTooltipPosition="right"
+            >
+                {{ dict.title }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <br />
     <mat-label>Temps par tour </mat-label>
     <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
     <mat-slider
@@ -28,12 +44,6 @@
         [formControlName]="'timePerTurn'"
     ></mat-slider
     ><br />
-    <mat-form-field>
-        <mat-label>Dictionnaire de la partie</mat-label>
-        <mat-select [formControlName]="'dictTitle'">
-            <option *ngFor="let dict of dictList" [value]="dict.title" [title]="dict.description">{{ dict.title }}</option>
-        </mat-select>
-    </mat-form-field>
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>

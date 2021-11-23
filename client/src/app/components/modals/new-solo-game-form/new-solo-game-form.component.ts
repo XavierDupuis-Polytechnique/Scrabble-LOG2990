@@ -8,7 +8,7 @@ import {
     MAX_TIME_PER_TURN,
     MIN_NAME_LENGTH,
     MIN_TIME_PER_TURN,
-    STEP_TIME_PER_TURN,
+    STEP_TIME_PER_TURN
 } from '@app/game-logic/constants';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
@@ -42,7 +42,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     minTimePerTurn = MIN_TIME_PER_TURN;
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
-    dictList: DictInfo[];
+    dictList: DictInfo[] = [{ title: 'test', description: 'testdesc' }] as DictInfo[];
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: GameSettings,
@@ -63,7 +63,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     }
 
     playGame(): void {
-        // TODO Add error message if Dictionary has been deleted in the meantime
+        // TODO Add error message if Dictionary has been deleted in the meantime (custom validator)
         this.dialogRef.close(this.soloGameSettingsForm.value);
     }
 

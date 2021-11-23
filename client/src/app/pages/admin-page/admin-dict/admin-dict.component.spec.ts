@@ -14,7 +14,7 @@ describe('admin-dictionary component', () => {
     beforeEach(async () => {
         // eslint-disable-next-line no-unused-vars
         dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict', 'getDictInfoList', 'deleteDict']);
-        dictHttpServiceMock.getDictInfoList.and.returnValue(of([{ id: 1, canEdit: true, description: 'test', title: 'test' }]));
+        dictHttpServiceMock.getDictInfoList.and.returnValue(of([{ title: 'test', description: 'test', canEdit: true }]));
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         jasmine.createSpyObj('AdminDictComponent', ['ngOnInit']);
         await TestBed.configureTestingModule({
@@ -81,7 +81,7 @@ describe('admin-dictionary component', () => {
     });
 
     it('showUpdateMenu should open dialog', () => {
-        const dictInfoMock: DictInfo = { id: 1, canEdit: true, description: 'test', title: 'test' };
+        const dictInfoMock: DictInfo = { title: 'test', description: 'test', canEdit: true };
 
         matDialog.open.and.returnValue({
             afterClosed: () => {
@@ -96,7 +96,7 @@ describe('admin-dictionary component', () => {
     });
 
     it('deleteDict should call http service', () => {
-        const dictInfoMock: DictInfo = { id: 1, canEdit: true, description: 'test', title: 'test' };
+        const dictInfoMock: DictInfo = { title: 'test', description: 'test', canEdit: true };
         component.deleteDict(dictInfoMock);
         expect(dictHttpServiceMock.deleteDict).toHaveBeenCalledWith(dictInfoMock.title);
     });

@@ -7,7 +7,6 @@ import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
 export interface DictInfo {
-    id: number;
     title: string;
     description: string;
     canEdit: boolean;

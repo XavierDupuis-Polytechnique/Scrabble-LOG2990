@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { SocketMock } from '@app/game-logic/socket-mock';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
@@ -30,7 +31,7 @@ describe('NewOnlineGameSocketHandler', () => {
 
     it('createGame should emit createGame if game settings are valid and receive pendingGameId', () => {
         const spyWaitingForPlayer = spyOn(service, 'waitForSecondPlayer').and.callThrough();
-        const gameSettings = { playerName: 'allo', randomBonus: false, timePerTurn: 65000 };
+        const gameSettings = { playerName: 'allo', randomBonus: false, timePerTurn: 65000, dictTitle: DEFAULT_DICTIONARY_TITLE };
         service.createGameMulti(gameSettings);
         expect(spyWaitingForPlayer).toHaveBeenCalled();
         service.pendingGameId$.pipe(first()).subscribe((value) => {

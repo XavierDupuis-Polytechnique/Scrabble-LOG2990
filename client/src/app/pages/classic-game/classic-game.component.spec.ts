@@ -221,6 +221,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         matDialog.open.and.returnValue({
             afterOpened: () => {

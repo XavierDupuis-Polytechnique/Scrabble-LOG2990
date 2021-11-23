@@ -20,8 +20,8 @@ export class EditDictDialogComponent {
         private dictHttpService: DictHttpService,
         private dialog: MatDialog,
     ) {
-        this.dictionary = { title: data.title, description: data.description, canEdit: data.canEdit, id: data.id };
-        this.tempDict = { title: data.title, description: data.description, canEdit: data.canEdit, id: data.id };
+        this.dictionary = { title: data.title, description: data.description, canEdit: data.canEdit };
+        this.tempDict = { title: data.title, description: data.description, canEdit: data.canEdit };
     }
 
     uploadEdit(): void {

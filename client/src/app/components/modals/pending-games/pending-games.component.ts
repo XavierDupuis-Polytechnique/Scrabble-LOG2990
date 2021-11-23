@@ -16,10 +16,15 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class PendingGamesComponent implements AfterContentChecked, OnInit, AfterViewInit {
     @ViewChild(MatSort) tableSort: MatSort;
-    columnsToDisplay = ['id', 'playerName', 'randomBonus', 'timePerTurn'];
+    columnsToDisplay = ['id', 'playerName', 'randomBonus', 'timePerTurn', 'dictionary'];
     selectedRow: OnlineGameSettings | undefined;
     dataSource = new MatTableDataSource<OnlineGameSettings>();
-    columns: { columnDef: string; header: string; cell: (form: OnlineGameSettings) => string }[];
+    columns: {
+        columnDef: string;
+        header: string;
+        cell: (form: OnlineGameSettings) => string;
+        tooltip: (form: OnlineGameSettings, columnDef: string) => string;
+    }[];
     datePipe = new DatePipe('en_US');
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettings,
@@ -34,23 +39,39 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
                 columnDef: 'id',
                 header: 'Id',
                 cell: (form: OnlineGameSettings) => `${form.id}`,
+                tooltip: (form: OnlineGameSettings, columnDef: string) => this.getToolTip(form, columnDef),
             },
             {
                 columnDef: 'playerName',
                 header: 'Joueur 1',
                 cell: (form: OnlineGameSettings) => `${form.playerName}`,
+                tooltip: (form: OnlineGameSettings, columnDef: string) => this.getToolTip(form, columnDef),
             },
             {
                 columnDef: 'randomBonus',
                 header: 'Bonus Aléatoire',
                 cell: (form: OnlineGameSettings) => (form.randomBonus === true ? 'activé' : 'désactivé'),
+                tooltip: (form: OnlineGameSettings, columnDef: string) => this.getToolTip(form, columnDef),
+            },
+            {
+                columnDef: 'dictionary',
+                header: 'Dictionnaire utilisé',
+                cell: (form: OnlineGameSettings) => `${form.dictTitle}`,
+                tooltip: (form: OnlineGameSettings, columnDef: string) => this.getToolTip(form, columnDef),
             },
             {
                 columnDef: 'timePerTurn',
                 header: 'Temps par tour',
                 cell: (form: OnlineGameSettings) => `${this.datePipe.transform(form.timePerTurn, 'm:ss')} `,
+                tooltip: (form: OnlineGameSettings, columnDef: string) => this.getToolTip(form, columnDef),
             },
         ];
+    }
+    getToolTip(form: OnlineGameSettings, columnDef: string): string {
+        if (columnDef === 'dictionary') {
+            return form.dictDesc as string;
+        }
+        return '';
     }
 
     ngOnInit() {

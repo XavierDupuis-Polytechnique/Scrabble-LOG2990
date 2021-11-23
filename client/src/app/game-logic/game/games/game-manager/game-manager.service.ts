@@ -58,6 +58,7 @@ export class GameManagerService {
     }
 
     createGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
+        console.log(gameSettings);
         if (this.game) {
             this.stopGame();
         }
