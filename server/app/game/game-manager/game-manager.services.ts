@@ -84,7 +84,7 @@ export class GameManagerService {
         this.activeGames.set(gameToken, newServerGame);
         this.linkedClients.set(gameToken, []);
         this.startInactiveGameDestructionTimer(gameToken);
-        this.dictionaryService.makeGameDictionary(gameToken, onlineGameSettings.dictionaryTitle);
+        this.dictionaryService.makeGameDictionary(gameToken, onlineGameSettings.dictTitle);
     }
 
     addPlayerToGame(playerId: string, userAuth: UserAuth) {

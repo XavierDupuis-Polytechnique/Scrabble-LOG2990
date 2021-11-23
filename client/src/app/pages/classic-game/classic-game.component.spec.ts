@@ -38,6 +38,7 @@ describe('ClassicGameComponent', () => {
         );
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame']);
         gameManagerSpy.createGame.and.returnValue(new BehaviorSubject<boolean>(true));
+        gameManagerSpy.createSpecialGame.and.returnValue(new BehaviorSubject<boolean>(true));
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],

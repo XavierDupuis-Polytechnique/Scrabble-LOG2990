@@ -118,7 +118,14 @@ describe('PendingGamesComponent', () => {
                 return;
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
-        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE });
+        component.setSelectedRow({
+            id: '1',
+            playerName: 'Tom',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        });
         component.joinGame();
         expect(mockDialogRef.close).toHaveBeenCalled();
     });
@@ -132,7 +139,14 @@ describe('PendingGamesComponent', () => {
                 return;
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
-        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE });
+        component.setSelectedRow({
+            id: '1',
+            playerName: 'Tom',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        });
         component.joinGame();
         expect(matDialog.open).toHaveBeenCalled();
     });
@@ -163,8 +177,8 @@ describe('PendingGamesComponent', () => {
 
     it('should sort table ', () => {
         testPendingGames$.next([
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
             { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ]);
         fixture.detectChanges();
         const dom = fixture.debugElement.nativeElement;

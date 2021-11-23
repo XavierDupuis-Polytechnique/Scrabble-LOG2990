@@ -96,9 +96,6 @@ export class GameManagerService {
         });
 
         return dictReady$;
-        // TODO uncomment when merge branch Objective
-        // const botNameReady$ = ...
-        // return forkJoin(dictReady$, botNameReady$); (
     }
 
     createSpecialGame(gameSettings: GameSettings): BehaviorSubject<boolean> {

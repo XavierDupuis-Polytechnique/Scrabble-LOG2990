@@ -81,6 +81,8 @@ import { ObjectivesListComponent } from './pages/game-page/objectives/objectives
         AdminJoueurVirtuelComponent,
         EditJvDialogComponent,
         AdminDropDbComponent,
+        ObjectiveComponent,
+        ObjectivesListComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -91,8 +93,6 @@ import { ObjectivesListComponent } from './pages/game-page/objectives/objectives
         HttpClientModule,
         ReactiveFormsModule,
         MatTableModule,
-        ObjectivesListComponent,
-        ObjectiveComponent,
     ],
     providers: [
         {

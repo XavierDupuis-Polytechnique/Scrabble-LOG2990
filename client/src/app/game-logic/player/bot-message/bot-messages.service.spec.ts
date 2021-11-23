@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { HttpClient } from '@angular/common/http';
 import { LocationStrategy } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { MockLocationStrategy } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
@@ -42,6 +42,7 @@ describe('bot message service', () => {
     });
 
     it('sendAction should call sendPassTurnMessage', () => {
+        spyOn(service, 'sendAlternativeWords');
         const spy = spyOn(service, 'sendPassTurnMessage');
         const player = {
             name: 'test',

@@ -26,7 +26,7 @@ describe('GameCreator', () => {
     let randomBonus: boolean;
     let gameMode: GameMode;
     let gameToken: string;
-    let dictionaryTitle: string;
+    let dictTitle: string;
     const pointCalculatorStub = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
     const gameCompilerStub = createSinonStubInstance<GameCompiler>(GameCompiler);
     const systemMessagesServiceStub = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
@@ -42,7 +42,7 @@ describe('GameCreator', () => {
         playerName = 'p1';
         opponentName = 'p2';
         randomBonus = getRandomInt(1) === 0;
-        dictionaryTitle = DEFAULT_DICTIONARY_TITLE;
+        dictTitle = DEFAULT_DICTIONARY_TITLE;
         gameMode = GameMode.Classic;
         gameCreator = new GameCreator(
             pointCalculatorStub,
@@ -56,7 +56,7 @@ describe('GameCreator', () => {
     });
 
     it('should create a server game with requested parameters', () => {
-        onlineGameSettings = { id, playerName, opponentName, randomBonus, timePerTurn, gameMode, dictionaryTitle };
+        onlineGameSettings = { id, playerName, opponentName, randomBonus, timePerTurn, gameMode, dictTitle };
         const createdGame = gameCreator.createGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(opponentName)]);
@@ -65,7 +65,7 @@ describe('GameCreator', () => {
     });
 
     it('should create a server game with requested parameters and default opponent name', () => {
-        onlineGameSettings = { id, playerName, randomBonus, timePerTurn, gameMode, dictionaryTitle };
+        onlineGameSettings = { id, playerName, randomBonus, timePerTurn, gameMode, dictTitle };
         const createdGame = gameCreator.createGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(GameCreator.defaultOpponentName)]);
@@ -75,7 +75,7 @@ describe('GameCreator', () => {
 
     it('should create a special server game with requested parameters and default opponent name', () => {
         gameMode = GameMode.Special;
-        onlineGameSettings = { id, playerName, randomBonus, timePerTurn, gameMode, dictionaryTitle };
+        onlineGameSettings = { id, playerName, randomBonus, timePerTurn, gameMode, dictTitle };
         const createdGame = gameCreator.createGame(onlineGameSettings, gameToken);
         expect(createdGame.gameToken).to.be.equal(gameToken);
         expect(createdGame.players).to.be.deep.equal([new Player(playerName), new Player(GameCreator.defaultOpponentName)]);
