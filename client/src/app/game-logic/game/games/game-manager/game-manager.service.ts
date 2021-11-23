@@ -12,6 +12,7 @@ import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
+import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
@@ -119,66 +120,57 @@ export class GameManagerService {
         }
         let wasSpecial = false;
         if (this.game instanceof SpecialOnlineGame) {
-            wasSpecial = true;
             userName = this.game.userName;
+            wasSpecial = true;
             publicObjective = this.game.publicObjectives;
             privateObjective = this.game.privateObjectives;
         } else if (this.game instanceof OnlineGame) {
             userName = this.game.userName;
         }
 
-        const offlineGame = this.instanciateGameSettings(forfeitedGameState, wasSpecial);
-        const oldBoard = this.boardService.board;
+        this.instanciateGameSettings(forfeitedGameState, wasSpecial);
 
-        this.stopGame();
-
-        offlineGame.board = oldBoard;
         // const letterRackRef = this.info.user.letterRack;
-        this.game = offlineGame;
 
-        const playerName = userName;
         const botDifficulty = 'Easy';
-        const players = this.createPlayers(playerName, botDifficulty);
+        const players = this.createPlayers(userName, botDifficulty);
 
         this.allocatePlayers(players);
-        if (offlineGame instanceof SpecialOfflineGame) {
-            offlineGame.allocateObjectives();
-        }
-        this.transitionBoard(forfeitedGameState);
-        offlineGame.letterBag.gameLetters = forfeitedGameState.letterBag;
-        offlineGame.consecutivePass = forfeitedGameState.consecutivePass;
-        const playerInfo = forfeitedGameState.players;
-        const userIndex = playerInfo.findIndex((player) => {
-            return player.name === playerName;
-        });
-        const botIndex = (userIndex + 1) % 2;
-        offlineGame.players[userIndex].points = playerInfo[userIndex].points;
-        offlineGame.players[botIndex].points = playerInfo[botIndex].points;
-        const botName = offlineGame.players[botIndex].name;
-        if (offlineGame instanceof SpecialOfflineGame) {
-            const playerPrivateObjective = privateObjective?.get(userName);
-            const botPrivateObjective = privateObjective?.get(playerInfo[botIndex].name);
-            if (publicObjective !== undefined && playerPrivateObjective !== undefined && botPrivateObjective !== undefined) {
-                offlineGame.privateObjectives.set(userName, playerPrivateObjective);
-                offlineGame.privateObjectives.set(botName, botPrivateObjective);
-                offlineGame.publicObjectives = publicObjective;
-            }
-        }
 
-        // TODO fix this
-        for (let i = 0; i < players.length; i++) {
-            offlineGame.players[i].points = playerInfo[i].points;
-            for (let j = 0; j < playerInfo[i].letterRack.length; j++) {
-                offlineGame.players[i].letterRack[j] = playerInfo[i].letterRack[j];
-            }
-        }
+        if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
+            this.transitionBoard(forfeitedGameState);
+            this.game.letterBag.gameLetters = forfeitedGameState.letterBag;
+            this.game.consecutivePass = forfeitedGameState.consecutivePass;
+            const playerInfo = forfeitedGameState.players;
 
-        this.info.receiveGame(offlineGame);
-        this.transition.next();
-        this.startGame();
+            const userIndex = playerInfo.findIndex((player) => {
+                return player.name === userName;
+            });
+
+            const botIndex = (userIndex + 1) % 2;
+            const botName = this.game.players[botIndex].name;
+            this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
+            if (this.game instanceof SpecialOfflineGame) {
+                const playerPrivateObjective = privateObjective?.get(userName);
+                const botPrivateObjective = privateObjective?.get(playerInfo[botIndex].name);
+
+                if (publicObjective !== undefined && playerPrivateObjective !== undefined && botPrivateObjective !== undefined) {
+                    this.game.publicObjectives = publicObjective;
+                    this.game.privateObjectives = new Map<string, Objective[]>();
+                    this.game.privateObjectives.set(userName, playerPrivateObjective);
+                    this.game.privateObjectives.set(botName, botPrivateObjective);
+                }
+            }
+
+            // TODO fix this
+            this.info.receiveGame(this.game);
+            this.transition.next();
+            this.startGame();
+        }
     }
 
     transitionBoard(forfeitedGameState: ForfeitedGameSate) {
+        (this.game as OfflineGame).board = this.boardService.board;
         const nRows = BOARD_DIMENSION;
         const nCols = BOARD_DIMENSION;
         const newGrid = forfeitedGameState.grid;
@@ -187,6 +179,20 @@ export class GameManagerService {
             for (let j = 0; j < nCols; j++) {
                 this.boardService.board.grid[i][j] = newGrid[i][j];
             }
+        }
+    }
+
+    transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameSate) {
+        if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
+            const playerInfo = forfeitedGameState.players;
+
+            for (let i = 0; i < playerInfo.length; i++) {
+                for (let j = 0; j < playerInfo[i].letterRack.length; j++) {
+                    this.game.players[i].letterRack[j] = playerInfo[i].letterRack[j];
+                }
+            }
+            this.game.players[0].points = playerInfo[userIndex].points;
+            this.game.players[1].points = playerInfo[botIndex].points;
         }
     }
 
@@ -208,8 +214,9 @@ export class GameManagerService {
     }
 
     // TODO: change les noms des mthodes
-    instanciateGameSettings(f: ForfeitedGameSate, isSpecial: boolean): SpecialOfflineGame | OfflineGame {
+    instanciateGameSettings(f: ForfeitedGameSate, isSpecial: boolean) {
         const timerPerTurn = (this.game as OnlineGame).timePerTurn;
+        this.stopGame();
         if (isSpecial) {
             this.game = new SpecialOfflineGame(
                 f.randomBonus,
@@ -221,10 +228,10 @@ export class GameManagerService {
                 this.objectiveCreator,
                 true,
             );
-            return this.game as SpecialOfflineGame;
+            return;
         }
         this.game = new OfflineGame(f.randomBonus, timerPerTurn, this.timer, this.pointCalculator, this.boardService, this.messageService, true);
-        return this.game as OfflineGame;
+        return;
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
