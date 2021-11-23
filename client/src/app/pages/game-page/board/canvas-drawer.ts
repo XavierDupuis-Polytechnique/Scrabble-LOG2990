@@ -33,14 +33,19 @@ export class CanvasDrawer {
         this.width = w;
         this.height = h;
         this.canvas.lineWidth = 1;
-        this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 16) / 16;
+        this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 17) / 16;
         this.offset = this.tileSize + this.borderWidth;
     }
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
         this.drawborder();
         this.canvas.fillStyle = TILE_COLOR;
-        this.canvas.fillRect(this.borderWidth, this.borderWidth, this.width - 2 * this.borderWidth, this.height - 2 * this.borderWidth);
+        this.canvas.fillRect(
+            this.borderWidth,
+            this.borderWidth,
+            this.width - 2 * this.borderWidth - this.canvas.lineWidth,
+            this.height - 2 * this.borderWidth,
+        );
         this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
@@ -100,7 +105,7 @@ export class CanvasDrawer {
         if (i === 1) {
             this.canvas.fillStyle = '#000000';
         }
-        const widthSize = this.width - 2 * this.borderWidth;
+        const widthSize = this.width - 2 * this.borderWidth - this.canvas.lineWidth;
         this.canvas.fillRect(this.borderWidth, offset, widthSize, this.canvas.lineWidth);
         this.canvas.fillStyle = '#000000';
         this.canvas.fillRect(this.borderWidth, offset, this.tileSize + 2 * this.canvas.lineWidth, this.canvas.lineWidth);

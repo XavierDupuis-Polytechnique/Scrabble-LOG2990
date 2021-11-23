@@ -37,6 +37,8 @@ app-chat-box {
 
 app-board {
     grid-area: Board;
+    height: fit-content;
+    min-width: 60vw;
 }
 
 app-horse {
