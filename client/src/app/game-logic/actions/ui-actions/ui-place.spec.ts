@@ -8,7 +8,7 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT
+    RACK_LETTER_COUNT,
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
