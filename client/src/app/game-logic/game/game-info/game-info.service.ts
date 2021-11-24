@@ -52,7 +52,7 @@ export class GameInfoService {
         return this.players[index].points;
     }
 
-    get opponent(): User {
+    get opponent(): Player {
         if (!this.players) {
             throw new Error('No Players in GameInfo');
         }
