@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { GameMode } from '@app/game/game-mode.enum';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
@@ -109,8 +110,21 @@ describe('New Online Game Service', () => {
     });
 
     it('should send gameSettings to players on joinGame', (done) => {
-        const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
-        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
+        const gameSettingsUI = {
+            playerName: 'name',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
+        };
+        const gameSettings = {
+            id: 'a',
+            playerName: 'name',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
+        };
 
         newGameManagerService.createPendingGame.returns('a');
         newGameManagerService.joinPendingGame.returns('id'); // ?

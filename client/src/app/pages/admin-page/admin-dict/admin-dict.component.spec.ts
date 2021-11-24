@@ -12,7 +12,7 @@ describe('admin-dictionary component', () => {
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
     let matDialog: jasmine.SpyObj<MatDialog>;
     beforeEach(async () => {
-        dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getListDict', 'getDictInfoList', 'delete']);
+        dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict', 'getDictInfoList', 'delete']);
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
             declarations: [AdminDictComponent],
@@ -43,7 +43,7 @@ describe('admin-dictionary component', () => {
         inputDebugEl.nativeElement.files = dataTransfer.files;
 
         inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        dictHttpServiceMock.getListDict.and.returnValue([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        dictHttpServiceMock.getDict.and.returnValue([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
         fixture.detectChanges();
 
         dictHttpServiceMock.uploadDict.and.returnValue(false);
@@ -64,7 +64,7 @@ describe('admin-dictionary component', () => {
         inputDebugEl.nativeElement.files = dataTransfer.files;
 
         inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        dictHttpServiceMock.getListDict.and.returnValue([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        dictHttpServiceMock.getDict.and.returnValue([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
         fixture.detectChanges();
 
         dictHttpServiceMock.uploadDict.and.returnValue(true);

@@ -6,31 +6,45 @@ import {
     DictInitialSearchSettings,
     DictRegexSettings,
     DictSubSearchSettings,
-    DictWholeSearchSettings,
+    DictWholeSearchSettings
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
+import { DictHttpService } from '@app/services/dict-http.service';
+import { Subject } from 'rxjs';
 import data from 'src/assets/dictionary.json';
-
 @Injectable({
     providedIn: 'root',
 })
 export class DictionaryService {
+    dictReady$ = new Subject<void>();
     dynamicWordList: Set<string>[] = [];
-    constructor() {
+    constructor(private dictHttpService: DictHttpService) {
+        this.addDefault();
+    }
+
+    addDefault() {
         const dict = data as Dictionary;
-        for (let i = 0; i <= MAX_WORD_LENGTH; i++) {
-            this.dynamicWordList.push(new Set());
-        }
         this.addWords(dict);
     }
 
+    fetchDictionary(dictTitle: string): Subject<void> {
+        this.dictHttpService.getDict(dictTitle).subscribe((res) => {
+            const dictionary = res as Dictionary;
+            this.addWords(dictionary);
+        });
+        return this.dictReady$;
+    }
+
     addWords(dictionary: Dictionary) {
+        this.clearWords();
         dictionary.words.forEach((word) => {
             let wordLength = word.length;
             for (wordLength; wordLength <= MAX_WORD_LENGTH; wordLength++) {
                 this.dynamicWordList[wordLength].add(word);
             }
         });
+        this.dictReady$.next();
+        this.dictReady$.complete();
     }
 
     isWordInDict(word: string): boolean {
@@ -97,6 +111,12 @@ export class DictionaryService {
             return placedWord;
         } else {
             return 'false';
+        }
+    }
+
+    private clearWords() {
+        for (let i = 0; i <= MAX_WORD_LENGTH; i++) {
+            this.dynamicWordList.push(new Set());
         }
     }
 

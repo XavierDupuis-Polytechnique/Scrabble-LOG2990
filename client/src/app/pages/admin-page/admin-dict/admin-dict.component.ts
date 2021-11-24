@@ -66,7 +66,7 @@ export class AdminDictComponent implements OnInit {
     }
 
     deleteDict(dict: DictInfo): void {
-        this.dictHttpService.delete(dict);
+        this.dictHttpService.deleteDict(dict.title);
         this.updateDictMap();
     }
 
@@ -106,6 +106,9 @@ export class AdminDictComponent implements OnInit {
 
     private updateDictMap(): void {
         // REMOVE DEAD CODE
-        this.dictDataSource = this.dictHttpService.getDictInfoList();
+        this.dictHttpService.getDictInfoList().subscribe((res) => {
+            const list = res as DictInfo[];
+            this.dictDataSource = list;
+        });
     }
 }

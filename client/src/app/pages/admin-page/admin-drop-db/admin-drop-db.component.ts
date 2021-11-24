@@ -49,8 +49,10 @@ export class AdminDropDbComponent {
 
     private async dropDictTable() {
         return new Promise<boolean>((resolve) => {
-            // TODO change this when dictHttpService will be implemented
-            resolve(this.dictHttpService.dropTable());
+            this.dictHttpService.dropTable().subscribe((res) => {
+                const ans = JSON.parse(res.toString());
+                resolve(ans);
+            });
         });
     }
 }
