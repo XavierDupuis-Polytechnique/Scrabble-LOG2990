@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -33,6 +34,11 @@ describe('admin-dictionary component', () => {
         expect(component).toBeTruthy();
     });
 
+    it('onInit should update the dictionary list', () => {
+        component.ngOnInit();
+        expect(dictHttpServiceMock.getDictInfoList).toHaveBeenCalled();
+    })
+
     it('showUpdateMenu should open dialog', () => {
         const dictInfoMock: DictInfo = { title: 'test', description: 'test', canEdit: true };
 
@@ -48,8 +54,22 @@ describe('admin-dictionary component', () => {
         expect(matDialog.open).toHaveBeenCalled();
     });
 
+    it('showAddMenu should open a dialog', () => {
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of({});
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<AddDictDialogComponent>);
+        component.showAddMenu();
+        expect(matDialog.open).toHaveBeenCalledOnceWith(AddDictDialogComponent, {width: '250px'});
+    })
+
     it('deleteDict should call http service', () => {
         const dictInfoMock: DictInfo = { title: 'test', description: 'test', canEdit: true };
+        dictHttpServiceMock.deleteDict.and.returnValue(of(''));
         component.deleteDict(dictInfoMock);
         expect(dictHttpServiceMock.deleteDict).toHaveBeenCalledWith(dictInfoMock.title);
     });
