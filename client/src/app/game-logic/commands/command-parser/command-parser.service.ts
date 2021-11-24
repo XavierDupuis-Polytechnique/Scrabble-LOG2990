@@ -118,7 +118,7 @@ export class CommandParserService {
     }
 
     private isCommandPlaceLetterValid(commandPlaceLetter: string[]) {
-        if (commandPlaceLetter.length === undefined) {
+        if (commandPlaceLetter === undefined) {
             this.sendErrorMessage(SYNTAX_ERROR + ': les paramètres sont invalides');
             return false;
         }
