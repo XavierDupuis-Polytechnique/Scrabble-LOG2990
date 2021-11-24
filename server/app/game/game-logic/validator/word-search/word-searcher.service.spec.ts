@@ -23,7 +23,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'on',
         };
-        const answer = wordSeacherService.validateWords(mockAction as PlaceLetter, grid);
+        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(true);
     });
 
@@ -33,7 +33,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'On',
         };
-        const answer = wordSeacherService.validateWords(mockAction as PlaceLetter, grid);
+        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(true);
     });
 
@@ -43,7 +43,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'bon',
         };
-        const answer = wordSeacherService.validateWords(mockAction as PlaceLetter, grid);
+        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(true);
     });
 
@@ -53,7 +53,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'bon',
         };
-        const answer = wordSeacherService.validateWords(mockAction as PlaceLetter, grid);
+        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(true);
     });
 
@@ -63,7 +63,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'bon',
         };
-        const answer = wordSeacherService.validateWords(mockAction as PlaceLetter, grid);
+        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(false);
     });
 
@@ -73,7 +73,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'tesfg',
         };
-        const answer = wordSeacherService.validateWords(mockAction as PlaceLetter, grid);
+        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(false);
     });
 });
