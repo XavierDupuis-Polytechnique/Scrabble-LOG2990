@@ -8,7 +8,7 @@ import {
     EMPTY_CHAR,
     JOKER_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -423,5 +423,36 @@ describe('UIPlace', () => {
         expect(action.concernedIndexes.size).toBe(0);
         expect(action.pointerPosition?.x).toBe(x);
         expect(action.pointerPosition?.y).toBe(y);
+    });
+
+    it('should automatically switch direction for a one letter placement (horizontal -> vertical)', () => {
+        const x = MIDDLE_OF_BOARD;
+        const y = MIDDLE_OF_BOARD;
+        boardService.board.grid[y][x].letterObject.char = 'A';
+        player.letterRack[0].char = 'B';
+        action.receiveLeftClick({ x, y: y + 1 });
+        expect(action.direction).toBe(Direction.Horizontal);
+        const letter = player.letterRack[0].char.toLowerCase();
+        action.receiveKey(letter);
+
+        const createdPlaceLetter = action.create() as PlaceLetter;
+        expect(createdPlaceLetter.word.toLowerCase()).toBe('ab');
+        expect(createdPlaceLetter.placement.direction).toBe(Direction.Vertical);
+    });
+
+    it('should automatically switch direction for a one letter placement (vertical -> horizontal)', () => {
+        const x = MIDDLE_OF_BOARD;
+        const y = MIDDLE_OF_BOARD;
+        boardService.board.grid[y][x].letterObject.char = 'A';
+        player.letterRack[0].char = 'B';
+        action.receiveLeftClick({ x: x + 1, y });
+        action.receiveLeftClick({ x: x + 1, y });
+        expect(action.direction).toBe(Direction.Vertical);
+        const letter = player.letterRack[0].char.toLowerCase();
+        action.receiveKey(letter);
+
+        const createdPlaceLetter = action.create() as PlaceLetter;
+        expect(createdPlaceLetter.word.toLowerCase()).toBe('ab');
+        expect(createdPlaceLetter.placement.direction).toBe(Direction.Horizontal);
     });
 });
