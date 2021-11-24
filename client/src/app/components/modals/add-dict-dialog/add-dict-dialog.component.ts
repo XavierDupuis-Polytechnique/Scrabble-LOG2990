@@ -5,22 +5,28 @@ import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
 @Component({
-  selector: 'app-add-dict-dialog',
-  templateUrl: './add-dict-dialog.component.html',
-  styleUrls: ['./add-dict-dialog.component.scss']
+    selector: 'app-add-dict-dialog',
+    templateUrl: './add-dict-dialog.component.html',
+    styleUrls: ['./add-dict-dialog.component.scss'],
 })
 export class AddDictDialogComponent {
     selectedFile = '';
 
-    constructor(public dialogRef: MatDialogRef<AddDictDialogComponent>, private readonly dictHttpService: DictHttpService, private dialog: MatDialog) {}
+    constructor(
+        public dialogRef: MatDialogRef<AddDictDialogComponent>,
+        private readonly dictHttpService: DictHttpService,
+        private dialog: MatDialog,
+    ) {}
 
     showSelectedFile() {
         const input = document.getElementById('fileInput') as HTMLInputElement;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.selectedFile = input.files![0].name;
     }
 
     async uploadFile() {
         const input = document.getElementById('fileInput') as HTMLInputElement;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const file = input.files![0];
         this.selectedFile = '';
         const dict = await this.readFile(file);
@@ -43,15 +49,14 @@ export class AddDictDialogComponent {
 
     private async uploadDictionary(dict: Dictionary) {
         this.dictHttpService.uploadDict(dict).subscribe((value) => {
-            console.log(value);
-            if(!value) {
+            if (!value) {
                 this.dialog.open(AlertDialogComponent, {
                     width: '250px',
                     data: {
                         message: 'Erreur',
                         button1: 'Ok',
-                        button2: ''
-                    }
+                        button2: '',
+                    },
                 });
             } else {
                 this.dialogRef.close();

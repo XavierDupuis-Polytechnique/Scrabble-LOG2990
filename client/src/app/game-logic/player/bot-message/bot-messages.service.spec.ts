@@ -19,12 +19,17 @@ import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/vali
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 
 describe('bot message service', () => {
     let service: BotMessagesService;
     const commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
     const messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
     const httpClient = jasmine.createSpyObj('HttpClient', ['get']);
+    const botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+    const obs = of(['Test1', 'Test2', 'Test3']);
+    botHttpService.getDataInfo.and.returnValue(obs);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -32,6 +37,7 @@ describe('bot message service', () => {
                 { provide: CommandExecuterService, useValue: commandExecuterServiceMock },
                 { provide: HttpClient, useValue: httpClient },
                 { provide: LocationStrategy, useClass: MockLocationStrategy },
+                { provide: BotHttpService, useValue: botHttpService },
             ],
         });
         service = TestBed.inject(BotMessagesService);

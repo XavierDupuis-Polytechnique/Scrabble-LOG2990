@@ -53,7 +53,7 @@ export class AdminDictComponent implements OnInit {
     async deleteDict(dict: DictInfo) {
         this.dictHttpService.deleteDict(dict.title).subscribe(() => {
             this.updateDictMap();
-        })
+        });
     }
 
     private updateDictMap(): void {

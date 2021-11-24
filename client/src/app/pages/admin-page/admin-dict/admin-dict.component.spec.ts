@@ -37,7 +37,7 @@ describe('admin-dictionary component', () => {
     it('onInit should update the dictionary list', () => {
         component.ngOnInit();
         expect(dictHttpServiceMock.getDictInfoList).toHaveBeenCalled();
-    })
+    });
 
     it('showUpdateMenu should open dialog', () => {
         const dictInfoMock: DictInfo = { title: 'test', description: 'test', canEdit: true };
@@ -64,8 +64,8 @@ describe('admin-dictionary component', () => {
             },
         } as MatDialogRef<AddDictDialogComponent>);
         component.showAddMenu();
-        expect(matDialog.open).toHaveBeenCalledOnceWith(AddDictDialogComponent, {width: '250px'});
-    })
+        expect(matDialog.open).toHaveBeenCalledOnceWith(AddDictDialogComponent, { width: '250px' });
+    });
 
     it('deleteDict should call http service', () => {
         const dictInfoMock: DictInfo = { title: 'test', description: 'test', canEdit: true };
