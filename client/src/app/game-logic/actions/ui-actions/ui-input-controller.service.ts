@@ -23,10 +23,7 @@ export class UIInputControllerService {
     activeAction: UIAction | null = null;
 
     get canBeExecuted(): boolean {
-        if (this.activeAction) {
-            return this.activeAction.canBeCreated;
-        }
-        return false;
+        return this.activeAction ? this.activeAction.canBeCreated : false;
     }
 
     constructor(
