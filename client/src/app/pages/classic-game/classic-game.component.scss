@@ -39,3 +39,12 @@ button {
     padding-top: 30vh;
     align-items: center;
 }
+
+.game-mode-selection {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    color: white !important;
+    justify-content: center;
+    margin-bottom: 1.5%;
+}

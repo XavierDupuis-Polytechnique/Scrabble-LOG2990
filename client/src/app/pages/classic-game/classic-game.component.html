@@ -1,10 +1,10 @@
 <div [ngClass]="{'classic-container' : !isSpecialGame, 'special-container': isSpecialGame}">
     <app-header-bar></app-header-bar>
     <div class="justified">
-        <!-- TODO find better place for toggle and remove style-->
-        <div style="color: green">NOT DEFINITIVE VERY UGLY</div>
-        <mat-slide-toggle [(ngModel)]="isSpecialGame" style="color: white">Changer de mode de jeux</mat-slide-toggle>
-        <h1 style="color: white">Mode de jeu : {{isSpecialGame ? 'Special' : 'Classic'}}</h1>
+        <div class="game-mode-selection">
+            <h1 class="game-mode-title">Mode de jeu : {{isSpecialGame ? 'Log2990' : 'Classique'}}</h1>
+            <mat-slide-toggle [(ngModel)]="isSpecialGame" color="warn">Changer de mode</mat-slide-toggle>
+        </div>
         <button mat-flat-button color="primary" (click)="openSoloGameForm()">Jouer une partie en solo</button>
         <button mat-flat-button color="primary" (click)="openMultiGameForm()">Créer une partie multijoueur</button>
         <button mat-flat-button color="primary" (click)="openPendingGames()">Joindre une partie multijoueur</button>
