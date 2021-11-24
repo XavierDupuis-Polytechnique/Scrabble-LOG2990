@@ -21,8 +21,8 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
 import { Observable } from 'rxjs';
-
-describe('BotMessagesServices', () => {
+// TODO FIX THIS SHIT
+describe('bot message service', () => {
     let service: BotMessagesService;
     let mockBotHttpService: jasmine.SpyObj<BotHttpService>;
     beforeEach(() => {
@@ -242,4 +242,3 @@ describe('BotMessagesServices', () => {
             expect(messagesService.receiveSystemMessage).toHaveBeenCalled();
         });
     });
-});
