@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { By } from '@angular/platform-browser';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -32,52 +31,6 @@ describe('admin-dictionary component', () => {
 
     it('should be created', () => {
         expect(component).toBeTruthy();
-    });
-
-    it('loadFile should open alert dialog if not file is not correct...', async () => {
-        const dataTransfer = new DataTransfer();
-        const myString = `{
-            "title": "test",
-            "description": "test",
-            "words": ["allo"]
-        }`;
-        dataTransfer.items.add(new File([myString], 'test.json'));
-
-        const inputDebugEl = fixture.debugElement.query(By.css('input[type=file]'));
-        inputDebugEl.nativeElement.files = dataTransfer.files;
-
-        inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        const dummyDict = of([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
-        dictHttpServiceMock.getDict.and.returnValue(dummyDict);
-        fixture.detectChanges();
-
-        const dummyAnswer = of(false);
-        dictHttpServiceMock.uploadDict.and.returnValue(dummyAnswer);
-        await component.loadFile();
-        expect(matDialog.open).toHaveBeenCalled();
-    });
-
-    it('loadFile should not open alert dialog if file is correct', async () => {
-        const dataTransfer = new DataTransfer();
-        const myString = `{
-            "title": "test",
-            "description": "test",
-            "words": ["allo"]
-        }`;
-        dataTransfer.items.add(new File([myString], 'test.json'));
-
-        const inputDebugEl = fixture.debugElement.query(By.css('input[type=file]'));
-        inputDebugEl.nativeElement.files = dataTransfer.files;
-
-        inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        const dummyDict = of([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
-        dictHttpServiceMock.getDict.and.returnValue(dummyDict);
-        fixture.detectChanges();
-
-        const dummyAnswer = of(true);
-        dictHttpServiceMock.uploadDict.and.returnValue(dummyAnswer);
-        await component.loadFile();
-        expect(matDialog.open).not.toHaveBeenCalled();
     });
 
     it('showUpdateMenu should open dialog', () => {
