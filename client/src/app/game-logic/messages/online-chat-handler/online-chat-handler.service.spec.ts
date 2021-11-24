@@ -46,7 +46,7 @@ describe('online chat handler', () => {
 
     it('leaveChatRoom should disconnect the socket', () => {
         service.leaveChatRoom();
-        expect(service.connected).toBeFalse();
+        expect(service.isConnected).toBeFalse();
     });
 
     it('sendMessage should emit a new message', () => {

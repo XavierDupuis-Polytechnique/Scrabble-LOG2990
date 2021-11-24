@@ -63,13 +63,13 @@ export class UIInputControllerService {
         this.activeComponent = input.from;
     }
 
-    updateActiveAction(inputType: InputType): boolean {
+    updateActiveAction(inputType: InputType): void {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
                     this.discardAction();
                     this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
-                    return true;
+                    return;
                 }
                 break;
             case InputComponent.Horse:
@@ -77,31 +77,29 @@ export class UIInputControllerService {
                     if (!(this.activeAction instanceof UIExchange)) {
                         this.discardAction();
                         this.activeAction = new UIExchange(this.info.user);
-                        return true;
+                        return;
                     }
                 } else {
                     // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
                         this.discardAction();
                         this.activeAction = new UIMove(this.info.user);
-                        return true;
+                        return;
                     }
                 }
                 break;
             case InputComponent.Chatbox:
                 if (this.activeAction) {
                     this.discardAction();
-                    return true;
+                    return;
                 }
                 break;
             case InputComponent.Outside:
                 if (this.activeAction) {
                     this.discardAction();
                     this.activeComponent = InputComponent.Outside;
-                    return true;
                 }
         }
-        return false;
     }
 
     processInputType(input: UIInput) {

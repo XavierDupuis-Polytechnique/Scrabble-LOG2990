@@ -56,7 +56,7 @@ export class GamePageComponent {
         this.router.navigate(['/']);
     }
 
-    get isItMyTurn() {
+    get isItMyTurn(): boolean {
         try {
             if (this.isEndOfGame) {
                 return false;
@@ -67,7 +67,7 @@ export class GamePageComponent {
         }
     }
 
-    get isEndOfGame() {
+    get isEndOfGame(): boolean {
         try {
             return this.info.isEndOfGame;
         } catch (e) {
@@ -75,11 +75,11 @@ export class GamePageComponent {
         }
     }
 
-    get canPlace() {
+    get canPlace(): boolean {
         return this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
     }
 
-    get canExchange() {
+    get canExchange(): boolean {
         return (
             this.isItMyTurn &&
             this.inputController.activeAction instanceof UIExchange &&
@@ -88,11 +88,11 @@ export class GamePageComponent {
         );
     }
 
-    get canPass() {
+    get canPass(): boolean {
         return this.isItMyTurn;
     }
 
-    get canCancel() {
+    get canCancel(): boolean {
         return this.canPlace || this.canExchange;
     }
 

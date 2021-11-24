@@ -58,7 +58,7 @@ export class UIPlace implements UIAction {
                 this.moveBackwards();
                 return;
             default:
-                if (this.useLetter(key)) {
+                if (this.canUseLetter(key)) {
                     this.moveForwards();
                 }
                 break;
@@ -89,7 +89,7 @@ export class UIPlace implements UIAction {
         this.pointerPosition = null;
     }
 
-    private isSamePositionClicked(clickPosition: { x: number; y: number }) {
+    private isSamePositionClicked(clickPosition: { x: number; y: number }): boolean {
         if (!this.pointerPosition) {
             return false;
         }
@@ -150,18 +150,18 @@ export class UIPlace implements UIAction {
         return { word, x, y };
     }
 
-    private isThereALetter(x: number, y: number) {
+    private isThereALetter(x: number, y: number): boolean {
         if (!this.isInsideOfBoard(x, y)) {
             return false;
         }
         return this.boardService.board.grid[y][x].letterObject.char !== EMPTY_CHAR;
     }
 
-    private useLetter(key: string): boolean {
+    private canUseLetter(key: string): boolean {
         if (!this.pointerPosition) {
             return false;
         }
-        const possibleLetterIndex = this.canUseLetter(key);
+        const possibleLetterIndex = this.findLetterIndexInRack(key);
         if (possibleLetterIndex === null) {
             return false;
         }
@@ -180,9 +180,9 @@ export class UIPlace implements UIAction {
         return true;
     }
 
-    private moveForwards(): boolean {
+    private moveForwards(): void {
         if (!this.pointerPosition) {
-            return false;
+            return;
         }
 
         let deltaX = 0;
@@ -200,26 +200,25 @@ export class UIPlace implements UIAction {
             y += deltaY;
             if (this.canPlaceALetterHere(x, y)) {
                 this.pointerPosition = { x, y };
-                return true;
+                return;
             }
         } while (this.isInsideOfBoard(x, y));
 
         this.pointerPosition = null;
-        return false;
     }
 
-    private canUseLetter(key: string): number | null {
+    private findLetterIndexInRack(key: string): number | null {
         let letter = convertToProperLetter(key);
         if (isStringAnUpperCaseLetter(letter)) {
             letter = JOKER_CHAR;
         }
         if (isStringALowerCaseLetter(letter) || letter === JOKER_CHAR) {
-            return this.findUnusedLetterIndex(letter);
+            return this.getUnusedLetterIndexInRack(letter);
         }
         return null;
     }
 
-    private findUnusedLetterIndex(char: string): number | null {
+    private getUnusedLetterIndexInRack(char: string): number | null {
         for (let index = 0; index < this.info.user.letterRack.length; index++) {
             const rackLetter = this.info.user.letterRack[index];
             if (rackLetter.char.toLowerCase() === char && !this.concernedIndexes.has(index)) {
@@ -240,16 +239,15 @@ export class UIPlace implements UIAction {
         return x >= BOARD_MIN_POSITION && x <= BOARD_MAX_POSITION && y >= BOARD_MIN_POSITION && y <= BOARD_MAX_POSITION;
     }
 
-    private moveBackwards(): boolean {
+    private moveBackwards(): void {
         const lastLetter = this.orderedIndexes.pop();
-        if (lastLetter !== undefined) {
-            const newBlankLetter = this.letterCreator.createBlankLetter(' ');
-            this.boardService.board.grid[lastLetter.y][lastLetter.x].letterObject = newBlankLetter;
-            this.concernedIndexes.delete(lastLetter.rackIndex);
-            this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
-            return true;
+        if (lastLetter === undefined) {
+            return;
         }
-        return false;
+        const newBlankLetter = this.letterCreator.createBlankLetter(' ');
+        this.boardService.board.grid[lastLetter.y][lastLetter.x].letterObject = newBlankLetter;
+        this.concernedIndexes.delete(lastLetter.rackIndex);
+        this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
     }
 
     private isPlacementInProgress(): boolean {

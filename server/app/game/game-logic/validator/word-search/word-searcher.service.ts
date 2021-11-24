@@ -16,7 +16,7 @@ export class WordSearcher {
 
     constructor(public dictionaryService: DictionaryService) {}
 
-    validateWords(action: PlaceLetter, grid: Tile[][]): boolean {
+    isWordValid(action: PlaceLetter, grid: Tile[][]): boolean {
         const listOfValidWord = this.listOfValidWord(action, grid);
         if (listOfValidWord.length > 0) {
             return true;
@@ -57,7 +57,7 @@ export class WordSearcher {
                 if (this.hasNeighbour(coord, direction, grid)) {
                     const beginingPos = this.goToBeginningOfWord(direction, coord, grid);
                     const word = this.goToEndOfWord(action, beginingPos, coord, grid);
-                    if (this.isValid(word.letters)) {
+                    if (this.isInDictionnary(word.letters)) {
                         listOfValidWord.push(word);
                     } else {
                         return [];
@@ -72,9 +72,9 @@ export class WordSearcher {
         const x = coord.x;
         const y = coord.y;
         if (direction === Direction.Horizontal) {
-            return this.tileIsOccupied(x, y + 1, grid) || this.tileIsOccupied(x, y - 1, grid);
+            return this.isTileOccupied(x, y + 1, grid) || this.isTileOccupied(x, y - 1, grid);
         } else {
-            return this.tileIsOccupied(x + 1, y, grid) || this.tileIsOccupied(x - 1, y, grid);
+            return this.isTileOccupied(x + 1, y, grid) || this.isTileOccupied(x - 1, y, grid);
         }
     }
 
@@ -82,12 +82,12 @@ export class WordSearcher {
         let x = letterPos.x;
         let y = letterPos.y;
         if (direction === Direction.Horizontal) {
-            while (this.tileIsOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
+            while (this.isTileOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
                 y -= 1;
             }
             y += 1;
         } else {
-            while (this.tileIsOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
+            while (this.isTileOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
                 x -= 1;
             }
             x += 1;
@@ -103,8 +103,8 @@ export class WordSearcher {
         const index: number[] = [];
         let indexInNeighbor = 0;
         if (direction === Direction.Horizontal) {
-            while (this.tileIsOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
-                if (this.tileIsOccupied(x, y, grid)) {
+            while (this.isTileOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
+                if (this.isTileOccupied(x, y, grid)) {
                     letters.push(grid[y][x]);
                 } else {
                     const indexInWord = x - action.placement.x;
@@ -116,8 +116,8 @@ export class WordSearcher {
             }
             y -= 1;
         } else {
-            while (this.tileIsOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
-                if (this.tileIsOccupied(x, y, grid)) {
+            while (this.isTileOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
+                if (this.isTileOccupied(x, y, grid)) {
                     letters.push(grid[y][x]);
                 } else {
                     const indexInWord = y - action.placement.y;
@@ -132,7 +132,7 @@ export class WordSearcher {
         return { letters, index };
     }
 
-    isValid(word: Tile[]): boolean {
+    isInDictionnary(word: Tile[]): boolean {
         const wordString = this.tileToString(word).toLowerCase();
         if (this.dictionaryService.isWordInDict(wordString)) {
             return true;
@@ -148,7 +148,7 @@ export class WordSearcher {
         return x >= BOARD_MIN_POSITION && y >= BOARD_MIN_POSITION && x <= BOARD_MAX_POSITION && y <= BOARD_MAX_POSITION;
     }
 
-    tileIsOccupied(x: number, y: number, grid: Tile[][]): boolean {
+    isTileOccupied(x: number, y: number, grid: Tile[][]): boolean {
         if (!this.isInsideBoard(x, y)) {
             return false;
         }
@@ -165,7 +165,7 @@ export class WordSearcher {
             const y = startCoord.y;
             const wordEnd = startCoord.x + word.length;
             for (let x = startCoord.x; x < wordEnd; x++) {
-                if (!this.tileIsOccupied(x, y, grid)) {
+                if (!this.isTileOccupied(x, y, grid)) {
                     listOfCoord.push({ x, y });
                 }
             }
@@ -173,7 +173,7 @@ export class WordSearcher {
             const x = startCoord.x;
             const wordEnd = startCoord.y + word.length;
             for (let y = startCoord.y; y < wordEnd; y++) {
-                if (!this.tileIsOccupied(x, y, grid)) {
+                if (!this.isTileOccupied(x, y, grid)) {
                     listOfCoord.push({ x, y });
                 }
             }

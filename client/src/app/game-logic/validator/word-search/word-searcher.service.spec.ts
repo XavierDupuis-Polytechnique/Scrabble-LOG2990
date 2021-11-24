@@ -76,7 +76,7 @@ describe('WordSearcher', () => {
     it('should validate word if first word ', () => {
         const placement: PlacementSetting = { x: 4, y: 0, direction: Direction.Horizontal };
         const action = new PlaceLetter(player, 'on', placement, pointCalculator, wordSearcher);
-        const wordIsValid = wordSearcher.validateWords(action);
+        const wordIsValid = wordSearcher.isWordValid(action);
         expect(wordIsValid).toBe(true);
     });
 
@@ -119,14 +119,14 @@ describe('WordSearcher', () => {
         mockBoard.grid[2][2].letterObject = { char: 'O', value: 1 };
         const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
         const action = new PlaceLetter(player, 'rateau', placement, pointCalculator, wordSearcher);
-        const isValid = wordSearcher.validateWords(action);
+        const isValid = wordSearcher.isWordValid(action);
         expect(isValid).toBe(false);
     });
     it('should return true even if word has blank letter', () => {
         mockBoard.grid[2][2].letterObject = { char: 'N', value: 1 };
         const placement: PlacementSetting = { x: 1, y: 2, direction: Direction.Vertical };
         const action = new PlaceLetter(player, 'On', placement, pointCalculator, wordSearcher);
-        const isValid = wordSearcher.validateWords(action);
+        const isValid = wordSearcher.isWordValid(action);
         expect(isValid).toBe(true);
     });
 });

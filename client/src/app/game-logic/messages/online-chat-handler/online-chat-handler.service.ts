@@ -74,7 +74,7 @@ export class OnlineChatHandlerService {
         this.sysMessageSubject.next(content);
     }
 
-    get connected(): boolean {
+    get isConnected(): boolean {
         return isSocketConnected(this.socket);
     }
 
