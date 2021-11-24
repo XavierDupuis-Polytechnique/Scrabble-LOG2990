@@ -40,6 +40,7 @@ export const HELP =
     'Affiche les mots alternatifs que le joueur virtuel aurait pu placer.\\n' +
     '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve. \\n' +
     '#!aide# \\n Affiche la liste des commandes disponibles.';
+export const ERROR_GET_REQUEST_DEBUG = 'Échec de la commande';
 export const ASCII_CODE = 65;
 export const TIMER_STEP = 100;
 export const BACKSPACE = 'Backspace';
