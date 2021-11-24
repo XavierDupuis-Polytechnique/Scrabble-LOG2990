@@ -1,7 +1,7 @@
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
-import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
@@ -19,15 +19,18 @@ import { GameManagerService } from './game-manager.service';
 
 describe('GameManagerService', () => {
     let service: GameManagerService;
-    const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
-    let leaderboardServiceMock: jasmine.SpyObj<LeaderboardService>;
+
     const botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
 
     const obs = of(['Test1', 'Test2', 'Test3']);
     botHttpService.getDataInfo.and.returnValue(obs);
+    let commandExecuterMock: CommandExecuterService;
+    let leaderboardServiceMock: LeaderboardService;
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
 
-    const dict = new DictionaryService();
     beforeEach(() => {
+        commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute', 'resetDebug']);
         leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
         TestBed.configureTestingModule({
             providers: [
@@ -59,6 +62,7 @@ describe('GameManagerService', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameSettings);
         service.startGame();
@@ -72,6 +76,7 @@ describe('GameManagerService', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameSettings);
         const gameSpy = spyOn(service, 'stopGame').and.callFake(() => {
@@ -88,6 +93,7 @@ describe('GameManagerService', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
 
@@ -107,6 +113,7 @@ describe('GameManagerService', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameSettings);
         (service['game'] as Game)['isEndOfGameSubject'].next();
@@ -119,6 +126,7 @@ describe('GameManagerService', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameSettings);
         const game = service['game'] as Game;
@@ -150,7 +158,8 @@ describe('GameManagerService Online Edition', () => {
     const mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
     const obs = of(['Test1', 'Test2', 'Test3']);
     mockBotHttpService.getDataInfo.and.returnValue(obs);
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -171,6 +180,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
 
@@ -190,6 +200,7 @@ describe('GameManagerService Online Edition', () => {
             playerName: 'allo',
             botDifficulty: 'easy',
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameSettings);
@@ -200,6 +211,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
 
@@ -219,6 +231,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p2',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
 
@@ -241,6 +254,7 @@ describe('GameManagerService Online Edition', () => {
             playerName: 'p1',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
 
@@ -265,6 +279,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p1',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
 
@@ -285,6 +300,7 @@ describe('GameManagerService Online Edition', () => {
             opponentName: 'p1',
             randomBonus: false,
             id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
         const userAuth: UserAuth = {

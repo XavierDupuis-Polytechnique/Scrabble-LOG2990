@@ -5,7 +5,8 @@ import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 
 describe('DictionaryService', () => {
-    const dictionaryService = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dictionaryService = new DictionaryService(dictHttpServiceMock);
 
     it('should be created', () => {
         expect(dictionaryService).toBeTruthy();

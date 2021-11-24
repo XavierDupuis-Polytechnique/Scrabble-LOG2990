@@ -87,8 +87,8 @@ describe('GameManagerService', () => {
             playerName,
             opponentName,
             randomBonus,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -118,8 +118,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -155,8 +155,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -181,8 +181,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -207,8 +207,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -235,8 +235,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -262,8 +262,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -293,8 +293,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -319,8 +319,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -351,8 +351,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -377,8 +377,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -399,8 +399,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -424,8 +424,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
         clock.tick(NEW_GAME_TIMEOUT);
@@ -440,8 +440,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
         service.linkedClients.clear();
@@ -460,8 +460,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
 
@@ -488,8 +488,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
         service.activeGames.delete('1');
@@ -516,8 +516,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame('1', gameSettings);
 
@@ -550,8 +550,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
         service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [] });
@@ -568,7 +568,7 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: player.name,
             opponentName: 'test3',
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
         service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });

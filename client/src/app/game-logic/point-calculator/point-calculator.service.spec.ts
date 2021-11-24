@@ -40,7 +40,8 @@ describe('PointCalculatorService', () => {
     let listOfWord: Tile[][];
     let word: Tile[];
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [

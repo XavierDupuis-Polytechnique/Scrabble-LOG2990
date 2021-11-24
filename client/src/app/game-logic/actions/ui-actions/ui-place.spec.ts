@@ -37,7 +37,7 @@ describe('UIPlace', () => {
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
     let info: GameInfoService;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [

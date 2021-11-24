@@ -2,6 +2,7 @@ import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angu
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
+    DEFAULT_DICTIONARY_TITLE,
     DEFAULT_TIME_PER_TURN,
     MAX_NAME_LENGTH,
     MAX_TIME_PER_TURN,
@@ -9,6 +10,8 @@ import {
     MIN_TIME_PER_TURN,
     STEP_TIME_PER_TURN,
 } from '@app/game-logic/constants';
+import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { DictHttpService } from '@app/services/dict-http.service';
 import { OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
@@ -32,23 +35,41 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
             Validators.max(MAX_TIME_PER_TURN),
         ]),
         randomBonus: new FormControl(false, [Validators.required]),
+        dictTitle: new FormControl(DEFAULT_DICTIONARY_TITLE, [Validators.required]),
+        dictDesc: new FormControl(''),
     });
 
     minTimePerTurn = MIN_TIME_PER_TURN;
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
+    dictList: DictInfo[] = [{ title: DEFAULT_DICTIONARY_TITLE, description: '' }] as DictInfo[];
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettingsUI,
         private dialogRef: MatDialogRef<NewOnlineGameFormComponent>,
         private cdref: ChangeDetectorRef,
-    ) {}
+        private dictHttpService: DictHttpService,
+    ) {
+        this.onInit();
+    }
+
+    onInit() {
+        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
+            this.dictList = dictList as DictInfo[];
+        });
+    }
+
+    getDescription(dictTitle: string): string {
+        const tmpDict = this.dictList.find((dict) => dict.title === dictTitle);
+        return tmpDict ? tmpDict.description : '';
+    }
 
     ngAfterContentChecked() {
         this.cdref.detectChanges();
     }
 
     playGame(): void {
+        this.onlineGameSettingsUIForm.value.dictDesc = this.getDescription(this.onlineGameSettingsUIForm.value.dictTitle);
         this.dialogRef.close(this.onlineGameSettingsUIForm.value);
     }
 
@@ -58,6 +79,8 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
             playerName: '',
             timePerTurn: DEFAULT_TIME_PER_TURN,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            dictDesc: '',
         });
     }
 

@@ -23,7 +23,7 @@ import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handle
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 @Injectable({
@@ -61,7 +61,7 @@ export class GameManagerService {
         });
     }
 
-    createGame(gameSettings: GameSettings): Observable<void> {
+    createGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
         if (this.game) {
             this.stopGame();
         }
@@ -95,12 +95,9 @@ export class GameManagerService {
         });
 
         return dictReady$;
-        // TODO uncomment when merge branch Objective
-        // const botNameReady$ = ...
-        // return forkJoin(dictReady$, botNameReady$); (
     }
 
-    createSpecialGame(gameSettings: GameSettings): void {
+    createSpecialGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
         this.game = new SpecialOfflineGame(
             gameSettings.randomBonus,
             gameSettings.timePerTurn,
@@ -111,6 +108,8 @@ export class GameManagerService {
             this.objectiveCreator,
         );
 
+        const dictReady$ = this.dictionaryService.fetchDictionary(gameSettings.dictTitle);
+
         // TODO remove code repetition
         const playerName = gameSettings.playerName;
         const botDifficulty = gameSettings.botDifficulty;
@@ -118,6 +117,8 @@ export class GameManagerService {
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
         (this.game as SpecialOfflineGame).allocateObjectives();
+
+        return dictReady$;
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {

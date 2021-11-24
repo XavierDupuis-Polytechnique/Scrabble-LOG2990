@@ -18,7 +18,7 @@ import { BotHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
 
 describe('Player', () => {
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let bot: EasyBot;
     let boardService: BoardService;
     let timer: TimerService;

@@ -11,7 +11,7 @@ import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { first, takeWhile } from 'rxjs/operators';
 
 // TODO: change name to new-game-component (page)
@@ -65,6 +65,7 @@ export class ClassicGameComponent {
                 timePerTurn: formOnline.timePerTurn,
                 playerName: formOnline.playerName,
                 randomBonus: formOnline.randomBonus,
+                dictTitle: formOnline.dictTitle,
             };
             this.socketHandler.createGameMulti(onlineGameSettings);
             const username = formOnline.playerName;
@@ -144,16 +145,20 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
+        let gameReady$: BehaviorSubject<boolean>;
         if (this.isSpecialGame) {
-            this.gameManager.createSpecialGame(this.gameSettings);
+            gameReady$ = this.gameManager.createSpecialGame(this.gameSettings);
         } else {
-            this.gameManager.createGame(this.gameSettings);
+            gameReady$ = this.gameManager.createGame(this.gameSettings);
         }
-        this.router.navigate(['/game']);
-        const gameReady$ = this.gameManager.createGame(this.gameSettings);
-        gameReady$.subscribe(() => {
+
+        if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
-        });
+        } else {
+            gameReady$.subscribe(() => {
+                this.router.navigate(['/game']);
+            });
+        }
         // TODO - add loading screen?
     }
 

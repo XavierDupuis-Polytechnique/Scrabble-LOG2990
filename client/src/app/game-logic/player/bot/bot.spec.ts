@@ -14,7 +14,8 @@ import { BotHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
 
 describe('Bot', () => {
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     let bot: EasyBot;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);

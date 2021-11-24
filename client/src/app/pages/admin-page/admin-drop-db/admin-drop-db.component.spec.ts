@@ -20,7 +20,7 @@ describe('AdminDropDbComponent', () => {
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         const dummyAnswer = of(true);
         botHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
-        dictHttpServiceMock.dropTable.and.returnValue(true);
+        dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
 
         await TestBed.configureTestingModule({
             declarations: [AdminDropDbComponent],
@@ -66,10 +66,10 @@ describe('AdminDropDbComponent', () => {
         expect(dictHttpServiceMock.dropTable).not.toHaveBeenCalled();
     });
 
-    it('dropTables cover if path', () => {
+    it('dropTables cover if path', async () => {
         const dummyAnswer = of(false);
         botHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
-        dictHttpServiceMock.dropTable.and.returnValue(false);
+        dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
         matDialogMock.open.and.returnValue({
             afterClosed: () => {
                 return of(true);

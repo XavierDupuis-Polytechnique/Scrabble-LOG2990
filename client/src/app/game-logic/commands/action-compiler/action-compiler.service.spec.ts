@@ -21,7 +21,8 @@ describe('ActionCompilerService', () => {
     let player: Player;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, ActionCreatorService],

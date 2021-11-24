@@ -11,7 +11,8 @@ describe('BotCalculatorService', () => {
     let grid: Tile[][];
     let listOfWord: Tile[][];
     let word: Tile[];
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }],

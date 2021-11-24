@@ -47,7 +47,7 @@ describe('Service: OnlineActionCompiler', () => {
     let wordSearcher: WordSearcher;
     let letters: Letter[];
     let pointCalculator: PointCalculatorService;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
 
     beforeEach(() => {

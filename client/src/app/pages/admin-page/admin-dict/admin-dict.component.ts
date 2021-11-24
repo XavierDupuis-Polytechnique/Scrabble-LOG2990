@@ -7,7 +7,6 @@ import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
 export interface DictInfo {
-    id: number;
     title: string;
     description: string;
     canEdit: boolean;
@@ -37,7 +36,7 @@ export class AdminDictComponent implements OnInit {
         const file = input.files![0];
         this.selectedFile = '';
         const dict = await this.readFile(file);
-        this.uploadDictionnary(dict);
+        this.uploadDictionary(dict);
     }
 
     showUpdateMenu(dict: DictInfo): void {
@@ -89,19 +88,21 @@ export class AdminDictComponent implements OnInit {
         });
     }
 
-    private uploadDictionnary(dict: Dictionary): void {
-        if (!this.dictHttpService.uploadDict(dict)) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: {
-                    message: 'Erreur de lecture du fichier',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-        } else {
-            this.updateDictMap();
-        }
+    private uploadDictionary(dict: Dictionary): void {
+        this.dictHttpService.uploadDict(dict).subscribe((value) => {
+            if (!value) {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: {
+                        message: 'Erreur de lecture du fichier',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
+            } else {
+                this.updateDictMap();
+            }
+        });
     }
 
     private updateDictMap(): void {

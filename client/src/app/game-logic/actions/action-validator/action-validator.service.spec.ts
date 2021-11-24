@@ -47,7 +47,7 @@ describe('ActionValidatorService', () => {
     let messagesSpy: MessagesService;
     let commandExecuterSpy: CommandExecuterService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 

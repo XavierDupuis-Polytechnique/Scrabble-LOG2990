@@ -16,7 +16,7 @@ import { BoardComponent } from './board.component';
 describe('BoardComponent', () => {
     let component: BoardComponent;
     let fixture: ComponentFixture<BoardComponent>;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let canvasDrawerMock: CanvasDrawer;
     let inputControllerMock: UIInputControllerService;
     beforeEach(async () => {

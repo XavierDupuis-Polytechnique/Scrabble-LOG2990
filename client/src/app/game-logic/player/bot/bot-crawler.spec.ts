@@ -28,7 +28,8 @@ const placeTestWords = (x: number, y: number, isVertical: boolean, word: string,
 };
 
 describe('BotCrawler1', () => {
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
     const gameInfo = new GameInfoService(new TimerService());
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
@@ -119,7 +120,8 @@ describe('BotCrawler1', () => {
 });
 
 describe('BotCrawler2', () => {
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
     const gameInfo = new GameInfoService(new TimerService());
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);

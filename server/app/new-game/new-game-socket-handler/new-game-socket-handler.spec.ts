@@ -115,7 +115,7 @@ describe('New Online Game Service', () => {
             randomBonus: true,
             timePerTurn: 60000,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         const gameSettings = {
             id: 'a',
@@ -123,12 +123,12 @@ describe('New Online Game Service', () => {
             randomBonus: true,
             timePerTurn: 60000,
             gameMode: GameMode.Classic,
-            dictionaryTitle: DEFAULT_DICTIONARY_TITLE,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         newGameManagerService.createPendingGame.returns('a');
         newGameManagerService.joinPendingGame.returns('id'); // ?
-        newGameManagerService.getPendingGame.returns(gameSettings);
+        newGameManagerService.getPendingGame.returns(gameSettings as OnlineGameSettings);
 
         const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
         const playerName = 'abc';

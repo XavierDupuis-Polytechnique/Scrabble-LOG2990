@@ -8,7 +8,7 @@ import { BotCreatorService } from './bot-creator.service';
 
 describe('BotCreatorService', () => {
     let botCreator: BotCreatorService;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const mockBotMessageService = jasmine.createSpyObj('BotMessagesService', ['sendAction']);
     const mockCommandExecuter = jasmine.createSpyObj('CommandExecuterService', ['resetDebug']);
     const mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);

@@ -20,26 +20,28 @@ export class EditDictDialogComponent {
         private dictHttpService: DictHttpService,
         private dialog: MatDialog,
     ) {
-        this.dictionary = { title: data.title, description: data.description, canEdit: data.canEdit, id: data.id };
-        this.tempDict = { title: data.title, description: data.description, canEdit: data.canEdit, id: data.id };
+        this.dictionary = { title: data.title, description: data.description, canEdit: data.canEdit };
+        this.tempDict = { title: data.title, description: data.description, canEdit: data.canEdit };
     }
 
     uploadEdit(): void {
-        if (this.dictHttpService.editDict(this.dictionary, this.tempDict)) {
-            this.close();
-        } else {
-            this.dialog.open(AlertDialogComponent, {
-                width: '400px',
-                disableClose: true,
-                data: {
-                    message: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-            this.isEditedCorrectly = false;
-            this.tempDict = this.dictionary;
-        }
+        this.dictHttpService.editDict(this.dictionary, this.tempDict).subscribe((res) => {
+            if (res) {
+                this.close();
+            } else {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '400px',
+                    disableClose: true,
+                    data: {
+                        message: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
+                this.isEditedCorrectly = false;
+                this.tempDict = this.dictionary;
+            }
+        });
     }
 
     private close(): void {
