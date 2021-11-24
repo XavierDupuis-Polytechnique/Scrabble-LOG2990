@@ -13,11 +13,11 @@ import { Observable, Subject } from 'rxjs';
 
 const INVALID_PLACE_LETTER = new RegExp('[^a-zA-Z]');
 const INVALID_EXCHANGE_LETTER = new RegExp('[^a-z*]');
+const SYNTAX_ERROR = 'erreur de syntax';
 @Injectable({
     providedIn: 'root',
 })
 export class CommandParserService {
-    private errorSyntax = 'erreur de syntax';
     private command$: Subject<Command> = new Subject();
     private errorMessageContent$: Subject<string> = new Subject();
 
@@ -48,14 +48,13 @@ export class CommandParserService {
             if (!this.isPlaceLetterArgValid(args)) {
                 return;
             }
-            args = this.toFormatPlaceLetter(args);
+            args = this.stringToPlaceLetterArguments(args);
         } else if (commandType === CommandType.Exchange) {
             if (!this.isExchangeLetterArgr(args[0])) {
                 return;
             }
         }
         const command = this.createCommand(from, args, commandType);
-        console.log(command);
         this.sendCommand(command);
         return commandType;
     }
@@ -78,14 +77,7 @@ export class CommandParserService {
             return false;
         }
 
-        const parameters: PlaceLetterParameters = {
-            row: command[0].slice(0, 1),
-            col: command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? Number(command[0].slice(1, 2)) : Number(command[0].slice(1, 3)),
-            direction:
-                command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? command[0].slice(2, command[0].length) : command[0].slice(3, command[0].length),
-            word: command[1].normalize('NFD').replace(/\p{Diacritic}/gu, ''),
-        };
-        if (!this.isPlaceLetterParameterValid(parameters)) {
+        if (!this.isPlaceLetterParameterValid(command)) {
             return false;
         }
         return true;
@@ -103,21 +95,23 @@ export class CommandParserService {
         return true;
     }
 
-    private isPlaceLetterParameterValid(placeLetterParameters: PlaceLetterParameters): boolean {
+    private isPlaceLetterParameterValid(command: string[]): boolean {
+        const placeLetterParameters: PlaceLetterParameters = this.stringToPlaceLetterFormat(command);
+
         if (!this.isValidRow(placeLetterParameters.row)) {
-            this.sendErrorMessage(this.errorSyntax + ': ligne invalide');
+            this.sendErrorMessage(SYNTAX_ERROR + ': ligne invalide');
             return false;
         }
         if (!this.isValidColumn(placeLetterParameters.col)) {
-            this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+            this.sendErrorMessage(SYNTAX_ERROR + ': colonne invalide');
             return false;
         }
         if (!this.isValidDirection(placeLetterParameters.direction)) {
-            this.sendErrorMessage(this.errorSyntax + ': direction invalide');
+            this.sendErrorMessage(SYNTAX_ERROR + ': direction invalide');
             return false;
         }
         if (!this.isValidWord(placeLetterParameters.word)) {
-            this.sendErrorMessage(this.errorSyntax + ': mot invalide');
+            this.sendErrorMessage(SYNTAX_ERROR + ': mot invalide');
             return false;
         }
         return true;
@@ -125,33 +119,32 @@ export class CommandParserService {
 
     private isCommandPlaceLetterValid(commandPlaceLetter: string[]) {
         if (commandPlaceLetter.length === undefined) {
-            this.sendErrorMessage(this.errorSyntax + ': les paramètres sont invalides');
+            this.sendErrorMessage(SYNTAX_ERROR + ': les paramètres sont invalides');
             return false;
         }
 
         if (commandPlaceLetter.length < 2) {
-            this.sendErrorMessage(this.errorSyntax + ': mot ou emplacement manquant');
+            this.sendErrorMessage(SYNTAX_ERROR + ': mot ou emplacement manquant');
             return false;
         }
 
         if (commandPlaceLetter.length > 2) {
-            this.sendErrorMessage(this.errorSyntax + ': trop de paramètres entrés');
+            this.sendErrorMessage(SYNTAX_ERROR + ': trop de paramètres entrés');
             return false;
         }
 
         const parametersPlaceLetter = commandPlaceLetter[0];
         if (parametersPlaceLetter.length < MIN_PLACE_LETTER_ARG_SIZE || parametersPlaceLetter.length > MAX_PLACE_LETTER_ARG_SIZE) {
-            this.sendErrorMessage(this.errorSyntax + ': les paramètres sont invalides');
+            this.sendErrorMessage(SYNTAX_ERROR + ': les paramètres sont invalides');
             return false;
         }
 
         const columnValue =
             parametersPlaceLetter.length === MIN_PLACE_LETTER_ARG_SIZE ? parametersPlaceLetter.slice(1, 2) : parametersPlaceLetter.slice(1, 3);
         if (!this.isNumeric(columnValue)) {
-            this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+            this.sendErrorMessage(SYNTAX_ERROR + ': colonne invalide');
             return false;
         }
-        console.log(columnValue);
         return true;
     }
 
@@ -173,6 +166,9 @@ export class CommandParserService {
             return false;
         }
         if (columns > BOARD_DIMENSION) {
+            return false;
+        }
+        if (columns < 1) {
             return false;
         }
         return true;
@@ -206,10 +202,14 @@ export class CommandParserService {
 
     private isNumeric(value: string) {
         return new RegExp('^[0-9]+$').test(value);
-        // return /^\d+$/.test(value);
     }
 
-    private toFormatPlaceLetter(command: string[]): string[] {
+    private stringToPlaceLetterFormat(command: string[]): PlaceLetterParameters {
+        const parameters = this.stringToPlaceLetterArguments(command);
+        return { row: parameters[0], col: Number(parameters[1]), direction: parameters[2], word: parameters[3] };
+    }
+
+    private stringToPlaceLetterArguments(command: string[]): string[] {
         const row = command[0].slice(0, 1);
         const col = command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? command[0].slice(1, 2) : command[0].slice(1, 3);
         const direction =
@@ -217,46 +217,4 @@ export class CommandParserService {
         const word = command[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
         return [row, col, direction, word];
     }
-
-    // private getColumns(columns: string): number | undefined {
-    //     let col;
-    //     if (this.isValidColumnsFormat(columns)) {
-    //         col = Number(columns[1] + columns[2]);
-    //         return col;
-    //     } else if (this.isValidColumnFormat(columns)) {
-    //         col = Number(columns[1]);
-    //         return col;
-    //     }
-    //     this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
-    //     return undefined;
-    // }
-
-    // private isValidColumnsFormat(columns: string): boolean {
-    //     if (columns.length < 2) {
-    //         if (!this.isNumeric(columns[1])) {
-    //             return false;
-    //         }
-    //         return true;
-    //     }
-    //     if (!this.isNumeric(columns[1])) {
-    //         return false;
-    //     }
-    //     if (!this.isNumeric(columns[2])) {
-    //         return false;
-    //     }
-    //     if (columns.length !== MAX_PLACE_LETTER_ARG_SIZE) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    // private isValidColumnFormat(columns: string): boolean {
-    //     if (!this.isNumeric(columns[1])) {
-    //         return false;
-    //     }
-    //     if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
 }
