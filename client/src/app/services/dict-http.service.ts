@@ -27,7 +27,7 @@ export class DictHttpService {
     }
 
     deleteDict(dictTitle: string) {
-        return this.http.delete(`${environment.serverUrl}/dictionary?title=${dictTitle}`);
+        return this.http.delete(`${environment.serverUrl}/dictionary?title=${dictTitle}`, {responseType: 'text'});
     }
 
     dropTable() {

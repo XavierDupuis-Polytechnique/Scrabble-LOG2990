@@ -39,6 +39,7 @@ import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict
 import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
 import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
+import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -83,6 +84,7 @@ import { ObjectivesListComponent } from './pages/game-page/objectives/objectives
         AdminDropDbComponent,
         ObjectivesListComponent,
         ObjectiveComponent,
+        AddDictDialogComponent,
     ],
     imports: [
         AppMaterialModule,

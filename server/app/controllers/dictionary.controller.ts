@@ -54,9 +54,9 @@ export class DictionaryController {
             try {
                 const title = req.query.title as string;
                 this.dictionaryServerService.deleteDict(title);
-                res.sendStatus(StatusCodes.OK);
+                res.send(true);
             } catch (error) {
-                res.sendStatus(StatusCodes.NOT_FOUND);
+                res.send(false);
             }
         });
 
