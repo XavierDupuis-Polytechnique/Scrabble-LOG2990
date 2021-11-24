@@ -32,7 +32,6 @@ export class CommandParserService {
     parse(message: string, from: string): CommandType | undefined {
         const toVerify = message.split(' ').filter(Boolean);
         const commandCondition = toVerify[0];
-        console.log('CommandCondition', commandCondition);
         if (commandCondition[0] !== '!') {
             return;
         }
@@ -43,19 +42,20 @@ export class CommandParserService {
             this.sendErrorMessage(errorContent);
             return;
         }
+
         let args: string[] | undefined = toVerify.slice(1, toVerify.length);
-        console.log(args);
         if (commandType === CommandType.Place) {
-            if (!this.formatPlaceLetter(args)) {
+            if (!this.isPlaceLetterArgValid(args)) {
                 return;
             }
             args = this.toFormatPlaceLetter(args);
         } else if (commandType === CommandType.Exchange) {
-            if (!this.verifyExchangeLetterArgr(args[0])) {
+            if (!this.isExchangeLetterArgr(args[0])) {
                 return;
             }
         }
         const command = this.createCommand(from, args, commandType);
+        console.log(command);
         this.sendCommand(command);
         return commandType;
     }
@@ -73,24 +73,25 @@ export class CommandParserService {
         this.errorMessageContent$.next(message);
     }
 
-    private formatPlaceLetter(command: string[]): boolean {
+    private isPlaceLetterArgValid(command: string[]): boolean {
         if (!this.isCommandPlaceLetterValid(command)) {
             return false;
         }
 
-        const placeLetterParameters = {
-            row: command[0].charCodeAt(0),
-            col: this.getColumns(command[0]),
-            direction: command[0].charCodeAt(command[0].length - 1),
+        const parameters: PlaceLetterParameters = {
+            row: command[0].slice(0, 1),
+            col: command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? Number(command[0].slice(1, 2)) : Number(command[0].slice(1, 3)),
+            direction:
+                command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? command[0].slice(2, command[0].length) : command[0].slice(3, command[0].length),
             word: command[1].normalize('NFD').replace(/\p{Diacritic}/gu, ''),
         };
-        if (!this.isPlaceLetterParameterValid(placeLetterParameters)) {
+        if (!this.isPlaceLetterParameterValid(parameters)) {
             return false;
         }
         return true;
     }
 
-    private verifyExchangeLetterArgr(word: string): boolean {
+    private isExchangeLetterArgr(word: string): boolean {
         if (word === undefined || INVALID_EXCHANGE_LETTER.test(word)) {
             this.sendErrorMessage('les paramètres sont invalides');
             return false;
@@ -100,79 +101,6 @@ export class CommandParserService {
             return false;
         }
         return true;
-    }
-
-    private isValidColumnFormat(columns: string): boolean {
-        if (!this.isNumeric(columns[1])) {
-            return false;
-        }
-        if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
-            return false;
-        }
-        return true;
-    }
-
-    private isValidRow(row: number): boolean {
-        if (row === undefined) {
-            return false;
-        }
-        if (row > 'o'.charCodeAt(0)) {
-            return false;
-        }
-        if (row < 'a'.charCodeAt(0)) {
-            return false;
-        }
-        return true;
-    }
-
-    private isValidColumn(columns: number | undefined): boolean {
-        if (columns === undefined) {
-            return false;
-        }
-        if (columns > BOARD_DIMENSION) {
-            return false;
-        }
-        return true;
-    }
-
-    private isValidDirection(direction: number): boolean {
-        if (direction === undefined) {
-            return false;
-        }
-        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
-            return false;
-        }
-        return true;
-    }
-
-    private isValidWord(word: string): boolean {
-        if (word === undefined) {
-            return false;
-        }
-        if (word.length < 2) {
-            return false;
-        }
-        if (word.length > BOARD_DIMENSION) {
-            return false;
-        }
-        if (INVALID_PLACE_LETTER.test(word)) {
-            return false;
-        }
-        return true;
-    }
-
-    private isNumeric(value: string) {
-        return /^\d+$/.test(value);
-    }
-
-    private toFormatPlaceLetter(command: string[]): string[] {
-        const row = command[0].charCodeAt(0);
-        const col = this.getColumns(command[0]);
-        const direction = command[0].charCodeAt(command[0].length - 1);
-        const word = command[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
-
-        const placeLetterParameters = [String.fromCharCode(row), String(col), String.fromCharCode(direction), word];
-        return placeLetterParameters;
     }
 
     private isPlaceLetterParameterValid(placeLetterParameters: PlaceLetterParameters): boolean {
@@ -207,7 +135,7 @@ export class CommandParserService {
         }
 
         if (commandPlaceLetter.length > 2) {
-            this.sendErrorMessage(this.errorSyntax + 'trop de paramètres entrés');
+            this.sendErrorMessage(this.errorSyntax + ': trop de paramètres entrés');
             return false;
         }
 
@@ -217,48 +145,118 @@ export class CommandParserService {
             return false;
         }
 
-        // isParameterValid()
-
+        const columnValue =
+            parametersPlaceLetter.length === MIN_PLACE_LETTER_ARG_SIZE ? parametersPlaceLetter.slice(1, 2) : parametersPlaceLetter.slice(1, 3);
+        if (!this.isNumeric(columnValue)) {
+            this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+            return false;
+        }
+        console.log(columnValue);
         return true;
     }
-    private isParametersValid(parameters: string): boolean {
-        const rowValue = parameters.slice(0);
-        const columnValue = parameters.slice(1, 2);
-        const directionValue = parameters.slice(2, 3);
-        // TODO: Verify rowvalue
-        // verify column value
-        // verify direction
-    }
 
-    private getColumns(columns: string): number | undefined {
-        let col;
-        if (this.isValidColumnsFormat(columns)) {
-            col = Number(columns[1] + columns[2]);
-            return col;
-        } else if (this.isValidColumnFormat(columns)) {
-            col = Number(columns[1]);
-            return col;
-        }
-        this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
-        return undefined;
-    }
-
-    private isValidColumnsFormat(columns: string): boolean {
-        if (columns.length < 2) {
-            if (!this.isNumeric(columns[1])) {
-                return false;
-            }
-            return true;
-        }
-        if (!this.isNumeric(columns[1])) {
+    private isValidRow(row: string): boolean {
+        if (row === undefined) {
             return false;
         }
-        if (!this.isNumeric(columns[2])) {
+        if (row > 'o') {
             return false;
         }
-        if (columns.length !== MAX_PLACE_LETTER_ARG_SIZE) {
+        if (row < 'a') {
             return false;
         }
         return true;
     }
+
+    private isValidColumn(columns: number | undefined): boolean {
+        if (columns === undefined) {
+            return false;
+        }
+        if (columns > BOARD_DIMENSION) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidDirection(direction: string): boolean {
+        if (direction === undefined) {
+            return false;
+        }
+        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
+            return false;
+        }
+        return true;
+    }
+
+    private isValidWord(word: string): boolean {
+        if (word === undefined) {
+            return false;
+        }
+        if (word.length < 2) {
+            return false;
+        }
+        if (word.length > BOARD_DIMENSION) {
+            return false;
+        }
+        if (INVALID_PLACE_LETTER.test(word)) {
+            return false;
+        }
+        return true;
+    }
+
+    private isNumeric(value: string) {
+        return new RegExp('^[0-9]+$').test(value);
+        // return /^\d+$/.test(value);
+    }
+
+    private toFormatPlaceLetter(command: string[]): string[] {
+        const row = command[0].slice(0, 1);
+        const col = command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? command[0].slice(1, 2) : command[0].slice(1, 3);
+        const direction =
+            command[0].length === MIN_PLACE_LETTER_ARG_SIZE ? command[0].slice(2, command[0].length) : command[0].slice(3, command[0].length);
+        const word = command[1].normalize('NFD').replace(/\p{Diacritic}/gu, '');
+        return [row, col, direction, word];
+    }
+
+    // private getColumns(columns: string): number | undefined {
+    //     let col;
+    //     if (this.isValidColumnsFormat(columns)) {
+    //         col = Number(columns[1] + columns[2]);
+    //         return col;
+    //     } else if (this.isValidColumnFormat(columns)) {
+    //         col = Number(columns[1]);
+    //         return col;
+    //     }
+    //     this.sendErrorMessage(this.errorSyntax + ': colonne invalide');
+    //     return undefined;
+    // }
+
+    // private isValidColumnsFormat(columns: string): boolean {
+    //     if (columns.length < 2) {
+    //         if (!this.isNumeric(columns[1])) {
+    //             return false;
+    //         }
+    //         return true;
+    //     }
+    //     if (!this.isNumeric(columns[1])) {
+    //         return false;
+    //     }
+    //     if (!this.isNumeric(columns[2])) {
+    //         return false;
+    //     }
+    //     if (columns.length !== MAX_PLACE_LETTER_ARG_SIZE) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
+    // private isValidColumnFormat(columns: string): boolean {
+    //     if (!this.isNumeric(columns[1])) {
+    //         return false;
+    //     }
+    //     if (columns.length !== MIN_PLACE_LETTER_ARG_SIZE) {
+    //         return false;
+    //     }
+    //     return true;
+    // }
 }
