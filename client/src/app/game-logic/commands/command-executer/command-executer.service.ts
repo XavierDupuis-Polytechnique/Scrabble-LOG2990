@@ -11,7 +11,7 @@ import {
     END_LINE,
     ERROR_GET_REQUEST_DEBUG,
     HELP,
-    RESERVE_NOT_ACCESSIBLE
+    RESERVE_NOT_ACCESSIBLE,
 } from '@app/game-logic/constants';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
