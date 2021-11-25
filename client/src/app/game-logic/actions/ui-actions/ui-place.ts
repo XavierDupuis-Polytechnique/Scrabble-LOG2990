@@ -50,6 +50,7 @@ export class UIPlace implements UIAction {
     }
 
     receiveKey(key: string): void {
+        let letterPlacement = null;
         if (this.info.activePlayer !== this.info.user) {
             return;
         }
@@ -58,7 +59,9 @@ export class UIPlace implements UIAction {
                 this.moveBackwards();
                 return;
             default:
-                if (this.canUseLetter(key)) {
+                letterPlacement = this.canUseLetter(key);
+                if (letterPlacement) {
+                    this.placeTempLetter(letterPlacement, key);
                     this.moveForwards();
                 }
                 break;
@@ -135,27 +138,33 @@ export class UIPlace implements UIAction {
         return this.boardService.board.grid[y][x].letterObject.char !== EMPTY_CHAR;
     }
 
-    private canUseLetter(key: string): boolean {
+    private canUseLetter(key: string): LetterPlacement | null {
         if (!this.pointerPosition) {
-            return false;
+            return null;
         }
         const possibleLetterIndex = this.findLetterIndexInRack(key);
         if (possibleLetterIndex === null) {
-            return false;
+            return null;
         }
-        const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
-        this.concernedIndexes.add(possibleLetterIndex);
-        this.orderedIndexes.push(newLetterPlacement);
+        return { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
+    }
+
+    private placeTempLetter(letterPlacement: LetterPlacement, key: string) {
+        if (!this.pointerPosition) {
+            return;
+        }
+        this.concernedIndexes.add(letterPlacement.rackIndex);
+        this.orderedIndexes.push(letterPlacement);
         const concernedTile = this.boardService.board.grid[this.pointerPosition.y][this.pointerPosition.x];
-        const usedChar = this.info.user.letterRack[possibleLetterIndex].char;
+        const usedChar = this.info.user.letterRack[letterPlacement.rackIndex].char;
         if (usedChar === JOKER_CHAR) {
             concernedTile.letterObject = this.letterCreator.createBlankLetter(key);
             concernedTile.letterObject.isTemp = true;
-            return true;
+            return;
         }
         concernedTile.letterObject = this.letterCreator.createLetter(usedChar);
         concernedTile.letterObject.isTemp = true;
-        return true;
+        return;
     }
 
     private moveForwards(): void {
