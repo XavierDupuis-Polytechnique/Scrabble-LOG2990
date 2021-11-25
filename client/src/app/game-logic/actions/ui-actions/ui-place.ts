@@ -97,24 +97,24 @@ export class UIPlace implements UIAction {
     }
 
     private getWordFromBoard(): WordPlacement {
-        let wordPlacementFound = this.direction === Direction.Horizontal ? this.getHorizontalWordFromBoard() : this.getVerticalWordFromBoard();
+        let wordPlacementFound = this.getWordFromBoardCrawler();
         if (wordPlacementFound.word.length < MIN_PLACE_LETTER_ARG_SIZE - 1) {
-            wordPlacementFound = this.direction === Direction.Horizontal ? this.getVerticalWordFromBoard() : this.getHorizontalWordFromBoard();
             this.direction = this.direction === Direction.Horizontal ? Direction.Vertical : Direction.Horizontal;
+            wordPlacementFound = this.getWordFromBoardCrawler();
         }
         return wordPlacementFound;
     }
 
-    private getVerticalWordFromBoard(): WordPlacement {
+    private getWordFromBoardCrawler(): WordPlacement {
         const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
-        const x = lastLetterPlacement.x;
+        let x = lastLetterPlacement.x;
         let y = lastLetterPlacement.y;
         let currentTileChar;
         let word = '';
         while (this.isThereALetter(x, y)) {
-            y++;
+            [x, y] = this.updateCoordinatesForwards(x, y);
         }
-        y--;
+        [x, y] = this.updateCoordinatesBackwards(x, y);
         do {
             currentTileChar = this.boardService.board.grid[y][x].letterObject;
             if (currentTileChar.value === 0) {
@@ -122,33 +122,28 @@ export class UIPlace implements UIAction {
             } else {
                 word = currentTileChar.char.toLowerCase() + word;
             }
-            y--;
+            [x, y] = this.updateCoordinatesBackwards(x, y);
         } while (this.isThereALetter(x, y));
-        y++;
+        [x, y] = this.updateCoordinatesForwards(x, y);
         return { word, x, y };
     }
 
-    private getHorizontalWordFromBoard(): WordPlacement {
-        const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
-        let x = lastLetterPlacement.x;
-        const y = lastLetterPlacement.y;
-        let currentTileChar;
-        let word = '';
-        while (this.isThereALetter(x, y)) {
-            x++;
+    private updateCoordinatesForwards(x: number, y: number): [number, number] {
+        if (this.direction === Direction.Horizontal) {
+            ++x;
+        } else {
+            ++y;
         }
-        x--;
-        do {
-            currentTileChar = this.boardService.board.grid[y][x].letterObject;
-            if (currentTileChar.value === 0) {
-                word = currentTileChar.char.toUpperCase() + word;
-            } else {
-                word = currentTileChar.char.toLowerCase() + word;
-            }
-            x--;
-        } while (this.isThereALetter(x, y));
-        x++;
-        return { word, x, y };
+        return [x, y];
+    }
+
+    private updateCoordinatesBackwards(x: number, y: number): [number, number] {
+        if (this.direction === Direction.Horizontal) {
+            --x;
+        } else {
+            --y;
+        }
+        return [x, y];
     }
 
     private isThereALetter(x: number, y: number): boolean {
