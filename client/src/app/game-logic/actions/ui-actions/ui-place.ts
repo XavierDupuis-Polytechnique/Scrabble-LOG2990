@@ -112,9 +112,9 @@ export class UIPlace implements UIAction {
         let currentTileChar;
         let word = '';
         while (this.isThereALetter(x, y)) {
-            [x, y] = this.updateCoordinatesForwards(x, y);
+            [x, y] = this.direction === Direction.Horizontal ? [++x, y] : [x, ++y];
         }
-        [x, y] = this.updateCoordinatesBackwards(x, y);
+        [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         do {
             currentTileChar = this.boardService.board.grid[y][x].letterObject;
             if (currentTileChar.value === 0) {
@@ -122,28 +122,10 @@ export class UIPlace implements UIAction {
             } else {
                 word = currentTileChar.char.toLowerCase() + word;
             }
-            [x, y] = this.updateCoordinatesBackwards(x, y);
+            [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         } while (this.isThereALetter(x, y));
-        [x, y] = this.updateCoordinatesForwards(x, y);
+        [x, y] = this.direction === Direction.Horizontal ? [++x, y] : [x, ++y];
         return { word, x, y };
-    }
-
-    private updateCoordinatesForwards(x: number, y: number): [number, number] {
-        if (this.direction === Direction.Horizontal) {
-            ++x;
-        } else {
-            ++y;
-        }
-        return [x, y];
-    }
-
-    private updateCoordinatesBackwards(x: number, y: number): [number, number] {
-        if (this.direction === Direction.Horizontal) {
-            --x;
-        } else {
-            --y;
-        }
-        return [x, y];
     }
 
     private isThereALetter(x: number, y: number): boolean {
