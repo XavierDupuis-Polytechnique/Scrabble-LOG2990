@@ -5,12 +5,11 @@ import { expect } from 'chai';
 import { stub } from 'sinon';
 import * as fs from 'fs';
 
-
 describe('DictionaryServerService', () => {
     let service: DictionaryServerService;
     stub(fs, 'writeFile');
     stub(fs, 'rmSync');
-    
+
     beforeEach(() => {
         service = new DictionaryServerService();
     });
@@ -50,16 +49,16 @@ describe('DictionaryServerService', () => {
     });
 
     it('should add a dict', () => {
-        const dict = {title: 'testTitle', description: 'testDesc', words: ['aa']};
+        const dict = { title: 'testTitle', description: 'testDesc', words: ['aa'] };
         service.addDict(dict);
         const result = service.getDictByTitle('testTitle') as DictionaryServer;
         expect(result.title).to.equal(dict.title);
     });
 
     it('should update a dict', () => {
-        const oldDict = {title: 'testTitle', description: 'testDesc', words: ['aa']};
+        const oldDict = { title: 'testTitle', description: 'testDesc', words: ['aa'] };
         service.addDict(oldDict);
-        const newDict = {title: 'testTitle2', description: 'testDesc2', words: ['aa']};
+        const newDict = { title: 'testTitle2', description: 'testDesc2', words: ['aa'] };
         service.updateDict(oldDict, newDict);
         const result1 = service.getDictByTitle('testTitle');
         expect(result1).to.equal(false);
@@ -68,14 +67,14 @@ describe('DictionaryServerService', () => {
     });
 
     it('should not update the default dict', () => {
-        const oldDict = {title: DEFAULT_DICTIONARY_TITLE, description: 'testDesc', words: ['aa']};
-        const newDict = {title: 'testTitle2', description: 'testDesc2', words: ['aa']};
+        const oldDict = { title: DEFAULT_DICTIONARY_TITLE, description: 'testDesc', words: ['aa'] };
+        const newDict = { title: 'testTitle2', description: 'testDesc2', words: ['aa'] };
         const result = service.updateDict(oldDict, newDict);
         expect(result).to.equal(false);
     });
 
     it('should delete a dict', () => {
-        const dict1 = {title: 'testTitle', description: 'testDesc', words: ['aa']};
+        const dict1 = { title: 'testTitle', description: 'testDesc', words: ['aa'] };
         service.addDict(dict1);
         const result1 = service.getDictByTitle('testTitle') as DictionaryServer;
         expect(result1.title).to.equal('testTitle');
@@ -95,8 +94,8 @@ describe('DictionaryServerService', () => {
     });
 
     it('should drop delete all dicts', () => {
-        const dict1 = {title: 'testTitle', description: 'testDesc', words: ['aa']};
-        const dict2 = {title: 'testTitle2', description: 'testDesc2', words: ['aa']};
+        const dict1 = { title: 'testTitle', description: 'testDesc', words: ['aa'] };
+        const dict2 = { title: 'testTitle2', description: 'testDesc2', words: ['aa'] };
         service.addDict(dict1);
         service.addDict(dict2);
         service.dropDelete();
@@ -107,6 +106,4 @@ describe('DictionaryServerService', () => {
         const result3 = service.getDictByTitle(dict2.title);
         expect(result3).to.equal(false);
     });
-
-    
 });

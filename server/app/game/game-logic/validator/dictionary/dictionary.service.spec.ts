@@ -8,7 +8,11 @@ describe('DictionaryService', () => {
     let dictionaryService: DictionaryService;
     const dictionaryServerService = new DictionaryServerService();
     stub(dictionaryServerService, 'getUniqueName').returns(DEFAULT_DICTIONARY_TITLE + '_0');
-    stub(dictionaryServerService, 'getDictByTitle').returns({title: DEFAULT_DICTIONARY_TITLE, description: "TestDict", words: ['aa', 'bb', 'cc', 'bateau']});
+    stub(dictionaryServerService, 'getDictByTitle').returns({
+        title: DEFAULT_DICTIONARY_TITLE,
+        description: 'TestDict',
+        words: ['aa', 'bb', 'cc', 'bateau'],
+    });
 
     beforeEach(() => {
         dictionaryService = new DictionaryService(dictionaryServerService);
