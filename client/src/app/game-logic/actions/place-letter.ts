@@ -118,17 +118,11 @@ export class PlaceLetter extends Action {
     }
 
     private letterToRemove(char: string) {
-        if (isCharUpperCase(char)) {
-            return this.letterFactory.createLetter('*');
-        }
-        return this.letterFactory.createLetter(char);
+        return isCharUpperCase(char) ? this.letterFactory.createLetter('*') : this.letterFactory.createLetter(char);
     }
 
     private createNewLetter(char: string) {
         const charToCreate = char.toLowerCase();
-        if (isCharUpperCase(char)) {
-            return this.letterFactory.createBlankLetter(charToCreate);
-        }
-        return this.letterFactory.createLetter(charToCreate);
+        return isCharUpperCase(char) ? this.letterFactory.createBlankLetter(charToCreate) : this.letterFactory.createLetter(charToCreate);
     }
 }
