@@ -3,7 +3,7 @@ import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { UIAction } from '@app/game-logic/actions/ui-actions/ui-action';
 import { LetterPlacement } from '@app/game-logic/actions/ui-actions/ui-place-interface';
 import { WordPlacement } from '@app/game-logic/actions/ui-actions/word-placement.interface';
-import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR } from '@app/game-logic/constants';
+import { BACKSPACE, BOARD_MAX_POSITION, BOARD_MIN_POSITION, EMPTY_CHAR, JOKER_CHAR, MIN_PLACE_LETTER_ARG_SIZE } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
@@ -97,11 +97,12 @@ export class UIPlace implements UIAction {
     }
 
     private getWordFromBoard(): WordPlacement {
-        if (this.direction === Direction.Horizontal) {
-            return this.getHorizontalWordFromBoard();
-        } else {
-            return this.getVerticalWordFromBoard();
+        let wordPlacementFound = this.direction === Direction.Horizontal ? this.getHorizontalWordFromBoard() : this.getVerticalWordFromBoard();
+        if (wordPlacementFound.word.length < MIN_PLACE_LETTER_ARG_SIZE - 1) {
+            wordPlacementFound = this.direction === Direction.Horizontal ? this.getVerticalWordFromBoard() : this.getHorizontalWordFromBoard();
+            this.direction = this.direction === Direction.Horizontal ? Direction.Vertical : Direction.Horizontal;
         }
+        return wordPlacementFound;
     }
 
     private getVerticalWordFromBoard(): WordPlacement {
