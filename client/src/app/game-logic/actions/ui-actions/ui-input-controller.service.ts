@@ -19,7 +19,7 @@ import { WordSearcher } from '@app/game-logic/validator/word-search/word-searche
 })
 export class UIInputControllerService {
     static defaultComponent = InputComponent.Horse;
-    activeComponent = UIInputControllerService.defaultComponent;
+    activeComponent = InputComponent.Chatbox;
     activeAction: UIAction | null = null;
 
     get canBeExecuted(): boolean {
