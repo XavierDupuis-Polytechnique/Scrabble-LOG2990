@@ -14,7 +14,7 @@ import {
     DEFAULT_TIME_PER_TURN,
     EMPTY_CHAR,
     MIDDLE_OF_BOARD,
-    RACK_LETTER_COUNT,
+    RACK_LETTER_COUNT
 } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -100,8 +100,9 @@ describe('ActionValidatorService', () => {
 
     it('should return false when the action is not valid', () => {
         const action = new UnknownAction(currentPlayer);
-        const result = service.sendAction(action);
-        expect(result).toBeFalsy();
+        const playerSpy = spyOn(currentPlayer, 'play');
+        service.sendAction(action);
+        expect(playerSpy).not.toHaveBeenCalled();
     });
     /// ////////////////// ///
 

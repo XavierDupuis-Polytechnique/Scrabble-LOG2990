@@ -17,16 +17,14 @@ import { placementSettingsToString } from '@app/game-logic/utils';
 })
 export class ActionValidatorService {
     constructor(private boardService: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
-    // TODO changeFunctionName if boolean
-    sendAction(action: Action): boolean {
+    sendAction(action: Action) {
         const isActionValid = this.validateAction(action);
         if (!isActionValid) {
-            return false;
+            return;
         }
         this.sendActionArgsMessage(action);
         const player = action.player;
         player.play(action);
-        return true;
     }
 
     private sendActionArgsMessage(action: Action) {
