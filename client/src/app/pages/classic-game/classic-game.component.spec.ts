@@ -28,6 +28,7 @@ describe('ClassicGameComponent', () => {
     let onlineSocketHandlerSpy: jasmine.SpyObj<NewOnlineGameSocketHandler>;
     let gameManagerSpy: jasmine.SpyObj<GameManagerService>;
     let router: Router;
+    const ready$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
@@ -37,8 +38,8 @@ describe('ClassicGameComponent', () => {
             ['isDisconnected$', 'startGame$'],
         );
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame']);
-        gameManagerSpy.createGame.and.returnValue(new BehaviorSubject<boolean>(true));
-        gameManagerSpy.createSpecialGame.and.returnValue(new BehaviorSubject<boolean>(true));
+        gameManagerSpy.createGame.and.returnValue(ready$);
+        gameManagerSpy.createSpecialGame.and.returnValue(ready$);
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
@@ -69,6 +70,7 @@ describe('ClassicGameComponent', () => {
     });
 
     it('dialog should set game setting and start game', () => {
+        ready$.next(true);
         spyOn(component, 'startSoloGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
@@ -77,6 +79,7 @@ describe('ClassicGameComponent', () => {
                     playerName: 'Sam',
                     timePerTurn: 3000,
                     randomBonus: false,
+                    dictTitle: DEFAULT_DICTIONARY_TITLE,
                 });
             },
             close: () => {
@@ -84,6 +87,28 @@ describe('ClassicGameComponent', () => {
             },
         } as MatDialogRef<NewSoloGameFormComponent>);
         component.openSoloGameForm();
+        expect(component.gameSettings).toBeDefined();
+        expect(component.startSoloGame).toHaveBeenCalled();
+    });
+
+    it('dialog should set game setting and start game when ready', () => {
+        spyOn(component, 'startSoloGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of({
+                    botDifficulty: 'easy',
+                    playerName: 'Sam',
+                    timePerTurn: 3000,
+                    randomBonus: false,
+                    dictTitle: 'testTitle',
+                });
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<NewSoloGameFormComponent>);
+        component.openSoloGameForm();
+        ready$.next(true);
         expect(component.gameSettings).toBeDefined();
         expect(component.startSoloGame).toHaveBeenCalled();
     });

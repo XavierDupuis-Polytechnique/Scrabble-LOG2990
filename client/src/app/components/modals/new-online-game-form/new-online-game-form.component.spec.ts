@@ -117,4 +117,14 @@ describe('NewOnlineGameFormComponent', () => {
             dictDesc: '',
         });
     });
+
+    it('should return the description', () => {
+        component.dictList = [{ title: 'testTitle', description: 'testDesc', canEdit: true }];
+        expect(component.getDescription('testTitle')).toEqual('testDesc');
+    });
+
+    it('should return empty string if not found', () => {
+        component.dictList = [{ title: 'testTitle', description: 'testDesc', canEdit: true }];
+        expect(component.getDescription('testTitle2')).toEqual('');
+    });
 });
