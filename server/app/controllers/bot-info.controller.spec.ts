@@ -102,4 +102,24 @@ describe('BotInfoController', () => {
         botInfoService.updateBot.throws();
         return supertest(expressApp).put('/api/botinfo').send({}).expect(StatusCodes.NOT_FOUND);
     });
+
+    it('drop should send true', async () => {
+        botInfoService.clearDropCollection.resolves();
+        return supertest(expressApp)
+            .get('/api/botinfo/drop')
+            .then((res) => {
+                const ans = res.body as boolean;
+                expect(ans).to.equal(true);
+            });
+    });
+
+    it('drop should send false', async () => {
+        botInfoService.clearDropCollection.throws();
+        return supertest(expressApp)
+            .get('/api/botinfo/drop')
+            .then((res) => {
+                const ans = res.body as boolean;
+                expect(ans).to.equal(false);
+            });
+    });
 });
