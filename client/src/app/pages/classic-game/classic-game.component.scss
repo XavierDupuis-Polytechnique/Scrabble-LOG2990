@@ -12,6 +12,10 @@ button {
     margin: 0.5%;
 }
 
+.mat-card-title {
+    padding-left: 2rem;
+}
+
 .mat-card {
     display: flex;
     flex-direction: column;
@@ -36,7 +40,7 @@ button {
     color: var(--darkgray) !important;
 
     button {
-        background-color: #E0115F;
+        background-color: #e0115f;
         border: 2px linear !important;
         color: var(--white);
     }
