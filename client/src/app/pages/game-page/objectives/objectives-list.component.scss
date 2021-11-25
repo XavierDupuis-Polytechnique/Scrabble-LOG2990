@@ -1,9 +1,15 @@
-// TODO: make it not useless
 .app-objective {
     margin: 2%;
+    background-color: black !important;
+}
+
+.mat-expansion-panel {
+    margin: 1%;
 }
 
 .mat-expansion-panel-header {
+    font-size: 18px;
+    font-weight: bold;
     margin: 5%;
 }
 
@@ -17,5 +23,5 @@
 
 .objective-header {
     margin: 0px !important;
-    font-size: 18px;
+    font-size: 15px;
 }
