@@ -7,7 +7,7 @@ import {
     LightPlayer,
     PlayerProgression,
     PrivateLightObjectives,
-    SpecialGameState,
+    SpecialGameState
 } from '@app/game/game-logic/interface/game-state.interface';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { Player } from '@app/game/game-logic/player/player';
@@ -72,6 +72,11 @@ export class GameCompiler {
     private compilePublicObjectives(specialGame: SpecialServerGame): LightObjective[] {
         const createdLightObjectives: LightObjective[] = [];
         for (const objective of specialGame.publicObjectives) {
+            // TODO:Ameliorer le code
+            if (objective.progressions.size === 0) {
+                objective.progressions.set(specialGame.players[0].name, 0);
+                objective.progressions.set(specialGame.players[1].name, 0);
+            }
             const createdLightObjective = this.compileLightObjective(objective);
             createdLightObjectives.push(createdLightObjective);
         }
@@ -85,6 +90,9 @@ export class GameCompiler {
             for (const objective of objectiveList) {
                 const createdLightObjective = this.compileLightObjective(objective);
                 createdLightObjectives.push(createdLightObjective);
+                if (objective.progressions.size === 0) {
+                    objective.progressions.set(playerName, 0);
+                }
             }
             const privateLightObjectives: PrivateLightObjectives = { playerName, privateObjectives: createdLightObjectives };
             createdPrivateLightObjectives.push(privateLightObjectives);

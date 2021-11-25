@@ -5,8 +5,11 @@ import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
+import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
+import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -176,7 +179,12 @@ export class GameManagerService {
     }
 
     private createTransitionGameState(game: ServerGame) {
+        const objConverter = new OnlineObjectiveConverter();
+        let translatedObjectives: TransitionObjectives[] = [];
         const gameState = this.gameCompiler.compile(game);
+        if (game instanceof SpecialServerGame) {
+            translatedObjectives = translatedObjectives.concat(objConverter.convertObjectives(game.publicObjectives, game.privateObjectives));
+        }
         const lastGameState: ForfeitedGameSate = {
             activePlayerIndex: gameState.activePlayerIndex,
             consecutivePass: game.consecutivePass,
@@ -187,8 +195,8 @@ export class GameManagerService {
             lettersRemaining: gameState.lettersRemaining,
             winnerIndex: gameState.winnerIndex,
             randomBonus: game.randomBonus,
+            objectives: translatedObjectives,
         };
-
         const lastGameToken: GameStateToken = { gameState: lastGameState, gameToken: game.gameToken };
         this.forfeitedGameState$.next(lastGameToken);
     }

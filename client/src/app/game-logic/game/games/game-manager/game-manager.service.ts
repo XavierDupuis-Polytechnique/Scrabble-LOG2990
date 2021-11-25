@@ -13,6 +13,7 @@ import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/spe
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
+import { TransitionObjectives } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
@@ -113,28 +114,19 @@ export class GameManagerService {
 
     instanciateGameFromForfeitedState(forfeitedGameState: ForfeitedGameSate) {
         let userName = 'Qwerty';
-        let publicObjective;
-        let privateObjective;
+        let wasSpecial = false;
         if (!this.game) {
             return;
         }
-        let wasSpecial = false;
         if (this.game instanceof SpecialOnlineGame) {
             userName = this.game.userName;
             wasSpecial = true;
-            publicObjective = this.game.publicObjectives;
-            privateObjective = this.game.privateObjectives;
         } else if (this.game instanceof OnlineGame) {
             userName = this.game.userName;
         }
 
         this.instanciateGameSettings(forfeitedGameState, wasSpecial);
-
-        // const letterRackRef = this.info.user.letterRack;
-
-        const botDifficulty = 'Easy';
-        const players = this.createPlayers(userName, botDifficulty);
-
+        const players = this.createPlayers(userName, 'easy');
         this.allocatePlayers(players);
 
         if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
@@ -150,22 +142,50 @@ export class GameManagerService {
             const botIndex = (userIndex + 1) % 2;
             const botName = this.game.players[botIndex].name;
             this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
-            if (this.game instanceof SpecialOfflineGame) {
-                const playerPrivateObjective = privateObjective?.get(userName);
-                const botPrivateObjective = privateObjective?.get(playerInfo[botIndex].name);
-
-                if (publicObjective !== undefined && playerPrivateObjective !== undefined && botPrivateObjective !== undefined) {
-                    this.game.publicObjectives = publicObjective;
-                    this.game.privateObjectives = new Map<string, Objective[]>();
-                    this.game.privateObjectives.set(userName, playerPrivateObjective);
-                    this.game.privateObjectives.set(botName, botPrivateObjective);
-                }
-            }
 
             // TODO fix this
             this.info.receiveGame(this.game);
+            if (this.game instanceof SpecialOfflineGame) {
+                if (forfeitedGameState.objectives) {
+                    this.transitionObjectives(forfeitedGameState.objectives, userName, botName);
+                }
+            }
             this.transition.next();
             this.startGame();
+        }
+    }
+
+    transitionObjectives(transitionObjectives: TransitionObjectives[], userName: string, botName: string) {
+        // const privateObj = transitionObjectives[0].
+        if (this.game instanceof SpecialOfflineGame) {
+            this.game.privateObjectives = new Map<string, Objective[]>();
+            this.game.publicObjectives = [];
+            for (const objectives of transitionObjectives) {
+                const progressions = objectives.progressions;
+                const objective = this.game.objectiveCreator.createObjective(objectives.objectiveType);
+                objective.progressions = new Map<string, number>();
+                objective.owner = objectives.owner;
+                progressions.forEach((player) => {
+                    if (player.playerName === userName) {
+                        objective.progressions.set(userName, player.progression);
+                    } else {
+                        objective.progressions.set(botName, player.progression);
+                    }
+                });
+                if (progressions.length === 2) {
+                    this.game.publicObjectives.push(objective);
+                    // mettre public
+                } else {
+                    const privateObjectives: Objective[] = [];
+                    privateObjectives.push(objective);
+                    if (progressions[0].playerName === userName) {
+                        this.game.privateObjectives.set(userName, privateObjectives);
+                    } else {
+                        this.game.privateObjectives.set(botName, privateObjectives);
+                        this.game.privateObjectives.set(botName, privateObjectives);
+                    }
+                }
+            }
         }
     }
 

@@ -19,7 +19,9 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         pointCalculator: PointCalculatorService,
         boardService: BoardService,
         messagesService: MessagesService,
-        private objectiveCreator: ObjectiveCreator,
+        // TODO:mettre private si j'ai merdé
+
+        public objectiveCreator: ObjectiveCreator,
         loadGame: boolean = false,
     ) {
         super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService, loadGame);

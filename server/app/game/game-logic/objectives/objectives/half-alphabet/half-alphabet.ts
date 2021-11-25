@@ -9,7 +9,7 @@ export class HalfAlphabet extends Objective {
     name = "Moitié de l'alphabet";
     description = "Placer la moitié des lettres de l'alphabet";
     points = HALF_ALPHABET_POINTS;
-
+    // TODO: le mettre en map afin d'avoir les lettres placé par chaque joueurs
     placedLetters = new Set<string>();
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {

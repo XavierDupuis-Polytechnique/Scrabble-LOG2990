@@ -1,5 +1,6 @@
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { Tile } from '@app/game/game-logic/board/tile';
+import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 
 export interface LightPlayer {
     name: string;
@@ -36,6 +37,7 @@ export interface ForfeitedGameSate extends GameState {
     letterBag: Letter[];
     consecutivePass: number;
     randomBonus: boolean;
+    objectives?: TransitionObjectives[];
 }
 
 export interface PrivateLightObjectives {
