@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { MatRipple, RippleConfig } from '@angular/material/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
@@ -21,6 +22,8 @@ import { first, takeWhile } from 'rxjs/operators';
     styleUrls: ['./classic-game.component.scss'],
 })
 export class ClassicGameComponent {
+    @ViewChild(MatRipple) ripple: MatRipple;
+
     gameSettings: GameSettings;
     startGame$$: Subscription;
     gameMode = GameMode.Classic;
@@ -31,6 +34,17 @@ export class ClassicGameComponent {
         private dialog: MatDialog,
         private socketHandler: NewOnlineGameSocketHandler,
     ) {}
+
+    triggerRipple() {
+        const rippleConfig: RippleConfig = {
+            centered: false,
+            animation: {
+                enterDuration: 500,
+                exitDuration: 700,
+            },
+        };
+        this.ripple.launch(rippleConfig);
+    }
 
     openSoloGameForm() {
         const dialogConfig = new MatDialogConfig();

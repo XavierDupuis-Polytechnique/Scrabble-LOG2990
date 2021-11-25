@@ -13,7 +13,15 @@ export class ObjectivesListComponent {
         return this.info.publicObjectives;
     }
 
-    get privateObjectives() {
-        return this.info.privateObjectives;
+    get userPrivateObjectives() {
+        return this.info.getPrivateObjectives(this.info.user.name);
+    }
+
+    get opponentPrivateObjectives() {
+        return this.info.getPrivateObjectives(this.info.opponent.name);
+    }
+
+    get isOwnedByOpponent() {
+        return this.opponentPrivateObjectives[0].owner === this.info.opponent.name;
     }
 }

@@ -10,17 +10,22 @@ export class HalfAlphabet extends Objective {
     description = "Placer la moitié des lettres de l'alphabet";
     points = HALF_ALPHABET_POINTS;
 
-    placedLetters = new Set<string>();
+    placedLetters = new Map<string, Set<string>>();
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         const lettersToPlace = params.lettersToPlace.map((letter: Letter) => letter.char);
+        let currentPlacedLetters = this.placedLetters.get(action.player.name);
+        if (!currentPlacedLetters) {
+            currentPlacedLetters = new Set<string>();
+        }
         for (const letter of lettersToPlace) {
             if (letter === JOKER_CHAR) {
                 continue;
             }
-            this.placedLetters.add(letter);
+            currentPlacedLetters.add(letter);
         }
-        const newProgression = this.placedLetters.size / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
+        this.placedLetters.set(action.player.name, currentPlacedLetters);
+        const newProgression = currentPlacedLetters.size / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
         this.setPlayerProgression(action.player.name, newProgression);
     }
 }
