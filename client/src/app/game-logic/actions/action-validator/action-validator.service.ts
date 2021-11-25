@@ -74,10 +74,8 @@ export class ActionValidatorService {
 
         const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
         const hasCenterTile = this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
-        if (hasCenterTile) {
-            return this.validateOtherPlaceLetter(action);
-        }
-        return this.validateFirstPlaceLetter(action);
+        const shouldCheckForNeighbors = hasCenterTile;
+        return this.checkPlaceLetterBoardRequirement(action, shouldCheckForNeighbors);
     }
 
     private validatePlacementWithBoard(action: PlaceLetter) {
@@ -144,44 +142,57 @@ export class ActionValidatorService {
         return true;
     }
 
-    private validateOtherPlaceLetter(action: PlaceLetter): boolean {
-        let hasNeighbour = false;
+    private checkPlaceLetterBoardRequirement(action: PlaceLetter, shouldCheckForNeighbors: boolean): boolean {
+        const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
+        let isFillingPlacementCondition = false;
         let x = action.placement.x;
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
-            hasNeighbour = this.boardService.board.hasNeighbour(x, y);
-            if (hasNeighbour) {
+            if (shouldCheckForNeighbors) {
+                isFillingPlacementCondition = this.boardService.board.hasNeighbour(x, y);
+            } else {
+                isFillingPlacementCondition = x === centerTilePosition && y === centerTilePosition;
+            }
+
+            if (isFillingPlacementCondition) {
                 return true;
             }
+
             if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
                 y++;
             } else {
                 x++;
             }
         }
-        this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
+
+        if (this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char === EMPTY_CHAR) {
+            this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
+        } else {
+            this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
+        }
+
         return false;
     }
 
-    private validateFirstPlaceLetter(action: PlaceLetter): boolean {
-        const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
-        let x = action.placement.x;
-        let y = action.placement.y;
-        let index = 0;
-        while (index++ < action.word.length) {
-            if (x === centerTilePosition && y === centerTilePosition) {
-                return true;
-            }
-            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
-        }
-        this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
-        return false;
-    }
+    // private validateFirstPlaceLetter(action: PlaceLetter): boolean {
+    //     const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
+    //     let x = action.placement.x;
+    //     let y = action.placement.y;
+    //     let index = 0;
+    //     while (index++ < action.word.length) {
+    //         if (x === centerTilePosition && y === centerTilePosition) {
+    //             return true;
+    //         }
+    //         if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
+    //             y++;
+    //         } else {
+    //             x++;
+    //         }
+    //     }
+    //     this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
+    //     return false;
+    // }
 
     private validateExchangeLetter(action: ExchangeLetter): boolean {
         if (action.player instanceof HardBot && this.gameInfo.numberOfLettersRemaining >= action.lettersToExchange.length) {
