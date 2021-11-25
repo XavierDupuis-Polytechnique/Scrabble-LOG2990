@@ -105,7 +105,7 @@ export class UIInputControllerService {
                 this.processLeftCLick(input.args);
                 break;
             case InputType.RightClick:
-                this.processRightCLick(input.args);
+                this.processRightCLick(input.args as number);
                 break;
             case InputType.KeyPress:
                 this.processKeyPress(input.args);
@@ -178,7 +178,7 @@ export class UIInputControllerService {
         }
     }
 
-    private processRightCLick(args: unknown) {
+    private processRightCLick(args: number) {
         if (this.activeAction !== null) {
             this.activeAction.receiveRightClick(args);
             return;
