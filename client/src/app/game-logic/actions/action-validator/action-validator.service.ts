@@ -17,8 +17,9 @@ import { placementSettingsToString } from '@app/game-logic/utils';
 })
 export class ActionValidatorService {
     constructor(private boardService: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
+
     sendAction(action: Action) {
-        const isActionValid = this.validateAction(action);
+        const isActionValid = this.checkAction(action);
         if (!isActionValid) {
             return;
         }
@@ -41,34 +42,34 @@ export class ActionValidatorService {
         }
     }
 
-    private validateAction(action: Action): boolean {
-        if (!this.validateTurn(action)) {
+    private checkAction(action: Action): boolean {
+        if (!this.checkTurn(action)) {
             this.sendErrorMessage('Action demandé par ' + action.player.name + " pendant le tour d'un autre joueur");
             return false;
         }
 
         if (action instanceof PlaceLetter) {
-            return this.validatePlaceLetter(action as PlaceLetter);
+            return this.checkPlaceLetter(action as PlaceLetter);
         }
 
         if (action instanceof ExchangeLetter) {
-            return this.validateExchangeLetter(action as ExchangeLetter);
+            return this.checkExchangeLetter(action as ExchangeLetter);
         }
 
         if (action instanceof PassTurn) {
-            return this.validatePassTurn();
+            return this.checkPassTurn();
         }
 
         this.sendErrorMessage("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
         return false;
     }
 
-    private validateTurn(action: Action): boolean {
+    private checkTurn(action: Action): boolean {
         return this.gameInfo.activePlayer === action.player;
     }
 
-    private validatePlaceLetter(action: PlaceLetter): boolean {
-        if (!this.validatePlacementWithBoard(action)) {
+    private checkPlaceLetter(action: PlaceLetter): boolean {
+        if (!this.checkPlacementWithBoard(action)) {
             return false;
         }
 
@@ -78,11 +79,11 @@ export class ActionValidatorService {
         return this.checkPlaceLetterBoardRequirement(action, shouldCheckForNeighbors);
     }
 
-    private validatePlacementWithBoard(action: PlaceLetter) {
-        return this.validateBoardsLimits(action) && this.validateLettersCanBePlaced(action);
+    private checkPlacementWithBoard(action: PlaceLetter) {
+        return this.checkBoardsLimits(action) && this.checkLettersCanBePlaced(action);
     }
 
-    private validateLettersCanBePlaced(action: PlaceLetter) {
+    private checkLettersCanBePlaced(action: PlaceLetter) {
         let x = action.placement.x;
         let y = action.placement.y;
         let lettersNeeded = '';
@@ -123,7 +124,7 @@ export class ActionValidatorService {
         return true;
     }
 
-    private validateBoardsLimits(action: PlaceLetter): boolean {
+    private checkBoardsLimits(action: PlaceLetter): boolean {
         if (action.placement.y < 0 || action.placement.x < 0) {
             return false;
         }
@@ -175,26 +176,7 @@ export class ActionValidatorService {
         return false;
     }
 
-    // private validateFirstPlaceLetter(action: PlaceLetter): boolean {
-    //     const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
-    //     let x = action.placement.x;
-    //     let y = action.placement.y;
-    //     let index = 0;
-    //     while (index++ < action.word.length) {
-    //         if (x === centerTilePosition && y === centerTilePosition) {
-    //             return true;
-    //         }
-    //         if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-    //             y++;
-    //         } else {
-    //             x++;
-    //         }
-    //     }
-    //     this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
-    //     return false;
-    // }
-
-    private validateExchangeLetter(action: ExchangeLetter): boolean {
+    private checkExchangeLetter(action: ExchangeLetter): boolean {
         if (action.player instanceof HardBot && this.gameInfo.numberOfLettersRemaining >= action.lettersToExchange.length) {
             return true;
         }
@@ -218,7 +200,7 @@ export class ActionValidatorService {
         return true;
     }
 
-    private validatePassTurn() {
+    private checkPassTurn() {
         return true;
     }
 
