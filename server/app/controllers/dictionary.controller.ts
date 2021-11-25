@@ -20,7 +20,7 @@ export class DictionaryController {
                 const title = req.query.title as string;
                 if (title) {
                     const dict = this.dictionaryServerService.getDictByTitle(title);
-                    if (dict === undefined) {
+                    if (!dict) {
                         res.sendStatus(StatusCodes.NOT_FOUND);
                     } else {
                         res.json(dict);
@@ -54,9 +54,9 @@ export class DictionaryController {
             try {
                 const title = req.query.title as string;
                 this.dictionaryServerService.deleteDict(title);
-                res.send(true);
+                res.sendStatus(StatusCodes.OK);
             } catch (error) {
-                res.send(false);
+                res.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
@@ -67,6 +67,15 @@ export class DictionaryController {
                 res.send(ans);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
+            }
+        });
+
+        this.router.get('/drop', async (req, res) => {
+            try {
+                await this.dictionaryServerService.dropDelete();
+                res.send(true);
+            } catch (error) {
+                res.send(false);
             }
         });
     }
