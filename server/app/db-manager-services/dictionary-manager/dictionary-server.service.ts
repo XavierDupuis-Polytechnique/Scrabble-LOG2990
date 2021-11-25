@@ -10,10 +10,11 @@ export class DictionaryServerService {
     allDictionary: DictionaryServer[] = [];
 
     constructor() {
-        this.start();
+        this.loadFromFile();
     }
 
-    start() {
+    loadFromFile() {
+        this.allDictionary = [];
         fs.readdirSync(folderPath).forEach((file) => {
             const dictPath = folderPath + file;
             const dictData = fs.readFileSync(dictPath).toString();
@@ -96,9 +97,10 @@ export class DictionaryServerService {
     dropDelete() {
         for (const dict of this.allDictionary) {
             if (dict.canEdit) {
-                this.deleteDict(dict.title);
+                this.deleteFile(dict.title);
             }
         }
+        this.loadFromFile();
     }
 
     private deleteFile(dictTitle: string) {

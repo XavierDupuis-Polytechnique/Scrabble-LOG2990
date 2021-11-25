@@ -32,15 +32,13 @@ export class DictionaryService {
     deleteGameDictionary(gameToken: string) {
         const uniqueName = this.liveGamesMap.get(gameToken);
         if (uniqueName) {
-            const liveDict = this.liveDictMap.get(uniqueName);
-            if (liveDict) {
+            const liveDict = this.liveDictMap.get(uniqueName)!;
                 liveDict.currentUsage--;
                 if (liveDict.currentUsage === 0) {
                     this.liveDictMap.delete(uniqueName);
                 } else {
                     this.liveDictMap.set(uniqueName, liveDict);
                 }
-            }
             this.liveGamesMap.delete(gameToken);
         }
     }
@@ -50,10 +48,8 @@ export class DictionaryService {
         if (!uniqueName) {
             return false;
         }
-        const liveDict = this.liveDictMap.get(uniqueName);
-        if (!liveDict) {
-            return false;
-        }
+        const liveDict = this.liveDictMap.get(uniqueName)!;
+
         const wordLength = word.length;
         if (wordLength > MAX_WORD_LENGTH) {
             return false;

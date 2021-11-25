@@ -1,6 +1,5 @@
 // import { Application } from '@app/app';
-// import { BotInfoService } from '@app/db-manager-services/bot-info-db-manager/bot-info.service';
-// import { BotInfo, BotType } from '@app/db-manager-services/bot-name-db-manager/bot-info';
+// import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
 // import { expect } from 'chai';
 // import { StatusCodes } from 'http-status-codes';
 // import * as sinon from 'sinon';
@@ -8,98 +7,99 @@
 // import { Container } from 'typedi';
 
 // describe('BotInfoController', () => {
-//     let botInfoService: sinon.SinonStubbedInstance<BotInfoService>;
+//     let dictionaryServer: sinon.SinonStubbedInstance<DictionaryServer>;
 //     let expressApp: Express.Application;
 
 //     beforeEach(async () => {
-//         botInfoService = sinon.createStubInstance(BotInfoService);
+//         dictionaryServer = sinon.createStubInstance(DictionaryServer);
 //         const app = Container.get(Application);
 
 //         // eslint-disable-next-line dot-notation
-//         Object.defineProperty(app['botInfoController'], 'botInfoService', { value: botInfoService });
+//         Object.defineProperty(app['dictionaryController'], 'dictionaryServer', { value: dictionaryServer });
 //         expressApp = app.app;
 //     });
 
-//     it('get should return the right bot info', async () => {
-//         const botInfo: BotInfo[] = [{ name: 'Test', canEdit: false, type: BotType.Easy }];
-//         botInfoService.getBotInfoList.resolves(botInfo);
+// //     it('get should return the right bot info', async () => {
 
-//         return supertest(expressApp)
-//             .get('/api/botinfo')
-//             .expect(StatusCodes.OK)
-//             .then((res) => {
-//                 const answer = res.body as BotInfo[];
-//                 expect(answer).to.deep.equal(botInfo);
-//             });
-//     });
+// //         const botInfo: BotInfo[] = [{ name: 'Test', canEdit: false, type: BotType.Easy }];
+// //         dictionaryServer.getInfoList.resolves(botInfo);
 
-//     it('get should throw', async () => {
-//         botInfoService.getBotInfoList.throws();
-//         return supertest(expressApp).get('/api/botinfo').expect(StatusCodes.NOT_FOUND);
-//     });
+// //         return supertest(expressApp)
+// //             .get('/api/botinfo')
+// //             .expect(StatusCodes.OK)
+// //             .then((res) => {
+// //                 const answer = res.body as BotInfo[];
+// //                 expect(answer).to.deep.equal(botInfo);
+// //             });
+// //     });
 
-//     it('post should send true if new bot', async () => {
-//         const sendData: BotInfo = { name: 'Test', type: BotType.Easy, canEdit: true };
-//         botInfoService.isBotExist.resolves(false);
-//         return supertest(expressApp)
-//             .post('/api/botinfo')
-//             .send(sendData)
-//             .then((res) => {
-//                 const ans = res.body as boolean;
-//                 expect(ans).to.equal(true);
-//             });
-//     });
+// //     it('get should throw', async () => {
+// //         dictionaryServer.getBotInfoList.throws();
+// //         return supertest(expressApp).get('/api/botinfo').expect(StatusCodes.NOT_FOUND);
+// //     });
 
-//     it('post should send false if bot already exist', async () => {
-//         const sendData: BotInfo = { name: 'Test', type: BotType.Easy, canEdit: true };
-//         botInfoService.isBotExist.resolves(true);
-//         return supertest(expressApp)
-//             .post('/api/botinfo')
-//             .send(sendData)
-//             .then((res) => {
-//                 const ans = res.body as boolean;
-//                 expect(ans).to.equal(false);
-//             });
-//     });
+// //     it('post should send true if new bot', async () => {
+// //         const sendData: BotInfo = { name: 'Test', type: BotType.Easy, canEdit: true };
+// //         dictionaryServer.isBotExist.resolves(false);
+// //         return supertest(expressApp)
+// //             .post('/api/botinfo')
+// //             .send(sendData)
+// //             .then((res) => {
+// //                 const ans = res.body as boolean;
+// //                 expect(ans).to.equal(true);
+// //             });
+// //     });
 
-//     it('post should throw', async () => {
-//         botInfoService.isBotExist.throws();
-//         return supertest(expressApp).post('/api/botinfo').expect(StatusCodes.NOT_FOUND);
-//     });
+// //     it('post should send false if bot already exist', async () => {
+// //         const sendData: BotInfo = { name: 'Test', type: BotType.Easy, canEdit: true };
+// //         dictionaryServer.isBotExist.resolves(true);
+// //         return supertest(expressApp)
+// //             .post('/api/botinfo')
+// //             .send(sendData)
+// //             .then((res) => {
+// //                 const ans = res.body as boolean;
+// //                 expect(ans).to.equal(false);
+// //             });
+// //     });
 
-//     it('delete should send OK if bot name is correctly deleted', async () => {
-//         return supertest(expressApp).delete('/api/botinfo/Test').expect(StatusCodes.OK);
-//     });
+// //     it('post should throw', async () => {
+// //         dictionaryServer.isBotExist.throws();
+// //         return supertest(expressApp).post('/api/botinfo').expect(StatusCodes.NOT_FOUND);
+// //     });
 
-//     it('delete should send OK if bot name is correctly deleted', async () => {
-//         botInfoService.getBotInfoByName.throws();
-//         return supertest(expressApp).delete('/api/botinfo/Test').expect(StatusCodes.NOT_FOUND);
-//     });
+// //     it('delete should send OK if bot name is correctly deleted', async () => {
+// //         return supertest(expressApp).delete('/api/botinfo/Test').expect(StatusCodes.OK);
+// //     });
 
-//     it('put should return true', async () => {
-//         botInfoService.updateBot.resolves(true);
-//         return supertest(expressApp)
-//             .put('/api/botinfo')
-//             .send({})
-//             .then((res) => {
-//                 const ans = res.body as boolean;
-//                 expect(ans).to.equal(true);
-//             });
-//     });
+// //     it('delete should send OK if bot name is correctly deleted', async () => {
+// //         dictionaryServer.getBotInfoByName.throws();
+// //         return supertest(expressApp).delete('/api/botinfo/Test').expect(StatusCodes.NOT_FOUND);
+// //     });
 
-//     it('put should return true', async () => {
-//         botInfoService.updateBot.resolves(false);
-//         return supertest(expressApp)
-//             .put('/api/botinfo')
-//             .send({})
-//             .then((res) => {
-//                 const ans = res.body as boolean;
-//                 expect(ans).to.equal(false);
-//             });
-//     });
+// //     it('put should return true', async () => {
+// //         dictionaryServer.updateBot.resolves(true);
+// //         return supertest(expressApp)
+// //             .put('/api/botinfo')
+// //             .send({})
+// //             .then((res) => {
+// //                 const ans = res.body as boolean;
+// //                 expect(ans).to.equal(true);
+// //             });
+// //     });
 
-//     it('put should send status code not found', async () => {
-//         botInfoService.updateBot.throws();
-//         return supertest(expressApp).put('/api/botinfo').send({}).expect(StatusCodes.NOT_FOUND);
-//     });
+// //     it('put should return true', async () => {
+// //         dictionaryServer.updateBot.resolves(false);
+// //         return supertest(expressApp)
+// //             .put('/api/botinfo')
+// //             .send({})
+// //             .then((res) => {
+// //                 const ans = res.body as boolean;
+// //                 expect(ans).to.equal(false);
+// //             });
+// //     });
+
+// //     it('put should send status code not found', async () => {
+// //         dictionaryServer.updateBot.throws();
+// //         return supertest(expressApp).put('/api/botinfo').send({}).expect(StatusCodes.NOT_FOUND);
+// //     });
 // });

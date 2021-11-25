@@ -63,7 +63,6 @@ export class DictionaryController {
         this.router.put('/', async (req, res) => {
             try {
                 const clientDict = req.body as DictionaryServer[];
-                // TODO Validate whether the dict sent contain words or not
                 const ans = this.dictionaryServerService.updateDict(clientDict[0], clientDict[1]);
                 res.send(ans);
             } catch (e) {
