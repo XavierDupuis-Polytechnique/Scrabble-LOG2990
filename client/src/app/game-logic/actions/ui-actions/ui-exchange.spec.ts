@@ -60,7 +60,7 @@ describe('UIExchange', () => {
     });
 
     it('should not do anything when receiving a MouseRoll', () => {
-        action.receiveRoll('');
+        action.receiveRoll();
         expect().nothing();
     });
 

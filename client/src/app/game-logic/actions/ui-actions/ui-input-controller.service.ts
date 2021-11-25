@@ -9,7 +9,7 @@ import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
 import { ENTER, ESCAPE } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
+import { InputComponent, InputType, UIInput, WheelRoll } from '@app/game-logic/interfaces/ui-input';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
@@ -111,7 +111,7 @@ export class UIInputControllerService {
                 this.processKeyPress(input.args);
                 break;
             case InputType.MouseRoll:
-                this.processMouseRoll(input.args);
+                this.processMouseRoll(input.args as WheelRoll);
                 break;
             default:
                 throw Error('Unresolved input of type ' + input.type);
@@ -147,7 +147,7 @@ export class UIInputControllerService {
         this.activeAction = null;
     }
 
-    private processMouseRoll(args: unknown) {
+    private processMouseRoll(args?: WheelRoll) {
         if (this.activeAction) {
             this.activeAction.receiveRoll(args);
         }
