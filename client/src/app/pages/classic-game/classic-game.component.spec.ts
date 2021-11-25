@@ -151,6 +151,7 @@ describe('ClassicGameComponent', () => {
             randomBonus: false,
             dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
+            dictDesc: '',
         };
 
         matDialog.open.and.returnValue({

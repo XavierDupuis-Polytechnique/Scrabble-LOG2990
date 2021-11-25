@@ -66,6 +66,7 @@ export class ClassicGameComponent {
                 playerName: formOnline.playerName,
                 randomBonus: formOnline.randomBonus,
                 dictTitle: formOnline.dictTitle,
+                dictDesc: formOnline.dictDesc,
             };
             this.socketHandler.createGameMulti(onlineGameSettings);
             const username = formOnline.playerName;
