@@ -44,7 +44,6 @@ export class GameSocketsHandler {
                     socket.join(gameToken);
                     this.addPlayerToGame(socket.id, userAuth);
                 } catch (e) {
-                    console.error(e);
                     socket.disconnect();
                 }
             });
@@ -53,7 +52,6 @@ export class GameSocketsHandler {
                 try {
                     this.sendPlayerAction(socket.id, action);
                 } catch (e) {
-                    console.error(e);
                     socket.disconnect();
                 }
             });

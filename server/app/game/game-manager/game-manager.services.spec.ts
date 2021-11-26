@@ -1,14 +1,17 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { NEW_GAME_TIMEOUT } from '@app/constants';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -35,6 +38,7 @@ describe('GameManagerService', () => {
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
     let stubObjectiveCreator: ObjectiveCreator;
+    let stubLeaderboardService: LeaderboardService;
     let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
@@ -44,6 +48,7 @@ describe('GameManagerService', () => {
         stubTimerController = createSinonStubInstance<TimerController>(TimerController);
         stubGameActionNotifierService = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
         stubObjectiveCreator = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
+        stubLeaderboardService = createSinonStubInstance<LeaderboardService>(LeaderboardService);
     });
 
     afterEach(() => {
@@ -60,6 +65,7 @@ describe('GameManagerService', () => {
             stubTimerController,
             stubGameActionNotifierService,
             stubObjectiveCreator,
+            stubLeaderboardService,
         );
     });
 
@@ -513,7 +519,7 @@ describe('GameManagerService', () => {
         }).to.not.throw(Error);
     });
 
-    it('should remove game when it finishes', () => {
+    it('should remove game when it finishes and update leaderboard', () => {
         const playerName = 'test1';
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
@@ -525,8 +531,23 @@ describe('GameManagerService', () => {
             gameMode: GameMode.Classic,
         };
         service.createGame(gameToken, gameSettings);
-        // eslint-disable-next-line dot-notation
-        service['endGame$'].next(gameToken);
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [] });
+        expect(service.activeGames.size).to.be.equal(0);
+    });
+
+    it('should update leaderboard when it finishes on forfeit', () => {
+        const player = new Player('test01');
+        const gameToken = '1';
+        const gameSettings: OnlineGameSettings = {
+            gameMode: GameMode.Classic,
+            id: gameToken,
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName: player.name,
+            opponentName: 'test3',
+        };
+        service.createGame(gameToken, gameSettings);
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });
         expect(service.activeGames.size).to.be.equal(0);
     });
 });

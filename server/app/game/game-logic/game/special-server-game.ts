@@ -1,6 +1,7 @@
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGame } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
@@ -22,7 +23,7 @@ export class SpecialServerGame extends ServerGame {
         gameCompiler: GameCompiler,
         messagesService: SystemMessagesService,
         newGameStateSubject: Subject<GameStateToken>,
-        endGameSubject: Subject<string>,
+        endGameSubject: Subject<EndOfGame>,
         private objectiveCreator: ObjectiveCreator,
     ) {
         super(

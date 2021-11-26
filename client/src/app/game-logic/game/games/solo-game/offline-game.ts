@@ -80,6 +80,7 @@ export class OfflineGame extends Game {
     onEndOfGame() {
         this.pointCalculator.endOfGamePointDeduction(this);
         this.displayLettersLeft();
+        this.isEndOfGameSubject.next();
     }
 
     doAction(action: Action) {
