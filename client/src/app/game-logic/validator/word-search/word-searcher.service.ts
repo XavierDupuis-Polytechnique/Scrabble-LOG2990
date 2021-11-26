@@ -44,8 +44,9 @@ export class WordSearcher {
             const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
             for (const coord of coordsOfLettersToPlace) {
                 const direction = placement.direction;
-                if (this.hasNeighbour(coord.x, coord.y, direction)) {
-                    const wordToValidate = this.extractWord(wordPlacement, coord);
+                if (this.hasNeighbour(coord, direction)) {
+                    const beginingPos = this.goToBeginningOfWord(direction, coord);
+                    const wordToValidate = this.goToEndOfWord(wordPlacement, beginingPos, coord);
                     if (this.isInDictionnary(wordToValidate.letters)) {
                         listOfValidWord.push(wordToValidate);
                     } else {
@@ -57,81 +58,107 @@ export class WordSearcher {
         return listOfValidWord;
     }
 
-    private findIndexOfLetterToPlace(word: string, placement: PlacementSetting) {
+    findIndexOfLetterToPlace(word: string, placement: PlacementSetting) {
         const indexOfLetterToPlace: number[] = [];
-        const direction = placement.direction;
-        const startCoord = direction === Direction.Horizontal ? placement.x : placement.y;
-
-        const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
-        coordsOfLettersToPlace.forEach((coord) => {
-            const indexInBoard = direction === Direction.Horizontal ? coord.x : coord.y;
-            const indexInWord = indexInBoard - startCoord;
-            indexOfLetterToPlace.push(indexInWord);
-        });
-
+        if (placement.direction === Direction.Horizontal) {
+            const startCoord = placement.x;
+            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
+            coordsOfLettersToPlace.forEach((coord) => {
+                const index = coord.x - startCoord;
+                indexOfLetterToPlace.push(index);
+            });
+        } else {
+            const startCoord = placement.y;
+            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
+            coordsOfLettersToPlace.forEach((coord) => {
+                const index = coord.y - startCoord;
+                indexOfLetterToPlace.push(index);
+            });
+        }
         return indexOfLetterToPlace;
     }
 
-    private hasNeighbour(x: number, y: number, direction: Direction): boolean {
-        const nextNeighbourCoord = direction === Direction.Horizontal ? { x, y: y + 1 } : { x: x + 1, y };
-        const previousNeighbourCoord = direction === Direction.Horizontal ? { x, y: y - 1 } : { x: x - 1, y };
-        return (
-            this.isTileOccupied(nextNeighbourCoord.x, nextNeighbourCoord.y) || this.isTileOccupied(previousNeighbourCoord.x, previousNeighbourCoord.y)
-        );
+    hasNeighbour(coord: Vec2, direction: Direction): boolean {
+        const x = coord.x;
+        const y = coord.y;
+        if (direction === Direction.Horizontal) {
+            return this.isTileOccupied(x, y + 1) || this.isTileOccupied(x, y - 1);
+        } else {
+            return this.isTileOccupied(x + 1, y) || this.isTileOccupied(x - 1, y);
+        }
     }
 
-    private extractWord(wordPlacement: WordPlacement, currentPos: Vec2): Word {
+    goToBeginningOfWord(direction: Direction, letterPos: Vec2): Vec2 {
+        let x = letterPos.x;
+        let y = letterPos.y;
+        if (direction === Direction.Horizontal) {
+            while (this.isTileOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
+                y -= 1;
+            }
+            y += 1;
+        } else {
+            while (this.isTileOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
+                x -= 1;
+            }
+            x += 1;
+        }
+        return { x, y };
+    }
+
+    goToEndOfWord(wordPlacement: WordPlacement, beginingPos: Vec2, letterPos: Vec2): Word {
         const direction = wordPlacement.placement.direction;
-        const startCoord = { x: wordPlacement.placement.x, y: wordPlacement.placement.y };
-        let x = wordPlacement.placement.x;
-        let y = wordPlacement.placement.y;
+        let x = beginingPos.x;
+        let y = beginingPos.y;
         const letters: Tile[] = [];
         const index: number[] = [];
         let indexInNeighbor = 0;
-
-        // Go to begining of Word
-        while (this.isPreviousTileUsed(x, y, currentPos)) {
-            [x, y] = direction === Direction.Horizontal ? [x, y - 1] : [x - 1, y];
-        }
-
-        // Go through word until end
-        while (this.isNextTileUsed(x, y, currentPos)) {
-            if (this.isTileOccupied(x, y)) {
-                letters.push(this.grid[y][x]);
-            } else {
-                const indexInWord = direction === Direction.Horizontal ? x - startCoord.x : y - startCoord.y;
-                letters.push(this.createTile(wordPlacement.word[indexInWord], { x, y }));
-                index.push(indexInNeighbor);
+        if (direction === Direction.Horizontal) {
+            while (this.isTileOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
+                if (this.isTileOccupied(x, y)) {
+                    letters.push(this.grid[y][x]);
+                } else {
+                    const indexInWord = x - wordPlacement.placement.x;
+                    letters.push(this.createTile(wordPlacement.word[indexInWord], { x, y }));
+                    index.push(indexInNeighbor);
+                }
+                y += 1;
+                indexInNeighbor += 1;
             }
-            [x, y] = direction === Direction.Horizontal ? [x, y + 1] : [x + 1, y];
-            indexInNeighbor += 1;
+            y -= 1;
+        } else {
+            while (this.isTileOccupied(x, y) || this.isLetterPosition({ x, y }, letterPos)) {
+                if (this.isTileOccupied(x, y)) {
+                    letters.push(this.grid[y][x]);
+                } else {
+                    const indexInWord = y - wordPlacement.placement.y;
+                    letters.push(this.createTile(wordPlacement.word[indexInWord], { x, y }));
+                    index.push(indexInNeighbor);
+                }
+                x += 1;
+                indexInNeighbor += 1;
+            }
+            x -= 1;
         }
         return { letters, index };
     }
 
-    private isInDictionnary(word: Tile[]): boolean {
+    isInDictionnary(word: Tile[]): boolean {
         const wordString = this.tileToString(word).toLowerCase();
-        return this.dictionaryService.isWordInDict(wordString);
+        if (this.dictionaryService.isWordInDict(wordString)) {
+            return true;
+        }
+        return false;
     }
 
-    private isPreviousTileUsed(x: number, y: number, letterPosition: Vec2) {
-        const offset = -1;
-        return this.isTileOccupied(x * offset, y * offset) || this.isLetterPosition(x, y, letterPosition);
+    isLetterPosition(currentPosition: Vec2, letterPosition: Vec2) {
+        return currentPosition.x === letterPosition.x && currentPosition.y === letterPosition.y;
     }
 
-    private isNextTileUsed(x: number, y: number, letterPosition: Vec2) {
-        return this.isTileOccupied(x, y) || this.isLetterPosition(x, y, letterPosition);
-    }
-
-    private isLetterPosition(x: number, y: number, letterPosition: Vec2) {
-        return x === letterPosition.x && y === letterPosition.y;
-    }
-
-    private isInsideBoard(x: number, y: number): boolean {
+    isInsideBoard(x: number, y: number): boolean {
         return x >= BOARD_MIN_POSITION && y >= BOARD_MIN_POSITION && x <= BOARD_MAX_POSITION && y <= BOARD_MAX_POSITION;
     }
 
-    private isTileOccupied(x: number, y: number): boolean {
+    isTileOccupied(x: number, y: number): boolean {
         if (!this.isInsideBoard(x, y)) {
             return false;
         }
@@ -139,38 +166,47 @@ export class WordSearcher {
         return char !== EMPTY_CHAR;
     }
 
-    private findCoordOfLettersToPlace(word: string, placement: PlacementSetting): Vec2[] {
+    findCoordOfLettersToPlace(word: string, placement: PlacementSetting): Vec2[] {
         const listOfCoord: Vec2[] = [];
         const startCoord: Vec2 = { x: placement.x, y: placement.y };
         const direction = placement.direction;
-
-        const wordEnd = direction === Direction.Horizontal ? startCoord.x + word.length : startCoord.y + word.length;
-        let currPos = direction === Direction.Horizontal ? startCoord.x : startCoord.y;
-
-        for (startCoord; currPos < wordEnd; currPos++) {
-            const coord = direction === Direction.Horizontal ? { x: currPos, y: startCoord.y } : { x: startCoord.x, y: currPos };
-            if (!this.isTileOccupied(coord.x, coord.y)) {
-                listOfCoord.push({ x: coord.x, y: coord.y });
+        if (direction === Direction.Horizontal) {
+            const y = startCoord.y;
+            const wordEnd = startCoord.x + word.length;
+            for (let x = startCoord.x; x < wordEnd; x++) {
+                if (!this.isTileOccupied(x, y)) {
+                    listOfCoord.push({ x, y });
+                }
+            }
+        } else {
+            const x = startCoord.x;
+            const wordEnd = startCoord.y + word.length;
+            for (let y = startCoord.y; y < wordEnd; y++) {
+                if (!this.isTileOccupied(x, y)) {
+                    listOfCoord.push({ x, y });
+                }
             }
         }
         return listOfCoord;
     }
 
-    private stringToTile(word: string, placement: PlacementSetting): Tile[] {
+    stringToTile(word: string, placement: PlacementSetting): Tile[] {
         let x = placement.x;
         let y = placement.y;
-        const direction = placement.direction;
         const wordTile: Tile[] = [];
-
         for (const letter of word) {
             const tile = this.createTile(letter, { x, y });
             wordTile.push(tile);
-            [x, y] = direction === Direction.Horizontal ? [x + 1, y] : [x, y + 1];
+            if (placement.direction === Direction.Horizontal) {
+                x++;
+            } else {
+                y++;
+            }
         }
         return wordTile;
     }
 
-    private tileToString(word: Tile[]): string {
+    tileToString(word: Tile[]): string {
         let wordTemp = '';
         word.forEach((tile) => {
             wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());
@@ -183,8 +219,11 @@ export class WordSearcher {
         const letterMultiplicator = tile.letterMultiplicator;
         const wordMultiplicator = tile.wordMultiplicator;
         const newTile = new Tile(letterMultiplicator, wordMultiplicator);
-        newTile.letterObject = isCharUpperCase(char) ? this.letterCreator.createBlankLetter(char) : this.letterCreator.createLetter(char);
-
+        if (isCharUpperCase(char)) {
+            newTile.letterObject = this.letterCreator.createBlankLetter(char);
+        } else {
+            newTile.letterObject = this.letterCreator.createLetter(char);
+        }
         return newTile;
     }
 }
