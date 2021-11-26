@@ -41,6 +41,9 @@ export class UIInputControllerService {
     }
 
     receive(input: UIInput) {
+        if (this.info.isEndOfGame) {
+            return;
+        }
         this.processInput(input);
     }
 
