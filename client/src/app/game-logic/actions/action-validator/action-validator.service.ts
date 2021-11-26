@@ -10,7 +10,7 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { HardBot } from '@app/game-logic/player/bot/hard-bot';
-import { placementSettingsToString } from '@app/game-logic/utils';
+import { isStringALowerCaseLetter, placementSettingsToString } from '@app/game-logic/utils';
 
 @Injectable({
     providedIn: 'root',
@@ -223,13 +223,12 @@ export class ActionValidatorService {
         for (let char of actionChars) {
             let occurence = rackCharsOccurences.get(char);
             if (occurence === undefined || occurence === 0) {
-                if (char.toUpperCase() === char) {
-                    occurence = rackCharsOccurences.get(JOKER_CHAR);
-                    char = JOKER_CHAR;
-                    if (occurence === undefined || occurence === 0) {
-                        return false;
-                    }
-                } else {
+                if (isStringALowerCaseLetter(char)) {
+                    return false;
+                }
+                occurence = rackCharsOccurences.get(JOKER_CHAR);
+                char = JOKER_CHAR;
+                if (occurence === undefined || occurence === 0) {
                     return false;
                 }
             }
