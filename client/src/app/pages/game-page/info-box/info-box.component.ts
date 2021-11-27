@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export const MILISECONDS_IN_MINUTE = 60000;
+export const FLOAT_TO_PERCENT = 100;
 @Component({
     selector: 'app-info-box',
     templateUrl: './info-box.component.html',
@@ -11,6 +12,7 @@ export const MILISECONDS_IN_MINUTE = 60000;
 })
 export class InfoBoxComponent implements OnInit {
     timeLeft$: Observable<number | undefined>;
+    timeLeftPercent$: Observable<number | undefined>;
     info: GameInfoService;
 
     constructor(info: GameInfoService) {
@@ -24,6 +26,14 @@ export class InfoBoxComponent implements OnInit {
                     return;
                 }
                 return value;
+            }),
+        );
+        this.timeLeftPercent$ = this.info.timeLeftPercentForTurn.pipe(
+            map((value: number | undefined) => {
+                if (value === undefined) {
+                    return;
+                }
+                return value * FLOAT_TO_PERCENT;
             }),
         );
     }

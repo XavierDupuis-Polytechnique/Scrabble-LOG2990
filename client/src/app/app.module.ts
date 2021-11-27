@@ -8,6 +8,7 @@ import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-so
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
+import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderboard.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -25,9 +26,11 @@ import { ChatBoxComponent } from '@app/pages/game-page/chat-box/chat-box.compone
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { HorseComponent } from '@app/pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.component';
+import { ObjectiveComponent } from '@app/pages/game-page/objectives/objective-component/objective.component';
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
+import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
 
 /**
  * Main module that is used in main.ts.
@@ -59,9 +62,12 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
         JoinOnlineGameComponent,
         DisconnectedFromServerComponent,
         ErrorDialogComponent,
+        LeaderboardComponent,
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
+        ObjectivesListComponent,
+        ObjectiveComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
     providers: [

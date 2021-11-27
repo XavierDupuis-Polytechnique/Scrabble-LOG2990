@@ -1,15 +1,16 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable, of, Subject } from 'rxjs';
-import { PendingGamesComponent } from './pending-games.component';
+import { DELAY, PendingGamesComponent } from './pending-games.component';
 
 const mockDialogRef = {
     close: jasmine.createSpy('close').and.returnValue(() => {
@@ -41,7 +42,7 @@ describe('PendingGamesComponent', () => {
                 imports: [AppMaterialModule, BrowserAnimationsModule, CommonModule],
 
                 providers: [
-                    { provide: MAT_DIALOG_DATA, useValue: {} },
+                    { provide: MAT_DIALOG_DATA, useValue: GameMode.Classic },
                     { provide: MatDialogRef, useValue: mockDialogRef },
                     { provide: MatDialog, useValue: matDialog },
                     { provide: NewOnlineGameSocketHandler, useValue: onlineSocketHandlerSpy },
@@ -70,8 +71,8 @@ describe('PendingGamesComponent', () => {
 
     it('should set data in table to gameSettings', () => {
         const pendingGames = [
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 },
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000 },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
         ];
 
         testPendingGames$.next(pendingGames);
@@ -80,8 +81,8 @@ describe('PendingGamesComponent', () => {
 
     it('should set selected row to row', () => {
         const pendingGames = [
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 },
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000 },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
         ];
 
         testPendingGames$.next(pendingGames);
@@ -116,7 +117,7 @@ describe('PendingGamesComponent', () => {
                 return;
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
-        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
+        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic });
         component.joinGame();
         expect(mockDialogRef.close).toHaveBeenCalled();
     });
@@ -130,7 +131,7 @@ describe('PendingGamesComponent', () => {
                 return;
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
-        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 });
+        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic });
         component.joinGame();
         expect(matDialog.open).toHaveBeenCalled();
     });
@@ -150,8 +151,8 @@ describe('PendingGamesComponent', () => {
 
     it('should be a full table ', () => {
         testPendingGames$.next([
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 },
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000 },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
         ]);
         const tableLength = 4;
         const dom = fixture.nativeElement as HTMLElement;
@@ -161,8 +162,8 @@ describe('PendingGamesComponent', () => {
 
     it('should sort table ', () => {
         testPendingGames$.next([
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000 },
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000 },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
         ]);
         fixture.detectChanges();
         const dom = fixture.debugElement.nativeElement;
@@ -177,4 +178,26 @@ describe('PendingGamesComponent', () => {
         component.announceSortChange(sortState);
         expect(mockLiveAnnouncer.announce).toHaveBeenCalled();
     });
+
+    it('should allocate a game and open modal for join game', fakeAsync(() => {
+        spyOn(component, 'joinGame');
+        matDialog.open.and.returnValue({
+            beforeClosed: () => {
+                return of(undefined);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<JoinOnlineGameComponent>);
+        testPendingGames$.next([
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+        ]);
+        component.pickRandomGame();
+        tick(DELAY);
+        expect(component.selectedRow).not.toBeUndefined();
+        expect(component.joinGame).toHaveBeenCalled();
+        component.pickRandomGame();
+        expect(component.joinGame).not.toHaveBeenCalledTimes(2);
+    }));
 });

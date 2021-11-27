@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { first } from 'rxjs/operators';
 import { TimerService } from './timer.service';
 
 describe('TimerService', () => {
@@ -56,5 +57,30 @@ describe('TimerService', () => {
         service.stop();
         tick(1000);
         expect(timeLeft).toBe(3000);
+    }));
+
+    it('should return undefined percentage when the timer is not started', (done) => {
+        service.timeLeftPercentage$.pipe(first()).subscribe((val) => {
+            expect(val).toBeUndefined();
+            done();
+        });
+    });
+
+    it('should return the correct percentage when the timer is started', fakeAsync(() => {
+        const time = 4000;
+        let percentage: number | undefined;
+        service.timeLeftPercentage$.subscribe((val) => {
+            percentage = val;
+        });
+        service.start(time);
+        expect(percentage).toBe(1);
+        tick(1000);
+        expect(percentage).toBe(0.75);
+        tick(1000);
+        expect(percentage).toBe(0.5);
+        tick(1000);
+        expect(percentage).toBe(0.25);
+        tick(1000);
+        expect(percentage).toBe(0);
     }));
 });

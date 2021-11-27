@@ -1,0 +1,25 @@
+<div *ngIf="info.isSpecialGame">
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title> Objectifs </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="public">
+            <div class="objective-header">Objectifs Communs</div>
+            <mat-divider></mat-divider>
+            <div *ngFor="let publicObjective of publicObjectives">
+                <app-objective [objective]="publicObjective"></app-objective>
+            </div>
+        </div>
+        
+        <div class="private">
+            <div class="objective-header">Objectifs privés</div>
+            <mat-divider></mat-divider>
+            <div *ngFor="let privateObjective of userPrivateObjectives">
+                <app-objective [objective]="privateObjective"></app-objective>
+            </div>
+            <div *ngFor="let privateObjective of opponentPrivateObjectives">
+                <app-objective [hidden]="!isOwnedByOpponent" [objective]="privateObjective"></app-objective>
+            </div>
+        </div>
+    </mat-expansion-panel>
+</div>

@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
@@ -6,13 +8,17 @@ import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { Observable, Subject } from 'rxjs';
 import { GameInfoService } from './game-info.service';
 
 const passThrough = (map: Map<string, number>): Map<string, number> => {
@@ -22,13 +28,14 @@ const passThrough = (map: Map<string, number>): Map<string, number> => {
 describe('GameInfoService', () => {
     let service: GameInfoService;
     let game: OfflineGame;
+    let specialGame: jasmine.SpyObj<SpecialOfflineGame>;
     let timer: TimerService;
     let pointCalculator: PointCalculatorService;
     let board: BoardService;
     let messages: MessagesService;
     const dict = new DictionaryService();
     const randomBonus = false;
-
+    const mockEndOfTurn$ = new Subject<void>();
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }],
@@ -38,6 +45,9 @@ describe('GameInfoService', () => {
         board = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
+        specialGame = jasmine.createSpyObj('SpecialOfflineGame', ['start'], ['endTurn$']);
+
+        (Object.getOwnPropertyDescriptor(specialGame, 'endTurn$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfTurn$);
 
         game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];
@@ -178,6 +188,86 @@ describe('GameInfoService', () => {
         const result = service.endTurn$.subscribe();
         expect(result).toBeTruthy();
     });
+
+    it('letter occurences should return an empty map when the game type is unsupported', () => {
+        service['game'] = {} as unknown as OfflineGame;
+        expect(service.letterOccurences.size).toBe(0);
+    });
+
+    it('should get timeLeft percentage properly', () => {
+        expect(service.timeLeftPercentForTurn).toBeInstanceOf(Observable);
+    });
+
+    it('winner should throw error when no game', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.winner;
+        }).toThrow();
+    });
+
+    it('gameID should throw when there is no game', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.gameId;
+        }).toThrow();
+    });
+
+    it('private objective should throw when no game', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.getPrivateObjectives(service.user.name);
+        }).toThrow();
+    });
+
+    it('should return isSpecial game properly', () => {
+        const realSpecialGame = new SpecialOfflineGame(
+            false,
+            1000,
+            jasmine.createSpyObj('TimerService', ['start']),
+            jasmine.createSpyObj('PointCalculatorService', ['placeLetterCalculation']),
+            jasmine.createSpyObj('BoardService', [], ['board']),
+            jasmine.createSpyObj('MessagesService', ['receiveMessage']),
+            jasmine.createSpyObj('ObjectiveCreator', ['chooseObjectives']),
+        );
+        service.receiveGame(realSpecialGame);
+        expect(service.isSpecialGame).toBeTrue();
+    });
+
+    it('should return private objectives properly', () => {
+        specialGame.privateObjectives = new Map<string, Objective[]>();
+        const mockObjective = {} as unknown as Objective;
+        specialGame.privateObjectives.set('p1', [mockObjective, mockObjective]);
+        service.receiveGame(specialGame);
+        const user = new User('p1');
+        service.receiveUser(user);
+        expect(service.getPrivateObjectives(service.user.name).length).toBe(2);
+    });
+
+    it('should return public objectives properly', () => {
+        const mockObjective = {} as unknown as Objective;
+        specialGame.publicObjectives = [mockObjective, mockObjective];
+        service.receiveGame(specialGame);
+        const user = new User('p1');
+        service.receiveUser(user);
+        expect(service.publicObjectives.length).toBe(2);
+    });
+
+    it('should return 0 private objectives when user not found', () => {
+        specialGame.privateObjectives = new Map<string, Objective[]>();
+        const mockObjective = {} as unknown as Objective;
+        specialGame.privateObjectives.set('p2', [mockObjective, mockObjective]);
+        service.receiveGame(specialGame);
+        const user = new User('p1');
+        service.receiveUser(user);
+        expect(service.getPrivateObjectives(user.name).length).toBe(0);
+    });
+
+    it('should throw when getting public objective when no game', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.publicObjectives;
+        }).toThrow();
+    });
 });
 
 describe('GameInfoService Online Edition', () => {
@@ -185,9 +275,12 @@ describe('GameInfoService Online Edition', () => {
     let onlineGame: OnlineGame;
     let timer: TimerService;
     let board: BoardService;
+    const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            providers: [{ provide: LeaderboardService, useValue: leaderboardServiceMock }],
+        });
         service = TestBed.inject(GameInfoService);
         timer = TestBed.inject(TimerService);
         board = TestBed.inject(BoardService);
@@ -247,5 +340,16 @@ describe('GameInfoService Online Edition', () => {
         const result = service.gameId;
         const expected = '0';
         expect(result).toEqual(expected);
+    });
+
+    it('#isEndGame should throw when there is no game', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.isEndOfGame;
+        }).toThrow();
+    });
+
+    it('#is special game should return false when there is no game', () => {
+        expect(service.isSpecialGame).toBeFalse();
     });
 });

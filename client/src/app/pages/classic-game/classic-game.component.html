@@ -1,8 +1,15 @@
-<div class="container">
+<div [ngClass]="{ 'classic-container': !isSpecialGame, 'special-container': isSpecialGame }">
     <app-header-bar></app-header-bar>
     <div class="justified">
-        <button mat-flat-button color="primary" (click)="openSoloGameForm()">Jouer une partie en solo</button>
-        <button mat-flat-button color="primary" (click)="openMultiGameForm()">Créer une partie multijoueur</button>
-        <button mat-flat-button color="primary" (click)="openPendingGames()">Joindre une partie multijoueur</button>
+        <mat-card matRipple [matRippleDisabled]="true">
+            <mat-card-title class="disable-selection">Nouvelle partie</mat-card-title>
+            <div class="game-mode-selection">
+                <h2 class="game-mode-title">Mode de jeu : {{ isSpecialGame ? 'Log2990' : 'Classique' }}</h2>
+                <mat-slide-toggle [(ngModel)]="isSpecialGame" (click)="triggerRipple()" color="warn">Changer de mode</mat-slide-toggle>
+            </div>
+            <button mat-flat-button color="accent" class="selection-button" (click)="openSoloGameForm()">Jouer une partie en solo</button>
+            <button mat-flat-button color="accent" class="selection-button" (click)="openMultiGameForm()">Créer une partie multijoueur</button>
+            <button mat-flat-button color="accent" class="selection-button" (click)="openPendingGames()">Joindre une partie multijoueur</button>
+        </mat-card>
     </div>
 </div>
