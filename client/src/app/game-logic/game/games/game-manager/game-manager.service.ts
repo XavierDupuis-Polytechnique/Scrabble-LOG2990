@@ -125,47 +125,45 @@ export class GameManagerService {
     }
 
     instanciateGameFromForfeitedState(forfeitedGameState: ForfeitedGameSate) {
-        let userName = 'Qwerty';
-        let wasSpecial = false;
         if (!this.game) {
             return;
         }
-        if (this.game instanceof SpecialOnlineGame) {
-            userName = this.game.userName;
-            wasSpecial = true;
-        } else if (this.game instanceof OnlineGame) {
-            userName = this.game.userName;
-        }
+        const userName = (this.game as OnlineGame).userName;
+        const wasSpecial = this.game instanceof SpecialOnlineGame;
 
         this.instanciateGameSettings(forfeitedGameState, wasSpecial);
         const players = this.createPlayers(userName, 'easy');
         this.allocatePlayers(players);
 
-        if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
-            this.transitionBoard(forfeitedGameState);
-            this.game.letterBag.gameLetters = forfeitedGameState.letterBag;
-            this.game.consecutivePass = forfeitedGameState.consecutivePass;
-            const playerInfo = forfeitedGameState.players;
-
-            const userIndex = playerInfo.findIndex((player) => {
-                return player.name === userName;
-            });
-
-            const botIndex = (userIndex + 1) % 2;
-            const botName = this.game.players[botIndex].name;
-            this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
-
-            // TODO fix this
-            this.info.receiveGame(this.game);
-            if (this.game instanceof SpecialOfflineGame) {
-                if (forfeitedGameState.objectives) {
-                    const objectiveConverter = new ObjectiveConverter(this.game);
-                    objectiveConverter.transitionObjectives(forfeitedGameState.objectives, userName, botName);
-                }
-            }
-            this.transition.next();
-            this.startGame();
+        if (!(this.game instanceof OfflineGame)) {
+            throw Error('The type of game is not offlineGame after converting the online game to offline');
         }
+        this.transitionBoard(forfeitedGameState);
+        this.game.letterBag.gameLetters = forfeitedGameState.letterBag;
+        this.game.consecutivePass = forfeitedGameState.consecutivePass;
+        const playerInfo = forfeitedGameState.players;
+
+        const userIndex = playerInfo.findIndex((player) => {
+            return player.name === userName;
+        });
+
+        const botIndex = (userIndex + 1) % 2;
+        const botName = this.game.players[botIndex].name;
+        this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
+
+        // TODO fix this
+        this.info.receiveGame(this.game);
+        if (this.game instanceof SpecialOfflineGame) {
+            if (forfeitedGameState.objectives) {
+                const objectiveConverter = new ObjectiveConverter(this.game);
+                objectiveConverter.transitionObjectives(forfeitedGameState.objectives, userName, botName);
+            }
+        }
+        this.transition.next();
+
+        // STARTS LOADED GAME
+        const activePlayerIndex = forfeitedGameState.activePlayerIndex;
+        this.resumeGame(activePlayerIndex);
     }
 
     transitionBoard(forfeitedGameState: ForfeitedGameSate) {
@@ -285,12 +283,19 @@ export class GameManagerService {
     }
 
     startGame(): void {
-        this.messageService.clearLog();
-        this.commandExecuter.resetDebug();
+        this.resetServices();
         if (!this.game) {
             throw Error('No game created yet');
         }
         this.game.start();
+    }
+    // TODO Refactor code duplication
+    resumeGame(activePlayerIndex: number) {
+        this.resetServices();
+        if (!this.game) {
+            throw Error('No game created yet');
+        }
+        (this.game as OfflineGame).resume(activePlayerIndex);
     }
 
     stopGame(): void {
@@ -301,6 +306,11 @@ export class GameManagerService {
         this.messageService.clearLog();
         this.commandExecuter.resetDebug();
         this.game = undefined;
+    }
+
+    private resetServices() {
+        this.messageService.clearLog();
+        this.commandExecuter.resetDebug();
     }
 
     private updateLeaderboard(players: Player[], mode: GameMode) {

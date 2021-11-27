@@ -51,6 +51,14 @@ export class OfflineGame extends Game {
         this.startTurn();
     }
 
+    resume(activePlayerIndex: number) {
+        if (this.players.length === 0) {
+            throw Error('Game started with no players');
+        }
+        this.activePlayerIndex = activePlayerIndex;
+        this.startTurn();
+    }
+
     stop() {
         this.timer.stop();
     }
