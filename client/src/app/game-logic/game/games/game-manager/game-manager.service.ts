@@ -11,9 +11,8 @@ import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
-import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
-import { TransitionObjectives } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
@@ -160,45 +159,12 @@ export class GameManagerService {
             this.info.receiveGame(this.game);
             if (this.game instanceof SpecialOfflineGame) {
                 if (forfeitedGameState.objectives) {
-                    this.transitionObjectives(forfeitedGameState.objectives, userName, botName);
+                    const objectiveConverter = new ObjectiveConverter(this.game);
+                    objectiveConverter.transitionObjectives(forfeitedGameState.objectives, userName, botName);
                 }
             }
             this.transition.next();
             this.startGame();
-        }
-    }
-
-    transitionObjectives(transitionObjectives: TransitionObjectives[], userName: string, botName: string) {
-        // const privateObj = transitionObjectives[0].
-        if (this.game instanceof SpecialOfflineGame) {
-            this.game.privateObjectives = new Map<string, Objective[]>();
-            this.game.publicObjectives = [];
-            for (const objectives of transitionObjectives) {
-                const progressions = objectives.progressions;
-                const objective = this.game.objectiveCreator.createObjective(objectives.objectiveType);
-                objective.progressions = new Map<string, number>();
-                objective.owner = objectives.owner;
-                progressions.forEach((player) => {
-                    if (player.playerName === userName) {
-                        objective.progressions.set(userName, player.progression);
-                    } else {
-                        objective.progressions.set(botName, player.progression);
-                    }
-                });
-                if (progressions.length === 2) {
-                    this.game.publicObjectives.push(objective);
-                    // mettre public
-                } else {
-                    const privateObjectives: Objective[] = [];
-                    privateObjectives.push(objective);
-                    if (progressions[0].playerName === userName) {
-                        this.game.privateObjectives.set(userName, privateObjectives);
-                    } else {
-                        this.game.privateObjectives.set(botName, privateObjectives);
-                        this.game.privateObjectives.set(botName, privateObjectives);
-                    }
-                }
-            }
         }
     }
 
