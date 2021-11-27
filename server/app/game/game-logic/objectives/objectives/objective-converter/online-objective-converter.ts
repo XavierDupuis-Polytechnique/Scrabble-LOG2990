@@ -1,7 +1,9 @@
 import { PlayerProgression } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveType } from '@app/game/game-logic/objectives/objective-creator/objective-type';
+import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-alphabet/half-alphabet';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
+import { TenWords } from '@app/game/game-logic/objectives/objectives/ten-words/ten-words';
 
 export class OnlineObjectiveConverter {
     convertObjectives(publicObjectives: Objective[], privateObjectives: Map<string, Objective[]>): TransitionObjectives[] {
@@ -22,10 +24,6 @@ export class OnlineObjectiveConverter {
         return translatedObjectives;
     }
 
-    // convertPrivate(objectives: Map<string, Objective[]>) {
-    //     const translatedPrivate
-    // }
-
     private translateObjective(objective: Objective): TransitionObjectives {
         const objectiveType = objective.constructor.name;
         const progressions: PlayerProgression[] = [];
@@ -34,10 +32,8 @@ export class OnlineObjectiveConverter {
         objective.progressions.forEach((progression: number, playerName: string) => {
             progressions.push({ playerName, progression });
 
-            // if (objectiveType === 'HalfAlphabet') {
-            //     letterProgressions.push({ playerName, progression });
-            // }
         });
+
         const translatedObjective: TransitionObjectives = {
             owner: objective.owner,
             name: objective.name,
@@ -57,14 +53,22 @@ export class OnlineObjectiveConverter {
         }
         if (objectiveType === 'TenWords') {
             translatedObjective.objectiveType = ObjectiveType.TenWords;
+            const wordCounts = (objective as TenWords).wordCounts;
+            translatedObjective.wordCounts = [];
+            wordCounts.forEach((wordCount, playerName,) => {
+                translatedObjective.wordCounts?.push({ playerName, wordCount })
+            })
         }
         if (objectiveType === 'NineLettersWord') {
             translatedObjective.objectiveType = ObjectiveType.NineLettersWord;
         }
         if (objectiveType === 'HalfAlphabet') {
             translatedObjective.objectiveType = ObjectiveType.HalfAlphabet;
-            // const letters = (objective as HalfAlphabet).placedLetters;
-            // translatedObjective.placedLetters = [...letters];
+            const letters = (objective as HalfAlphabet).placedLetters;
+            translatedObjective.placedLetters = [];
+            letters.forEach((placedLetters, playerName,) => {
+                translatedObjective.placedLetters?.push({ playerName, placedLetters: [...placedLetters] })
+            })
         }
         if (objectiveType === 'SameWordTwice') {
             translatedObjective.objectiveType = ObjectiveType.SameWordTwice;
@@ -72,7 +76,6 @@ export class OnlineObjectiveConverter {
         if (objectiveType === 'ThreeSameLetters') {
             translatedObjective.objectiveType = ObjectiveType.ThreeSameLetters;
         }
-
         return translatedObjective;
     }
 }

@@ -3,10 +3,16 @@ import { ObjectiveType } from '@app/game/game-logic/objectives/objective-creator
 
 export interface TransitionObjectives extends LightObjective {
     placedLetters?: HalfAlphabetProgression[];
+    wordCounts?: TenWordsProgression[];
     objectiveType: ObjectiveType;
 }
 
 export interface HalfAlphabetProgression {
     playerName: string;
     placedLetters: string[];
+}
+
+export interface TenWordsProgression {
+    playerName: string;
+    wordCount: number;
 }
