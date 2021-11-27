@@ -38,7 +38,9 @@ describe('Canvas drawer test', () => {
 
     it('default board should call fillRect 61 times for the bonus', () => {
         const fillRectSpy = spyOn(canvasDrawer.canvas, 'fillRect');
-        const numberCall = 62;
+        const fillRectOtherCount = 62;
+        const fillRectBonusCount = 61;
+        const numberCall = fillRectBonusCount + fillRectOtherCount;
         canvasDrawer.drawGrid(board, FONT_SIZE);
         expect(fillRectSpy).toHaveBeenCalledTimes(numberCall);
     });
@@ -74,14 +76,15 @@ describe('Canvas drawer test', () => {
         const strokeRectSpy = spyOn(canvasDrawer.canvas, 'strokeRect');
         board.grid[0][0].letterObject = { char: 'A', value: 2, isTemp: true };
         canvasDrawer.drawGrid(board, FONT_SIZE);
-        expect(strokeRectSpy).toHaveBeenCalledTimes(1);
+        expect(strokeRectSpy).toHaveBeenCalledTimes(2);
     });
 
     it('if 2 temp letter is placed, should call strokeRect to time', () => {
         const strokeRectSpy = spyOn(canvasDrawer.canvas, 'strokeRect');
+        const strokeRectCount = 4;
         board.grid[0][0].letterObject = { char: 'A', value: 2, isTemp: true };
         board.grid[0][1].letterObject = { char: 'A', value: 2, isTemp: true };
         canvasDrawer.drawGrid(board, FONT_SIZE);
-        expect(strokeRectSpy).toHaveBeenCalledTimes(2);
+        expect(strokeRectSpy).toHaveBeenCalledTimes(strokeRectCount);
     });
 });
