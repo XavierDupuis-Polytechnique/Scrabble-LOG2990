@@ -69,7 +69,8 @@ describe('WordSearcher', () => {
 
     it('should find 0 neighbour if first word ', () => {
         const placement: PlacementSetting = { x: 4, y: 0, direction: Direction.Horizontal };
-        const hasNeighbour = wordSearcher['hasNeighbour'](placement.x, placement.y, placement.direction);
+        const perpDirection: Direction = Direction.Vertical;
+        const hasNeighbour = wordSearcher['hasNeighbour'](placement.x, placement.y, perpDirection);
         expect(hasNeighbour).toBe(false);
     });
 

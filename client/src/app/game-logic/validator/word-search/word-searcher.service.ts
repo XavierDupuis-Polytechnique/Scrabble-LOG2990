@@ -43,8 +43,8 @@ export class WordSearcher {
 
             const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
             for (const coord of coordsOfLettersToPlace) {
-                const direction = placement.direction; // TODO: neighbour direction
-                if (this.hasNeighbour(coord.x, coord.y, direction)) {
+                const adjacentWordDirection = this.getAdjacentWordsDirection(placement.direction);
+                if (this.hasNeighbour(coord.x, coord.y, adjacentWordDirection)) {
                     const wordToValidate = this.extractWord(word, placement, coord);
                     if (this.isInDictionnary(wordToValidate.letters)) {
                         listOfValidWord.push(wordToValidate);
@@ -59,12 +59,12 @@ export class WordSearcher {
 
     private findIndexOfLetterToPlace(word: string, placement: PlacementSetting): number[] {
         const indexOfLetterToPlace: number[] = [];
-        const direction = placement.direction;
-        const startCoord = direction === Direction.Horizontal ? placement.x : placement.y;
+        const originaldirection = placement.direction;
+        const startCoord = originaldirection === Direction.Horizontal ? placement.x : placement.y;
 
         const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
         coordsOfLettersToPlace.forEach((coord) => {
-            const indexInBoard = direction === Direction.Horizontal ? coord.x : coord.y;
+            const indexInBoard = originaldirection === Direction.Horizontal ? coord.x : coord.y;
             const indexInWord = indexInBoard - startCoord;
             indexOfLetterToPlace.push(indexInWord);
         });
@@ -72,21 +72,20 @@ export class WordSearcher {
         return indexOfLetterToPlace;
     }
 
-    private hasNeighbour(x: number, y: number, direction: Direction): boolean {
-        const nextNeighbourCoord = direction === Direction.Horizontal ? { x, y: y + 1 } : { x: x + 1, y };
-        const previousNeighbourCoord = direction === Direction.Horizontal ? { x, y: y - 1 } : { x: x - 1, y };
-        return (
-            this.isTileOccupied(nextNeighbourCoord.x, nextNeighbourCoord.y) || this.isTileOccupied(previousNeighbourCoord.x, previousNeighbourCoord.y)
-        );
+    private hasNeighbour(x: number, y: number, adjacentWordDirection: Direction): boolean {
+        const nextCoord = adjacentWordDirection === Direction.Horizontal ? { x: x + 1, y } : { x, y: y + 1 };
+        const previousCoord = adjacentWordDirection === Direction.Horizontal ? { x: x - 1, y } : { x, y: y - 1 };
+        return this.isTileOccupied(nextCoord.x, nextCoord.y) || this.isTileOccupied(previousCoord.x, previousCoord.y);
     }
 
     private extractWord(word: string, placement: PlacementSetting, letterPos: Vec2): Word {
-        const direction = placement.direction;
+        const originalDirection = placement.direction;
+        const adjacentWordDirection = this.getAdjacentWordsDirection(originalDirection);
         const originalWordCoord = { x: placement.x, y: placement.y };
 
         let [x, y] = [letterPos.x, letterPos.y];
-        while (this.isPreviousTileUsed({ x, y }, direction, letterPos)) {
-            [x, y] = direction === Direction.Horizontal ? [x, y - 1] : [x - 1, y];
+        while (this.isPreviousTileUsed({ x, y }, adjacentWordDirection, letterPos)) {
+            [x, y] = adjacentWordDirection === Direction.Horizontal ? [x - 1, y] : [x, y - 1];
         }
 
         const letters: Tile[] = [];
@@ -96,11 +95,11 @@ export class WordSearcher {
             if (this.isTileOccupied(x, y)) {
                 letters.push(this.grid[y][x]);
             } else {
-                const indexInWord = direction === Direction.Horizontal ? x - originalWordCoord.x : y - originalWordCoord.y;
+                const indexInWord = originalDirection === Direction.Horizontal ? x - originalWordCoord.x : y - originalWordCoord.y;
                 letters.push(this.createTile(word[indexInWord], { x, y }));
                 index.push(indexInNeighbor);
             }
-            [x, y] = direction === Direction.Horizontal ? [x, y + 1] : [x + 1, y];
+            [x, y] = adjacentWordDirection === Direction.Horizontal ? [x + 1, y] : [x, y + 1];
             indexInNeighbor += 1;
         }
         return { letters, index };
@@ -114,8 +113,8 @@ export class WordSearcher {
         return false;
     }
 
-    private isPreviousTileUsed(coord: Vec2, direction: Direction, letterPosition: Vec2): boolean {
-        const [x, y] = direction === Direction.Horizontal ? [coord.x, coord.y - 1] : [coord.x - 1, coord.y];
+    private isPreviousTileUsed(coord: Vec2, adjacentWordDirection: Direction, letterPosition: Vec2): boolean {
+        const [x, y] = adjacentWordDirection === Direction.Horizontal ? [coord.x - 1, coord.y] : [coord.x, coord.y - 1];
         return this.isTileUsed(x, y, letterPosition);
     }
 
@@ -141,16 +140,20 @@ export class WordSearcher {
         return char !== EMPTY_CHAR;
     }
 
+    private getAdjacentWordsDirection(originalWordDirection: Direction): Direction {
+        return originalWordDirection === Direction.Horizontal ? Direction.Vertical : Direction.Horizontal;
+    }
+
     private findCoordOfLettersToPlace(word: string, placement: PlacementSetting): Vec2[] {
         const listOfCoord: Vec2[] = [];
-        const direction = placement.direction;
+        const originalDirection = placement.direction;
 
-        const startCoord = direction === Direction.Horizontal ? placement.x : placement.y;
+        const startCoord = originalDirection === Direction.Horizontal ? placement.x : placement.y;
         const wordEnd = startCoord + word.length;
         let currentPos = startCoord;
 
         for (startCoord; currentPos < wordEnd; currentPos++) {
-            const [x, y] = direction === Direction.Horizontal ? [currentPos, placement.y] : [placement.x, currentPos];
+            const [x, y] = originalDirection === Direction.Horizontal ? [currentPos, placement.y] : [placement.x, currentPos];
             if (!this.isTileOccupied(x, y)) {
                 listOfCoord.push({ x, y });
             }
@@ -160,13 +163,13 @@ export class WordSearcher {
 
     private stringToTile(word: string, placement: PlacementSetting): Tile[] {
         let [x, y] = [placement.x, placement.y];
-        const direction = placement.direction;
+        const originalDirection = placement.direction;
         const wordTile: Tile[] = [];
 
         for (const letter of word) {
             const tile = this.createTile(letter, { x, y });
             wordTile.push(tile);
-            [x, y] = direction === Direction.Horizontal ? [x + 1, y] : [x, y + 1];
+            [x, y] = originalDirection === Direction.Horizontal ? [x + 1, y] : [x, y + 1];
         }
         return wordTile;
     }
