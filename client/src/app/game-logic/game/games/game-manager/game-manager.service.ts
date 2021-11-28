@@ -93,10 +93,7 @@ export class GameManagerService {
             if (this.game === undefined) {
                 return;
             }
-            // TODO: unComment when merge branch Objective and delete line 83
-            // const mode = this.game instanceof SpecialOffline ? GameMode.Classic : GameMode.Log;
-            const mode = GameMode.Classic;
-            this.updateLeaderboard(this.game.players, mode);
+            this.updateLeaderboard(this.game.players, GameMode.Classic);
         });
     }
 
@@ -118,6 +115,13 @@ export class GameManagerService {
         this.allocatePlayers(players);
         this.info.receiveGame(this.game);
         (this.game as SpecialOfflineGame).allocateObjectives();
+
+        this.game.isEndOfGame$.pipe(first()).subscribe(() => {
+            if (this.game === undefined) {
+                return;
+            }
+            this.updateLeaderboard(this.game.players, GameMode.Special);
+        });
     }
 
     instanciateGameFromForfeitedState(forfeitedGameState: ForfeitedGameSate) {
