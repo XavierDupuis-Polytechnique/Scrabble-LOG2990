@@ -12,7 +12,6 @@ export class DictionaryServerService {
         if (path) {
             this.folderPath = path;
         }
-        // path ? this.folderPath = path : this.folderPath = 'assets/'
         this.loadFromFile();
     }
 

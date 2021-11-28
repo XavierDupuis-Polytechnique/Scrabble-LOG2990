@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
 import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { expect } from 'chai';
-import * as fs from 'fs';
+import fs = require('fs');
 
 describe('DictionaryServerService', () => {
     const testPath = 'assets/testingEnvironnement/';
@@ -22,7 +23,7 @@ describe('DictionaryServerService', () => {
     });
 
     afterEach(() => {
-        fs.readdirSync(testPath).forEach((file) => {
+        fs.readdirSync(testPath).forEach((file: string) => {
             if (file !== 'dictionary.json') {
                 const dictPath = testPath + file;
                 fs.rmSync(dictPath);
