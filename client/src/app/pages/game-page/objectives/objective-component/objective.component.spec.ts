@@ -45,8 +45,10 @@ describe('ObjectiveComponent', () => {
     });
 
     it('should toggle show description', () => {
-        component.descriptionToggle();
+        component.onMouseEnter();
         expect(component.showDescription).toBeTrue();
+        component.onMouseLeave();
+        expect(component.showDescription).toBeFalse();
     });
 
     it('should get objective status properly', () => {

@@ -215,7 +215,7 @@ describe('GameInfoService', () => {
     it('private objective should throw when no game', () => {
         expect(() => {
             // eslint-disable-next-line no-unused-expressions
-            service.privateObjectives;
+            service.getPrivateObjectives(service.user.name);
         }).toThrow();
     });
 
@@ -240,7 +240,7 @@ describe('GameInfoService', () => {
         service.receiveGame(specialGame);
         const user = new User('p1');
         service.receiveUser(user);
-        expect(service.privateObjectives.length).toBe(2);
+        expect(service.getPrivateObjectives(service.user.name).length).toBe(2);
     });
 
     it('should return public objectives properly', () => {
@@ -259,7 +259,7 @@ describe('GameInfoService', () => {
         service.receiveGame(specialGame);
         const user = new User('p1');
         service.receiveUser(user);
-        expect(service.privateObjectives.length).toBe(0);
+        expect(service.getPrivateObjectives(user.name).length).toBe(0);
     });
 
     it('should throw when getting public objective when no game', () => {
