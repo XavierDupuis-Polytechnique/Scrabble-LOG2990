@@ -83,7 +83,6 @@ export class GameManagerService {
             if (this.game === undefined) {
                 return;
             }
-            console.log('PAS special');
             this.updateLeaderboard(this.game.players, GameMode.Classic);
         });
     }
