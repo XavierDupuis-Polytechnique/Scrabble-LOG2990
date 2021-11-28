@@ -26,13 +26,13 @@ describe('DictionaryServerService', () => {
         fs.readdirSync(testPath).forEach((file: string) => {
             if (file !== 'dictionary.json') {
                 const dictPath = testPath + file;
-                fs.rmSync(dictPath);
+                fs.unlinkSync(dictPath);
             }
         });
     });
 
     after(() => {
-        fs.rmSync(testPath + 'dictionary.json');
+        fs.unlinkSync(testPath + 'dictionary.json');
         fs.rmdirSync(testPath);
     });
 
