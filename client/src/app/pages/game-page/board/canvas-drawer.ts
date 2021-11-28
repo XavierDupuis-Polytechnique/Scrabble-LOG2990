@@ -32,7 +32,7 @@ export class CanvasDrawer {
     private scale: number = 0.5;
     private offset: number;
     private font = 'Helvetica';
-    private borderWidth: number = 6;
+    private borderWidth: number = 8;
 
     private indicatorPos: Vec2 = { x: -1, y: -1 };
     private indicatorDir: Direction;
@@ -48,7 +48,7 @@ export class CanvasDrawer {
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
         this.drawborder();
-        // this.canvas.globalAlpha = 0.8;
+        this.canvas.globalAlpha = 0.9;
         this.canvas.fillStyle = BACKGROUND_COLOR;
         this.canvas.fillRect(this.borderWidth, this.borderWidth, this.width - 2 * this.borderWidth, this.height - 2 * this.borderWidth);
         this.canvas.globalAlpha = 1;
