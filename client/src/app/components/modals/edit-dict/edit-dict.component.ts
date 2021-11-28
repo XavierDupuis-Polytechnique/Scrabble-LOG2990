@@ -1,3 +1,4 @@
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
@@ -26,6 +27,7 @@ export class EditDictDialogComponent {
 
     uploadEdit(): void {
         this.dictHttpService.editDict(this.dictionary, this.tempDict).subscribe((res) => {
+
             if (res) {
                 this.close();
             } else {
@@ -40,6 +42,29 @@ export class EditDictDialogComponent {
                 });
                 this.isEditedCorrectly = false;
                 this.tempDict = this.dictionary;
+            }
+        }, (error: HttpErrorResponse) => {
+            if(error.status === HttpStatusCode.NotFound) {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '400px',
+                    disableClose: true,
+                    data: {
+                        message: `Le serveur n'est pas en mesure de trouver le dictionnaire que vous voulez modifier.
+                        Veuillez rafraichir la page pour obtenir la liste la plus récente des dictionnaires`,
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
+            } else {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '400px',
+                    disableClose: true,
+                    data: {
+                        message: 'Une erreur est survenue avec le serveur, veuillez réessayer plus tard',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
             }
         });
     }

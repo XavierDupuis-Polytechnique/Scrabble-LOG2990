@@ -44,7 +44,7 @@ export class BotInfoController {
             try {
                 const botName = req.params.botName;
                 const botinfo = await this.botInfoService.getBotInfoByName(botName);
-                this.botInfoService.deleteBot(botinfo);
+                await this.botInfoService.deleteBot(botinfo);
                 res.sendStatus(StatusCodes.OK);
             } catch (error) {
                 res.sendStatus(StatusCodes.NOT_FOUND);

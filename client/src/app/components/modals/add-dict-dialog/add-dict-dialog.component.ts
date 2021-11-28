@@ -48,19 +48,42 @@ export class AddDictDialogComponent {
     }
 
     private async uploadDictionary(dict: Dictionary) {
-        this.dictHttpService.uploadDict(dict).subscribe((value) => {
-            if (!value) {
-                this.dialog.open(AlertDialogComponent, {
-                    width: '250px',
-                    data: {
-                        message: 'Erreur',
-                        button1: 'Ok',
-                        button2: '',
-                    },
-                });
-            } else {
-                this.dialogRef.close();
-            }
-        });
+        if(dict.title === undefined || null){
+            this.dialog.open(AlertDialogComponent, { width: '250px', data: {
+                message: 'Le dictionnaire fournie ne contient pas de titre',
+                button1: 'Ok',
+                button2: ''
+            }})
+        }
+        else if(dict.description === undefined || null){
+            this.dialog.open(AlertDialogComponent, { width: '250px', data: {
+                message: 'Le dictionnaire fournie ne contient pas de description',
+                button1: 'Ok',
+                button2: ''
+            }})
+        }
+        else if(dict.words === undefined || null){
+            this.dialog.open(AlertDialogComponent, { width: '250px', data: {
+                message: 'Le dictionnaire fournie ne contient pas une liste de mots',
+                button1: 'Ok',
+                button2: ''
+            }})
+        }
+        else {
+            this.dictHttpService.uploadDict(dict).subscribe((value) => {
+                if (!value) {
+                    this.dialog.open(AlertDialogComponent, {
+                        width: '250px',
+                        data: {
+                            message: 'Une erreur est survenue avec le serveur',
+                            button1: 'Ok',
+                            button2: '',
+                        },
+                    });
+                } else {
+                    this.dialogRef.close();
+                }
+            });
+        }
     }
 }

@@ -1,3 +1,4 @@
+import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
@@ -26,7 +27,7 @@ export class EditJvDialogComponent {
     editBot() {
         this.botHttpService.editBot(this.editBotInfo, this.bot).subscribe((res) => {
             const ans = JSON.parse(res.toString());
-            if (ans === false) {
+            if (!ans) {
                 this.dialog.open(AlertDialogComponent, {
                     width: '250px',
                     data: {
@@ -36,6 +37,18 @@ export class EditJvDialogComponent {
                     },
                 });
             } else this.dialogRef.close();
+        }, (err: HttpErrorResponse) => {
+            if(err.status == HttpStatusCode.NotFound) {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: {
+                        message: `Le serveur n'est pas en mesure de trouver le joueur virtuel que vous voulez modifier.
+                        Veuillez rafraichir la page pour obtenir la liste la plus récente des joueurs virtuels`,
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
+            }
         });
     }
 

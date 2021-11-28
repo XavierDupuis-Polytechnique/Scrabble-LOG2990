@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
+import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -60,6 +61,12 @@ export class AdminDictComponent implements OnInit {
         this.dictHttpService.getDictInfoList().subscribe((res) => {
             const list = res as DictInfo[];
             this.dictDataSource = list;
+        }, () => {
+            this.dialog.open(AlertDialogComponent, { width: '250px', data: {
+                message: 'Le connection avec le serveur a échoué',
+                button1: 'Ok',
+                button2: ''
+            }, id: '404'});
         });
     }
 }

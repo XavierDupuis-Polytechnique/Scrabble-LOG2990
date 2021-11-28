@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
 import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
 
@@ -54,6 +55,14 @@ export class AdminJoueurVirtuelComponent implements OnInit {
             const list = res as BotInfo[];
             this.botDataInfo = list;
             this.dataSource = [...this.botDataInfo];
+        }, () => {
+            if(!this.dialog.getDialogById('404')) {
+                this.dialog.open(AlertDialogComponent, { width: '250px', data: {
+                    message: 'Le connection avec le serveur a échoué',
+                    button1: 'Ok',
+                    button2: ''
+                }, id: '404'});
+            }
         });
     }
 }
