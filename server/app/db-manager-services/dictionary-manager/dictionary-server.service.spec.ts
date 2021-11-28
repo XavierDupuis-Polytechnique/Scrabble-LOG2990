@@ -8,7 +8,7 @@ import * as fs from 'fs';
 describe('DictionaryServerService', () => {
     let service: DictionaryServerService;
     stub(fs, 'writeFile');
-    stub(fs, 'rmSync');
+    stub(fs, 'rm');
 
     beforeEach(() => {
         service = new DictionaryServerService();

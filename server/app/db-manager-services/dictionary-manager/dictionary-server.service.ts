@@ -105,7 +105,9 @@ export class DictionaryServerService {
 
     private deleteFile(dictTitle: string) {
         const filePath = (folderPath + dictTitle + '.json').replace(/\s/g, '');
-        fs.rmSync(filePath);
+        fs.rm(filePath, () => {
+            return;
+        });
     }
 
     private saveToFile(dictTitle: string) {
