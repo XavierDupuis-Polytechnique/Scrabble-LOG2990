@@ -2,16 +2,37 @@ import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/de
 import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { expect } from 'chai';
-import { stub } from 'sinon';
 import * as fs from 'fs';
 
 describe('DictionaryServerService', () => {
+    const testPath = 'assets/testingEnvironnement/';
     let service: DictionaryServerService;
-    stub(fs, 'writeFile');
-    stub(fs, 'rm');
+
+    before(() => {
+        if (!fs.existsSync(testPath)) {
+            fs.mkdirSync(testPath);
+        }
+        if (!fs.existsSync(testPath + 'dictionary.json')) {
+            fs.copyFileSync('assets/dictionary.json', testPath + 'dictionary.json');
+        }
+    });
 
     beforeEach(() => {
-        service = new DictionaryServerService();
+        service = new DictionaryServerService(testPath);
+    });
+
+    afterEach(() => {
+        fs.readdirSync(testPath).forEach((file) => {
+            if (file !== 'dictionary.json') {
+                const dictPath = testPath + file;
+                fs.rmSync(dictPath);
+            }
+        });
+    });
+
+    after(() => {
+        fs.rmSync(testPath + 'dictionary.json');
+        fs.rmdirSync(testPath);
     });
 
     it('should be created', () => {
@@ -53,6 +74,7 @@ describe('DictionaryServerService', () => {
         service.addDict(dict);
         const result = service.getDictByTitle('testTitle') as DictionaryServer;
         expect(result.title).to.equal(dict.title);
+        expect(service.addDict(dict)).to.equal(false);
     });
 
     it('should update a dict', () => {

@@ -1,31 +1,24 @@
 import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
 import { NOT_FOUND } from '@app/game/game-logic/constants';
-// import customDictionary from 'assets/customDictionary.json';
 import * as fs from 'fs';
 import { Service } from 'typedi';
 
-const folderPath = 'assets/';
 @Service()
 export class DictionaryServerService {
     allDictionary: DictionaryServer[] = [];
+    private folderPath = 'assets/';
 
-    constructor() {
+    constructor(path?: string) {
+        if (path) {
+            this.folderPath = path;
+        }
+        // path ? this.folderPath = path : this.folderPath = 'assets/'
         this.loadFromFile();
     }
 
-    loadFromFile() {
-        this.allDictionary = [];
-        fs.readdirSync(folderPath).forEach((file) => {
-            const dictPath = folderPath + file;
-            const dictData = fs.readFileSync(dictPath).toString();
-            const dictObj = JSON.parse(dictData);
-            this.allDictionary.push(dictObj);
-        });
-    }
-
-    isDictExist(dictName: string): boolean {
+    isDictExist(dictTitle: string): boolean {
         for (const dict of this.allDictionary) {
-            if (dict.title === dictName) {
+            if (dict.title === dictTitle) {
                 return true;
             }
         }
@@ -61,10 +54,14 @@ export class DictionaryServerService {
         return false;
     }
 
-    addDict(dictToAdd: DictionaryServer) {
-        const dict = this.formatDict(dictToAdd);
-        this.allDictionary.push(dict);
-        this.saveToFile(dict.title);
+    addDict(dictToAdd: DictionaryServer): boolean {
+        if (!this.isDictExist(dictToAdd.title)) {
+            const dict = this.formatDict(dictToAdd);
+            this.allDictionary.push(dict);
+            this.saveToFile(dict.title);
+            return true;
+        }
+        return false;
     }
 
     updateDict(oldDict: DictionaryServer, newDict: DictionaryServer): boolean {
@@ -104,22 +101,28 @@ export class DictionaryServerService {
     }
 
     private deleteFile(dictTitle: string) {
-        const filePath = (folderPath + dictTitle + '.json').replace(/\s/g, '');
-        fs.rm(filePath, () => {
-            return;
-        });
+        const filePath = (this.folderPath + dictTitle + '.json').replace(/\s/g, '');
+        fs.rmSync(filePath);
     }
 
     private saveToFile(dictTitle: string) {
-        const fileName = (folderPath + dictTitle + '.json').replace(/\s/g, '');
-        fs.writeFile(fileName, JSON.stringify(this.getDictByTitle(dictTitle)), () => {
-            return false; // TODO Do something if fail?
-        });
+        const fileName = (this.folderPath + dictTitle + '.json').replace(/\s/g, '');
+        fs.writeFileSync(fileName, JSON.stringify(this.getDictByTitle(dictTitle)));
     }
 
     private formatDict(dict: DictionaryServer): DictionaryServer {
         const tmpDict = { title: dict.title, description: dict.description, words: dict.words, canEdit: true, date: new Date() };
         return tmpDict;
+    }
+
+    private loadFromFile() {
+        this.allDictionary = [];
+        fs.readdirSync(this.folderPath).forEach((file) => {
+            if (file.includes('.json')) {
+                const dict = JSON.parse(fs.readFileSync(this.folderPath + file, 'utf8'));
+                this.allDictionary.push(dict);
+            }
+        });
     }
 
     // private validateDict(dict: DictionaryServer): boolean {
