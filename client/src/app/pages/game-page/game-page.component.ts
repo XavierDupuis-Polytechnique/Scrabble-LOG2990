@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dial
 import { Router } from '@angular/router';
 import { AbandonButtonComponent } from '@app/components/modals/abandon-button/abandon-button.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
+import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
 import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
@@ -30,8 +31,17 @@ export class GamePageComponent {
         } catch (e) {
             this.router.navigate(['/']);
         }
+
         this.gameManager.disconnectedFromServer$.subscribe(() => {
             this.openDisconnected();
+        });
+        this.gameManager.disconnectedState$.subscribe((forfeitedGameState) => {
+            const data = 'Votre adversaire a abandonné la partie et sera remplacé par un joueur virtuel';
+            this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
+            // eslint-disable-next-line no-underscore-dangle
+            this.dialog._getAfterAllClosed().subscribe(() => {
+                this.gameManager.instanciateGameFromForfeitedState(forfeitedGameState);
+            });
         });
     }
 

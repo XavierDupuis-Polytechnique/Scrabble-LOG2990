@@ -67,10 +67,6 @@ export class GameManagerService {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
         });
-
-        this.disconnectedState$.subscribe((forfeitedGameState: ForfeitedGameSate) => {
-            this.instanciateGameFromForfeitedState(forfeitedGameState);
-        });
     }
 
     createGame(gameSettings: GameSettings): void {
