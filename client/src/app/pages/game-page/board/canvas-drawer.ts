@@ -1,6 +1,16 @@
 import { Direction } from '@app/game-logic/direction.enum';
 import { Board } from '@app/game-logic/game/board/board';
-import { DOUBLE_BONUS_LETTER, DOUBLE_BONUS_WORD, TILE_COLOR, TRIPLE_BONUS_LETTER, TRIPLE_BONUS_WORD } from '@app/pages/game-page/board/canvas-colors';
+import {
+    BACKGROUND_COLOR,
+    BLACK_LINE,
+    BONUS_TEXT_COLOR,
+    BORDER_COLOR,
+    DOUBLE_BONUS_LETTER,
+    DOUBLE_BONUS_WORD,
+    TILE_COLOR,
+    TRIPLE_BONUS_LETTER,
+    TRIPLE_BONUS_WORD
+} from '@app/pages/game-page/board/canvas-colors';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -21,36 +31,31 @@ export class CanvasDrawer {
     private tileSize: number;
     private scale: number = 0.5;
     private offset: number;
-    private font = 'Arial';
-    private borderWidth: number = 8;
+    private font = 'Helvetica';
+    private borderWidth: number = 6;
 
     private indicatorPos: Vec2 = { x: -1, y: -1 };
     private indicatorDir: Direction;
 
     constructor(canvasContext: CanvasRenderingContext2D, w: number, h: number) {
         this.canvas = canvasContext;
-        this.canvas.lineWidth = 1;
         this.width = w;
         this.height = h;
-        this.canvas.lineWidth = 1;
+        this.canvas.lineWidth = 2;
         this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 17) / 16;
         this.offset = this.tileSize + this.borderWidth;
     }
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
-        // this.drawborder();
-        // this.canvas.fillStyle = BACKGROUND_COLOR;
-        // this.canvas.fillRect(
-        //     this.borderWidth,
-        //     this.borderWidth,
-        //     this.width - 2 * this.borderWidth - this.canvas.lineWidth,
-        //     this.height - 2 * this.borderWidth,
-        // );
-
+        this.drawborder();
+        // this.canvas.globalAlpha = 0.8;
+        this.canvas.fillStyle = BACKGROUND_COLOR;
+        this.canvas.fillRect(this.borderWidth, this.borderWidth, this.width - 2 * this.borderWidth, this.height - 2 * this.borderWidth);
+        this.canvas.globalAlpha = 1;
         // this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        for (let i = 1; i < 16; i++) {
+        for (let i = 1; i < 17; i++) {
             this.drawRow(i);
             this.drawColumn(i);
         }
@@ -102,12 +107,11 @@ export class CanvasDrawer {
 
     private drawRow(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
-        // this.canvas.fillStyle = WHITE_LINE;
-        this.canvas.fillStyle = '#ffffff';
+        this.canvas.fillStyle = BLACK_LINE;
         // if (i === 1) {
         //     this.canvas.fillStyle = BLACK_LINE;
         // }
-        const widthSize = this.width - 2 * this.borderWidth - this.tileSize;
+        const widthSize = this.width - 2 * this.borderWidth - this.tileSize - this.canvas.lineWidth;
         this.canvas.fillRect(this.borderWidth + this.tileSize + this.canvas.lineWidth, offset, widthSize, this.canvas.lineWidth);
 
         // this.canvas.fillStyle = BLACK_LINE;
@@ -117,11 +121,12 @@ export class CanvasDrawer {
     private drawColumn(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
         // this.canvas.fillStyle = '#FFFFFF';
-        this.canvas.fillStyle = '#ffffff';
+        this.canvas.fillStyle = BLACK_LINE;
+
         // if (i === 1) {
         //     this.canvas.fillStyle = '#000000';
         // }
-        const heightSize = this.height - 2 * this.borderWidth - this.tileSize;
+        const heightSize = this.height - 2 * this.borderWidth - this.tileSize - this.canvas.lineWidth;
         this.canvas.fillRect(offset, this.borderWidth + this.tileSize + this.canvas.lineWidth, this.canvas.lineWidth, heightSize);
 
         // this.canvas.fillStyle = '#000000';
@@ -166,14 +171,17 @@ export class CanvasDrawer {
         this.canvas.fillText(value.toString(), pos.x, pos.y);
     }
 
-    // private drawborder() {
-    //     this.canvas.fillStyle = BORDER_COLOR;
-    //     this.canvas.fillRect(0, 0, this.width, this.height);
-    // }
+    private drawborder() {
+        this.canvas.fillStyle = BORDER_COLOR;
+        this.canvas.fillRect(0, 0, this.width, this.borderWidth);
+        this.canvas.fillRect(0, this.height - this.borderWidth, this.width, this.borderWidth);
+        this.canvas.fillRect(0, 0, this.borderWidth, this.height);
+        this.canvas.fillRect(this.width - this.borderWidth, 0, this.borderWidth, this.height);
+    }
 
     private drawColumnIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#ffffff';
+        this.canvas.fillStyle = '#000000';
 
         for (let i = 0; i < 15; i++) {
             const letter = String.fromCharCode(i + 65);
@@ -186,7 +194,7 @@ export class CanvasDrawer {
 
     private drawRowIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#fffff';
+        this.canvas.fillStyle = '#000000';
 
         for (let i = 0; i < 15; i++) {
             const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 2;
@@ -219,12 +227,13 @@ export class CanvasDrawer {
         }
 
         this.canvas.fillRect(
-            pos.x + 1.5 * this.canvas.lineWidth,
-            pos.y + 1.5 * this.canvas.lineWidth, // TODO
-            this.tileSize - this.canvas.lineWidth,
-            this.tileSize - this.canvas.lineWidth,
+            pos.x + 1 * this.canvas.lineWidth,
+            pos.y + 1 * this.canvas.lineWidth, // TODO
+            this.tileSize,
+            this.tileSize,
         );
-        this.canvas.fillStyle = '#ffffff';
+
+        this.canvas.fillStyle = BONUS_TEXT_COLOR;
         this.canvas.fillText(s, pos.x + this.tileSize / 2, pos.y + this.tileSize / 5);
         this.canvas.fillText(`X${mul}`, pos.x + this.tileSize / 2, pos.y + this.tileSize / 2);
     }
