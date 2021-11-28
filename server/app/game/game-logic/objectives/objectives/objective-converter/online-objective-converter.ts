@@ -31,7 +31,6 @@ export class OnlineObjectiveConverter {
 
         objective.progressions.forEach((progression: number, playerName: string) => {
             progressions.push({ playerName, progression });
-
         });
 
         const translatedObjective: TransitionObjectives = {
@@ -55,9 +54,9 @@ export class OnlineObjectiveConverter {
             translatedObjective.objectiveType = ObjectiveType.TenWords;
             const wordCounts = (objective as TenWords).wordCounts;
             translatedObjective.wordCounts = [];
-            wordCounts.forEach((wordCount, playerName,) => {
-                translatedObjective.wordCounts?.push({ playerName, wordCount })
-            })
+            wordCounts.forEach((wordCount, playerName) => {
+                translatedObjective.wordCounts?.push({ playerName, wordCount });
+            });
         }
         if (objectiveType === 'NineLettersWord') {
             translatedObjective.objectiveType = ObjectiveType.NineLettersWord;
@@ -66,9 +65,9 @@ export class OnlineObjectiveConverter {
             translatedObjective.objectiveType = ObjectiveType.HalfAlphabet;
             const letters = (objective as HalfAlphabet).placedLetters;
             translatedObjective.placedLetters = [];
-            letters.forEach((placedLetters, playerName,) => {
-                translatedObjective.placedLetters?.push({ playerName, placedLetters: [...placedLetters] })
-            })
+            letters.forEach((placedLetters, playerName) => {
+                translatedObjective.placedLetters?.push({ playerName, placedLetters: [...placedLetters] });
+            });
         }
         if (objectiveType === 'SameWordTwice') {
             translatedObjective.objectiveType = ObjectiveType.SameWordTwice;
