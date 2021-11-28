@@ -150,7 +150,7 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-
+        // TODO replace for sendTransitionGameState() (aka forfeitedGameState)
         this.createTransitionGameState(game);
         this.activePlayers.delete(playerId);
 
