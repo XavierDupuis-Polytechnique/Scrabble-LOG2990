@@ -25,31 +25,34 @@ export class EditJvDialogComponent {
     }
 
     editBot() {
-        this.botHttpService.editBot(this.editBotInfo, this.bot).subscribe((res) => {
-            const ans = JSON.parse(res.toString());
-            if (!ans) {
-                this.dialog.open(AlertDialogComponent, {
-                    width: '250px',
-                    data: {
-                        message: 'Le nom du joueur virtuel est déjà utilisé',
-                        button1: 'Ok',
-                        button2: '',
-                    },
-                });
-            } else this.dialogRef.close();
-        }, (err: HttpErrorResponse) => {
-            if(err.status == HttpStatusCode.NotFound) {
-                this.dialog.open(AlertDialogComponent, {
-                    width: '250px',
-                    data: {
-                        message: `Le serveur n'est pas en mesure de trouver le joueur virtuel que vous voulez modifier.
+        this.botHttpService.editBot(this.editBotInfo, this.bot).subscribe(
+            (res) => {
+                const ans = JSON.parse(res.toString());
+                if (!ans) {
+                    this.dialog.open(AlertDialogComponent, {
+                        width: '250px',
+                        data: {
+                            message: 'Le nom du joueur virtuel est déjà utilisé',
+                            button1: 'Ok',
+                            button2: '',
+                        },
+                    });
+                } else this.dialogRef.close();
+            },
+            (err: HttpErrorResponse) => {
+                if (err.status === HttpStatusCode.NotFound) {
+                    this.dialog.open(AlertDialogComponent, {
+                        width: '250px',
+                        data: {
+                            message: `Le serveur n'est pas en mesure de trouver le joueur virtuel que vous voulez modifier.
                         Veuillez rafraichir la page pour obtenir la liste la plus récente des joueurs virtuels`,
-                        button1: 'Ok',
-                        button2: '',
-                    },
-                });
-            }
-        });
+                            button1: 'Ok',
+                            button2: '',
+                        },
+                    });
+                }
+            },
+        );
     }
 
     addBot() {

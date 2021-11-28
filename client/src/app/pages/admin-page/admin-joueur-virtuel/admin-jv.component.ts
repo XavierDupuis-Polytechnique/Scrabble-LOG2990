@@ -51,18 +51,25 @@ export class AdminJoueurVirtuelComponent implements OnInit {
     }
 
     private updateList() {
-        this.botHttpService.getDataInfo().subscribe((res) => {
-            const list = res as BotInfo[];
-            this.botDataInfo = list;
-            this.dataSource = [...this.botDataInfo];
-        }, () => {
-            if(!this.dialog.getDialogById('404')) {
-                this.dialog.open(AlertDialogComponent, { width: '250px', data: {
-                    message: 'Le connection avec le serveur a échoué',
-                    button1: 'Ok',
-                    button2: ''
-                }, id: '404'});
-            }
-        });
+        this.botHttpService.getDataInfo().subscribe(
+            (res) => {
+                const list = res as BotInfo[];
+                this.botDataInfo = list;
+                this.dataSource = [...this.botDataInfo];
+            },
+            () => {
+                if (!this.dialog.getDialogById('404')) {
+                    this.dialog.open(AlertDialogComponent, {
+                        width: '250px',
+                        data: {
+                            message: 'Le connection avec le serveur a échoué',
+                            button1: 'Ok',
+                            button2: '',
+                        },
+                        id: '404',
+                    });
+                }
+            },
+        );
     }
 }

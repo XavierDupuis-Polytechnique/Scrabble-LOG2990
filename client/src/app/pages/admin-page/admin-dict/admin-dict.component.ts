@@ -58,15 +58,22 @@ export class AdminDictComponent implements OnInit {
     }
 
     private updateDictMap(): void {
-        this.dictHttpService.getDictInfoList().subscribe((res) => {
-            const list = res as DictInfo[];
-            this.dictDataSource = list;
-        }, () => {
-            this.dialog.open(AlertDialogComponent, { width: '250px', data: {
-                message: 'Le connection avec le serveur a échoué',
-                button1: 'Ok',
-                button2: ''
-            }, id: '404'});
-        });
+        this.dictHttpService.getDictInfoList().subscribe(
+            (res) => {
+                const list = res as DictInfo[];
+                this.dictDataSource = list;
+            },
+            () => {
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: {
+                        message: 'Le connection avec le serveur a échoué',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                    id: '404',
+                });
+            },
+        );
     }
 }
