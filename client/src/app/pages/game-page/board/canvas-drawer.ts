@@ -7,8 +7,8 @@ import {
     BORDER_COLOR,
     DOUBLE_BONUS_LETTER,
     DOUBLE_BONUS_WORD,
-    TILE_COLOR,
     TRIPLE_BONUS_LETTER,
+    TILE_COLOR,
     TRIPLE_BONUS_WORD
 } from '@app/pages/game-page/board/canvas-colors';
 
@@ -142,7 +142,7 @@ export class CanvasDrawer {
             this.tileSize - 2 * this.canvas.lineWidth,
             this.tileSize - 2 * this.canvas.lineWidth,
         );
-        this.canvas.fillStyle = ' #000000';
+        this.canvas.strokeStyle = '#000000';
         this.canvas.strokeRect(
             pos.x + this.canvas.lineWidth,
             pos.y + this.canvas.lineWidth,
