@@ -154,22 +154,24 @@ export class DictionaryService {
             for (const tmpDictWord of initialSettings.tmpDict) {
                 const oldFoundIndex: number = tmpDictWord.indexFound + subSettings.oldSubWordLength;
                 const foundIndex = tmpDictWord.word.indexOf(tmpWord.word, oldFoundIndex);
-                if (foundIndex !== NOT_FOUND) {
-                    if (
-                        foundIndex - oldFoundIndex === tmpWord.emptyCount &&
-                        tmpDictWord.word.length - initialSettings.letterCountOfPartWord <= RACK_LETTER_COUNT
-                    ) {
-                        if (tmpIndex === lastIndex) {
-                            if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
-                                tmpDictWord.indexFound = foundIndex;
-
-                                subSettings.tmpDict2.push(tmpDictWord);
-                            }
-                        } else {
-                            tmpDictWord.indexFound = foundIndex;
-                            subSettings.tmpDict2.push(tmpDictWord);
-                        }
+                if (foundIndex === NOT_FOUND) {
+                    continue;
+                }
+                if (
+                    foundIndex - oldFoundIndex !== tmpWord.emptyCount ||
+                    tmpDictWord.word.length - initialSettings.letterCountOfPartWord > RACK_LETTER_COUNT
+                ) {
+                    continue;
+                }
+                if (tmpIndex === lastIndex) {
+                    if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) > tmpWord.rightCount) {
+                        continue;
                     }
+                    tmpDictWord.indexFound = foundIndex;
+                    subSettings.tmpDict2.push(tmpDictWord);
+                } else {
+                    tmpDictWord.indexFound = foundIndex;
+                    subSettings.tmpDict2.push(tmpDictWord);
                 }
             }
             initialSettings.tmpDict = subSettings.tmpDict2;
