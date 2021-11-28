@@ -1,6 +1,6 @@
 import { Direction } from '@app/game-logic/direction.enum';
 import { Board } from '@app/game-logic/game/board/board';
-import { BORDER_COLOR, TILE_COLOR } from '@app/pages/game-page/board/canvas-colors';
+import { DOUBLE_BONUS_LETTER, DOUBLE_BONUS_WORD, TILE_COLOR, TRIPLE_BONUS_LETTER, TRIPLE_BONUS_WORD } from '@app/pages/game-page/board/canvas-colors';
 
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 interface Vec2 {
@@ -38,15 +38,16 @@ export class CanvasDrawer {
     }
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
-        this.drawborder();
-        this.canvas.fillStyle = TILE_COLOR;
-        this.canvas.fillRect(
-            this.borderWidth,
-            this.borderWidth,
-            this.width - 2 * this.borderWidth - this.canvas.lineWidth,
-            this.height - 2 * this.borderWidth,
-        );
-        this.canvas.fillStyle = '#000000';
+        // this.drawborder();
+        // this.canvas.fillStyle = BACKGROUND_COLOR;
+        // this.canvas.fillRect(
+        //     this.borderWidth,
+        //     this.borderWidth,
+        //     this.width - 2 * this.borderWidth - this.canvas.lineWidth,
+        //     this.height - 2 * this.borderWidth,
+        // );
+
+        // this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         for (let i = 1; i < 16; i++) {
@@ -101,26 +102,30 @@ export class CanvasDrawer {
 
     private drawRow(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
-        this.canvas.fillStyle = '#FFFFFF';
-        if (i === 1) {
-            this.canvas.fillStyle = '#000000';
-        }
-        const widthSize = this.width - 2 * this.borderWidth - this.canvas.lineWidth;
-        this.canvas.fillRect(this.borderWidth, offset, widthSize, this.canvas.lineWidth);
-        this.canvas.fillStyle = '#000000';
-        this.canvas.fillRect(this.borderWidth, offset, this.tileSize + 2 * this.canvas.lineWidth, this.canvas.lineWidth);
+        // this.canvas.fillStyle = WHITE_LINE;
+        this.canvas.fillStyle = '#ffffff';
+        // if (i === 1) {
+        //     this.canvas.fillStyle = BLACK_LINE;
+        // }
+        const widthSize = this.width - 2 * this.borderWidth - this.tileSize;
+        this.canvas.fillRect(this.borderWidth + this.tileSize + this.canvas.lineWidth, offset, widthSize, this.canvas.lineWidth);
+
+        // this.canvas.fillStyle = BLACK_LINE;
+        // this.canvas.fillRect(this.borderWidth, offset, this.tileSize + 2 * this.canvas.lineWidth, this.canvas.lineWidth);
     }
 
     private drawColumn(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
-        this.canvas.fillStyle = '#FFFFFF';
-        if (i === 1) {
-            this.canvas.fillStyle = '#000000';
-        }
-        const heightSize = this.height - 2 * this.borderWidth;
-        this.canvas.fillRect(offset, this.borderWidth, this.canvas.lineWidth, heightSize);
-        this.canvas.fillStyle = '#000000';
-        this.canvas.fillRect(offset, this.borderWidth, this.canvas.lineWidth, this.tileSize + 2 * this.canvas.lineWidth);
+        // this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillStyle = '#ffffff';
+        // if (i === 1) {
+        //     this.canvas.fillStyle = '#000000';
+        // }
+        const heightSize = this.height - 2 * this.borderWidth - this.tileSize;
+        this.canvas.fillRect(offset, this.borderWidth + this.tileSize + this.canvas.lineWidth, this.canvas.lineWidth, heightSize);
+
+        // this.canvas.fillStyle = '#000000';
+        // this.canvas.fillRect(offset, this.borderWidth, this.canvas.lineWidth, this.tileSize + 2 * this.canvas.lineWidth);
     }
 
     private drawTile(letter: string, value: number, i: number, j: number) {
@@ -161,14 +166,14 @@ export class CanvasDrawer {
         this.canvas.fillText(value.toString(), pos.x, pos.y);
     }
 
-    private drawborder() {
-        this.canvas.fillStyle = BORDER_COLOR;
-        this.canvas.fillRect(0, 0, this.width, this.height);
-    }
+    // private drawborder() {
+    //     this.canvas.fillStyle = BORDER_COLOR;
+    //     this.canvas.fillRect(0, 0, this.width, this.height);
+    // }
 
     private drawColumnIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#000000';
+        this.canvas.fillStyle = '#ffffff';
 
         for (let i = 0; i < 15; i++) {
             const letter = String.fromCharCode(i + 65);
@@ -181,7 +186,7 @@ export class CanvasDrawer {
 
     private drawRowIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#000000';
+        this.canvas.fillStyle = '#fffff';
 
         for (let i = 0; i < 15; i++) {
             const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 2;
@@ -200,21 +205,26 @@ export class CanvasDrawer {
         if (type === BonusType.LetterBonus) {
             s = 'Lettre';
             if (mul === 2) {
-                this.canvas.fillStyle = '#78D1DD';
+                this.canvas.fillStyle = DOUBLE_BONUS_LETTER;
             } else if (mul === 3) {
-                this.canvas.fillStyle = '#3257BB';
+                this.canvas.fillStyle = TRIPLE_BONUS_LETTER;
             }
         } else {
             s = 'Mot';
             if (mul === 2) {
-                this.canvas.fillStyle = '#F88E8E';
+                this.canvas.fillStyle = DOUBLE_BONUS_WORD;
             } else if (mul === 3) {
-                this.canvas.fillStyle = '#D1002D';
+                this.canvas.fillStyle = TRIPLE_BONUS_WORD;
             }
         }
 
-        this.canvas.fillRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
-        this.canvas.fillStyle = '#FFFFFF';
+        this.canvas.fillRect(
+            pos.x + 1.5 * this.canvas.lineWidth,
+            pos.y + 1.5 * this.canvas.lineWidth, // TODO
+            this.tileSize - this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+        );
+        this.canvas.fillStyle = '#ffffff';
         this.canvas.fillText(s, pos.x + this.tileSize / 2, pos.y + this.tileSize / 5);
         this.canvas.fillText(`X${mul}`, pos.x + this.tileSize / 2, pos.y + this.tileSize / 2);
     }

@@ -1,3 +1,12 @@
 export const TILE_COLOR = '#f0e7d8';
+export const BACKGROUND_COLOR = '#D7C096'; // TODO
+export const IDENTIFIER_COLOR = '#C8D0D0';
 export const BORDER_COLOR = '#423834';
 export const STAR_COLOR = '#f5cd1b';
+export const DOUBLE_BONUS_LETTER = '#78D1DD';
+export const DOUBLE_BONUS_WORD = '#F88E8E';
+export const TRIPLE_BONUS_LETTER = '#323FA8';
+export const TRIPLE_BONUS_WORD = '#C40559';
+export const TEXT_COLOR = '#ffffff';
+export const BLACK_LINE = '#000000';
+export const WHITE_LINE = '#FFFFFF';
