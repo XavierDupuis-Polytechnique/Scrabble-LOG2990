@@ -42,7 +42,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     minTimePerTurn = MIN_TIME_PER_TURN;
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
-    dictList: DictInfo[] = [{ title: 'test', description: 'testdesc' }] as DictInfo[];
+    dictList: DictInfo[] = [];
     isDictDeleted = false;
 
     constructor(
@@ -53,6 +53,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     ) {
         this.onInit();
     }
+
     onInit() {
         this.dictHttpService.getDictInfoList().subscribe((dictList) => {
             this.dictList = dictList as DictInfo[];

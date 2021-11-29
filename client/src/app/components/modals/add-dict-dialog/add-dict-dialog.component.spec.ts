@@ -49,9 +49,10 @@ describe('AddDictDialogComponent', () => {
         inputDebugEl.nativeElement.files = dataTransfer.files;
 
         inputDebugEl.nativeElement.dispatchEvent(new InputEvent('change'));
-        const dummyDict = of([{ title: 'test', description: 'test', words: ['test'], id: 1 }]);
+        const dummyDict = of([{ title: 'test', description: 'test', words: ['test'] }]);
         dictHttpServiceSpy.getDict.and.returnValue(dummyDict);
         fixture.detectChanges();
+        component.input.files = dataTransfer.files;
 
         const dummyAnswer = of(false);
         dictHttpServiceSpy.uploadDict.and.returnValue(dummyAnswer);
@@ -76,6 +77,7 @@ describe('AddDictDialogComponent', () => {
         dictHttpServiceSpy.getDict.and.returnValue(dummyDict);
         fixture.detectChanges();
 
+        component.input.files = dataTransfer.files;
         const dummyAnswer = of(true);
         dictHttpServiceSpy.uploadDict.and.returnValue(dummyAnswer);
         await component.uploadFile();

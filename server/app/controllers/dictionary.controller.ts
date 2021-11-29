@@ -20,11 +20,7 @@ export class DictionaryController {
                 const title = req.query.title as string;
                 if (title) {
                     const dict = this.dictionaryServerService.getDictByTitle(title);
-                    if (dict) {
-                        res.json(dict);
-                    } else {
-                        res.sendStatus(StatusCodes.NOT_FOUND);
-                    }
+                    dict ? res.json(dict) : res.sendStatus(StatusCodes.NOT_FOUND);
                 } else {
                     const dicts = this.dictionaryServerService.getDictsList();
                     res.json(dicts);
@@ -38,12 +34,12 @@ export class DictionaryController {
             try {
                 const clientDict = req.body as DictionaryServer;
                 const isDictExist = this.dictionaryServerService.isDictExist(clientDict.title);
-                if (isDictExist) {
-                    res.send(false);
-                } else {
+                if (!isDictExist) {
                     clientDict.canEdit = true;
                     this.dictionaryServerService.addDict(clientDict);
                     res.send(true);
+                } else {
+                    res.send(false);
                 }
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);

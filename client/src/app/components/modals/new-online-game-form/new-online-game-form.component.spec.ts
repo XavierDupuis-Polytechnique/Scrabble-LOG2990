@@ -14,7 +14,6 @@ describe('NewOnlineGameFormComponent', () => {
     const dictHttpServiceSpy = jasmine.createSpyObj('DictHttpService', ['getDictInfoList']);
     dictHttpServiceSpy.getDictInfoList.and.returnValue(of([{ title: 'testTitle', description: 'testDescription' }]));
 
-
     const mockDialog = {
         close: () => {
             return;

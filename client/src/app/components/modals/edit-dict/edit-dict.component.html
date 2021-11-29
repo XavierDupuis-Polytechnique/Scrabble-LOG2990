@@ -1,4 +1,4 @@
-<mat-dialog-content style="display: flex; flex-direction: column">
+<mat-dialog-content >
     <mat-form-field>
         <input matInput autocomplete="off" [(ngModel)]="tempDict.title" placeholder="Titre du dictionnaire" />
     </mat-form-field>
@@ -6,7 +6,7 @@
         <input matInput autocomplete="off" [(ngModel)]="tempDict.description" placeholder="Description" />
     </mat-form-field>
     <p *ngIf="!isEditedCorrectly" class="errorText">Une erreur est survenue lors de la modification, veuillez réessayer</p>
-    <div style="display: flex; flex-direction: row">
+    <div class="uploadButton">
         <button mat-button (click)="uploadEdit()">Upload Edit</button>
     </div>
 </mat-dialog-content>

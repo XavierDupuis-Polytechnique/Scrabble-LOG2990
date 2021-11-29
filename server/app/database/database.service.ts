@@ -10,12 +10,10 @@ import { CollectionInfo, Db, MongoClient } from 'mongodb';
 import 'reflect-metadata';
 import { Service } from 'typedi';
 
-// C'est freaking bad d'avoir les credentials dans le code XD
 const DB_USER = 'server';
 const DB_PSW = 'ACyZhkpcAUT812QB';
 const CLUSTER_URL = 'scrabblecluster.mqtnr.mongodb.net';
 
-// TODO: CHANGE the URL for your database information
 export const DATABASE_URL = `mongodb+srv://${DB_USER}:${DB_PSW}@${CLUSTER_URL}/<dbname>?retryWrites=true&w=majority`;
 export const DATABASE_NAME = 'scrabble';
 
@@ -30,12 +28,11 @@ export class DatabaseService {
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
-            return;
-            // throw new Error('Database connection error');
+            throw new Error('Database connection error');
         }
+
         this.createLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
         this.createLeaderboardCollection(LEADERBOARD_LOG_COLLECTION);
-
         this.createBotInfoCollection();
     }
 
@@ -78,12 +75,13 @@ export class DatabaseService {
 
     private async createBotInfoCollection() {
         try {
-            const checkCollectionEcists = await this.collectionExists(BOT_INFO_COLLECTION);
-            if (!checkCollectionEcists) {
-                await this.database.createCollection(BOT_INFO_COLLECTION);
-                await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
-                this.populateBotInfoCollection();
+            const checkCollectionExists = await this.collectionExists(BOT_INFO_COLLECTION);
+            if (checkCollectionExists) {
+                return;
             }
+            await this.database.createCollection(BOT_INFO_COLLECTION);
+            await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
+            this.populateBotInfoCollection();
         } catch (error) {
             throw Error('Data base collection creation error');
         }

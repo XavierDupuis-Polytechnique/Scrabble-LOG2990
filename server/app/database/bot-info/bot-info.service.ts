@@ -20,9 +20,11 @@ export class BotInfoService {
             return false;
         }
     }
+
     async getBotInfoList(): Promise<BotInfo[]> {
         return this.collection.find().toArray();
     }
+
     async getBotInfoByName(botName: string): Promise<BotInfo> {
         const botInfo = await this.collection.find({ name: botName }).toArray();
         if (botInfo.length === 1) {
@@ -45,11 +47,15 @@ export class BotInfoService {
             return true;
         }
     }
+
     async deleteBot(bot: BotInfo): Promise<boolean> {
         return new Promise<boolean>((resolve) => {
             this.collection.deleteOne(bot, (err) => {
-                if (err) resolve(false);
-                else resolve(true);
+                if (err) {
+                    resolve(false);
+                } else {
+                    resolve(true);
+                }
             });
         });
     }

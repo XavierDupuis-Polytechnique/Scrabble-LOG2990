@@ -16,15 +16,6 @@ export class WordSearcher {
 
     constructor(public dictionaryService: DictionaryService) {}
 
-    // TODO Check if dead code
-    // validateWords(action: PlaceLetter, grid: Tile[][]): boolean {
-    //     const listOfValidWord = this.listOfValidWord(action, grid);
-    //     if (listOfValidWord.length > 0) {
-    //         return true;
-    //     }
-    //     return false;
-    // }
-
     findIndexOfLetterToPlace(action: PlaceLetter, grid: Tile[][]) {
         const indexOfLetterToPlace: number[] = [];
         if (action.placement.direction === Direction.Horizontal) {

@@ -14,10 +14,7 @@ export class DictionaryService {
     makeGameDictionary(gameToken: string, dictTitle: string) {
         const uniqueName = this.dictionaryServer.getUniqueName(dictTitle);
         const liveDict = this.liveDictMap.get(uniqueName);
-        if (liveDict) {
-            liveDict.currentUsage++;
-            this.liveDictMap.set(uniqueName, liveDict);
-        } else {
+        if (!liveDict) {
             const dict = this.dictionaryServer.getDictByTitle(dictTitle);
             const words = this.getWords(dict as Dictionary);
             const newLiveDict: LiveDict = {
@@ -25,6 +22,9 @@ export class DictionaryService {
                 dynamicWordList: words,
             };
             this.liveDictMap.set(uniqueName, newLiveDict);
+        } else {
+            liveDict.currentUsage++;
+            this.liveDictMap.set(uniqueName, liveDict);
         }
         this.liveGamesMap.set(gameToken, uniqueName);
     }

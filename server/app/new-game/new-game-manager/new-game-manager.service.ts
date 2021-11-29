@@ -47,8 +47,8 @@ export class NewGameManagerService {
     }
 
     deletePendingGame(id: string) {
-        const gameStarted = this.gameMaster.activeGames.has(id)
-        if (!gameStarted){
+        const gameStarted = this.gameMaster.activeGames.has(id);
+        if (!gameStarted) {
             this.dictionaryService.deleteGameDictionary(id);
         }
         this.pendingGames.delete(id);

@@ -28,15 +28,7 @@ export class EditDictDialogComponent {
 
     uploadEdit(): void {
         if (this.tempDict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '400px',
-                disableClose: true,
-                data: {
-                    message: 'Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
+            this.errorModal('Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.');
             this.isEditedCorrectly = false;
             return;
         }
@@ -44,47 +36,35 @@ export class EditDictDialogComponent {
             (res) => {
                 if (res) {
                     this.close();
-                } else {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '400px',
-                        disableClose: true,
-                        data: {
-                            message: 'Le titre du dictionnaire est déjà utilisé par un autre dictionnaire',
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                    });
-                    this.isEditedCorrectly = false;
+                    return;
                 }
+                this.errorModal('Le titre du dictionnaire est déjà utilisé par un autre dictionnaire');
+                this.isEditedCorrectly = false;
             },
             (error: HttpErrorResponse) => {
                 if (error.status === HttpStatusCode.NotFound) {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '400px',
-                        disableClose: true,
-                        data: {
-                            message: `Le serveur n'est pas en mesure de trouver le dictionnaire que vous voulez modifier.
-                        Veuillez rafraichir la page pour obtenir la liste la plus récente des dictionnaires`,
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                    });
-                } else {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '400px',
-                        disableClose: true,
-                        data: {
-                            message: 'Une erreur est survenue avec le serveur, veuillez réessayer plus tard',
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                    });
+                    this.errorModal(`Le serveur n'est pas en mesure de trouver le dictionnaire que vous voulez modifier.
+                    Veuillez rafraichir la page pour obtenir la liste la plus récente des dictionnaires`);
+                    return;
                 }
+                this.errorModal('Une erreur est survenue avec le serveur, veuillez réessayer plus tard');
             },
         );
     }
 
     private close(): void {
         this.dialogRef.close(this.tempDict);
+    }
+
+    private errorModal(error: string) {
+        this.dialog.open(AlertDialogComponent, {
+            width: '400px',
+            disableClose: true,
+            data: {
+                message: error,
+                button1: 'Ok',
+                button2: '',
+            },
+        });
     }
 }

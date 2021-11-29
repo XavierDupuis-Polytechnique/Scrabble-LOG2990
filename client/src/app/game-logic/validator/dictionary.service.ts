@@ -20,16 +20,10 @@ export class DictionaryService {
     dictReady$ = new BehaviorSubject<boolean>(false);
     isDefaultDict: boolean;
     dynamicWordList: Set<string>[] = [];
-    dictionaryHelper: DictionaryHelper;
-    constructor(private dictHttpService: DictHttpService) {
-        this.dictionaryHelper = new DictionaryHelper();
-        this.addDefault();
-    }
+    dictionaryHelper = new DictionaryHelper();
 
-    addDefault() {
-        const dict = data as Dictionary;
-        this.addWords(dict);
-        this.isDefaultDict = true;
+    constructor(private dictHttpService: DictHttpService) {
+        this.addDefault();
     }
 
     fetchDictionary(dictTitle: string): BehaviorSubject<boolean> {
@@ -49,16 +43,6 @@ export class DictionaryService {
             this.ready();
         });
         return this.dictReady$;
-    }
-
-    addWords(dictionary: Dictionary) {
-        this.clearWords();
-        dictionary.words.forEach((word) => {
-            let wordLength = word.length;
-            for (wordLength; wordLength <= MAX_WORD_LENGTH; wordLength++) {
-                this.dynamicWordList[wordLength].add(word);
-            }
-        });
     }
 
     isWordInDict(word: string): boolean {
@@ -126,6 +110,22 @@ export class DictionaryService {
         } else {
             return 'false';
         }
+    }
+
+    private addDefault() {
+        const dict = data as Dictionary;
+        this.addWords(dict);
+        this.isDefaultDict = true;
+    }
+
+    private addWords(dictionary: Dictionary) {
+        this.clearWords();
+        dictionary.words.forEach((word) => {
+            let wordLength = word.length;
+            for (wordLength; wordLength <= MAX_WORD_LENGTH; wordLength++) {
+                this.dynamicWordList[wordLength].add(word);
+            }
+        });
     }
 
     private ready() {

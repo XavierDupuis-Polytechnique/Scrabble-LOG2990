@@ -36,31 +36,33 @@ export class DictionaryServerService {
 
     getUniqueName(dictTitle: string): string {
         for (const dict of this.allDictionary) {
-            if (dict.title === dictTitle) {
-                const uniqueName = dictTitle + '_' + dict.date;
-                return uniqueName;
+            if (dict.title !== dictTitle) {
+                continue;
             }
+            const uniqueName = dictTitle + '_' + dict.date;
+            return uniqueName;
         }
         return '';
     }
 
     getDictByTitle(dictTitle: string): DictionaryServer | boolean {
         for (const dict of this.allDictionary) {
-            if (dict.title === dictTitle) {
-                return dict;
+            if (dict.title !== dictTitle) {
+                continue;
             }
+            return dict;
         }
         return false;
     }
 
     addDict(dictToAdd: DictionaryServer): boolean {
-        if (!this.isDictExist(dictToAdd.title)) {
-            const dict = this.formatDict(dictToAdd);
-            this.allDictionary.push(dict);
-            this.saveToFile(dict.title);
-            return true;
+        if (this.isDictExist(dictToAdd.title)) {
+            return false;
         }
-        return false;
+        const dict = this.formatDict(dictToAdd);
+        this.allDictionary.push(dict);
+        this.saveToFile(dict.title);
+        return true;
     }
 
     updateDict(oldDict: DictionaryServer, newDict: DictionaryServer): boolean {
@@ -69,15 +71,15 @@ export class DictionaryServerService {
             return false;
         }
         const currentDict = this.allDictionary[index];
-        if (currentDict.canEdit) {
-            currentDict.title = newDict.title;
-            currentDict.description = newDict.description;
-            currentDict.date = new Date();
-            this.deleteFile(oldDict.title);
-            this.saveToFile(currentDict.title);
-            return true;
+        if (!currentDict.canEdit) {
+            return false;
         }
-        return false;
+        currentDict.title = newDict.title;
+        currentDict.description = newDict.description;
+        currentDict.date = new Date();
+        this.deleteFile(oldDict.title);
+        this.saveToFile(currentDict.title);
+        return true;
     }
 
     deleteDict(dictTitle: string): boolean {
@@ -96,9 +98,10 @@ export class DictionaryServerService {
 
     dropDelete() {
         for (const dict of this.allDictionary) {
-            if (dict.canEdit) {
-                this.deleteFile(dict.title);
+            if (!dict.canEdit) {
+                continue;
             }
+            this.deleteFile(dict.title);
         }
         this.loadFromFile();
     }
@@ -121,25 +124,11 @@ export class DictionaryServerService {
     private loadFromFile() {
         this.allDictionary = [];
         fs.readdirSync(this.folderPath).forEach((file) => {
-            if (file.includes('.json')) {
-                const dict = JSON.parse(fs.readFileSync(this.folderPath + file, 'utf8'));
-                this.allDictionary.push(dict);
+            if (!file.includes('.json')) {
+                return;
             }
+            const dict = JSON.parse(fs.readFileSync(this.folderPath + file, 'utf8'));
+            this.allDictionary.push(dict);
         });
     }
-
-    // private validateDict(dict: DictionaryServer): boolean {
-    //     if (!dict.title || dict.title.length === 0) {
-    //         return false;
-    //     }
-    //     if (!dict.description || dict.description.length === 0) {
-    //         return false;
-    //     }
-
-    //     if (!dict.words || dict.words.length === 0) {
-    //         return false;
-    //     }
-
-    //     return true;
-    // }
 }

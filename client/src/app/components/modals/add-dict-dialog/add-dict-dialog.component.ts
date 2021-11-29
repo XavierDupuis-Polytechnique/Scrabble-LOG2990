@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { NOT_FOUND } from '@app/game-logic/constants';
@@ -11,6 +11,7 @@ import { DictHttpService } from '@app/services/dict-http.service';
     styleUrls: ['./add-dict-dialog.component.scss'],
 })
 export class AddDictDialogComponent {
+    @ViewChild('fileInput') input: HTMLInputElement;
     selectedFile = '';
 
     constructor(
@@ -19,16 +20,19 @@ export class AddDictDialogComponent {
         private dialog: MatDialog,
     ) {}
 
+
     showSelectedFile() {
-        const input = document.getElementById('fileInput') as HTMLInputElement;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.selectedFile = input.files![0].name;
+        if (this.input.files === null) {
+            return;
+        }
+        this.selectedFile = this.input.files[0].name;
     }
 
     async uploadFile() {
-        const input = document.getElementById('fileInput') as HTMLInputElement;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const file = input.files![0];
+        if (this.input.files === null) {
+            return;
+        }
+        const file = this.input.files[0];
         this.selectedFile = '';
         const dict = await this.readFile(file);
         this.uploadDictionary(dict);
@@ -38,7 +42,7 @@ export class AddDictDialogComponent {
         const tempFileReader = new FileReader();
         return new Promise((resolve) => {
             tempFileReader.onload = (res) => {
-                if(res.target === null) {
+                if (res.target === null) {
                     return;
                 }
                 const resultString = res.target.result;
@@ -54,56 +58,38 @@ export class AddDictDialogComponent {
 
     private async uploadDictionary(dict: Dictionary) {
         if (dict.title === undefined || null) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: {
-                    message: 'Le dictionnaire fournie ne contient pas de titre',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-        } else if (dict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: {
-                    message: 'Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-        } else if (dict.description === undefined || null) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: {
-                    message: 'Le dictionnaire fournie ne contient pas de description',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-        } else if (dict.words === undefined || null) {
-            this.dialog.open(AlertDialogComponent, {
-                width: '250px',
-                data: {
-                    message: 'Le dictionnaire fournie ne contient pas une liste de mots',
-                    button1: 'Ok',
-                    button2: '',
-                },
-            });
-        } else {
-            this.dictHttpService.uploadDict(dict).subscribe((value) => {
-                if (!value) {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '250px',
-                        data: {
-                            message: 'Un dictionnaire avec le même titre existe déjà sur le serveur',
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                    });
-                } else {
-                    this.dialogRef.close();
-                }
-            });
+            this.errorModal('Le dictionnaire fournie ne contient pas de titre');
+            return;
         }
+        if (dict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
+            this.errorModal('Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.');
+            return;
+        }
+        if (dict.description === undefined || null) {
+            this.errorModal('Le dictionnaire fournie ne contient pas de description');
+            return;
+        }
+        if (dict.words === undefined || null) {
+            this.errorModal('Le dictionnaire fournie ne contient pas une liste de mots');
+            return;
+        }
+        this.dictHttpService.uploadDict(dict).subscribe((value) => {
+            if (value) {
+                this.dialogRef.close();
+            } else {
+                this.errorModal('Un dictionnaire avec le même titre existe déjà sur le serveur');
+            }
+        });
+    }
+
+    private errorModal(error: string) {
+        this.dialog.open(AlertDialogComponent, {
+            width: '250px',
+            data: {
+                message: error,
+                button1: 'Ok',
+                button2: '',
+            },
+        });
     }
 }

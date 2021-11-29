@@ -72,6 +72,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
             },
         ];
     }
+
     getToolTip(form: OnlineGameSettings, columnDef: string): string {
         if (columnDef === 'dictionary') {
             return form.dictDesc as string;

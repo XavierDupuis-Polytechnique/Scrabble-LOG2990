@@ -28,12 +28,12 @@ export class BotInfoController {
             try {
                 const clientBotInfo = req.body as BotInfo;
                 const isBotExist = await this.botInfoService.isBotExist(clientBotInfo.name);
-                if (isBotExist) {
-                    res.send(false);
-                } else {
+                if (!isBotExist) {
                     clientBotInfo.canEdit = true;
                     await this.botInfoService.addBot(clientBotInfo);
                     res.send(true);
+                } else {
+                    res.send(false);
                 }
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
