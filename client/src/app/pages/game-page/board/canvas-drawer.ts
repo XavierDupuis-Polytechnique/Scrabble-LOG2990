@@ -55,9 +55,9 @@ export class CanvasDrawer {
                         this.drawHighlight(j, i);
                     }
                 } else if (board.grid[i][j].letterMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
+                    this.drawBonus({ x: j, y: i }, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
                 } else if (board.grid[i][j].wordMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
+                    this.drawBonus({ x: j, y: i }, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
                 }
                 // logs
             }
@@ -160,11 +160,11 @@ export class CanvasDrawer {
             this.canvas.fillText((i + 1).toString(), offset, 20);
         }
     }
-    private drawBonus(i: number, j: number, type: BonusType, mul: number) {
+    private drawBonus(posGrid: Vec2, type: BonusType, mul: number) {
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
         this.canvas.textAlign = 'start';
         let s = '';
-        const pos = this.tilePositionToCoord(i, j);
+        const pos = this.tilePositionToCoord(posGrid.x, posGrid.y);
 
         if (type === BonusType.LetterBonus) {
             s = 'Lettre';
