@@ -1,19 +1,20 @@
 /* tslint:disable:no-unused-variable */
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
-import { AbandonButtonComponent } from './abandon-button.component';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { AbandonDialogComponent } from './abandon-dialog.component';
 
-describe('AbandonButtonComponent', () => {
+describe('AbandonDialogComponent', () => {
     const mockDialogRef = {
         close: jasmine.createSpy('close'),
     };
 
-    let component: AbandonButtonComponent;
-    let fixture: ComponentFixture<AbandonButtonComponent>;
+    let component: AbandonDialogComponent;
+    let fixture: ComponentFixture<AbandonDialogComponent>;
     let gameManagerServiceSpy: jasmine.SpyObj<GameManagerService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
 
@@ -24,8 +25,8 @@ describe('AbandonButtonComponent', () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [AbandonButtonComponent],
-            imports: [RouterTestingModule.withRoutes(routes), MatDialogModule],
+            declarations: [AbandonDialogComponent],
+            imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: MatDialogRef, useValue: mockDialogRef },
@@ -35,7 +36,7 @@ describe('AbandonButtonComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AbandonButtonComponent);
+        fixture = TestBed.createComponent(AbandonDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
