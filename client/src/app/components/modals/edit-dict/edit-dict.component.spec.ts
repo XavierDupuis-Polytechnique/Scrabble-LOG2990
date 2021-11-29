@@ -44,9 +44,17 @@ describe('EditDictDialogComponent', () => {
         expect(dialogRef.close).toHaveBeenCalled();
     });
 
-    it('uploadedit should open alert dialog if not ok', async () => {
+    it('uploadEdit should open alert dialog if not ok', async () => {
         const dummyAnswer = of(false);
         component.tempDict = { title: 'test', description: 'test', canEdit: true };
+        dictHttpMock.editDict.and.returnValue(dummyAnswer);
+        component.uploadEdit();
+        expect(matDialog.open).toHaveBeenCalled();
+    });
+
+    it('uploadEdit should open alert dialog if not ok special character', async () => {
+        const dummyAnswer = of(false);
+        component.tempDict = { title: 'test???<><>', description: 'test', canEdit: true };
         dictHttpMock.editDict.and.returnValue(dummyAnswer);
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();
