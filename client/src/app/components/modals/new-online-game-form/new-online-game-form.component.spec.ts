@@ -12,7 +12,8 @@ describe('NewOnlineGameFormComponent', () => {
     let component: NewOnlineGameFormComponent;
     let fixture: ComponentFixture<NewOnlineGameFormComponent>;
     const dictHttpServiceSpy = jasmine.createSpyObj('DictHttpService', ['getDictInfoList']);
-    dictHttpServiceSpy.getDictInfoList.and.returnValue(of([]));
+    dictHttpServiceSpy.getDictInfoList.and.returnValue(of([{ title: 'testTitle', description: 'testDescription' }]));
+
 
     const mockDialog = {
         close: () => {
@@ -93,6 +94,13 @@ describe('NewOnlineGameFormComponent', () => {
 
     it('playGame should close the dialog', () => {
         spyOn(mockDialog, 'close');
+        component.onlineGameSettingsUIForm.setValue({
+            playerName: '',
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            randomBonus: false,
+            dictTitle: 'testTitle',
+            dictDesc: '',
+        });
         component.playGame();
         expect(mockDialog.close).toHaveBeenCalled();
     });

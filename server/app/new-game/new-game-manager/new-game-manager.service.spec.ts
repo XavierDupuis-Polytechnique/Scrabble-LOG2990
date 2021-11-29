@@ -1,18 +1,22 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { GameMode } from '@app/game/game-mode.enum';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
-import { createSinonStubInstance } from '@app/test.util';
+import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
 
 describe('NewGameManagerService', () => {
-    const gameManagerStub = createSinonStubInstance<GameManagerService>(GameManagerService);
+    let gameManagerStub: StubbedClass<GameManagerService>;
+    let dictionaryServiceStub: StubbedClass<DictionaryService>;
     let service: NewGameManagerService;
     before(() => {
-        service = new NewGameManagerService(gameManagerStub);
+        gameManagerStub = createSinonStubInstance<GameManagerService>(GameManagerService);
+        dictionaryServiceStub = createSinonStubInstance<DictionaryService>(DictionaryService);
+        service = new NewGameManagerService(gameManagerStub, dictionaryServiceStub);
     });
 
     it('should createGame', () => {
@@ -28,6 +32,7 @@ describe('NewGameManagerService', () => {
     });
 
     it('on JoinGame should update gameSetting and delete pendingGame', () => {
+        gameManagerStub.activeGames = new Map();
         const id = service.getPendingGames()[0].id;
         const playerName = 'Sim';
         service.joinPendingGame(id, playerName);

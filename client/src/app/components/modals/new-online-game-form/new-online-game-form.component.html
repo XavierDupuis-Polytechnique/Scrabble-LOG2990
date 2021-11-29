@@ -10,6 +10,9 @@
     <br />
     <br />
     <mat-form-field>
+        <mat-error>
+            Dictionnaire supprimé, veuillez en choisir un autre
+        </mat-error>
         <mat-label>Dictionnaire de la partie</mat-label>
         <mat-select [formControlName]="'dictTitle'">
             <mat-option
@@ -25,6 +28,7 @@
         </mat-select>
     </mat-form-field>
     <br />
+    <br />
     <mat-label>Temps par tour </mat-label>
     <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
     <mat-slider
@@ -39,6 +43,6 @@
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>
-    <button mat-button [mat-dialog-close] (click)="cancel()">Annuler</button>
-    <button mat-button [mat-dialog-close] (click)="playGame()" [disabled]="!formValid">Créer une partie</button>
+    <button mat-button (click)="cancel()">Annuler</button>
+    <button mat-button (click)="playGame()" [disabled]="!formValid">Créer une partie</button>
 </mat-dialog-actions>

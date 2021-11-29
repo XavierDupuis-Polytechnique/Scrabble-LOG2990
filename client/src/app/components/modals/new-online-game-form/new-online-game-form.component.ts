@@ -69,8 +69,7 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
     }
 
     playGame(): void {
-        this.onlineGameSettingsUIForm.value.dictDesc = this.getDescription(this.onlineGameSettingsUIForm.value.dictTitle);
-        this.dialogRef.close(this.onlineGameSettingsUIForm.value);
+        this.dictNotDeletedValidation(this.onlineGameSettingsUIForm);
     }
 
     cancel(): void {
@@ -86,5 +85,20 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
 
     get formValid() {
         return this.onlineGameSettingsUIForm.valid;
+    }
+    
+    private dictNotDeletedValidation(formSettings: FormGroup) {
+        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
+            this.dictList = dictList as DictInfo[];
+            const dictionary = this.dictList.find((dict) => dict.title === formSettings.value.dictTitle);
+            if (dictionary) {
+                this.onlineGameSettingsUIForm.value.dictDesc = this.getDescription(this.onlineGameSettingsUIForm.value.dictTitle);
+                this.dialogRef.close(this.onlineGameSettingsUIForm.value);
+            } else {
+                this.onlineGameSettingsUIForm.controls.dictTitle.setErrors({
+                    dictDeleted: true,
+                });
+            }
+        });
     }
 }

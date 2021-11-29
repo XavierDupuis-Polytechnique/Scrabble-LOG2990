@@ -54,7 +54,9 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
         this.onInit();
     }
     onInit() {
-        this.fetchDictInfo();
+        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
+            this.dictList = dictList as DictInfo[];
+        });
     }
 
     ngAfterContentChecked() {
@@ -84,11 +86,6 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
         return this.soloGameSettingsForm.value;
     }
 
-    private fetchDictInfo() {
-        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
-            this.dictList = dictList as DictInfo[];
-        });
-    }
     private dictNotDeletedValidation(formSettings: FormGroup) {
         this.dictHttpService.getDictInfoList().subscribe((dictList) => {
             this.dictList = dictList as DictInfo[];

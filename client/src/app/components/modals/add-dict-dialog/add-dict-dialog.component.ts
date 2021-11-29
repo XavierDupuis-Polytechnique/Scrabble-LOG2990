@@ -38,10 +38,14 @@ export class AddDictDialogComponent {
         const tempFileReader = new FileReader();
         return new Promise((resolve) => {
             tempFileReader.onload = (res) => {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const resultString = res.target!.result;
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const dictionary: Dictionary = JSON.parse(resultString!.toString());
+                if(res.target === null) {
+                    return;
+                }
+                const resultString = res.target.result;
+                if (resultString === null) {
+                    return;
+                }
+                const dictionary: Dictionary = JSON.parse(resultString.toString());
                 resolve(dictionary);
             };
             tempFileReader.readAsText(file);

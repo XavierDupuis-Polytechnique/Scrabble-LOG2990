@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameMode } from '@app/game/game-mode.enum';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
@@ -21,6 +22,7 @@ describe('New Online Game Service', () => {
     let port: number;
     let httpServer: Server;
     let newGameManagerService: StubbedClass<NewGameManagerService>;
+    let dictionaryService: StubbedClass<DictionaryService>;
 
     before((done) => {
         httpServer = createServer();
@@ -29,7 +31,8 @@ describe('New Online Game Service', () => {
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
             newGameManagerService = createSinonStubInstance<NewGameManagerService>(NewGameManagerService);
-            handler = new NewGameSocketHandler(httpServer, newGameManagerService);
+            dictionaryService = createSinonStubInstance<DictionaryService>(DictionaryService);
+            handler = new NewGameSocketHandler(httpServer, newGameManagerService, dictionaryService);
             handler.newGameHandler();
             handler.ioServer.on('connection', (socket: Socket) => {
                 serverSocket = socket;
