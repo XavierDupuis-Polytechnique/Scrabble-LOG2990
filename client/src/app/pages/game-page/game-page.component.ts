@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AbandonButtonComponent } from '@app/components/modals/abandon-button/abandon-button.component';
@@ -11,14 +11,17 @@ import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-game-page',
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent {
+export class GamePageComponent implements OnDestroy {
     dialogRef: MatDialogRef<DisconnectedFromServerComponent> | undefined;
+    disconnected$$: Subscription;
+    forfeited$$: Subscription;
     constructor(
         private gameManager: GameManagerService,
         public info: GameInfoService,
@@ -32,14 +35,13 @@ export class GamePageComponent {
             this.router.navigate(['/']);
         }
 
-        this.gameManager.disconnectedFromServer$.subscribe(() => {
+        this.disconnected$$ = this.gameManager.disconnectedFromServer$.subscribe(() => {
             this.openDisconnected();
         });
-        this.gameManager.disconnectedState$.subscribe((forfeitedGameState) => {
+        this.forfeited$$ = this.gameManager.disconnectedState$.subscribe((forfeitedGameState) => {
             const data = 'Votre adversaire a abandonné la partie et sera remplacé par un joueur virtuel';
-            this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
-            // eslint-disable-next-line no-underscore-dangle
-            this.dialog._getAfterAllClosed().subscribe(() => {
+            const forfeitedDialogRef = this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
+            forfeitedDialogRef.afterClosed().subscribe(() => {
                 this.gameManager.instanciateGameFromForfeitedState(forfeitedGameState);
             });
         });
@@ -49,6 +51,11 @@ export class GamePageComponent {
     keypressEvent($event: KeyboardEvent) {
         const input: UIInput = { type: InputType.KeyPress, args: $event.key };
         this.inputController.receive(input);
+    }
+
+    ngOnDestroy() {
+        this.disconnected$$?.unsubscribe();
+        this.forfeited$$?.unsubscribe();
     }
 
     receiveInput(input: UIInput) {
