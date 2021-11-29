@@ -41,16 +41,21 @@ export class CanvasDrawer {
         this.canvas = canvasContext;
         this.width = w;
         this.height = h;
-        this.canvas.lineWidth = 2;
+        this.canvas.lineWidth = 1;
         this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 17) / 16;
         this.offset = this.tileSize + this.borderWidth;
     }
+
     drawGrid(board: Board, fontsize: number): void {
         this.canvas.clearRect(0, 0, this.width, this.height);
-        this.drawborder();
         this.canvas.globalAlpha = 0.9;
         this.canvas.fillStyle = BACKGROUND_COLOR;
-        this.canvas.fillRect(this.borderWidth, this.borderWidth, this.width - 2 * this.borderWidth, this.height - 2 * this.borderWidth);
+        this.canvas.fillRect(
+            this.borderWidth,
+            this.borderWidth,
+            this.width - 2 * this.borderWidth,
+            this.height - 2 * this.borderWidth - this.canvas.lineWidth,
+        );
         this.canvas.globalAlpha = 1;
         // this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
@@ -82,6 +87,7 @@ export class CanvasDrawer {
                 this.drawIndicator();
             }
         }
+        this.drawborder();
     }
 
     coordToTilePosition(x: number, y: number) {
@@ -144,8 +150,8 @@ export class CanvasDrawer {
         );
         this.canvas.strokeStyle = '#000000';
         this.canvas.strokeRect(
-            pos.x + this.canvas.lineWidth,
-            pos.y + this.canvas.lineWidth,
+            pos.x + 2 * this.canvas.lineWidth,
+            pos.y + 2 * this.canvas.lineWidth,
             this.tileSize - this.canvas.lineWidth,
             this.tileSize - this.canvas.lineWidth,
         );
@@ -262,8 +268,18 @@ export class CanvasDrawer {
     private drawHighlight(i: number, j: number) {
         const pos = this.tilePositionToCoord(i, j);
         this.canvas.fillStyle = 'rgba(0.5, 0, 0.5, 0.25)';
-        this.canvas.fillRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+        this.canvas.fillRect(
+            pos.x + 2 * this.canvas.lineWidth,
+            pos.y + 2 * this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+        );
         this.canvas.strokeStyle = '#FF0000';
-        this.canvas.strokeRect(pos.x, pos.y, this.tileSize - this.canvas.lineWidth, this.tileSize - this.canvas.lineWidth);
+        this.canvas.strokeRect(
+            pos.x + 2 * this.canvas.lineWidth,
+            pos.y + 2 * this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+            this.tileSize - this.canvas.lineWidth,
+        );
     }
 }
