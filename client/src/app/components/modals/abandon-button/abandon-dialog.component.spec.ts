@@ -5,15 +5,15 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
-import { AbandonButtonComponent } from './abandon-button.component';
+import { AbandonDialogComponent } from './abandon-dialog.component';
 
-describe('AbandonButtonComponent', () => {
+describe('AbandonDialogComponent', () => {
     const mockDialogRef = {
         close: jasmine.createSpy('close'),
     };
 
-    let component: AbandonButtonComponent;
-    let fixture: ComponentFixture<AbandonButtonComponent>;
+    let component: AbandonDialogComponent;
+    let fixture: ComponentFixture<AbandonDialogComponent>;
     let gameManagerServiceSpy: jasmine.SpyObj<GameManagerService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
 
@@ -24,7 +24,7 @@ describe('AbandonButtonComponent', () => {
 
     beforeEach(async () => {
         TestBed.configureTestingModule({
-            declarations: [AbandonButtonComponent],
+            declarations: [AbandonDialogComponent],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
@@ -35,7 +35,7 @@ describe('AbandonButtonComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AbandonButtonComponent);
+        fixture = TestBed.createComponent(AbandonDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
