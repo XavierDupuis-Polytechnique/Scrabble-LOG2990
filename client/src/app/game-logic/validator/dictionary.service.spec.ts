@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
@@ -13,7 +14,7 @@ describe('DictionaryService', () => {
 
     beforeEach(() => {
         if (!dictionaryService.isDefaultDict) {
-            dictionaryService.addDefault();
+            dictionaryService['addDefault']();
         }
     });
 

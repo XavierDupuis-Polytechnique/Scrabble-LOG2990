@@ -20,7 +20,11 @@ export class DictionaryController {
                 const title = req.query.title as string;
                 if (title) {
                     const dict = this.dictionaryServerService.getDictByTitle(title);
-                    dict ? res.json(dict) : res.sendStatus(StatusCodes.NOT_FOUND);
+                    if (dict) {
+                        res.json(dict);
+                    } else {
+                        res.sendStatus(StatusCodes.NOT_FOUND);
+                    }
                 } else {
                     const dicts = this.dictionaryServerService.getDictsList();
                     res.json(dicts);

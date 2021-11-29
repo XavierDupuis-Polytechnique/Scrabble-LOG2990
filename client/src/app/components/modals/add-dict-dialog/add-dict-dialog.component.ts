@@ -20,7 +20,6 @@ export class AddDictDialogComponent {
         private dialog: MatDialog,
     ) {}
 
-
     showSelectedFile() {
         if (this.input.files === null) {
             return;
