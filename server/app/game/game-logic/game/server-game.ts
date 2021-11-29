@@ -97,10 +97,6 @@ export class ServerGame {
         if (reason === EndOfGameReason.GameEnded) {
             this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
         }
-        if (reason === EndOfGameReason.Forfeit) {
-            const remainingPlayer = this.players[this.winnerByForfeitedIndex];
-            this.endGameSubject.next({ gameToken: this.gameToken, reason: EndOfGameReason.Forfeit, players: [remainingPlayer] });
-        }
     }
 
     doAction(action: Action) {
