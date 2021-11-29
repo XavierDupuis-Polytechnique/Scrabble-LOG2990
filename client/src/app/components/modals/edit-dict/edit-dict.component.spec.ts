@@ -38,6 +38,7 @@ describe('EditDictDialogComponent', () => {
 
     it('uploadEdit should close dialog if ok', async () => {
         const dummyAnswer = of(true);
+        component.tempDict = { title: 'test', description: 'test', canEdit: true };
         dictHttpMock.editDict.and.returnValue(dummyAnswer);
         component.uploadEdit();
         expect(dialogRef.close).toHaveBeenCalled();
@@ -45,7 +46,7 @@ describe('EditDictDialogComponent', () => {
 
     it('uploadedit should open alert dialog if not ok', async () => {
         const dummyAnswer = of(false);
-
+        component.tempDict = { title: 'test', description: 'test', canEdit: true };
         dictHttpMock.editDict.and.returnValue(dummyAnswer);
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();

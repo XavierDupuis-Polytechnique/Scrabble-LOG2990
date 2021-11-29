@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { NOT_FOUND } from '@app/game-logic/constants';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
 
@@ -26,6 +27,19 @@ export class EditDictDialogComponent {
     }
 
     uploadEdit(): void {
+        if (this.tempDict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
+            this.dialog.open(AlertDialogComponent, {
+                width: '400px',
+                disableClose: true,
+                data: {
+                    message: 'Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.',
+                    button1: 'Ok',
+                    button2: '',
+                },
+            });
+            this.isEditedCorrectly = false;
+            return;
+        }
         this.dictHttpService.editDict(this.dictionary, this.tempDict).subscribe(
             (res) => {
                 if (res) {
@@ -41,7 +55,6 @@ export class EditDictDialogComponent {
                         },
                     });
                     this.isEditedCorrectly = false;
-                    this.tempDict = this.dictionary;
                 }
             },
             (error: HttpErrorResponse) => {

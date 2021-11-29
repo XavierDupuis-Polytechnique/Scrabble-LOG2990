@@ -18,21 +18,26 @@
     <br />
     <br />
     <mat-form-field>
+        <mat-error>
+            Dictionnaire supprimé, veuillez en choisir un autre
+        </mat-error>
         <mat-label>Dictionnaire de la partie</mat-label>
         <mat-select [formControlName]="'dictTitle'">
             <mat-option
-                *ngFor="let dict of dictList"
-                matNativeControl
-                required
-                [value]="dict.title"
-                [matTooltip]="dict.description"
-                matTooltipPosition="right"
+            *ngFor="let dict of dictList"
+            matNativeControl
+            required
+            [value]="dict.title"
+            [matTooltip]="dict.description"
+            matTooltipPosition="right"
             >
-                {{ dict.title }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <br />
+            {{ dict.title }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<br />
+<br />
     <mat-label>Temps par tour </mat-label>
     <mat-label>{{ timer.value | date: 'm:ss' }} min </mat-label> <br />
     <mat-slider
@@ -47,6 +52,6 @@
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>
-    <button mat-button [mat-dialog-close] (click)="cancel()">Annuler</button>
-    <button mat-button [mat-dialog-close] (click)="playGame()" [disabled]="!formValid">Jouer</button>
+    <button mat-button (click)="cancel()">Annuler</button>
+    <button mat-button (click)="playGame()" [disabled]="!formValid">Jouer</button>
 </mat-dialog-actions>

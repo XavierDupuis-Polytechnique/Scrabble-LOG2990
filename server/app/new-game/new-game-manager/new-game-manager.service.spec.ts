@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { GameMode } from '@app/game/game-mode.enum';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
@@ -15,7 +16,13 @@ describe('NewGameManagerService', () => {
     });
 
     it('should createGame', () => {
-        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
+        const gameSettings = {
+            playerName: 'Max',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
         service.createPendingGame(gameSettings);
         expect(service.pendingGames.size).to.equal(1);
     });
@@ -47,7 +54,14 @@ describe('NewGameManagerService', () => {
 
     it('on JoinGame should not delete pending game if two players are already in gameSetting', () => {
         service.pendingGames.clear();
-        const gameSettings = { playerName: 'Max', opponentName: 'Allo', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
+        const gameSettings = {
+            playerName: 'Max',
+            opponentName: 'Allo',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
         service.pendingGames.set('abc', gameSettings);
         const id = 'abc';
         const playerName = 'Sim';
@@ -57,7 +71,13 @@ describe('NewGameManagerService', () => {
 
     it('getPendingGame should return correct pending game', () => {
         service.pendingGames.clear();
-        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
+        const gameSettings = {
+            playerName: 'Max',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
         service.pendingGames.set('abc', gameSettings);
         const id = 'abc';
         expect(service.getPendingGame(id)).to.deep.equal(gameSettings);

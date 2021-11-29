@@ -50,7 +50,13 @@ describe('New Online Game Service', () => {
     });
 
     it('should create pendingGame', (done) => {
-        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic };
+        const gameSettings = {
+            playerName: 'Max',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
         serverSocket.on('createGame', () => {
             expect(newGameManagerService.createPendingGame.calledWith(gameSettings)).to.be.true;
             done();

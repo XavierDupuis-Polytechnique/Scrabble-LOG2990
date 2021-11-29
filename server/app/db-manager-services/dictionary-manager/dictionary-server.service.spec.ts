@@ -12,6 +12,7 @@ describe('DictionaryServerService', () => {
     before(() => {
         if (!fs.existsSync(testPath)) {
             fs.mkdirSync(testPath);
+            fs.mkdirSync(testPath + 'someGarbageThatShouldBeIgnored');
         }
         if (!fs.existsSync(testPath + 'dictionary.json')) {
             fs.copyFileSync('assets/dictionary.json', testPath + 'dictionary.json');
@@ -24,7 +25,7 @@ describe('DictionaryServerService', () => {
 
     afterEach(() => {
         fs.readdirSync(testPath).forEach((file: string) => {
-            if (file !== 'dictionary.json') {
+            if (file !== 'dictionary.json' && file !== 'someGarbageThatShouldBeIgnored') {
                 const dictPath = testPath + file;
                 fs.unlinkSync(dictPath);
             }
@@ -33,6 +34,7 @@ describe('DictionaryServerService', () => {
 
     after(() => {
         fs.unlinkSync(testPath + 'dictionary.json');
+        fs.rmdirSync(testPath + 'someGarbageThatShouldBeIgnored');
         fs.rmdirSync(testPath);
     });
 
@@ -91,6 +93,13 @@ describe('DictionaryServerService', () => {
 
     it('should not update the default dict', () => {
         const oldDict = { title: DEFAULT_DICTIONARY_TITLE, description: 'testDesc', words: ['aa'] };
+        const newDict = { title: 'testTitle2', description: 'testDesc2', words: ['aa'] };
+        const result = service.updateDict(oldDict, newDict);
+        expect(result).to.equal(false);
+    });
+
+    it('should not update a dict that doesnt exist', () => {
+        const oldDict = { title: 'doesntExistDict', description: 'testDesc', words: ['aa'] };
         const newDict = { title: 'testTitle2', description: 'testDesc2', words: ['aa'] };
         const result = service.updateDict(oldDict, newDict);
         expect(result).to.equal(false);

@@ -43,6 +43,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     maxTimePerTurn = MAX_TIME_PER_TURN;
     stepTimePerTurn = STEP_TIME_PER_TURN;
     dictList: DictInfo[] = [{ title: 'test', description: 'testdesc' }] as DictInfo[];
+    isDictDeleted = false;
 
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: GameSettings,
@@ -53,9 +54,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
         this.onInit();
     }
     onInit() {
-        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
-            this.dictList = dictList as DictInfo[];
-        });
+        this.fetchDictInfo();
     }
 
     ngAfterContentChecked() {
@@ -63,8 +62,7 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
     }
 
     playGame(): void {
-        // TODO Add error message if Dictionary has been deleted in the meantime (custom validator)
-        this.dialogRef.close(this.soloGameSettingsForm.value);
+        this.dictNotDeletedValidation(this.soloGameSettingsForm);
     }
 
     cancel(): void {
@@ -84,5 +82,24 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
 
     get settings() {
         return this.soloGameSettingsForm.value;
+    }
+
+    private fetchDictInfo() {
+        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
+            this.dictList = dictList as DictInfo[];
+        });
+    }
+    private dictNotDeletedValidation(formSettings: FormGroup) {
+        this.dictHttpService.getDictInfoList().subscribe((dictList) => {
+            this.dictList = dictList as DictInfo[];
+            const dictionary = this.dictList.find((dict) => dict.title === formSettings.value.dictTitle);
+            if (dictionary) {
+                this.dialogRef.close(this.soloGameSettingsForm.value);
+            } else {
+                this.soloGameSettingsForm.controls.dictTitle.setErrors({
+                    dictDeleted: true,
+                });
+            }
+        });
     }
 }

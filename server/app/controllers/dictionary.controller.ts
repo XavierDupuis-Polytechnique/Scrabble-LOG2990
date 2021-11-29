@@ -20,10 +20,10 @@ export class DictionaryController {
                 const title = req.query.title as string;
                 if (title) {
                     const dict = this.dictionaryServerService.getDictByTitle(title);
-                    if (!dict) {
-                        res.sendStatus(StatusCodes.NOT_FOUND);
-                    } else {
+                    if (dict) {
                         res.json(dict);
+                    } else {
+                        res.sendStatus(StatusCodes.NOT_FOUND);
                     }
                 } else {
                     const dicts = this.dictionaryServerService.getDictsList();
@@ -53,8 +53,11 @@ export class DictionaryController {
         this.router.delete('/', async (req, res) => {
             try {
                 const title = req.query.title as string;
-                this.dictionaryServerService.deleteDict(title);
-                res.sendStatus(StatusCodes.OK);
+                if (this.dictionaryServerService.deleteDict(title)) {
+                    res.sendStatus(StatusCodes.OK);
+                } else {
+                    res.sendStatus(StatusCodes.NOT_FOUND);
+                }
             } catch (error) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
@@ -63,8 +66,12 @@ export class DictionaryController {
         this.router.put('/', async (req, res) => {
             try {
                 const clientDict = req.body as DictionaryServer[];
-                const ans = this.dictionaryServerService.updateDict(clientDict[0], clientDict[1]);
-                res.send(ans);
+                if (clientDict[0].title !== clientDict[1].title && this.dictionaryServerService.isDictExist(clientDict[1].title)) {
+                    res.send(false);
+                } else {
+                    const ans = this.dictionaryServerService.updateDict(clientDict[0], clientDict[1]);
+                    res.send(ans);
+                }
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
@@ -73,9 +80,9 @@ export class DictionaryController {
         this.router.get('/drop', async (req, res) => {
             try {
                 await this.dictionaryServerService.dropDelete();
-                res.send(true);
+                res.status(StatusCodes.OK).send(true);
             } catch (error) {
-                res.send(false);
+                res.status(StatusCodes.OK).send(false);
             }
         });
     }

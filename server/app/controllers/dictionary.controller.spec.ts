@@ -85,9 +85,14 @@ describe('DictionaryController', () => {
         return supertest(expressApp).post('/api/dictionary').expect(StatusCodes.NOT_FOUND);
     });
 
-    it('delete should send OK if bot name is correctly deleted', async () => {
+    it('delete should send OK if dict name is correctly deleted', async () => {
         dictionaryServerService.deleteDict.returns(true);
         return supertest(expressApp).delete('/api/dictionary?title=test').expect(StatusCodes.OK);
+    });
+
+    it('delete should send NOT_FOUND if dict name is not found', async () => {
+        dictionaryServerService.deleteDict.returns(false);
+        return supertest(expressApp).delete('/api/dictionary?title=test').expect(StatusCodes.NOT_FOUND);
     });
 
     it('delete should throw', async () => {
@@ -97,9 +102,13 @@ describe('DictionaryController', () => {
 
     it('put should return true', async () => {
         dictionaryServerService.updateDict.returns(true);
+        dictionaryServerService.isDictExist.returns(false);
         return supertest(expressApp)
             .put('/api/dictionary')
-            .send({})
+            .send([
+                { title: 'Test', description: 'Test', words: ['aa', 'bb'] },
+                { title: 'Test2', description: 'Test', words: ['aa', 'bb'] },
+            ])
             .then((res) => {
                 const ans = res.body as boolean;
                 expect(ans).to.equal(true);
@@ -108,9 +117,13 @@ describe('DictionaryController', () => {
 
     it('put should return false', async () => {
         dictionaryServerService.updateDict.returns(false);
+        dictionaryServerService.isDictExist.returns(true);
         return supertest(expressApp)
             .put('/api/dictionary')
-            .send({})
+            .send([
+                { title: 'Test', description: 'Test', words: ['aa', 'bb'] },
+                { title: 'Test2', description: 'Test', words: ['aa', 'bb'] },
+            ])
             .then((res) => {
                 const ans = res.body as boolean;
                 expect(ans).to.equal(false);

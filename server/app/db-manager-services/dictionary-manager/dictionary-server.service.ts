@@ -17,7 +17,7 @@ export class DictionaryServerService {
 
     isDictExist(dictTitle: string): boolean {
         for (const dict of this.allDictionary) {
-            if (dict.title === dictTitle) {
+            if (dict.title.replace(/\s/g, '') === dictTitle.replace(/\s/g, '')) {
                 return true;
             }
         }
@@ -65,6 +65,9 @@ export class DictionaryServerService {
 
     updateDict(oldDict: DictionaryServer, newDict: DictionaryServer): boolean {
         const index = this.allDictionary.findIndex((dict) => dict.title === oldDict.title);
+        if (index === NOT_FOUND) {
+            return false;
+        }
         const currentDict = this.allDictionary[index];
         if (currentDict.canEdit) {
             currentDict.title = newDict.title;
@@ -79,10 +82,11 @@ export class DictionaryServerService {
 
     deleteDict(dictTitle: string): boolean {
         const index = this.allDictionary.findIndex((dict) => dict.title === dictTitle);
-        if (index === NOT_FOUND) {
+        const dictionary = this.allDictionary[index];
+        if (!dictionary) {
             return false;
         }
-        if (!this.allDictionary[index].canEdit) {
+        if (!dictionary.canEdit) {
             return false;
         }
         this.allDictionary.splice(index, 1);

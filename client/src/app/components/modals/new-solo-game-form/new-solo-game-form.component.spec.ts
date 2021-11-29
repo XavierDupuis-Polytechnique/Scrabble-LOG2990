@@ -109,9 +109,30 @@ describe('NewSoloGameFormComponent', () => {
 
     it('playGame should close the dialog', () => {
         spyOn(mockDialog, 'close');
+        component.soloGameSettingsForm.setValue({
+            playerName: '',
+            botDifficulty: '',
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            randomBonus: false,
+            dictTitle: 'testTitle',
+        });
         component.playGame();
         expect(mockDialog.close).toHaveBeenCalled();
     });
+
+    it('playGame should set error if dict deleted', () => {
+        spyOn(mockDialog, 'close');
+        component.soloGameSettingsForm.setValue({
+            playerName: '',
+            botDifficulty: '',
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            randomBonus: false,
+            dictTitle: 'notTestTitle',
+        });
+        component.playGame();
+        expect(mockDialog.close).not.toHaveBeenCalled();
+    });
+
     it('cancel should close the dialog and reset form', () => {
         const setting = {
             playerName: 'samuel',

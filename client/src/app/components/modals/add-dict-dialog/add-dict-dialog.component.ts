@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { NOT_FOUND } from '@app/game-logic/constants';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
@@ -57,6 +58,15 @@ export class AddDictDialogComponent {
                     button2: '',
                 },
             });
+        } else if (dict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
+            this.dialog.open(AlertDialogComponent, {
+                width: '250px',
+                data: {
+                    message: 'Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.',
+                    button1: 'Ok',
+                    button2: '',
+                },
+            });
         } else if (dict.description === undefined || null) {
             this.dialog.open(AlertDialogComponent, {
                 width: '250px',
@@ -81,7 +91,7 @@ export class AddDictDialogComponent {
                     this.dialog.open(AlertDialogComponent, {
                         width: '250px',
                         data: {
-                            message: 'Une erreur est survenue avec le serveur',
+                            message: 'Un dictionnaire avec le même titre existe déjà sur le serveur',
                             button1: 'Ok',
                             button2: '',
                         },
