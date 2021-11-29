@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { ChatMessage } from '@app/game-logic/messages/message.interface';
@@ -11,7 +12,7 @@ describe('online chat handler', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({ providers: [{ provide: GameInfoService, useValue: gameInfo }] });
         service = TestBed.inject(OnlineChatHandlerService);
-        service.socket = new SocketMock();
+        (service.socket as any) = new SocketMock();
         service.joinChatRoom('1', 'bob');
     });
 
@@ -21,20 +22,20 @@ describe('online chat handler', () => {
 
     it('should call error when servit emit error', () => {
         const spy = spyOn(service, 'receiveChatServerError');
-        service.socket.peerSideEmit('error', 'test');
+        (service.socket as any).peerSideEmit('error', 'test');
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('should call receiveServerMessage when servit emit roomMessage', () => {
         const spy = spyOn(service, 'receiveServerMessage');
         const message: ChatMessage = { content: 'hello there', from: 'General Kenoby' };
-        service.socket.peerSideEmit('roomMessages', message);
+        (service.socket as any).peerSideEmit('roomMessages', message);
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('should call receiveSystemMessage when servit emit systemMessages', () => {
         const spy = spyOn(service, 'receiveSystemMessage');
-        service.socket.peerSideEmit('systemMessages', 'test');
+        (service.socket as any).peerSideEmit('systemMessages', 'test');
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
@@ -97,21 +98,21 @@ describe('online chat handler', () => {
     });
 
     it('should throw error when leaving chat room when not connected', () => {
-        service.socket = undefined;
+        (service.socket as unknown) = undefined;
         expect(() => {
             service.leaveChatRoom();
         }).toThrowError();
     });
 
     it('should throw error when leaving chat room when not connected', () => {
-        service.socket = undefined;
+        (service.socket as unknown) = undefined;
         expect(() => {
             service.sendMessage('allo');
         }).toThrowError();
     });
 
     it('should not throw when joining two time a game', () => {
-        service.socket = undefined;
+        (service.socket as unknown) = undefined;
         expect(() => {
             service.joinChatRoom('1', 'bob');
         }).not.toThrowError();
