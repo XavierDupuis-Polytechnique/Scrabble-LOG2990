@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { GameState } from '@app/game-logic/game/games/online-game/game-state';
 import { TimerControls } from '@app/game-logic/game/timer/timer-controls.enum';
@@ -32,14 +33,14 @@ describe('GameSocketHandlerService', () => {
     it('on gameState should call receiveGameState', () => {
         const spy = spyOn(service, 'receiveGameState');
         const mockGameState = {};
-        service.socket.peerSideEmit('gameState', mockGameState);
+        (service.socket as any).peerSideEmit('gameState', mockGameState);
         expect(spy).toHaveBeenCalled();
     });
 
     it('on timerControl should call receiveTimerControl', () => {
         const spy = spyOn(service, 'receiveTimerControl');
         const mockTimerControl: TimerControls = TimerControls.Start;
-        service.socket.peerSideEmit('timerControl', mockTimerControl);
+        (service.socket as any).peerSideEmit('timerControl', mockTimerControl);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -56,7 +57,7 @@ describe('GameSocketHandlerService', () => {
         const onlineAction: OnlineAction = { type: OnlineActionType.Pass };
         service.playAction(onlineAction);
         expect(spy).toHaveBeenCalled();
-        service.socket = undefined;
+        (service.socket as unknown) = undefined;
         expect(() => {
             service.playAction(onlineAction);
         }).toThrowError();
@@ -75,7 +76,7 @@ describe('GameSocketHandlerService', () => {
         const spy = spyOn(service.socket, 'disconnect');
         service.disconnect();
         expect(spy).toHaveBeenCalled();
-        service.socket = undefined;
+        (service.socket as unknown) = undefined;
         expect(() => {
             service.disconnect();
         }).toThrowError();
