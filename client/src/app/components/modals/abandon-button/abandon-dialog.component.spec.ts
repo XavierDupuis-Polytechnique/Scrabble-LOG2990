@@ -1,10 +1,11 @@
 /* tslint:disable:no-unused-variable */
 import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { AbandonDialogComponent } from './abandon-dialog.component';
 
 describe('AbandonDialogComponent', () => {
@@ -25,7 +26,7 @@ describe('AbandonDialogComponent', () => {
     beforeEach(async () => {
         TestBed.configureTestingModule({
             declarations: [AbandonDialogComponent],
-            imports: [RouterTestingModule.withRoutes(routes), MatDialogModule],
+            imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerServiceSpy },
                 { provide: MatDialogRef, useValue: mockDialogRef },
