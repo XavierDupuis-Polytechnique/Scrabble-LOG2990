@@ -1,0 +1,21 @@
+<mat-dialog-content>
+    <h1>Voulez-vous abandonner la partie ?</h1>
+    <br/>
+    <mat-label>Vous seriez alors déclaré perdant.</mat-label>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button
+        mat-button
+        color="primary"
+        (click)="closeDialog()"
+    >
+        Annuler
+    </button>
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="abandon()"
+    >
+        Abandonner
+    </button>
+</mat-dialog-actions>

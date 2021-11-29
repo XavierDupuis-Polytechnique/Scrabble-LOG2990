@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
@@ -95,6 +96,7 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         HttpClientModule,
         ReactiveFormsModule,
         MatTableModule,
+        AbandonDialogComponent,
     ],
     providers: [
         {

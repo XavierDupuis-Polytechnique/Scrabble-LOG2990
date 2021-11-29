@@ -7,10 +7,11 @@
     margin: 1%;
 }
 
-.mat-expansion-panel-header {
+mat-expansion-panel-header {
     font-size: 18px;
     font-weight: bold;
-    margin: 5%;
+    margin: 0 5% 0 5%;
+    height: 48px;
 }
 
 .public {
