@@ -7,8 +7,8 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
-import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
+import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
 import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
@@ -77,9 +77,6 @@ export class GameManagerService {
         this.endGame$.subscribe((endOfGame: EndOfGame) => {
             const gameToken = endOfGame.gameToken;
             if (endOfGame.reason === EndOfGameReason.GameEnded) {
-                this.updateLeaderboard(endOfGame.players);
-            }
-            if (endOfGame.reason === EndOfGameReason.Forfeit) {
                 this.updateLeaderboard(endOfGame.players);
             }
             this.deleteGame(gameToken);

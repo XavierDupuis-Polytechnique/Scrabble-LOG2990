@@ -160,10 +160,16 @@ export class GameManagerService {
             }
         }
         this.transition.next();
-
         // STARTS LOADED GAME
         const activePlayerIndex = forfeitedGameState.activePlayerIndex;
         this.resumeGame(activePlayerIndex);
+        this.game.isEndOfGame$.pipe(first()).subscribe(() => {
+            if (this.game === undefined) {
+                return;
+            }
+            const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
+            this.updateLeaderboard(this.game.players, gameMode);
+        });
     }
 
     transitionBoard(forfeitedGameState: ForfeitedGameSate) {
@@ -268,16 +274,12 @@ export class GameManagerService {
                 this.objectiveCreator,
             );
         }
-
         const onlineGame = this.game as OnlineGame;
-
         const opponentName = gameSettings.playerName === userName ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(userName, opponentName);
         this.allocatePlayers(players);
         onlineGame.handleUserActions();
-
         this.info.receiveGame(this.game);
-
         this.onlineChat.joinChatRoomWithUser(userAuth.gameToken);
         this.gameSocketHandler.joinGame(userAuth);
     }
