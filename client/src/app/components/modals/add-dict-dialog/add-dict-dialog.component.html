@@ -2,10 +2,10 @@
 <button mat-raised-button (click)="fileInput.click()">
     Choisir un fichier à téléverser
 </button>
-<div style="height: 35px; padding: 10px; display: flex; align-items: center; justify-content: center;">
+<div class="file">
     <p>{{selectedFile}}</p>
 </div>
-<div style="display: flex; justify-content: space-between;">
+<div class="buttons">
     <button mat-raised-button matDialogClose>Annuler</button>
     <button mat-raised-button [disabled]="selectedFile === ''" (click)="uploadFile()">Téléverser</button>
 </div>

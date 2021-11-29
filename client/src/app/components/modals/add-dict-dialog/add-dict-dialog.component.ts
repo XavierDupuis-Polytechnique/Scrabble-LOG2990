@@ -21,14 +21,15 @@ export class AddDictDialogComponent {
     ) {}
 
     showSelectedFile() {
-        if (this.input.files === null) {
+        const file = this.input.files;
+        if (!file) {
             return;
         }
-        this.selectedFile = this.input.files[0].name;
+        this.selectedFile = file[0].name;
     }
 
     async uploadFile() {
-        if (this.input.files === null) {
+        if (!this.input.files) {
             return;
         }
         const file = this.input.files[0];

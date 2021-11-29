@@ -86,6 +86,7 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         ObjectivesListComponent,
         ObjectiveComponent,
         AddDictDialogComponent,
+        AbandonDialogComponent,
     ],
     imports: [
         AppMaterialModule,
@@ -96,7 +97,6 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         HttpClientModule,
         ReactiveFormsModule,
         MatTableModule,
-        AbandonDialogComponent,
     ],
     providers: [
         {
