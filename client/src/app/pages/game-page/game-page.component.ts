@@ -20,8 +20,8 @@ import { Subscription } from 'rxjs';
 })
 export class GamePageComponent implements OnDestroy {
     dialogRef: MatDialogRef<DisconnectedFromServerComponent> | undefined;
-    disconnected$$: Subscription;
-    forfeited$$: Subscription;
+    private disconnected$$: Subscription;
+    private forfeited$$: Subscription;
     constructor(
         private gameManager: GameManagerService,
         public info: GameInfoService,
