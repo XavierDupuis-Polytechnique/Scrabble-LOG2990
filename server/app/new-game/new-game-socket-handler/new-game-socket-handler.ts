@@ -1,10 +1,10 @@
 import { isGameSettings } from '@app/game/game-logic/utils';
-import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/new-game/online-game.interface';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
+import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/new-game/online-game.interface';
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 
 const pendingGames = 'pendingGames';
 const createGame = 'createGame';
@@ -49,7 +49,6 @@ export class NewGameSocketHandler {
 
             socket.on('disconnect', () => {
                 this.onDisconnect(gameId);
-                // this.dictionaryService.deleteGameDictionary(gameId);
                 this.emitPendingGamesToAll();
             });
         });
