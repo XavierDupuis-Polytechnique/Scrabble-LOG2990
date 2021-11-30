@@ -26,7 +26,6 @@ import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
-
 @Injectable({
     providedIn: 'root',
 })
@@ -83,22 +82,6 @@ export class GameManagerService {
         this.info.receiveGame(newGame);
         this.updateLeaboardWhenGameEnds(newGame, GameMode.Classic);
         return dictReady$;
-    }
-
-    private updateLeaboardWhenGameEnds(game: Game, gameMode: GameMode) {
-        game.isEndOfGame$.pipe(first()).subscribe(() => {
-            if (this.game === undefined) {
-                return;
-            }
-            this.updateLeaderboard(this.game.players, gameMode);
-        });
-    }
-
-    private setupOfflineGame(gameSettings: GameSettings) {
-        const playerName = gameSettings.playerName;
-        const botDifficulty = gameSettings.botDifficulty;
-        const players = this.createOfflinePlayers(playerName, botDifficulty);
-        this.allocatePlayers(players);
     }
 
     createSpecialGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
@@ -254,7 +237,7 @@ export class GameManagerService {
         }
         this.game.start();
     }
-    // TODO Refactor code duplication
+
     resumeGame(activePlayerIndex: number) {
         this.resetServices();
         if (!this.game) {
@@ -270,6 +253,22 @@ export class GameManagerService {
         }
         this.resetServices();
         this.game = undefined;
+    }
+
+    private updateLeaboardWhenGameEnds(game: Game, gameMode: GameMode) {
+        game.isEndOfGame$.pipe(first()).subscribe(() => {
+            if (this.game === undefined) {
+                return;
+            }
+            this.updateLeaderboard(this.game.players, gameMode);
+        });
+    }
+
+    private setupOfflineGame(gameSettings: GameSettings) {
+        const playerName = gameSettings.playerName;
+        const botDifficulty = gameSettings.botDifficulty;
+        const players = this.createOfflinePlayers(playerName, botDifficulty);
+        this.allocatePlayers(players);
     }
 
     private resetServices() {
