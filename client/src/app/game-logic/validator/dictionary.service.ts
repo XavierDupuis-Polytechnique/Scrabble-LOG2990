@@ -37,6 +37,7 @@ export class DictionaryService {
             this.ready();
             return this.dictReady$;
         }
+        this.dictReady$.next(false);
         this.dictHttpService.getDict(dictTitle).subscribe((res) => {
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
@@ -131,7 +132,6 @@ export class DictionaryService {
 
     private ready() {
         this.dictReady$.next(true);
-        this.dictReady$.complete();
     }
 
     private clearWords() {
