@@ -1,19 +1,26 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { NEW_GAME_TIMEOUT } from '@app/constants';
+import { LeaderboardService } from '@app/database/leaderboard-service/leaderboard.service';
 import { GameActionNotifierService } from '@app/game/game-action-notifier/game-action-notifier.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
+import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameManagerService, PlayerRef } from '@app/game/game-manager/game-manager.services';
+import { GameMode } from '@app/game/game-mode.enum';
 import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
@@ -32,6 +39,9 @@ describe('GameManagerService', () => {
     let stubTimerController: TimerController;
     let stubGameCompiler: GameCompiler;
     let stubGameActionNotifierService: GameActionNotifierService;
+    let stubObjectiveCreator: ObjectiveCreator;
+    let stubLeaderboardService: LeaderboardService;
+    let stubDictionaryService: DictionaryService;
     let clock: sinon.SinonFakeTimers;
     before(() => {
         stubPointCalculator = createSinonStubInstance<PointCalculatorService>(PointCalculatorService);
@@ -40,6 +50,9 @@ describe('GameManagerService', () => {
         stubGameCompiler = createSinonStubInstance<GameCompiler>(GameCompiler);
         stubTimerController = createSinonStubInstance<TimerController>(TimerController);
         stubGameActionNotifierService = createSinonStubInstance<GameActionNotifierService>(GameActionNotifierService);
+        stubObjectiveCreator = createSinonStubInstance<ObjectiveCreator>(ObjectiveCreator);
+        stubLeaderboardService = createSinonStubInstance<LeaderboardService>(LeaderboardService);
+        stubDictionaryService = createSinonStubInstance<DictionaryService>(DictionaryService);
     });
 
     afterEach(() => {
@@ -55,6 +68,9 @@ describe('GameManagerService', () => {
             stubGameCompiler,
             stubTimerController,
             stubGameActionNotifierService,
+            stubObjectiveCreator,
+            stubLeaderboardService,
+            stubDictionaryService,
         );
     });
 
@@ -64,12 +80,15 @@ describe('GameManagerService', () => {
         const timePerTurn = 60000;
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn,
             playerName,
             opponentName,
             randomBonus,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -92,12 +111,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -126,12 +148,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -149,12 +174,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -172,12 +200,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -197,12 +228,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -221,12 +255,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -249,12 +286,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -272,12 +312,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -301,12 +344,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -324,12 +370,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -343,12 +392,15 @@ describe('GameManagerService', () => {
         const gameToken = '1';
         const playerName = 'test1';
         const opponentName = 'test2';
+        const gameMode = GameMode.Classic;
         const gameSettings: OnlineGameSettings = {
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode,
         };
 
         service.createGame(gameToken, gameSettings);
@@ -372,6 +424,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
         clock.tick(NEW_GAME_TIMEOUT);
@@ -386,6 +440,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
         service.linkedClients.clear();
@@ -404,6 +460,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         service.createGame(gameToken, gameSettings);
 
@@ -430,6 +488,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName: 'test1',
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
         service.activeGames.delete('1');
@@ -456,6 +516,8 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         service.createGame('1', gameSettings);
 
@@ -479,7 +541,7 @@ describe('GameManagerService', () => {
         }).to.not.throw(Error);
     });
 
-    it('should remove game when it finishes', () => {
+    it('should remove game when it finishes and update leaderboard', () => {
         const playerName = 'test1';
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
@@ -488,10 +550,28 @@ describe('GameManagerService', () => {
             randomBonus: false,
             playerName,
             opponentName: 'test2',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Classic,
         };
         service.createGame(gameToken, gameSettings);
-        // eslint-disable-next-line dot-notation
-        service['endGame$'].next(gameToken);
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [] });
+        expect(service.activeGames.size).to.be.equal(0);
+    });
+
+    it('should update leaderboard when it finishes on forfeit', () => {
+        const player = new Player('test01');
+        const gameToken = '1';
+        const gameSettings: OnlineGameSettings = {
+            gameMode: GameMode.Classic,
+            id: gameToken,
+            timePerTurn: 60000,
+            randomBonus: false,
+            playerName: player.name,
+            opponentName: 'test3',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
+        service.createGame(gameToken, gameSettings);
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });
         expect(service.activeGames.size).to.be.equal(0);
     });
 });

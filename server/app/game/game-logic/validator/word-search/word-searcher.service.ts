@@ -16,14 +16,6 @@ export class WordSearcher {
 
     constructor(public dictionaryService: DictionaryService) {}
 
-    validateWords(action: PlaceLetter, grid: Tile[][]): boolean {
-        const listOfValidWord = this.listOfValidWord(action, grid);
-        if (listOfValidWord.length > 0) {
-            return true;
-        }
-        return false;
-    }
-
     findIndexOfLetterToPlace(action: PlaceLetter, grid: Tile[][]) {
         const indexOfLetterToPlace: number[] = [];
         if (action.placement.direction === Direction.Horizontal) {
@@ -44,9 +36,9 @@ export class WordSearcher {
         return indexOfLetterToPlace;
     }
 
-    listOfValidWord(action: PlaceLetter, grid: Tile[][]): Word[] {
+    listOfValidWord(action: PlaceLetter, grid: Tile[][], gameToken: string): Word[] {
         const listOfValidWord: Word[] = [];
-        if (this.dictionaryService.isWordInDict(action.word)) {
+        if (this.dictionaryService.isWordInDict(action.word, gameToken)) {
             const letters = this.stringToTile(action.word, action.placement, grid);
             const index = this.findIndexOfLetterToPlace(action, grid);
             listOfValidWord.push({ letters, index });
@@ -57,7 +49,7 @@ export class WordSearcher {
                 if (this.hasNeighbour(coord, direction, grid)) {
                     const beginingPos = this.goToBeginningOfWord(direction, coord, grid);
                     const word = this.goToEndOfWord(action, beginingPos, coord, grid);
-                    if (this.isValid(word.letters)) {
+                    if (this.isValid(word.letters, gameToken)) {
                         listOfValidWord.push(word);
                     } else {
                         return [];
@@ -81,7 +73,7 @@ export class WordSearcher {
     goToBeginningOfWord(direction: Direction, letterPos: Vec2, grid: Tile[][]): Vec2 {
         let x = letterPos.x;
         let y = letterPos.y;
-        if ((direction as Direction) === Direction.Horizontal) {
+        if (direction === Direction.Horizontal) {
             while (this.tileIsOccupied(x, y, grid) || this.isLetterPosition({ x, y }, letterPos)) {
                 y -= 1;
             }
@@ -132,9 +124,9 @@ export class WordSearcher {
         return { letters, index };
     }
 
-    isValid(word: Tile[]): boolean {
+    isValid(word: Tile[], gameToken: string): boolean {
         const wordString = this.tileToString(word).toLowerCase();
-        if (this.dictionaryService.isWordInDict(wordString)) {
+        if (this.dictionaryService.isWordInDict(wordString, gameToken)) {
             return true;
         }
         return false;

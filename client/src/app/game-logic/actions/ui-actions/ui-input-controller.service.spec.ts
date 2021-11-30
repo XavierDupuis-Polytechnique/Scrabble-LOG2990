@@ -30,7 +30,7 @@ class MockGameInfoService {
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let info: GameInfoService;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
@@ -124,7 +124,7 @@ describe('UIInputControllerService', () => {
     it('should update activeComponent with the correct default component when "from" is not provided', () => {
         const input: UIInput = { type: InputType.LeftClick };
         service.processInputComponent(input);
-        expect(service.activeComponent).toBe(UIInputControllerService.defaultComponent);
+        expect(service.activeComponent).toBe(InputComponent.Chatbox);
     });
 
     it('should update activeComponent with the provided InputComponent.Board parameter', () => {
@@ -374,6 +374,7 @@ describe('UIInputControllerService', () => {
     });
 
     it('should throw error if a !canBeExecuted activeAction is confirmed', () => {
+        service.activeComponent = InputComponent.Horse;
         service.activeAction = new UIExchange(player);
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
             return false;

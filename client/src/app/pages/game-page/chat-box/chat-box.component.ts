@@ -29,6 +29,7 @@ export class ChatBoxComponent implements AfterViewInit {
     constructor(private messageService: MessagesService, private cdRef: ChangeDetectorRef, private gameInfo: GameInfoService) {}
 
     ngAfterViewInit(): void {
+        this.cdRef.detectChanges();
         this.messages$.subscribe(() => {
             this.cdRef.detectChanges();
             this.scrollDownChat();
@@ -83,11 +84,9 @@ export class ChatBoxComponent implements AfterViewInit {
         chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
     }
 
-    generateMessageHTML(message: Message) {
-        let transformedContent = message.content;
-        transformedContent = this.boldPipe.transform(transformedContent);
+    generateMessageContentHTML(content: string) {
+        let transformedContent = this.boldPipe.transform(content);
         transformedContent = this.newlinePipe.transform(transformedContent);
-
-        return message.from + ': ' + transformedContent;
+        return transformedContent;
     }
 }

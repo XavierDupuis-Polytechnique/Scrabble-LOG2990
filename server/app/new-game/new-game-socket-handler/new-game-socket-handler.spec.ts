@@ -1,6 +1,9 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-unused-vars */
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
+import { GameMode } from '@app/game/game-mode.enum';
 import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-manager.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
@@ -19,6 +22,7 @@ describe('New Online Game Service', () => {
     let port: number;
     let httpServer: Server;
     let newGameManagerService: StubbedClass<NewGameManagerService>;
+    let dictionaryService: StubbedClass<DictionaryService>;
 
     before((done) => {
         httpServer = createServer();
@@ -27,7 +31,8 @@ describe('New Online Game Service', () => {
             port = (httpServer.address() as AddressInfo).port;
             // no warning but slow
             newGameManagerService = createSinonStubInstance<NewGameManagerService>(NewGameManagerService);
-            handler = new NewGameSocketHandler(httpServer, newGameManagerService);
+            dictionaryService = createSinonStubInstance<DictionaryService>(DictionaryService);
+            handler = new NewGameSocketHandler(httpServer, newGameManagerService, dictionaryService);
             handler.newGameHandler();
             handler.ioServer.on('connection', (socket: Socket) => {
                 serverSocket = socket;
@@ -48,7 +53,13 @@ describe('New Online Game Service', () => {
     });
 
     it('should create pendingGame', (done) => {
-        const gameSettings = { playerName: 'Max', randomBonus: true, timePerTurn: 60000 };
+        const gameSettings = {
+            playerName: 'Max',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
         serverSocket.on('createGame', () => {
             expect(newGameManagerService.createPendingGame.calledWith(gameSettings)).to.be.true;
             done();
@@ -108,12 +119,25 @@ describe('New Online Game Service', () => {
     });
 
     it('should send gameSettings to players on joinGame', (done) => {
-        const gameSettingsUI = { playerName: 'name', randomBonus: true, timePerTurn: 60000 };
-        const gameSettings = { id: 'a', playerName: 'name', randomBonus: true, timePerTurn: 60000 };
+        const gameSettingsUI = {
+            playerName: 'name',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
+        const gameSettings = {
+            id: 'a',
+            playerName: 'name',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        };
 
         newGameManagerService.createPendingGame.returns('a');
         newGameManagerService.joinPendingGame.returns('id'); // ?
-        newGameManagerService.getPendingGame.returns(gameSettings);
+        newGameManagerService.getPendingGame.returns(gameSettings as OnlineGameSettings);
 
         const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
         const playerName = 'abc';

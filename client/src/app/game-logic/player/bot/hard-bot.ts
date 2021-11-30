@@ -1,15 +1,15 @@
 import { Action } from '@app/game-logic/actions/action';
-import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
-import { PassTurn } from '@app/game-logic/actions/pass-turn';
-import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { RACK_LETTER_COUNT, TIME_BUFFER_BEFORE_ACTION } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
+import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { timer } from 'rxjs';
 import { Bot } from './bot';
 
 export class HardBot extends Bot {
+    bestWordList: ValidWord[] = [];
+
     setActive() {
         this.startTimerAction();
         this.timesUp = false;
@@ -29,27 +29,26 @@ export class HardBot extends Bot {
         }
     }
 
-    // TODO Add these extra words to debug (sprint 3)
     bestWordPicker(validWordsList: ValidWord[]): ValidWord[] {
         const numberOfWords = 4;
-        const bestWords: ValidWord[] = [];
         const zeroValueWord = new ValidWord('');
         zeroValueWord.value.totalPoints = 0;
+        this.bestWordList = [];
 
         for (let i = 0; i < numberOfWords; i++) {
-            bestWords.push(zeroValueWord);
+            this.bestWordList.push(zeroValueWord);
         }
 
         for (const validWord of validWordsList) {
             for (let index = 0; index < numberOfWords; index++) {
-                if (validWord.value.totalPoints > bestWords[index].value.totalPoints) {
-                    bestWords.splice(index, 0, validWord);
-                    bestWords.pop();
+                if (validWord.value.totalPoints > this.bestWordList[index].value.totalPoints) {
+                    this.bestWordList.splice(index, 0, validWord);
+                    this.bestWordList.pop();
                     break;
                 }
             }
         }
-        return bestWords;
+        return this.bestWordList;
     }
 
     playAction(pickedWord: ValidWord): Action {
@@ -58,18 +57,25 @@ export class HardBot extends Bot {
             y: pickedWord.startingTileY,
             direction: pickedWord.isVertical ? Direction.Vertical : Direction.Horizontal,
         };
-        const action = new PlaceLetter(this, pickedWord.word, placeSetting, this.pointCalculatorService, this.wordValidator);
-        return action;
+        return this.actionCreator.createPlaceLetter(this, pickedWord.word, placeSetting);
     }
 
     exchangeAction(): Action {
-        if (this.gameInfo.numberOfLettersRemaining > RACK_LETTER_COUNT) {
-            return new ExchangeLetter(this, this.letterRack);
-        } else return this.passAction();
+        if (this.gameInfo.numberOfLettersRemaining >= RACK_LETTER_COUNT) {
+            return this.actionCreator.createExchange(this, this.letterRack);
+        }
+        if (this.gameInfo.numberOfLettersRemaining > 0) {
+            const lettersToExchange: Letter[] = [];
+            const indexStart = this.getRandomInt(this.letterRack.length - 1);
+            for (let i = 0; i < this.gameInfo.numberOfLettersRemaining; i++) {
+                lettersToExchange.push(this.letterRack[(indexStart + i) % this.letterRack.length]);
+            }
+            return this.actionCreator.createExchange(this, lettersToExchange);
+        }
+        return this.passAction();
     }
 
     passAction(): Action {
-        const action = new PassTurn(this);
-        return action;
+        return this.actionCreator.createPassTurn(this);
     }
 }

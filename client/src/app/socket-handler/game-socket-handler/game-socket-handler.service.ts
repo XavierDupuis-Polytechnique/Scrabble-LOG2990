@@ -61,11 +61,10 @@ export class GameSocketHandlerService {
 
         this.socket.on('connect_error', () => {
             this.disconnectedFromServerSubject.next();
-            // this.socket.disconnect();
         });
+
         this.socket.on('disconnected', () => {
             this.disconnectedFromServerSubject.next();
-            // this.socket.disconnect();
         });
     }
 
@@ -80,7 +79,7 @@ export class GameSocketHandlerService {
         this.socket.emit('nextAction', action);
     }
 
-    forfeit() {
+    disconnect() {
         if (!this.socket) {
             throw Error(HAVE_NOT_JOINED_GAME_ERROR);
         }

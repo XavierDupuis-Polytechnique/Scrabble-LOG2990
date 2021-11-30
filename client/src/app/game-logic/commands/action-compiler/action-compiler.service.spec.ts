@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -20,10 +21,11 @@ describe('ActionCompilerService', () => {
     let player: Player;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
+
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }],
+            providers: [{ provide: DictionaryService, useValue: dict }, ActionCreatorService],
         });
         service = TestBed.inject(ActionCompilerService);
         gameInfo = TestBed.inject(GameInfoService);

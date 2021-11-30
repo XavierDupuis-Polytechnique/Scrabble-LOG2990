@@ -5,41 +5,54 @@ mat-form-field {
     width: 95%;
 }
 
+mat-icon {
+    color: var(--white);
+    font-size: medium;
+}
+
 .chatContainer {
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .sharedChat {
-    height: 30vh;
+    flex-basis: 5vh;
+    flex-grow: 1;
     overflow-y: scroll;
     overflow-x: hidden;
     scrollbar-width: thin;
-    word-break: break-all;
+    word-break: break-word;
     background-color: var(--white);
     opacity: 0.9;
     margin: 1%;
+    display: flex;
+    flex-direction: column;
 }
 
-#message {
-    max-width: 100%;
+.message {
+    color: var(--white);
+    border-radius: 5px;
+    margin-bottom: 2%;
+    margin-top: 2%;
+    padding: 3%;
 }
 
-.systemMessage {
-    color: red !important;
-    font: red !important ;
-    font-family: cursive;
+.system {
+    background-color: grey;
+    align-self: flex-start;
+    margin-right: 10%;
 }
 
-.System {
-    color: red;
+.player1 {
+    background-color: royalblue;
+    align-self: flex-end;
+    margin-left: 10%;
 }
 
-.Player1 {
-    color: black;
-}
-
-.Player2 {
-    color: blue;
+.player2 {
+    background-color: #9d26ff;
+    align-self: flex-start;
+    margin-right: 10%;
 }

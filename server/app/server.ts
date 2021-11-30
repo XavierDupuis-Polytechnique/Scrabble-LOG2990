@@ -1,4 +1,6 @@
 import { Application } from '@app/app';
+import { DatabaseService } from '@app/database/database.service';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
 import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
@@ -22,6 +24,8 @@ export class Server {
         private onlineGameService: NewGameManagerService,
         private gameManager: GameManagerService,
         private systemMessagesService: SystemMessagesService,
+        private databaseService: DatabaseService,
+        private dictionaryService: DictionaryService,
     ) {}
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
@@ -34,12 +38,12 @@ export class Server {
         }
     }
 
-    init(): void {
+    async init(): Promise<void> {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
 
-        this.onlineGameManager = new NewGameSocketHandler(this.server, this.onlineGameService);
+        this.onlineGameManager = new NewGameSocketHandler(this.server, this.onlineGameService, this.dictionaryService);
         this.onlineGameManager.newGameHandler();
 
         this.gameSocketsHandler = new GameSocketsHandler(this.server, this.gameManager);
@@ -50,6 +54,11 @@ export class Server {
         this.server.listen(Server.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
+        try {
+            await this.databaseService.start();
+        } catch {
+            process.exit(1);
+        }
     }
 
     private onError(error: NodeJS.ErrnoException): void {

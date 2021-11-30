@@ -1,13 +1,16 @@
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
+import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderboard.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -18,6 +21,9 @@ import { PreventContextMenuDirective } from '@app/directives/prevent-context-men
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
+import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
+import { AdminJoueurVirtuelComponent } from '@app/pages/admin-page/admin-joueur-virtuel/admin-jv.component';
+import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { BoardComponent } from '@app/pages/game-page/board/board.component';
@@ -25,9 +31,16 @@ import { ChatBoxComponent } from '@app/pages/game-page/chat-box/chat-box.compone
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { HorseComponent } from '@app/pages/game-page/horse/horse.component';
 import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.component';
+import { ObjectiveComponent } from '@app/pages/game-page/objectives/objective-component/objective.component';
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
+import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
+import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
+import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
+import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
+import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
+import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -38,6 +51,7 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 @NgModule({
     declarations: [
         AppComponent,
+        AdminDictComponent,
         GamePageComponent,
         PlayerInfoComponent,
         InfoBoxComponent,
@@ -59,11 +73,31 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
         JoinOnlineGameComponent,
         DisconnectedFromServerComponent,
         ErrorDialogComponent,
+        LeaderboardComponent,
         PreventContextMenuDirective,
         ClickAndClickoutDirective,
         MouseRollDirective,
+        AdminPageComponent,
+        EditDictDialogComponent,
+        AlertDialogComponent,
+        AdminJoueurVirtuelComponent,
+        EditJvDialogComponent,
+        AdminDropDbComponent,
+        ObjectivesListComponent,
+        ObjectiveComponent,
+        AddDictDialogComponent,
+        AbandonDialogComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, ReactiveFormsModule],
+    imports: [
+        AppMaterialModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        MatTableModule,
+    ],
     providers: [
         {
             provide: APP_INITIALIZER,

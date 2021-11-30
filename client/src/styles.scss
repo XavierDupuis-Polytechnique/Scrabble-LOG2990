@@ -111,12 +111,29 @@ body {
     font-family: Roboto, 'Helvetica Neue', sans-serif;
     background: #20262c;
 }
+
+.disable-select {
+    user-select: none; /* supported by Chrome and Opera */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+}
+
 h1 {
+    @extend .disable-select;
     display: flex;
     justify-content: center;
-    background-color: rgb(43, 0, 112, 0.9);
     color: rgb(233, 231, 231);
-    border-radius: 0.6rem;
+    margin-bottom: 0px !important;
+}
+
+h2 {
+    @extend .disable-select;
+    margin-bottom: 0px !important;
+    display: flex;
+    justify-content: center;
+    color: rgb(233, 231, 231);
 }
 
 // Font
@@ -124,3 +141,8 @@ h1 {
     font-family: overpass;
     src: url('https://fonts.googleapis.com/css2?family=Overpass&display=swap') format('opentype');
 }
+
+body, html{
+    height: 100%;
+    margin: 0;
+  }

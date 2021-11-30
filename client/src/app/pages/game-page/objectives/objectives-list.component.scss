@@ -1,0 +1,28 @@
+.app-objective {
+    margin: 2%;
+    background-color: black !important;
+}
+
+.mat-expansion-panel {
+    margin: 1%;
+}
+
+mat-expansion-panel-header {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 5% 0 5%;
+    height: 48px;
+}
+
+.public {
+    border-radius: 4px;
+}
+
+.private {
+    border-radius: 4px;
+}
+
+.objective-header {
+    margin: 0px !important;
+    font-size: 15px;
+}

@@ -5,17 +5,15 @@ import { SocketMock } from '@app/game-logic/socket-mock';
 import { OnlineAction, OnlineActionType } from '@app/socket-handler/interfaces/online-action.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { take } from 'rxjs/operators';
-import { Socket } from 'socket.io-client';
 import { GameSocketHandlerService } from './game-socket-handler.service';
 
 describe('GameSocketHandlerService', () => {
     let service: GameSocketHandlerService;
-    let tempSocket: Socket;
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(GameSocketHandlerService);
-        tempSocket = service.connectToSocket();
         service.connectToSocket = jasmine.createSpy().and.returnValue(new SocketMock());
+        service.connectToSocket();
         const userAuth: UserAuth = { playerName: 'Test', gameToken: '1' };
         service.joinGame(userAuth);
     });
@@ -75,11 +73,11 @@ describe('GameSocketHandlerService', () => {
 
     it('forfeit should disconnect socket', () => {
         const spy = spyOn(service.socket, 'disconnect');
-        service.forfeit();
+        service.disconnect();
         expect(spy).toHaveBeenCalled();
         service.socket = undefined;
         expect(() => {
-            service.forfeit();
+            service.disconnect();
         }).toThrowError();
     });
 
@@ -91,9 +89,5 @@ describe('GameSocketHandlerService', () => {
         const gameState = { isEndOfGame: false } as GameState;
         service.receiveGameState(gameState);
         expect(gameStateSubject.isEndOfGame).toBeFalse();
-    });
-
-    it('connectToSocket should return a socket', () => {
-        expect(tempSocket instanceof Socket).toBeTrue();
     });
 });

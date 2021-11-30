@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Action } from '@app/game-logic/actions/action';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -9,14 +10,17 @@ import { DEFAULT_TIME_PER_TURN, TIME_BEFORE_PASS, TIME_BEFORE_PICKING_ACTION, TI
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 import { EasyBot } from './easy-bot';
 
 describe('EasyBot', () => {
@@ -26,17 +30,23 @@ describe('EasyBot', () => {
     let pointCalculator: PointCalculatorService;
     let messagesService: MessagesService;
     let gameInfo: GameInfoService;
-    const dict = new DictionaryService();
-    let newGame: Game;
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
+    let newGame: OfflineGame;
     const randomBonus = false;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
+    const mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+
+    const obs = of(['Test1', 'Test2', 'Test3']);
+    mockBotHttpService.getDataInfo.and.returnValue(obs);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: BotMessagesService, useValue: botMessageMock },
+                { provide: BotHttpService, useValue: mockBotHttpService },
             ],
         });
         boardService = TestBed.inject(BoardService);
@@ -44,17 +54,19 @@ describe('EasyBot', () => {
         pointCalculator = TestBed.inject(PointCalculatorService);
         messagesService = TestBed.inject(MessagesService);
         gameInfo = TestBed.inject(GameInfoService);
-        newGame = new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
+        newGame = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService);
         gameInfo.receiveGame(newGame);
         easyBot = new EasyBot(
             'test',
             boardService,
             dict,
-            pointCalculator,
+            TestBed.inject(BotCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BotMessagesService),
             gameInfo,
             TestBed.inject(CommandExecuterService),
+            TestBed.inject(ActionCreatorService),
+            TestBed.inject(BotHttpService),
         );
     });
 

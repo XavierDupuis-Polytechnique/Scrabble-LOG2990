@@ -1,5 +1,5 @@
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
@@ -15,7 +15,7 @@ export class MockPlaceLetter extends PlaceLetter {
     ) {
         super(player, word, placement, pointCalculator, wordSearcher);
     }
-    execute(game: Game) {
+    execute(game: OfflineGame) {
         return game;
     }
 }

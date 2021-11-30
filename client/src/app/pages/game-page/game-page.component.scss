@@ -6,13 +6,14 @@
 .container {
     display: grid;
     grid-template-columns: 0.8fr 1fr 1fr 0.8fr;
-    grid-template-rows: 0.25fr 1.5fr 1.75fr 0.5fr;
+    grid-template-rows: 0.25fr 1.5fr 1.75fr 0.5fr 0.5fr;
     gap: 0px 0px;
     grid-template-areas:
         'Img Img Img Img'
-        'Player Board Board Info'
-        'Actions Board Board Chat'
-        'Quitter Horse Horse Chat';
+        'Player Board Board Objectives-Chat'
+        'Info Board Board Objectives-Chat'
+        'Actions Board Board Objectives-Chat'
+        'Quitter Horse Horse Objectives-Chat';
 }
 
 img {
@@ -29,17 +30,10 @@ app-info-box {
     padding-right: 2%;
 }
 
-app-chat-box {
-    grid-area: Chat;
-    padding: 1%;
-    padding-right: 2%;
-}
-
 app-board {
     grid-area: Board;
     height: fit-content;
-    padding-top: 3%;
-    min-width: 50vw;
+    min-width: 60vw;
 }
 
 app-horse {
@@ -54,6 +48,18 @@ app-player-info {
     grid-area: Player;
     padding: 1%;
     padding-left: 2%;
+}
+
+.container-objectives-and-chat {
+    grid-area: Objectives-Chat;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    padding-right: 2%;
+}
+
+app-chat-box {
+    flex-grow: 1;
 }
 
 .actions {

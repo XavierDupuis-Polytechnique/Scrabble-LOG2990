@@ -1,20 +1,24 @@
 import { TestBed } from '@angular/core/testing';
+import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
+import { BotCalculatorService } from '@app/game-logic/player/bot-calculator/bot-calculator.service';
 import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messages.service';
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 
 describe('Player', () => {
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let bot: EasyBot;
     let boardService: BoardService;
     let timer: TimerService;
@@ -23,6 +27,11 @@ describe('Player', () => {
     let gameInfo: GameInfoService;
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
+    const mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+
+    const obs = of(['Test1', 'Test2', 'Test3']);
+    mockBotHttpService.getDataInfo.and.returnValue(obs);
+
     const randomBonus = false;
 
     beforeEach(() => {
@@ -31,6 +40,7 @@ describe('Player', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: CommandExecuterService, useValue: commandExecuterMock },
                 { provide: BotMessagesService, useValue: botMessageMock },
+                { provide: BotHttpService, useValue: mockBotHttpService },
             ],
         });
         boardService = TestBed.inject(BoardService);
@@ -42,13 +52,15 @@ describe('Player', () => {
             'test',
             boardService,
             dict,
-            pointCalculator,
+            TestBed.inject(BotCalculatorService),
             TestBed.inject(WordSearcher),
             TestBed.inject(BotMessagesService),
             gameInfo,
             TestBed.inject(CommandExecuterService),
+            TestBed.inject(ActionCreatorService),
+            TestBed.inject(BotHttpService),
         );
-        gameInfo.receiveGame(new Game(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
+        gameInfo.receiveGame(new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, boardService, messagesService));
     });
 
     it('should create an instance', () => {

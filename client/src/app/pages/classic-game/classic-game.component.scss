@@ -12,16 +12,58 @@ button {
     margin: 0.5%;
 }
 
-.container {
+.mat-card-title {
+    padding-left: 2rem;
+}
+
+.mat-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 22px 11px;
+    height: 270px;
+    width: 500px;
+    padding-bottom: 25px;
+}
+
+.classic-container {
     width: 100vw;
     height: 100vh;
     background: url('^assets/img/classic-bg.jpg') no-repeat center top;
     background-size: 100vw 100vh;
 }
+
+.special-container {
+    width: 100vw;
+    height: 100vh;
+    background: url('^assets/img/classic-bg.jpg') no-repeat center top;
+    background-size: 100vw 100vh;
+    color: var(--darkgray) !important;
+
+    button {
+        background-color: #e0115f;
+        border: 2px linear !important;
+        color: var(--white);
+    }
+}
+
 .justified {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding-top: 30vh;
+    padding-top: 20vh;
     align-items: center;
+}
+
+.game-mode-selection {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    color: white !important;
+    justify-content: center;
+    margin-top: 3%;
+    margin-bottom: 4%;
+}
+
+.selection-button {
+    margin: 0 35px 20px;
 }

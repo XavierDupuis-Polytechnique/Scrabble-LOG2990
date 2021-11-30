@@ -3,14 +3,17 @@ import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { Game } from '@app/game-logic/game/games/solo-game/game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
-import { isCharUpperCase } from '@app/game-logic/utils';
+import { copyGrid, isCharUpperCase } from '@app/game-logic/utils';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { timer } from 'rxjs';
+
 export class PlaceLetter extends Action {
     affectedCoords: Vec2[];
     private lettersToRemoveInRack: Letter[];
@@ -26,15 +29,28 @@ export class PlaceLetter extends Action {
         super(player);
     }
 
-    protected perform(game: Game) {
+    // TODO : if possible, refactor this method
+    protected perform(game: OfflineGame) {
+        const previousGrid = copyGrid(game.board.grid);
         const validWordList = this.wordSearcher.listOfValidWord(this);
-        const words = validWordList.map((validWord) => validWord.letters);
+        const formedWords = validWordList.map((validWord) => validWord.letters);
         this.putLettersOnBoard(game);
+        const currentGrid = game.board.grid;
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
         const wordValid = validWordList.length !== 0;
         if (wordValid) {
-            this.pointCalculator.placeLetterCalculation(this, words);
+            this.pointCalculator.placeLetterCalculation(this, formedWords);
             this.drawLettersForPlayer(game);
+            if (game instanceof SpecialOfflineGame) {
+                const updateObjectiveParams: ObjectiveUpdateParams = {
+                    previousGrid,
+                    currentGrid,
+                    lettersToPlace: this.lettersToRemoveInRack,
+                    formedWords,
+                    affectedCoords: this.affectedCoords,
+                };
+                (game as SpecialOfflineGame).updateObjectives(this, updateObjectiveParams);
+            }
             this.end();
         } else {
             timer(TIME_FOR_REVERT).subscribe(() => {
@@ -44,12 +60,12 @@ export class PlaceLetter extends Action {
         }
     }
 
-    private revert(game: Game) {
+    private revert(game: OfflineGame) {
         this.removeLetterFromBoard(game);
         this.giveBackLettersToPlayer();
     }
 
-    private removeLetterFromBoard(game: Game) {
+    private removeLetterFromBoard(game: OfflineGame) {
         const grid = game.board.grid;
         for (const coord of this.affectedCoords) {
             const x = coord.x;
@@ -58,7 +74,7 @@ export class PlaceLetter extends Action {
         }
     }
 
-    private drawLettersForPlayer(game: Game) {
+    private drawLettersForPlayer(game: OfflineGame) {
         const drawnLetters = game.letterBag.drawGameLetters(this.lettersToRemoveInRack.length);
         for (const letter of drawnLetters) {
             this.player.letterRack.push(letter);
@@ -71,7 +87,7 @@ export class PlaceLetter extends Action {
         }
     }
 
-    private putLettersOnBoard(game: Game) {
+    private putLettersOnBoard(game: OfflineGame) {
         const startX = this.placement.x;
         const startY = this.placement.y;
         const direction = this.placement.direction;

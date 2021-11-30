@@ -1,3 +1,4 @@
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { OnlineGameSettings, OnlineGameSettingsUI } from '@app/new-game/online-game.interface';
 import { Service } from 'typedi';
@@ -6,7 +7,8 @@ import { Service } from 'typedi';
 export class NewGameManagerService {
     static gameIdCounter: number = 0;
     pendingGames: Map<string, OnlineGameSettingsUI> = new Map<string, OnlineGameSettingsUI>();
-    constructor(private gameMaster: GameManagerService) {}
+
+    constructor(private gameMaster: GameManagerService, private dictionaryService: DictionaryService) {}
 
     getPendingGames(): OnlineGameSettings[] {
         const games: OnlineGameSettings[] = [];
@@ -45,6 +47,10 @@ export class NewGameManagerService {
     }
 
     deletePendingGame(id: string) {
+        const gameStarted = this.gameMaster.activeGames.has(id);
+        if (!gameStarted) {
+            this.dictionaryService.deleteGameDictionary(id);
+        }
         this.pendingGames.delete(id);
     }
 
@@ -57,8 +63,8 @@ export class NewGameManagerService {
     }
 
     private startGame(gameToken: string, gameSettings: OnlineGameSettings) {
-        this.deletePendingGame(gameSettings.id);
         this.gameMaster.createGame(gameToken, gameSettings);
+        this.deletePendingGame(gameSettings.id);
     }
 
     private generateId(): string {

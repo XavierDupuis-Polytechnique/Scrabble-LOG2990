@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -6,6 +7,7 @@ import { By } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClickAndClickoutDirective } from '@app/directives/click-and-clickout.directive';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
+import { InputComponent, InputType } from '@app/game-logic/interfaces/ui-input';
 import { Message, MessageType } from '@app/game-logic/messages/message.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { User } from '@app/game-logic/player/user';
@@ -19,6 +21,7 @@ describe('ChatBoxComponent', () => {
     let messageServiceSpy: jasmine.SpyObj<MessagesService>;
     let gameInfoServiceSpy: jasmine.SpyObj<GameInfoService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
+    const httpClient = jasmine.createSpyObj('HttpClient', ['get']);
 
     beforeEach(() => {
         messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveMessagePlayer']);
@@ -32,6 +35,7 @@ describe('ChatBoxComponent', () => {
                 { provide: MessagesService, useValue: messageServiceSpy },
                 { provide: GameInfoService, useValue: gameInfoServiceSpy },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
+                { provide: HttpClient, useValue: httpClient },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
@@ -63,5 +67,14 @@ describe('ChatBoxComponent', () => {
         component.isError(maxCharPlusOne);
         fixture.detectChanges();
         expect(fixture.debugElement.query(By.css('#red'))).toBeDefined();
+    });
+
+    it('should emit when it has been clicked', (done) => {
+        component.clickChatbox.subscribe((value) => {
+            const input = { from: InputComponent.Chatbox, type: InputType.LeftClick };
+            expect(value).toEqual(input);
+            done();
+        });
+        component.click();
     });
 });

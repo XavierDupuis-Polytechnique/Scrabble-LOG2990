@@ -1,0 +1,22 @@
+<mat-card *ngIf="!hidden" class="objective">
+    <mat-card-header>
+        <div>
+            {{ name }}
+        </div>
+        <div class="points">{{ points }} pts</div>
+        <div [ngSwitch]="status">
+            <mat-icon *ngSwitchCase="'NotClaimed'">panorama_fish_eye</mat-icon>
+            <mat-icon *ngSwitchCase="'Won'" id="won">check_circle</mat-icon>
+            <mat-icon *ngSwitchCase="'Lost'" id="lost">cancel</mat-icon>
+        </div>
+    </mat-card-header>
+    <mat-card-subtitle *ngIf="showDescription">
+        {{ description }}
+    </mat-card-subtitle>
+    <mat-card-content>
+        <mat-progress-bar [value]="progression * 100"></mat-progress-bar>
+        <div class="progression-percentage">
+            {{ progression | percent }}
+        </div>
+    </mat-card-content>
+</mat-card>
