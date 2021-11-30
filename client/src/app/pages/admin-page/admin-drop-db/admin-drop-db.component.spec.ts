@@ -36,6 +36,8 @@ describe('AdminDropDbComponent', () => {
         fixture = TestBed.createComponent(AdminDropDbComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        // eslint-disable-next-line dot-notation
+        component['refresh'] = jasmine.createSpy('refresh');
     });
 
     it('should create', () => {

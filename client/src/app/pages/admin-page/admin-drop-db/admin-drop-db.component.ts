@@ -33,8 +33,9 @@ export class AdminDropDbComponent {
                             width: '250px',
                             data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },
                         });
+                        return;
                     }
-                    window.location.reload();
+                    this.refresh();
                 }
             });
     }
@@ -55,5 +56,9 @@ export class AdminDropDbComponent {
                 resolve(ans);
             });
         });
+    }
+
+    private refresh(): void {
+        window.location.reload();
     }
 }
