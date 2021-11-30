@@ -24,8 +24,8 @@ describe('wordSearcherService', () => {
             placement,
             word: 'on',
         };
-        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
-        expect(answer).to.equal(true);
+        const answer = wordSeacherService.listOfValidWord(mockAction as PlaceLetter, grid, 'gameToken');
+        expect(answer.length).to.be.greaterThan(0);
     });
 
     it('should validate word if word is vertical', () => {
@@ -34,8 +34,18 @@ describe('wordSearcherService', () => {
             placement,
             word: 'On',
         };
-        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
-        expect(answer).to.equal(true);
+        const answer = wordSeacherService.listOfValidWord(mockAction as PlaceLetter, grid, 'gameToken');
+        expect(answer.length).to.be.greaterThan(0);
+    });
+
+    it('should validate word if letter are already placed', () => {
+        const placement: PlacementSetting = { direction: Direction.Vertical, x: 1, y: 2 };
+        const mockAction = {
+            placement,
+            word: 'bon',
+        };
+        const answer = wordSeacherService.listOfValidWord(mockAction as PlaceLetter, grid, 'gameToken');
+        expect(answer.length).to.be.greaterThan(0);
     });
 
     it('should validate word if letter are already placed and have neighbour', () => {
@@ -44,8 +54,8 @@ describe('wordSearcherService', () => {
             placement,
             word: 'bon',
         };
-        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
-        expect(answer).to.equal(true);
+        const answer = wordSeacherService.listOfValidWord(mockAction as PlaceLetter, grid, 'gameToken');
+        expect(answer.length).to.be.greaterThan(0);
     });
 
     it('should invalidate word if letter are already placed and have neighbour', () => {
@@ -54,8 +64,8 @@ describe('wordSearcherService', () => {
             placement,
             word: 'bon',
         };
-        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
-        expect(answer).to.equal(false);
+        const answer = wordSeacherService.listOfValidWord(mockAction as PlaceLetter, grid, 'gameToken');
+        expect(answer.length).to.equal(0);
     });
 
     it('should return false if word is not valid (not in dict)', () => {
@@ -64,7 +74,7 @@ describe('wordSearcherService', () => {
             placement,
             word: 'tesfg',
         };
-        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
-        expect(answer).to.equal(false);
+        const answer = wordSeacherService.listOfValidWord(mockAction as PlaceLetter, grid, 'gameToken');
+        expect(answer.length).to.equal(0);
     });
 });
