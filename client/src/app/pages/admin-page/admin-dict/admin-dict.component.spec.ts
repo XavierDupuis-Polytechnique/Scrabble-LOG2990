@@ -5,7 +5,7 @@ import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-d
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('admin-dictionary component', () => {
     let component: AdminDictComponent;
@@ -74,5 +74,19 @@ describe('admin-dictionary component', () => {
         dictHttpServiceMock.deleteDict.and.returnValue(of(''));
         component.deleteDict(dictInfoMock);
         expect(dictHttpServiceMock.deleteDict).toHaveBeenCalledWith(dictInfoMock.title);
+    });
+
+    it('deleteDict should update dict if error', () => {
+        dictHttpServiceMock.deleteDict.and.returnValue(throwError('error'));
+
+        component.deleteDict({} as unknown as DictInfo);
+        expect(dictHttpServiceMock.getDictInfoList).toHaveBeenCalled();
+    });
+
+    it('updateDictMap should open dialog if error', () => {
+        dictHttpServiceMock.getDictInfoList.and.returnValue(throwError('error'));
+        // eslint-disable-next-line dot-notation
+        component['updateDictMap']();
+        expect(matDialog.open).toHaveBeenCalled();
     });
 });
