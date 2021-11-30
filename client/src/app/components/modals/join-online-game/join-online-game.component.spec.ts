@@ -65,7 +65,7 @@ describe('JoinOnlineGameComponent', () => {
         const bonus = dom.querySelectorAll('mat-label')[1];
         expect(bonus?.innerHTML).toBe('Bonus aléatoire ');
         component.data.randomBonus = true;
-        expect(component.randomBonusType).toBe('Activé');
+        expect(component.randomBonusType).toBe('est activé');
     });
 
     it('cancel', () => {

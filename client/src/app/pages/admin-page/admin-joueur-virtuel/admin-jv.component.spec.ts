@@ -2,6 +2,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
 import { Observable, of } from 'rxjs';
 import { AdminJoueurVirtuelComponent } from './admin-jv.component';
@@ -21,6 +22,7 @@ describe('AdminJvComponent', () => {
         });
         botHttpServiceMock.getDataInfo.and.returnValue(obs);
         TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [AdminJoueurVirtuelComponent],
             providers: [
                 { provide: MatDialog, useValue: matDialogMock },

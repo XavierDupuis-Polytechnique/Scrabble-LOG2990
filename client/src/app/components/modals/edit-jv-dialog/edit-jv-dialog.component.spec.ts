@@ -1,5 +1,8 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BotHttpService, BotType } from '@app/services/jv-http.service';
 import { Observable } from 'rxjs';
 import { EditJvDialogComponent } from './edit-jv-dialog.component';
@@ -18,6 +21,7 @@ describe('EditJvDialogComponent', () => {
         jvHttpMock = jasmine.createSpyObj('BotHttpService', ['editBot', 'addBot']);
 
         await TestBed.configureTestingModule({
+            imports:[AppMaterialModule, BrowserAnimationsModule],
             declarations: [EditJvDialogComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: String },
@@ -25,6 +29,7 @@ describe('EditJvDialogComponent', () => {
                 { provide: MatDialogRef, useValue: matDialogRefMock },
                 { provide: BotHttpService, useValue: jvHttpMock },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
     });
 

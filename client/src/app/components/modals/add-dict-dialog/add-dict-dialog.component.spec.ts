@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { DictHttpService } from '@app/services/dict-http.service';
 import { of } from 'rxjs';
 
@@ -17,6 +18,7 @@ describe('AddDictDialogComponent', () => {
         dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
         dictHttpServiceSpy = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict']);
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [AddDictDialogComponent],
             providers: [
                 { provide: MatDialog, useValue: dialogSpy },

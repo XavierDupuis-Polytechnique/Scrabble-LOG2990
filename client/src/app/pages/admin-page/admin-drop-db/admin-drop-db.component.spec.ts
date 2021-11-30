@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { DictHttpService } from '@app/services/dict-http.service';
 import { BotHttpService } from '@app/services/jv-http.service';
 import { of } from 'rxjs';
@@ -23,6 +24,7 @@ describe('AdminDropDbComponent', () => {
         dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
 
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [AdminDropDbComponent],
             providers: [
                 { provide: BotHttpService, useValue: botHttpServiceMock },
