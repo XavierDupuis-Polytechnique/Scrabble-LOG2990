@@ -27,7 +27,7 @@ export class GameSocketsHandler {
             this.emitTimerControl(timerControl, gameToken);
         });
 
-        this.gameManager.lastGameState.subscribe((forfeitedGameState: GameStateToken) => {
+        this.gameManager.lastGameState$.subscribe((forfeitedGameState: GameStateToken) => {
             const gameToken = forfeitedGameState.gameToken;
             const gameState = forfeitedGameState.gameState;
             if ('letterBag' in gameState) {

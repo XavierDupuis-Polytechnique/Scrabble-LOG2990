@@ -40,10 +40,10 @@ export class GameManagerService {
 
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
-    private forfeitedGameState$ = new Subject<GameStateToken>();
+    private forfeitedGameStateSubject = new Subject<GameStateToken>();
 
-    get lastGameState(): Observable<GameStateToken> {
-        return this.forfeitedGameState$;
+    get lastGameState$(): Observable<GameStateToken> {
+        return this.forfeitedGameStateSubject;
     }
 
     get newGameState$(): Observable<GameStateToken> {
@@ -144,12 +144,12 @@ export class GameManagerService {
         }
         const gameToken = playerRef.gameToken;
         const game = this.activeGames.get(gameToken);
+        this.activePlayers.delete(playerId);
         if (!game) {
             return;
         }
-        // TODO replace for sendTransitionGameState() (aka forfeitedGameState)
         this.createTransitionGameState(game);
-        this.activePlayers.delete(playerId);
+        // TODO replace for sendTransitionGameState() (aka forfeitedGameState)
 
         this.endForfeitedGame(game, playerRef.player.name);
         this.deleteGame(gameToken);
@@ -187,6 +187,9 @@ export class GameManagerService {
     }
 
     private createTransitionGameState(game: ServerGame) {
+        if (game.activePlayerIndex === undefined) {
+            return;
+        }
         const objConverter = new OnlineObjectiveConverter();
         let translatedObjectives: TransitionObjectives[] = [];
         const gameState = this.gameCompiler.compile(game);
@@ -206,7 +209,7 @@ export class GameManagerService {
             objectives: translatedObjectives,
         };
         const lastGameToken: GameStateToken = { gameState: lastGameState, gameToken: game.gameToken };
-        this.forfeitedGameState$.next(lastGameToken);
+        this.forfeitedGameStateSubject.next(lastGameToken);
     }
 
     private deleteInactiveGame(gameToken: string) {

@@ -14,6 +14,7 @@ export class OnlineObjectiveConverter {
         const translatedObjectives = objectives.map((objective) => this.translateObjective(objective));
         return translatedObjectives;
     }
+
     private convertPrivate(privateObjectives: Map<string, Objective[]>): TransitionObjectives[] {
         const translatedObjectives: TransitionObjectives[] = [];
         privateObjectives.forEach((objectives) => {

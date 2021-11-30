@@ -1,20 +1,20 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import { GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { TimerControls } from '@app/game/game-logic/timer/timer-controls.enum';
+import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
+import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
+import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
+import { expect } from 'chai';
 import { createServer, Server } from 'http';
 import { AddressInfo } from 'net';
+import { Subject } from 'rxjs';
+import * as sinon from 'sinon';
 import { Socket } from 'socket.io';
 import { io as Client, Socket as ClientSocket } from 'socket.io-client';
-import * as sinon from 'sinon';
-import { GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
-import { Subject } from 'rxjs';
-import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
-import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
-import { expect } from 'chai';
-import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
-import { TimerControls } from '@app/game/game-logic/timer/timer-controls.enum';
 
 describe('GameSocketHandler', () => {
     let handler: GameSocketsHandler;
@@ -24,6 +24,7 @@ describe('GameSocketHandler', () => {
     let port: number;
     let sandbox: sinon.SinonSandbox;
     let stubGameManager: StubbedClass<GameManagerService>;
+    const mockNewFinaleGameState$ = new Subject<GameStateToken>();
     const mockNewGameState$ = new Subject<GameStateToken>();
     const mockTimerControl$ = new Subject<TimerGameControl>();
 
@@ -34,6 +35,7 @@ describe('GameSocketHandler', () => {
 
             stubGameManager = createSinonStubInstance<GameManagerService>(GameManagerService);
             sinon.stub(stubGameManager, 'newGameState$').value(mockNewGameState$);
+            sinon.stub(stubGameManager, 'lastGameState$').value(mockNewFinaleGameState$);
             sinon.stub(stubGameManager, 'timerControl$').value(mockTimerControl$);
             handler = new GameSocketsHandler(httpServer, stubGameManager);
             handler.handleSockets();
