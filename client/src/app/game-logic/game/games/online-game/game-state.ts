@@ -30,7 +30,7 @@ export interface GameState {
     winnerIndex: number[];
 }
 
-export interface ForfeitedGameSate extends GameState {
+export interface ForfeitedGameState extends GameState {
     letterBag: Letter[];
     consecutivePass: number;
     randomBonus: boolean;

@@ -33,7 +33,7 @@ export interface SpecialGameState extends GameState {
     privateObjectives: PrivateLightObjectives[];
 }
 
-export interface ForfeitedGameSate extends GameState {
+export interface ForfeitedGameState extends GameState {
     letterBag: Letter[];
     consecutivePass: number;
     randomBonus: boolean;
@@ -45,6 +45,6 @@ export interface PrivateLightObjectives {
     privateObjectives: LightObjective[];
 }
 export interface GameStateToken {
-    gameState: GameState | ForfeitedGameSate;
+    gameState: GameState | ForfeitedGameState;
     gameToken: string;
 }

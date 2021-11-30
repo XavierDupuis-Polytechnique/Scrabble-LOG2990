@@ -1,4 +1,4 @@
-import { ForfeitedGameSate, GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameState, GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { TimerControls } from '@app/game/game-logic/timer/timer-controls.enum';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
@@ -70,7 +70,7 @@ export class GameSocketsHandler {
         this.sio.to(gameToken).emit('gameState', gameState);
     }
 
-    private emitTransitionGameState(gameState: ForfeitedGameSate, gameToken: string) {
+    private emitTransitionGameState(gameState: ForfeitedGameState, gameToken: string) {
         this.sio.to(gameToken).emit('transitionGameState', gameState);
     }
 

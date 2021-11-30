@@ -8,7 +8,7 @@ import { ActionCompilerService } from '@app/game/game-logic/actions/action-compi
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
-import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
 import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
@@ -196,7 +196,7 @@ export class GameManagerService {
         if (game instanceof SpecialServerGame) {
             translatedObjectives = translatedObjectives.concat(objConverter.convertObjectives(game.publicObjectives, game.privateObjectives));
         }
-        const lastGameState: ForfeitedGameSate = {
+        const lastGameState: ForfeitedGameState = {
             activePlayerIndex: gameState.activePlayerIndex,
             consecutivePass: game.consecutivePass,
             grid: gameState.grid,

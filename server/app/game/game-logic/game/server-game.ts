@@ -5,7 +5,7 @@ import { Board } from '@app/game/game-logic/board/board';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
-import { ForfeitedGameSate, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -23,7 +23,7 @@ export class ServerGame {
     timer: Timer;
     winnerByForfeitedIndex: number;
 
-    forfeitedGameState$ = new Subject<ForfeitedGameSate>();
+    forfeitedGameState$ = new Subject<ForfeitedGameState>();
     isEnded$ = new Subject<undefined>();
     endReason: EndOfGameReason;
     // Checkez ca

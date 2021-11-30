@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameState, GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { TimerControls } from '@app/game/game-logic/timer/timer-controls.enum';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
@@ -114,7 +114,7 @@ describe('GameSocketHandler', () => {
         });
     });
 
-    it('should emit gamestate to client', (done) => {
+    it('should emit gametate to client', (done) => {
         stubGameManager.addPlayerToGame.returns();
         const gameState: GameState = {
             players: [],
@@ -141,6 +141,73 @@ describe('GameSocketHandler', () => {
         clientSocket.emit('joinGame', userAuth);
         serverSocket.on('joinGame', () => {
             mockNewGameState$.next(gameStateToken);
+        });
+    });
+
+    it('should emit forfeited gamestate to client', (done) => {
+        stubGameManager.addPlayerToGame.returns();
+        const forfeitedGameState: ForfeitedGameState = {
+            players: [],
+            activePlayerIndex: 0,
+            grid: [],
+            lettersRemaining: 0,
+            isEndOfGame: false,
+            winnerIndex: [],
+            consecutivePass: 0,
+            randomBonus: false,
+            letterBag: [],
+        };
+
+        const gameToken = 'abc';
+        const gameStateToken: GameStateToken = {
+            gameToken,
+            gameState: forfeitedGameState,
+        };
+        clientSocket.on('transitionGameState', (lastGameState: GameState) => {
+            expect(lastGameState).to.deep.equal(forfeitedGameState);
+            done();
+        });
+
+        const userAuth: UserAuth = {
+            playerName: 'test',
+            gameToken,
+        };
+
+        clientSocket.emit('joinGame', userAuth);
+        serverSocket.on('joinGame', () => {
+            mockFinaleGameState$.next(gameStateToken);
+        });
+    });
+
+    it('should emit forfeited gamestate to client', (done) => {
+        stubGameManager.addPlayerToGame.returns();
+        const forfeitedGameState: GameState = {
+            players: [],
+            activePlayerIndex: 0,
+            grid: [],
+            lettersRemaining: 0,
+            isEndOfGame: false,
+            winnerIndex: [],
+        };
+
+        const gameToken = 'abc';
+        const gameStateToken: GameStateToken = {
+            gameToken,
+            gameState: forfeitedGameState,
+        };
+        clientSocket.on('transitionGameState', (lastGameState: GameState) => {
+            expect(lastGameState).to.deep.equal(forfeitedGameState);
+            done();
+        });
+
+        const userAuth: UserAuth = {
+            playerName: 'test',
+            gameToken,
+        };
+
+        clientSocket.emit('joinGame', userAuth);
+        serverSocket.on('joinGame', () => {
+            mockFinaleGameState$.next(gameStateToken);
         });
     });
 

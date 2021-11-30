@@ -6,7 +6,7 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
-import { ForfeitedGameSate } from '@app/game-logic/game/games/online-game/game-state';
+import { ForfeitedGameState } from '@app/game-logic/game/games/online-game/game-state';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
@@ -47,7 +47,7 @@ export class GameManagerService {
     get disconnectedFromServer$(): Observable<void> {
         return this.disconnectedFromServerSubject;
     }
-    get disconnectedState$(): Observable<ForfeitedGameSate> {
+    get disconnectedState$(): Observable<ForfeitedGameState> {
         return this.gameSocketHandler.forfeitGameState$;
     }
     constructor(
@@ -124,7 +124,7 @@ export class GameManagerService {
         });
     }
 
-    instanciateGameFromForfeitedState(forfeitedGameState: ForfeitedGameSate) {
+    instanciateGameFromForfeitedState(forfeitedGameState: ForfeitedGameState) {
         if (!this.game) {
             return;
         }
@@ -172,7 +172,7 @@ export class GameManagerService {
         });
     }
 
-    transitionBoard(forfeitedGameState: ForfeitedGameSate) {
+    transitionBoard(forfeitedGameState: ForfeitedGameState) {
         (this.game as OfflineGame).board = this.boardService.board;
         const nRows = BOARD_DIMENSION;
         const nCols = BOARD_DIMENSION;
@@ -185,7 +185,7 @@ export class GameManagerService {
         }
     }
 
-    transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameSate) {
+    transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
         if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
             const playerInfo = forfeitedGameState.players;
 
@@ -217,7 +217,7 @@ export class GameManagerService {
     }
 
     // TODO: change les noms des mthodes
-    instanciateGameSettings(f: ForfeitedGameSate, isSpecial: boolean) {
+    instanciateGameSettings(f: ForfeitedGameState, isSpecial: boolean) {
         const timerPerTurn = (this.game as OnlineGame).timePerTurn;
         this.stopGame();
         if (isSpecial) {

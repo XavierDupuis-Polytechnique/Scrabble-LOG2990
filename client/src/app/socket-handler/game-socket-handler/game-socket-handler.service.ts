@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ForfeitedGameSate, GameState } from '@app/game-logic/game/games/online-game/game-state';
+import { ForfeitedGameState, GameState } from '@app/game-logic/game/games/online-game/game-state';
 import { TimerControls } from '@app/game-logic/game/timer/timer-controls.enum';
 import { OnlineAction } from '@app/socket-handler/interfaces/online-action.interface';
 import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
@@ -21,8 +21,8 @@ const GAME_ALREADY_JOINED = 'You have already joined a game';
 export class GameSocketHandlerService {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket: Socket | any;
-    private lastGameState$ = new Subject<ForfeitedGameSate>();
-    get forfeitGameState$(): Subject<ForfeitedGameSate> {
+    private lastGameState$ = new Subject<ForfeitedGameState>();
+    get forfeitGameState$(): Subject<ForfeitedGameState> {
         return this.lastGameState$;
     }
     private gameStateSubject = new Subject<GameState>();
@@ -66,9 +66,9 @@ export class GameSocketHandlerService {
         this.socket.on('disconnected', () => {
             this.disconnectedFromServerSubject.next();
         });
-        this.socket.on('transitionGameState', (lastGameState: ForfeitedGameSate) => {
+
+        this.socket.on('transitionGameState', (lastGameState: ForfeitedGameState) => {
             this.receiveTransitionGameState(lastGameState);
-            // this.socket.disconnect();
         });
     }
 
@@ -103,7 +103,7 @@ export class GameSocketHandlerService {
         this.timerControlsSubject.next(timerControl);
     }
 
-    receiveTransitionGameState(transitionGameState: ForfeitedGameSate) {
+    receiveTransitionGameState(transitionGameState: ForfeitedGameState) {
         this.forfeitGameState$.next(transitionGameState);
     }
 }
