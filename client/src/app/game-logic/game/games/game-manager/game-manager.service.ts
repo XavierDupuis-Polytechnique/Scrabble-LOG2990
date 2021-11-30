@@ -57,6 +57,7 @@ export class GameManagerService {
         private dictionaryService: DictionaryService,
         private gameCreator: GameCreatorService,
         private boardService: BoardService,
+        private objectiveConverter: ObjectiveConverter,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -125,8 +126,7 @@ export class GameManagerService {
         this.info.receiveGame(this.game);
         if (this.game instanceof SpecialOfflineGame) {
             if (forfeitedGameState.objectives) {
-                const objectiveConverter = new ObjectiveConverter(this.game);
-                objectiveConverter.transitionObjectives(forfeitedGameState.objectives, userName, botName);
+                this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
             }
         }
         // STARTS LOADED GAME
