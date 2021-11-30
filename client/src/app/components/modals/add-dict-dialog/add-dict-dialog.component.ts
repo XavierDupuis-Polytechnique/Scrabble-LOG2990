@@ -25,7 +25,7 @@ export class AddDictDialogComponent {
 
     showSelectedFile() {
         const file = this.input.files;
-        if (!file) {
+        if (file === null) {
             return;
         }
         const fileName = file[0].name;
@@ -37,7 +37,7 @@ export class AddDictDialogComponent {
     }
 
     async uploadFile() {
-        if (!this.input.files) {
+        if (this.input.files === null) {
             return;
         }
         const file = this.input.files[0];

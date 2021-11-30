@@ -91,7 +91,6 @@ export class DatabaseService {
         try {
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
-
         } catch (error) {
             throw Error('Data base collection population error');
         }
