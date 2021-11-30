@@ -9,7 +9,6 @@ export class ObjectiveConverter {
     constructor(private game: SpecialOfflineGame) {}
 
     transitionObjectives(transitionObjectives: TransitionObjectives[], userName: string, botName: string) {
-        // const privateObj = transitionObjectives[0].
         this.game.privateObjectives = new Map<string, Objective[]>();
         this.game.publicObjectives = [];
 
@@ -42,7 +41,7 @@ export class ObjectiveConverter {
         }
     }
 
-    transitionHalfAlphabetLetters(transition: TransitionObjectives, objective: Objective) {
+    private transitionHalfAlphabetLetters(transition: TransitionObjectives, objective: Objective) {
         if (transition.placedLetters === undefined) {
             return objective;
         }
@@ -58,7 +57,8 @@ export class ObjectiveConverter {
         }
         return objective;
     }
-    transitionTenWords(transition: TransitionObjectives, objective: Objective) {
+
+    private transitionTenWords(transition: TransitionObjectives, objective: Objective) {
         if (transition.objectiveType === ObjectiveType.TenWords && transition.wordCounts) {
             for (const wordCount of transition.wordCounts) {
                 if (wordCount.playerName === this.game.players[0].name) {
