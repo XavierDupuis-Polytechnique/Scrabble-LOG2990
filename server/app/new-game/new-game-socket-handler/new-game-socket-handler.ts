@@ -4,6 +4,7 @@ import { NewGameManagerService } from '@app/new-game/new-game-manager/new-game-m
 import * as http from 'http';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 
 const pendingGames = 'pendingGames';
 const createGame = 'createGame';
@@ -14,7 +15,7 @@ const pendingGameId = 'pendingGameId';
 export class NewGameSocketHandler {
     readonly ioServer: Server;
 
-    constructor(server: http.Server, private newGameManagerService: NewGameManagerService) {
+    constructor(server: http.Server, private newGameManagerService: NewGameManagerService, private dictionaryService: DictionaryService) {
         this.ioServer = new Server(server, {
             path: '/newGame',
             cors: { origin: '*', methods: ['GET', 'POST'] },
@@ -30,6 +31,7 @@ export class NewGameSocketHandler {
             socket.on(createGame, (gameSettings: OnlineGameSettingsUI) => {
                 try {
                     gameId = this.createGame(gameSettings, socket);
+                    this.dictionaryService.makeGameDictionary(gameId, gameSettings.dictTitle);
                     this.emitPendingGamesToAll();
                 } catch (e) {
                     this.sendError(e, socket);
@@ -47,6 +49,7 @@ export class NewGameSocketHandler {
 
             socket.on('disconnect', () => {
                 this.onDisconnect(gameId);
+                // this.dictionaryService.deleteGameDictionary(gameId);
                 this.emitPendingGamesToAll();
             });
         });

@@ -41,8 +41,7 @@ export class GameCompiler {
         } else {
             lightEndOfGame = false;
         }
-
-        const lg: GameState = {
+        return {
             players: lightPlayers,
             activePlayerIndex: activePlayer,
             grid: lightGrid,
@@ -50,7 +49,6 @@ export class GameCompiler {
             lettersRemaining: game.letterBag.lettersLeft,
             winnerIndex: lightWinnerIndex,
         };
-        return lg;
     }
 
     private compileSpecialGameState(game: SpecialServerGame, gameState: GameState): SpecialGameState {
@@ -108,11 +106,9 @@ export class GameCompiler {
     }
 
     private fillPlayer(players: Player[]): LightPlayer[] {
-        const lp: LightPlayer[] = [
+        return [
             { name: players[0].name, points: players[0].points, letterRack: players[0].letterRack },
             { name: players[1].name, points: players[1].points, letterRack: players[1].letterRack },
         ];
-
-        return lp;
     }
 }

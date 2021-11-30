@@ -1,0 +1,16 @@
+input[type='file'] {
+    display: none;
+}
+
+.file {
+    height: 35px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}

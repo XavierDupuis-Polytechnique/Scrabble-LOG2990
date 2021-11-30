@@ -15,7 +15,7 @@ describe('ExchangeLetter', () => {
     let game: OfflineGame;
     const player: Player = new User('Tim');
     const randomBonus = false;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     beforeEach(() => {
         TestBed.configureTestingModule({ providers: [{ provide: DictionaryService, useValue: dict }] });
         const messageService = TestBed.inject(MessagesService);

@@ -31,7 +31,7 @@ export class PlaceLetter extends Action {
 
     protected perform(game: ServerGame) {
         const previousGrid = copyGrid(game.board.grid);
-        const validWordList = this.wordSearcher.listOfValidWord(this, game.board.grid);
+        const validWordList = this.wordSearcher.listOfValidWord(this, game.board.grid, game.gameToken);
         const formedWords = validWordList.map((validWord) => validWord.letters);
         this.putLettersOnBoard(game);
         const currentGrid = game.board.grid;

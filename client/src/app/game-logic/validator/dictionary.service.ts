@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ARRAY_BEGIN, FIRST_LETTER_INDEX, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/game-logic/constants';
+import { DEFAULT_DICTIONARY_TITLE, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/game-logic/constants';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import {
@@ -9,28 +9,40 @@ import {
     DictWholeSearchSettings,
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
+import { DictionaryHelper } from '@app/game-logic/validator/dictionary-helper';
+import { DictHttpService } from '@app/services/dict-http.service';
+import { BehaviorSubject } from 'rxjs';
 import data from 'src/assets/dictionary.json';
-
 @Injectable({
     providedIn: 'root',
 })
 export class DictionaryService {
+    dictReady$ = new BehaviorSubject<boolean>(false);
+    isDefaultDict: boolean;
     dynamicWordList: Set<string>[] = [];
-    constructor() {
-        const dict = data as Dictionary;
-        for (let i = 0; i <= MAX_WORD_LENGTH; i++) {
-            this.dynamicWordList.push(new Set());
-        }
-        this.addWords(dict);
+    dictionaryHelper = new DictionaryHelper();
+
+    constructor(private dictHttpService: DictHttpService) {
+        this.addDefault();
     }
 
-    addWords(dictionary: Dictionary) {
-        dictionary.words.forEach((word) => {
-            let wordLength = word.length;
-            for (wordLength; wordLength <= MAX_WORD_LENGTH; wordLength++) {
-                this.dynamicWordList[wordLength].add(word);
-            }
+    fetchDictionary(dictTitle: string): BehaviorSubject<boolean> {
+        if (dictTitle === DEFAULT_DICTIONARY_TITLE && this.isDefaultDict) {
+            this.ready();
+            return this.dictReady$;
+        }
+        if (dictTitle === DEFAULT_DICTIONARY_TITLE && !this.isDefaultDict) {
+            this.addDefault();
+            this.ready();
+            return this.dictReady$;
+        }
+        this.dictHttpService.getDict(dictTitle).subscribe((res) => {
+            const dictionary = res as Dictionary;
+            this.addWords(dictionary);
+            this.isDefaultDict = false;
+            this.ready();
         });
+        return this.dictReady$;
     }
 
     isWordInDict(word: string): boolean {
@@ -42,7 +54,7 @@ export class DictionaryService {
         const tmpWordList: ValidWord[] = [];
 
         let letterCountOfPartWord = 0;
-        letterCountOfPartWord = this.countNumberOfLetters(partWord, letterCountOfPartWord);
+        letterCountOfPartWord = this.dictionaryHelper.countNumberOfLetters(partWord, letterCountOfPartWord);
 
         let maxDictWordLength = 0;
         const missingLetters = partWord.word.length - letterCountOfPartWord + partWord.leftCount + partWord.rightCount;
@@ -58,19 +70,19 @@ export class DictionaryService {
         const dictWords = this.dynamicWordList[maxDictWordLength];
 
         if (partWord.word.includes('-')) {
-            this.getSubWordsOfPartWord(partWord, tmpWordList);
+            this.dictionaryHelper.getSubWordsOfPartWord(partWord, tmpWordList);
 
             const tmpDict: ValidWord[] = [];
             const tmpDict2: ValidWord[] = [];
             const foundIndex: number = START_OF_STRING;
             let oldSubWordLength: number = RESET;
             const initialSettings: DictInitialSearchSettings = { partWord, dictWords, tmpWordList, letterCountOfPartWord, tmpDict, foundIndex };
-            oldSubWordLength = this.initialDictionarySearch(initialSettings);
+            oldSubWordLength = this.dictionaryHelper.initialDictionarySearch(initialSettings);
             const subSettings: DictSubSearchSettings = { tmpWordList, tmpDict2, oldSubWordLength, wordList };
-            this.subDictionarySearch(initialSettings, subSettings);
+            this.dictionaryHelper.subDictionarySearch(initialSettings, subSettings);
         } else {
             const wholeSettings: DictWholeSearchSettings = { partWord, dictWords, letterCountOfPartWord, wordList };
-            this.wholePartWordDictionarySearch(wholeSettings);
+            this.dictionaryHelper.wholePartWordDictionarySearch(wholeSettings);
         }
         return wordList;
     }
@@ -80,8 +92,8 @@ export class DictionaryService {
         const mapRack = new Map<string, number>();
         const wordLength = dictWord.word.length;
 
-        let placedWord = this.placedWordReformat(placedLetters);
-        this.addLetterRackToMap(letterRack, mapRack);
+        let placedWord = this.dictionaryHelper.placedWordReformat(placedLetters);
+        this.dictionaryHelper.addLetterRackToMap(letterRack, mapRack);
 
         const regex = new RegExp(placedWord.toLowerCase());
         const index = dictWord.word.search(regex);
@@ -89,9 +101,9 @@ export class DictionaryService {
             return 'false';
         }
         const regexSettings: DictRegexSettings = { dictWord, placedWord, mapRack };
-        placedWord = this.validateLeftOfPlacedWord(regexSettings);
-        placedWord = this.validateMiddleOfPlacedWord(regexSettings);
-        placedWord = this.validateRightOfPlacedWord(regexSettings, wordLength);
+        placedWord = this.dictionaryHelper.validateLeftOfPlacedWord(regexSettings);
+        placedWord = this.dictionaryHelper.validateMiddleOfPlacedWord(regexSettings);
+        placedWord = this.dictionaryHelper.validateRightOfPlacedWord(regexSettings, wordLength);
 
         if (dictWord.word === placedWord.toLowerCase()) {
             return placedWord;
@@ -289,44 +301,32 @@ export class DictionaryService {
         }
         return regexSettings.placedWord;
     }
-
-    private validateRightOfPlacedWord(regexSettings: DictRegexSettings, wordLength: number): string {
-        let index: number;
-        while (regexSettings.placedWord.length !== wordLength) {
-            const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
-            let regex = new RegExp(regexSettings.placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
-            index = regexSettings.dictWord.word.search(regex);
-            if (index === NOT_FOUND || index > 0) {
-                if (regexSettings.mapRack.has('*')) {
-                    regex = new RegExp(regexSettings.placedWord.toLowerCase());
-                    index = regexSettings.dictWord.word.search(regex);
-                    this.deleteTmpLetter('*', regexSettings.mapRack);
-                    regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length].toUpperCase();
-                } else break;
-            } else {
-                this.deleteTmpLetter(regexSettings.dictWord.word[regexSettings.placedWord.length], regexSettings.mapRack);
-                regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length];
-            }
-        }
-        return regexSettings.placedWord;
+    
+    private addDefault() {
+        const dict = data as Dictionary;
+        this.addWords(dict);
+        this.isDefaultDict = true;
     }
 
-    private deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {
-        const letterCount = mapRack.get(placedLetter);
-        if (letterCount && letterCount > 1) {
-            mapRack.set(placedLetter, letterCount - 1);
-        } else {
-            mapRack.delete(placedLetter);
-        }
+    private addWords(dictionary: Dictionary) {
+        this.clearWords();
+        dictionary.words.forEach((word) => {
+            let wordLength = word.length;
+            for (wordLength; wordLength <= MAX_WORD_LENGTH; wordLength++) {
+                this.dynamicWordList[wordLength].add(word);
+            }
+        });
     }
 
-    private tmpLetterLeft(mapRack: Map<string, number>): string {
-        let lettersLeft = '';
-        for (const key of mapRack.keys()) {
-            if (key !== '*') {
-                lettersLeft += key.toLowerCase();
-            }
+    private ready() {
+        this.dictReady$.next(true);
+        this.dictReady$.complete();
+    }
+
+    private clearWords() {
+        this.dynamicWordList = [];
+        for (let i = 0; i <= MAX_WORD_LENGTH; i++) {
+            this.dynamicWordList.push(new Set());
         }
-        return lettersLeft;
     }
 }

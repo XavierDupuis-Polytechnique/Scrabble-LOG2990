@@ -12,6 +12,8 @@ import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {
     const letterCreator = new LetterCreator();
@@ -26,7 +28,8 @@ const placeTestWords = (x: number, y: number, isVertical: boolean, word: string,
 };
 
 describe('BotCrawler1', () => {
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
     const gameInfo = new GameInfoService(new TimerService());
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
@@ -34,16 +37,32 @@ describe('BotCrawler1', () => {
     let boardService: BoardService;
     let botCalculator: BotCalculatorService;
     let actionFactory: ActionCreatorService;
+    let botHttpService: jasmine.SpyObj<BotHttpService>;
 
     beforeEach(async () => {
+        botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+
+        const obs = of(['Test1', 'Test2', 'Test3']);
+        botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService],
+            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, { provide: BotHttpService, useValue: botHttpService }],
         });
         boardService = TestBed.inject(BoardService);
         botCalculator = TestBed.inject(BotCalculatorService);
         actionFactory = TestBed.inject(ActionCreatorService);
         const wordVal = new WordSearcher(boardService, dict);
-        bot = new EasyBot('test', boardService, dict, botCalculator, wordVal, botMessageMock, gameInfo, commandExecuterMock, actionFactory);
+        bot = new EasyBot(
+            'test',
+            boardService,
+            dict,
+            botCalculator,
+            wordVal,
+            botMessageMock,
+            gameInfo,
+            commandExecuterMock,
+            actionFactory,
+            botHttpService,
+        );
     });
 
     it('should create an instance', () => {
@@ -101,7 +120,8 @@ describe('BotCrawler1', () => {
 });
 
 describe('BotCrawler2', () => {
-    const dict = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     const botMessageMock = jasmine.createSpyObj('BotMessageService', ['sendAction']);
     const gameInfo = new GameInfoService(new TimerService());
     const commandExecuterMock = jasmine.createSpyObj('CommandExecuterService', ['execute']);
@@ -109,16 +129,37 @@ describe('BotCrawler2', () => {
     let boardService: BoardService;
     let botCalculator: BotCalculatorService;
     let actionFactory: ActionCreatorService;
+    let botHttpService: jasmine.SpyObj<BotHttpService>;
     beforeEach(async () => {
+        botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+
+        const obs = of(['Test1', 'Test2', 'Test3']);
+        botHttpService.getDataInfo.and.returnValue(obs);
         await TestBed.configureTestingModule({
-            providers: [{ provide: DictionaryService, useValue: dict }, BotCreatorService, ActionCreatorService],
+            providers: [
+                { provide: DictionaryService, useValue: dict },
+                BotCreatorService,
+                ActionCreatorService,
+                { provide: BotHttpService, useValue: botHttpService },
+            ],
         });
         boardService = TestBed.inject(BoardService);
         botCalculator = TestBed.inject(BotCalculatorService);
         actionFactory = TestBed.inject(ActionCreatorService);
         const wordVal = new WordSearcher(boardService, dict);
 
-        bot = new EasyBot('test', boardService, dict, botCalculator, wordVal, botMessageMock, gameInfo, commandExecuterMock, actionFactory);
+        bot = new EasyBot(
+            'test',
+            boardService,
+            dict,
+            botCalculator,
+            wordVal,
+            botMessageMock,
+            gameInfo,
+            commandExecuterMock,
+            actionFactory,
+            botHttpService,
+        );
     });
 
     it('should return a list of all validWord the bot can play', () => {

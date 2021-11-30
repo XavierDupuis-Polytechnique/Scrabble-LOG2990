@@ -1,3 +1,4 @@
+import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
@@ -8,7 +9,7 @@ import { WordSearcher } from '@app/game/game-logic/validator/word-search/word-se
 import { expect } from 'chai';
 
 describe('wordSearcherService', () => {
-    const mockdictionaryService = new MockDictionaryService();
+    const mockdictionaryService = new MockDictionaryService(new DictionaryServerService());
     const wordSeacherService = new WordSearcher(mockdictionaryService as DictionaryService);
 
     const grid = new MockBoard().grid;
@@ -32,16 +33,6 @@ describe('wordSearcherService', () => {
         const mockAction = {
             placement,
             word: 'On',
-        };
-        const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
-        expect(answer).to.equal(true);
-    });
-
-    it('should validate word if letter are already placed', () => {
-        const placement: PlacementSetting = { direction: Direction.Vertical, x: 1, y: 2 };
-        const mockAction = {
-            placement,
-            word: 'bon',
         };
         const answer = wordSeacherService.isWordValid(mockAction as PlaceLetter, grid);
         expect(answer).to.equal(true);

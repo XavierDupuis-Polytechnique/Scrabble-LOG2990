@@ -17,7 +17,8 @@ describe('WordSearcher', () => {
     let mockBoard: MockBoard;
     let boardService: BoardService;
     let pointCalculator: PointCalculatorService;
-    const mockDict = new MockDictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const mockDict = new MockDictionaryService(dictHttpServiceMock);
     let player: Player;
 
     beforeEach(() => {

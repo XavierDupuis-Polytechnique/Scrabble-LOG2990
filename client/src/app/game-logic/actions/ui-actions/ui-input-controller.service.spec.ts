@@ -30,7 +30,7 @@ class MockGameInfoService {
 describe('UIInputControllerService', () => {
     let player: Player;
     let service: UIInputControllerService;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     let info: GameInfoService;
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ describe('ChatBoxComponent', () => {
     let messageServiceSpy: jasmine.SpyObj<MessagesService>;
     let gameInfoServiceSpy: jasmine.SpyObj<GameInfoService>;
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
+    const httpClient = jasmine.createSpyObj('HttpClient', ['get']);
 
     beforeEach(() => {
         messageServiceSpy = jasmine.createSpyObj('MessagesService', ['receiveMessagePlayer']);
@@ -33,6 +35,7 @@ describe('ChatBoxComponent', () => {
                 { provide: MessagesService, useValue: messageServiceSpy },
                 { provide: GameInfoService, useValue: gameInfoServiceSpy },
                 { provide: ChangeDetectorRef, useValue: cdRefSpy },
+                { provide: HttpClient, useValue: httpClient },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
