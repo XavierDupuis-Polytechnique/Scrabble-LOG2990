@@ -12,7 +12,7 @@ import { BotCrawler } from '@app/game-logic/player/bot/bot-crawler';
 import { Player } from '@app/game-logic/player/player';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
 import { BehaviorSubject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HORIZONTAL, ValidWord } from './valid-word';
@@ -36,12 +36,15 @@ export abstract class Bot extends Player {
         protected commandExecuter: CommandExecuterService,
         protected actionCreator: ActionCreatorService,
         protected botHttpService: BotHttpService,
+        protected botType: BotType,
     ) {
         super('PlaceholderName');
         this.botHttpService.getDataInfo().subscribe((ans) => {
             const list = ans as BotInfo[];
             list.forEach((bot) => {
-                this.botNames.push(bot.name);
+                if (bot.type === botType) {
+                    this.botNames.push(bot.name);
+                }
             });
             this.name = this.generateBotName(name);
         });

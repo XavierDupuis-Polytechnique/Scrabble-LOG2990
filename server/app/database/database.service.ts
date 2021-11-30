@@ -1,5 +1,5 @@
 import { BOT_INFO_COLLECTION } from '@app/constants';
-import { DEFAULT_EASY_BOT } from '@app/database/bot-info/default-bot-names';
+import { DEFAULT_EASY_BOT, DEFAULT_EXPERT_BOT } from '@app/database/bot-info/default-bot-names';
 import {
     DEFAULT_LEADERBOARD_CLASSIC,
     DEFAULT_LEADERBOARD_LOG,
@@ -90,6 +90,8 @@ export class DatabaseService {
     private async populateBotInfoCollection() {
         try {
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
+            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
+
         } catch (error) {
             throw Error('Data base collection population error');
         }
