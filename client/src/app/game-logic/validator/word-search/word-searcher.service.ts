@@ -46,14 +46,13 @@ export class WordSearcher {
         for (const coord of coordsOfLettersToPlace) {
             const adjacentWordDirection = this.getAdjacentWordsDirection(placement.direction);
             if (this.hasNeighbour(coord.x, coord.y, adjacentWordDirection)) {
-            const wordToValidate = this.extractWord(word, placement, coord);
+                const wordToValidate = this.extractWord(word, placement, coord);
                 if (this.isInDictionnary(wordToValidate.letters)) {
-                   listOfValidWord.push(wordToValidate);
+                    listOfValidWord.push(wordToValidate);
+                } else {
+                    return [];
                 }
-                else {
-                   return [];
-                }
-            } 
+            }
         }
         return listOfValidWord;
     }

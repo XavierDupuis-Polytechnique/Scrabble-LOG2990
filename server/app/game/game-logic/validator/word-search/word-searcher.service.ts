@@ -58,7 +58,6 @@ export class WordSearcher {
         return indexOfLetterToPlace;
     }
 
-
     private hasNeighbour(coord: Vec2, adjacentWordDirection: Direction, grid: Tile[][]): boolean {
         const nextCoord = adjacentWordDirection === Direction.Horizontal ? { x: coord.x + 1, y: coord.y } : { x: coord.x, y: coord.y + 1 };
         const previousCoord = adjacentWordDirection === Direction.Horizontal ? { x: coord.x - 1, y: coord.y } : { x: coord.x, y: coord.y - 1 };
@@ -97,7 +96,7 @@ export class WordSearcher {
         const wordString = this.tileToString(word).toLowerCase();
         return this.dictionaryService.isWordInDict(wordString, gameToken);
     }
-   
+
     private isPreviousTileUsed(coord: PlacementSetting, letterPosition: Vec2, grid: Tile[][]): boolean {
         const adjacentWordDirection = coord.direction;
         const [x, y] = adjacentWordDirection === Direction.Horizontal ? [coord.x - 1, coord.y] : [coord.x, coord.y - 1];
