@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditBotDialogComponent } from '@app/components/modals/edit-bot-dialog/edit-bot-dialog.component';
 import { BotHttpService, BotInfo, BotType } from '@app/services/bot-http.service';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { AdminBotComponent } from './admin-bot.component';
 
 describe('AdminbotComponent', () => {
@@ -73,6 +73,13 @@ describe('AdminbotComponent', () => {
         } as MatDialogRef<EditBotDialogComponent>);
 
         component.showUpdateMenu(botMock);
+        expect(matDialogMock.open).toHaveBeenCalled();
+    });
+
+    it('updatelist should open dialog if error', () => {
+        botHttpServiceMock.getDataInfo.and.returnValues(throwError({ status: 404 }));
+        // eslint-disable-next-line dot-notation
+        component['updateList']();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 });

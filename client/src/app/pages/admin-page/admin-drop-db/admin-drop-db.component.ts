@@ -28,7 +28,7 @@ export class AdminDropDbComponent {
                 if (ans === true) {
                     const isbotDropOk = await this.dropbotTable();
                     const isDictOk = await this.dropDictTable();
-                    if (!isbotDropOk && !isDictOk) {
+                    if (!isbotDropOk || !isDictOk) {
                         this.dialog.open(AlertDialogComponent, {
                             width: '250px',
                             data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },

@@ -1,8 +1,9 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('EditDictDialogComponent', () => {
     let component: EditDictDialogComponent;
@@ -56,6 +57,20 @@ describe('EditDictDialogComponent', () => {
         const dummyAnswer = of(false);
         component.tempDict = { title: 'test???<><>', description: 'test', canEdit: true };
         dictHttpMock.editDict.and.returnValue(dummyAnswer);
+        component.uploadEdit();
+        expect(matDialog.open).toHaveBeenCalled();
+    });
+
+    it('uploadEdit should open dialog if error NOT_FOUND', () => {
+        dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.NotFound}));
+        component.tempDict.title = 'test';
+        component.uploadEdit();
+        expect(matDialog.open).toHaveBeenCalled();
+    });
+
+    it('uploadEdit should not open dialog if error not NOT_FOUND', () => {
+        dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout}));
+        component.tempDict.title ='test';
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();
     });

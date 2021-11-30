@@ -58,17 +58,15 @@ export class AdminBotComponent implements OnInit {
                 this.dataSource = [...this.botDataInfo];
             },
             () => {
-                if (!this.dialog.getDialogById('404')) {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '250px',
-                        data: {
-                            message: 'Le connection avec le serveur a échoué',
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                        id: '404',
-                    });
-                }
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: {
+                        message: 'Le connection avec le serveur a échoué pour les joueurs virtuels',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                    id: '404',
+                });
             },
         );
     }

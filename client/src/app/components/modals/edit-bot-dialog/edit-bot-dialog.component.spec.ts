@@ -1,7 +1,8 @@
+import { HttpStatusCode } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BotHttpService, BotType } from '@app/services/bot-http.service';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { EditBotDialogComponent } from './edit-bot-dialog.component';
 
 describe('EditbotDialogComponent', () => {
@@ -85,5 +86,17 @@ describe('EditbotDialogComponent', () => {
         botHttpMock.addBot.and.returnValue(obs);
         component.addBot();
         expect(matDialogMock.open).toHaveBeenCalled();
+    });
+
+    it('editBot should open dialog if erro', () => {
+        botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.NotFound}));
+        component.editBot();
+        expect(matDialogMock.open).toHaveBeenCalled();
+    });
+
+    it('editBot should do nothing dialog if error is not NOTFound', () => {
+        botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout}));
+        component.editBot();
+        expect(matDialogMock.open).not.toHaveBeenCalled();
     });
 });
