@@ -104,6 +104,10 @@ describe('GameManagerService', () => {
         service.createGame(gameSettings);
         (service['game'] as Game)['isEndOfGameSubject'].next();
         expect(leaderboardServiceMock.updateLeaderboard).toHaveBeenCalled();
+
+        service.createSpecialGame(gameSettings);
+        (service['game'] as Game)['isEndOfGameSubject'].next();
+        expect(leaderboardServiceMock.updateLeaderboard).toHaveBeenCalled();
     });
 
     it('should not updateLeaderboard if game is undefined', () => {
