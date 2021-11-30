@@ -21,7 +21,7 @@ describe('EditJvDialogComponent', () => {
         jvHttpMock = jasmine.createSpyObj('BotHttpService', ['editBot', 'addBot']);
 
         await TestBed.configureTestingModule({
-            imports:[AppMaterialModule, BrowserAnimationsModule],
+            imports: [AppMaterialModule, BrowserAnimationsModule],
             declarations: [EditJvDialogComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: String },
@@ -29,7 +29,7 @@ describe('EditJvDialogComponent', () => {
                 { provide: MatDialogRef, useValue: matDialogRefMock },
                 { provide: BotHttpService, useValue: jvHttpMock },
             ],
-            schemas: [CUSTOM_ELEMENTS_SCHEMA]
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
