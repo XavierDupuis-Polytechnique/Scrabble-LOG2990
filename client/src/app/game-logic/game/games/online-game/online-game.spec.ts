@@ -26,7 +26,7 @@ describe('OnlineGame', () => {
     let timer: TimerService;
     let player1: Player;
     let player2: Player;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
 
     beforeEach(() => {
         TestBed.configureTestingModule({

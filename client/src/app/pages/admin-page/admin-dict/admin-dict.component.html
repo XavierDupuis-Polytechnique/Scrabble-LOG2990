@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="overflow mat-elevation-z8">
+        <table mat-table [dataSource]="dictDataSource" class="mat-elevation-z8" style="width: 100%">
+            <ng-container matColumnDef="title">
+                <th mat-header-cell *matHeaderCellDef>Titre</th>
+                <td mat-cell *matCellDef="let element">{{ element.title }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+                <th mat-header-cell *matHeaderCellDef>Description</th>
+                <td mat-cell *matCellDef="let element">{{ element.description }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="edit">
+                <th mat-header-cell *matHeaderCellDef>Édition</th>
+                <td mat-cell *matCellDef="let element">
+                    <div (click)="showUpdateMenu(element)" *ngIf="element.canEdit">
+                        <button mat-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef>Supression</th>
+                <td mat-cell *matCellDef="let element">
+                    <div (click)="deleteDict(element)" *ngIf="element.canEdit">
+                        <button mat-button>
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="dictDisplayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: dictDisplayedColumns"></tr>
+        </table>
+    </div>
+
+    <div class="addButton">
+        <button mat-fab color="primary" class="button-container" (click)="showAddMenu()">
+            <mat-icon>upload</mat-icon>
+        </button>
+    </div>
+</div>

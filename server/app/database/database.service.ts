@@ -1,3 +1,5 @@
+import { BOT_INFO_COLLECTION } from '@app/constants';
+import { DEFAULT_EASY_BOT } from '@app/database/bot-info/default-bot-names';
 import {
     DEFAULT_LEADERBOARD_CLASSIC,
     DEFAULT_LEADERBOARD_LOG,
@@ -12,7 +14,6 @@ const DB_USER = 'server';
 const DB_PSW = 'ACyZhkpcAUT812QB';
 const CLUSTER_URL = 'scrabblecluster.mqtnr.mongodb.net';
 
-// TODO: CHANGE the URL for your database information
 export const DATABASE_URL = `mongodb+srv://${DB_USER}:${DB_PSW}@${CLUSTER_URL}/<dbname>?retryWrites=true&w=majority`;
 export const DATABASE_NAME = 'scrabble';
 
@@ -29,8 +30,10 @@ export class DatabaseService {
         } catch {
             throw new Error('Database connection error');
         }
+
         this.createLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
         this.createLeaderboardCollection(LEADERBOARD_LOG_COLLECTION);
+        this.createBotInfoCollection();
     }
 
     async closeConnection(): Promise<void> {
@@ -68,6 +71,28 @@ export class DatabaseService {
             return false;
         }
         return true;
+    }
+
+    private async createBotInfoCollection() {
+        try {
+            const checkCollectionExists = await this.collectionExists(BOT_INFO_COLLECTION);
+            if (checkCollectionExists) {
+                return;
+            }
+            await this.database.createCollection(BOT_INFO_COLLECTION);
+            await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
+            this.populateBotInfoCollection();
+        } catch (error) {
+            throw Error('Data base collection creation error');
+        }
+    }
+
+    private async populateBotInfoCollection() {
+        try {
+            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
+        } catch (error) {
+            throw Error('Data base collection population error');
+        }
     }
 
     get database(): Db {

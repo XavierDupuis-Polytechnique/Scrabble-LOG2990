@@ -1,0 +1,11 @@
+<input type="file" name="" accept="application/JSON" #fileInput (change)="showSelectedFile()">
+<button mat-raised-button (click)="fileInput.click()">
+    Choisir un fichier à téléverser
+</button>
+<div class="file">
+    <p>{{selectedFile}}</p>
+</div>
+<div class="buttons">
+    <button mat-raised-button matDialogClose>Annuler</button>
+    <button mat-raised-button [disabled]="selectedFile === ''" (click)="uploadFile()">Téléverser</button>
+</div>

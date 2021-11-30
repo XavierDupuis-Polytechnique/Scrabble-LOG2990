@@ -21,8 +21,8 @@ describe('Action', () => {
     let user: User;
     let gameSpy: jasmine.Spy<(action: Action) => void>;
     const randomBonus = false;
-    const dict = new DictionaryService();
     beforeEach(() => {
+        const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
         TestBed.configureTestingModule({ providers: [{ provide: DictionaryService, useValue: dict }] });
         const messageService = TestBed.inject(MessagesService);
         const timerService = TestBed.inject(TimerService);

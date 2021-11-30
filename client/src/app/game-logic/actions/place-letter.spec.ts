@@ -47,8 +47,9 @@ describe('PlaceLetter', () => {
     let activePlayer: Player;
     let letterCreator: LetterCreator;
     let pointCalculatorSpy: PointCalculatorService;
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
+    const dict = new DictionaryService(dictHttpServiceMock);
     let objectiveCreatorSpy: jasmine.SpyObj<ObjectiveCreator>;
-    const dict = new DictionaryService();
     const randomBonus = false;
     beforeEach(() => {
         timer = new TimerService();

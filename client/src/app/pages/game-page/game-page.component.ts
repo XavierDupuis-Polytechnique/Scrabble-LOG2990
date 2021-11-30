@@ -1,7 +1,7 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AbandonButtonComponent } from '@app/components/modals/abandon-button/abandon-button.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
@@ -65,7 +65,7 @@ export class GamePageComponent implements OnDestroy {
     abandon() {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
-        this.dialog.open(AbandonButtonComponent, dialogConfig);
+        this.dialog.open(AbandonDialogComponent, dialogConfig);
     }
 
     quit() {

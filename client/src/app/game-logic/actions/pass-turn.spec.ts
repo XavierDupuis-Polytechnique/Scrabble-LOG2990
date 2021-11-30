@@ -15,14 +15,14 @@ describe('PassTurn', () => {
     const player1: Player = new User('Tim');
     const player2: Player = new User('George');
     const randomBonus = false;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     beforeEach(() => {
         TestBed.configureTestingModule({ providers: [{ provide: DictionaryService, useValue: dict }] });
         const messageService = TestBed.inject(MessagesService);
         const timerService = TestBed.inject(TimerService);
-        const pointCalulatorService = TestBed.inject(PointCalculatorService);
+        const pointCalculatorService = TestBed.inject(PointCalculatorService);
         const boardService = TestBed.inject(BoardService);
-        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalulatorService, boardService, messageService);
+        game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timerService, pointCalculatorService, boardService, messageService);
         game.players.push(player1);
         game.players.push(player2);
     });

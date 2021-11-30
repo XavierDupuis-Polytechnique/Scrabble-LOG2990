@@ -10,13 +10,14 @@ import { HeaderBarComponent } from '@app/components/header-bar/header-bar.compon
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
-import { Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 
 describe('ClassicGameComponent', () => {
     let component: ClassicGameComponent;
@@ -27,6 +28,7 @@ describe('ClassicGameComponent', () => {
     let onlineSocketHandlerSpy: jasmine.SpyObj<NewOnlineGameSocketHandler>;
     let gameManagerSpy: jasmine.SpyObj<GameManagerService>;
     let router: Router;
+    const ready$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
     beforeEach(async () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
@@ -36,6 +38,8 @@ describe('ClassicGameComponent', () => {
             ['isDisconnected$', 'startGame$'],
         );
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame']);
+        gameManagerSpy.createGame.and.returnValue(ready$);
+        gameManagerSpy.createSpecialGame.and.returnValue(ready$);
         await TestBed.configureTestingModule({
             declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
@@ -66,6 +70,7 @@ describe('ClassicGameComponent', () => {
     });
 
     it('dialog should set game setting and start game', () => {
+        ready$.next(true);
         spyOn(component, 'startSoloGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
@@ -74,6 +79,7 @@ describe('ClassicGameComponent', () => {
                     playerName: 'Sam',
                     timePerTurn: 3000,
                     randomBonus: false,
+                    dictTitle: DEFAULT_DICTIONARY_TITLE,
                 });
             },
             close: () => {
@@ -81,6 +87,28 @@ describe('ClassicGameComponent', () => {
             },
         } as MatDialogRef<NewSoloGameFormComponent>);
         component.openSoloGameForm();
+        expect(component.gameSettings).toBeDefined();
+        expect(component.startSoloGame).toHaveBeenCalled();
+    });
+
+    it('dialog should set game setting and start game when ready', () => {
+        spyOn(component, 'startSoloGame');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of({
+                    botDifficulty: 'easy',
+                    playerName: 'Sam',
+                    timePerTurn: 3000,
+                    randomBonus: false,
+                    dictTitle: 'testTitle',
+                });
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<NewSoloGameFormComponent>);
+        component.openSoloGameForm();
+        ready$.next(true);
         expect(component.gameSettings).toBeDefined();
         expect(component.startSoloGame).toHaveBeenCalled();
     });
@@ -108,7 +136,7 @@ describe('ClassicGameComponent', () => {
         expect(component.openSoloGameForm).toHaveBeenCalled();
     });
 
-    it('start solo game should create a game', () => {
+    it('start solo game should create a game', async () => {
         spyOn(router, 'navigate');
         component.startSoloGame();
         expect(gameManagerSpy.createGame).toHaveBeenCalled();
@@ -121,7 +149,9 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
+            dictDesc: '',
         };
 
         matDialog.open.and.returnValue({
@@ -162,6 +192,7 @@ describe('ClassicGameComponent', () => {
             botDifficulty: '',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
 
         matDialog.open.and.returnValue({
@@ -191,6 +222,7 @@ describe('ClassicGameComponent', () => {
             botDifficulty: '',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         matDialog.open.and.returnValue({
             afterOpened: () => {
@@ -218,6 +250,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
         matDialog.open.and.returnValue({
@@ -248,6 +281,7 @@ describe('ClassicGameComponent', () => {
             playerName: 'Sam',
             timePerTurn: 3000,
             randomBonus: false,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
             gameMode: GameMode.Classic,
         };
         matDialog.open.and.returnValue({

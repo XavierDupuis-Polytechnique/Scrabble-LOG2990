@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { Sort } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JoinOnlineGameComponent } from '@app/components/modals/join-online-game/join-online-game.component';
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
@@ -71,8 +72,8 @@ describe('PendingGamesComponent', () => {
 
     it('should set data in table to gameSettings', () => {
         const pendingGames = [
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ];
 
         testPendingGames$.next(pendingGames);
@@ -81,8 +82,8 @@ describe('PendingGamesComponent', () => {
 
     it('should set selected row to row', () => {
         const pendingGames = [
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ];
 
         testPendingGames$.next(pendingGames);
@@ -117,7 +118,14 @@ describe('PendingGamesComponent', () => {
                 return;
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
-        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic });
+        component.setSelectedRow({
+            id: '1',
+            playerName: 'Tom',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        });
         component.joinGame();
         expect(mockDialogRef.close).toHaveBeenCalled();
     });
@@ -131,7 +139,14 @@ describe('PendingGamesComponent', () => {
                 return;
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
-        component.setSelectedRow({ id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic });
+        component.setSelectedRow({
+            id: '1',
+            playerName: 'Tom',
+            randomBonus: true,
+            timePerTurn: 60000,
+            gameMode: GameMode.Classic,
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+        });
         component.joinGame();
         expect(matDialog.open).toHaveBeenCalled();
     });
@@ -141,7 +156,7 @@ describe('PendingGamesComponent', () => {
         const tables = dom.querySelectorAll('tr');
         expect(tables.length).toBe(2);
 
-        const numberHeaders = 4;
+        const numberHeaders = 5;
         const tableGames = tables[0];
         expect(tableGames.cells.length).toBe(numberHeaders);
 
@@ -151,8 +166,8 @@ describe('PendingGamesComponent', () => {
 
     it('should be a full table ', () => {
         testPendingGames$.next([
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ]);
         const tableLength = 4;
         const dom = fixture.nativeElement as HTMLElement;
@@ -162,8 +177,8 @@ describe('PendingGamesComponent', () => {
 
     it('should sort table ', () => {
         testPendingGames$.next([
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ]);
         fixture.detectChanges();
         const dom = fixture.debugElement.nativeElement;
@@ -190,8 +205,8 @@ describe('PendingGamesComponent', () => {
             },
         } as MatDialogRef<JoinOnlineGameComponent>);
         testPendingGames$.next([
-            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic },
-            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic },
+            { id: '4', playerName: 'Jerry', randomBonus: false, timePerTurn: 65000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
+            { id: '1', playerName: 'Tom', randomBonus: true, timePerTurn: 60000, gameMode: GameMode.Classic, dictTitle: DEFAULT_DICTIONARY_TITLE },
         ]);
         component.pickRandomGame();
         tick(DELAY);
