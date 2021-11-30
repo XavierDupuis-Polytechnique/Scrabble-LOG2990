@@ -197,7 +197,7 @@ describe('GamePageComponent', () => {
     });
 
     it('#isEndOfGame should work properly', () => {
-        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.throwError('error');
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
         expect(component.isEndOfGame).toBeFalse();
     });
 });

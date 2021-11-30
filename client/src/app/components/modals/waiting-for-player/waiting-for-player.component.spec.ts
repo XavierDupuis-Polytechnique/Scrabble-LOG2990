@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { AppMaterialModule } from '@app/modules/material.module';
@@ -28,7 +28,6 @@ describe('WaitingForPlayerComponent', () => {
             imports: [BrowserAnimationsModule, AppMaterialModule],
 
             providers: [
-                { provide: MAT_DIALOG_DATA, useValue: {} },
                 { provide: MatDialogRef, useValue: mockDialogRef },
                 { provide: MatDialog, useValue: matDialog },
                 { provide: NewOnlineGameSocketHandler, useValue: onlineSocketHandlerSpy },

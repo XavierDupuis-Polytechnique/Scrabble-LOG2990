@@ -55,7 +55,7 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
             {
                 columnDef: 'randomBonus',
                 header: 'Bonus Aléatoire',
-                cell: (form: OnlineGameSettings) => (form.randomBonus === true ? 'activé' : 'désactivé'),
+                cell: (form: OnlineGameSettings) => (form.randomBonus ? 'activé' : 'désactivé'),
                 tooltip: (form: OnlineGameSettings, columnDef: string) => this.getToolTip(form, columnDef),
             },
             {

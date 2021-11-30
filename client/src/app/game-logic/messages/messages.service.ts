@@ -62,7 +62,7 @@ export class MessagesService {
         this.addMessageToLog(message);
         const commandType = this.commandParser.parse(content, forwarder);
         const messageIsCommand = commandType !== undefined;
-        if (!messageIsCommand && this.onlineChat.connected) {
+        if (!messageIsCommand && this.onlineChat.isConnected) {
             this.onlineChat.sendMessage(content);
         }
     }

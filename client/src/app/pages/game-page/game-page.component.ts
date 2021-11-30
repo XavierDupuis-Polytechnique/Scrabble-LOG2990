@@ -1,7 +1,7 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-dialog/abandon-dialog.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
@@ -73,7 +73,7 @@ export class GamePageComponent implements OnDestroy {
         this.router.navigate(['/']);
     }
 
-    get isItMyTurn() {
+    get isItMyTurn(): boolean {
         try {
             if (this.isEndOfGame) {
                 return false;
@@ -84,19 +84,15 @@ export class GamePageComponent implements OnDestroy {
         }
     }
 
-    get isEndOfGame() {
-        try {
-            return this.info.isEndOfGame;
-        } catch (e) {
-            return false;
-        }
+    get isEndOfGame(): boolean {
+        return this.info.isEndOfGame;
     }
 
-    get canPlace() {
+    get canPlace(): boolean {
         return this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
     }
 
-    get canExchange() {
+    get canExchange(): boolean {
         return (
             this.isItMyTurn &&
             this.inputController.activeAction instanceof UIExchange &&
@@ -105,11 +101,11 @@ export class GamePageComponent implements OnDestroy {
         );
     }
 
-    get canPass() {
+    get canPass(): boolean {
         return this.isItMyTurn;
     }
 
-    get canCancel() {
+    get canCancel(): boolean {
         return this.canPlace || this.canExchange;
     }
 

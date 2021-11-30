@@ -2,7 +2,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
-import { EMPTY_CHAR } from '@app/game-logic/constants';
 import { Message, MessageType } from '@app/game-logic/messages/message.interface';
 
 describe('CommandParser', () => {
@@ -13,7 +12,8 @@ describe('CommandParser', () => {
         expect(command).toEqual(testArgument);
     };
 
-    const syntaxError1 = 'mot ou emplacement manquant';
+    const syntaxError0 = 'erreur de syntax: trop de paramètres entrés';
+    const syntaxError1 = 'erreur de syntax: mot ou emplacement manquant';
     const syntaxError2 = 'erreur de syntax: ligne invalide';
     const syntaxError3 = 'erreur de syntax: mot invalide';
     const syntaxError4 = 'erreur de syntax: colonne invalide';
@@ -83,23 +83,26 @@ describe('CommandParser', () => {
     });
 
     it('should send error message ' + syntaxError3, () => {
+        message.content = '!placer a1v -34';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, syntaxError3);
         });
-        service['formatPlaceLetter'](['a1v', EMPTY_CHAR]);
+
+        service.parse(message.content, message.from);
     });
 
-    it('should send error message ' + syntaxError3, () => {
+    it('should send error message ' + syntaxError0, () => {
+        message.content = '!placer a1v mot mot';
         service.errorMessage$.subscribe((error) => {
-            errorMessageTest(error, syntaxError3);
+            errorMessageTest(error, syntaxError0);
         });
-        service['formatPlaceLetter'](['a1v', EMPTY_CHAR + EMPTY_CHAR + EMPTY_CHAR]);
+        service.parse(message.content, message.from);
     });
 
     it('testArg should be equal to expectedArg', () => {
         const testArg = ['h8v', 'çàé'];
         const expectedArg = ['h', '8', 'v', 'cae'];
-        expect(service['formatPlaceLetter'](testArg)).toEqual(expectedArg);
+        expect(service['stringToPlaceLetterArguments'](testArg)).toEqual(expectedArg);
     });
 
     it('should send error message ' + syntaxError1, () => {
@@ -256,36 +259,48 @@ describe('CommandParser', () => {
     });
 
     it('should send error message when message content is empty', () => {
-        errorMessage = 'erreur de syntax: les paramètres sont invalides';
         service.errorMessage$.subscribe((error) => {
-            errorMessageTest(error, errorMessage);
+            errorMessageTest(error, syntaxError1);
         });
         const placeLetterParams: string[] = [];
-        service['formatPlaceLetter'](placeLetterParams);
+        service['isCommandPlaceLetterValid'](placeLetterParams);
     });
 
     it('should send error when place letter params arent valid', () => {
-        errorMessage = 'erreur de syntax: les paramètres sont invalides';
+        errorMessage = 'erreur de syntax: direction invalide';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, errorMessage);
         });
         const placeLetterParams = ['aaa', 'b', 'c', 'd'];
-        service['formatPlaceLetter'](placeLetterParams);
+        service['isPlaceLetterParameterValid'](placeLetterParams);
     });
 
-    it('column validation should return false if the columns lenght is not the max place letter args size', () => {
-        const columnsParams = 'h882dsf';
-        expect(service['isValidColumnsFormat'](columnsParams)).toBeFalse();
+    it('should return false if the command is undefined', () => {
+        const command = undefined as unknown as string[];
+        service.errorMessage$.subscribe((error) => {
+            errorMessageTest(error, syntaxError6);
+        });
+        service['isCommandPlaceLetterValid'](command);
     });
 
     it('should not validate a row with a undefined value', () => {
-        const row = undefined as unknown as number;
+        const row = undefined as unknown as string;
         expect(service['isValidRow'](row)).toBeFalse();
     });
 
     it('should not validate a row with a value more then o', () => {
-        const row = 'p'.charCodeAt(0);
+        const row = 'p';
         expect(service['isValidRow'](row)).toBeFalse();
+    });
+
+    it('should not validate word when col is undefined', () => {
+        const col = undefined as unknown as number;
+        expect(service['isValidColumn'](col)).toBeFalse();
+    });
+
+    it('should not validate word when column is not in board delimitation', () => {
+        const col = 0;
+        expect(service['isValidColumn'](col)).toBeFalse();
     });
 
     it('should not validate word when word is undefined', () => {
@@ -294,7 +309,7 @@ describe('CommandParser', () => {
     });
 
     it('should not validate direction when direction is undefined', () => {
-        const direction = undefined as unknown as number;
+        const direction = undefined as unknown as string;
         expect(service['isValidDirection'](direction)).toBeFalse();
     });
 });

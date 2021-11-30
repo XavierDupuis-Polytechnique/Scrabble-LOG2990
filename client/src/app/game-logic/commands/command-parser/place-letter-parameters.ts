@@ -1,6 +1,6 @@
 export interface PlaceLetterParameters {
-    row: number;
-    col: number | undefined;
-    direction: number;
+    row: string;
+    col: number;
+    direction: string;
     word: string;
 }

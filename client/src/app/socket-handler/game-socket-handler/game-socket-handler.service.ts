@@ -19,12 +19,13 @@ const GAME_ALREADY_JOINED = 'You have already joined a game';
     providedIn: 'root',
 })
 export class GameSocketHandlerService {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    socket: Socket | any;
+    socket: Socket;
+
     private lastGameState$ = new Subject<ForfeitedGameState>();
     get forfeitGameState$(): Subject<ForfeitedGameState> {
         return this.lastGameState$;
     }
+
     private gameStateSubject = new Subject<GameState>();
     get gameState$(): Observable<GameState> {
         return this.gameStateSubject;
@@ -88,7 +89,7 @@ export class GameSocketHandlerService {
             throw Error(HAVE_NOT_JOINED_GAME_ERROR);
         }
         this.socket.disconnect();
-        this.socket = undefined;
+        this.socket = undefined as unknown as Socket;
     }
 
     connectToSocket() {
