@@ -32,11 +32,6 @@ import { first } from 'rxjs/operators';
 export class GameManagerService {
     private game: Game | undefined;
 
-    private transition = new Subject<void>();
-    get transition$(): Observable<void> {
-        return this.transition;
-    }
-
     private newGameSubject = new Subject<void>();
     get newGame$(): Observable<void> {
         return this.newGameSubject;
@@ -134,67 +129,11 @@ export class GameManagerService {
                 objectiveConverter.transitionObjectives(forfeitedGameState.objectives, userName, botName);
             }
         }
-        this.transition.next();
         // STARTS LOADED GAME
         const activePlayerIndex = forfeitedGameState.activePlayerIndex;
         this.resumeGame(activePlayerIndex);
         const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
         this.updateLeaboardWhenGameEnds(this.game, gameMode);
-    }
-
-    transitionBoard(forfeitedGameState: ForfeitedGameState) {
-        (this.game as OfflineGame).board = this.boardService.board;
-        const nRows = BOARD_DIMENSION;
-        const nCols = BOARD_DIMENSION;
-        const newGrid = forfeitedGameState.grid;
-
-        for (let i = 0; i < nRows; i++) {
-            for (let j = 0; j < nCols; j++) {
-                this.boardService.board.grid[i][j] = newGrid[i][j];
-            }
-        }
-    }
-
-    transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
-        if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
-            const playerInfo = forfeitedGameState.players;
-
-            for (let i = 0; i < playerInfo.length; i++) {
-                for (let j = 0; j < playerInfo[i].letterRack.length; j++) {
-                    this.game.players[i].letterRack[j] = playerInfo[i].letterRack[j];
-                }
-            }
-            this.game.players[0].points = playerInfo[userIndex].points;
-            this.game.players[1].points = playerInfo[botIndex].points;
-        }
-    }
-
-    copyGameInformation() {
-        if (this.game instanceof SpecialOnlineGame) {
-            return [
-                this.game.timePerTurn,
-                this.game.userName,
-                this.game.activePlayerIndex,
-                this.game.privateObjectives,
-                this.game.publicObjectives,
-                this.game.players,
-            ];
-        }
-        if (this.game instanceof OnlineGame) {
-            return [this.game.timePerTurn, this.game.userName, this.game.activePlayerIndex, this.game.players];
-        }
-        return;
-    }
-
-    createConvertedGame(forfeitedGameState: ForfeitedGameState, isSpecial: boolean) {
-        const timePerTurn = (this.game as OnlineGame).timePerTurn;
-        this.stopGame();
-        const gameCreationParams: OfflineGameCreationParams = { timePerTurn, randomBonus: forfeitedGameState.randomBonus };
-        if (isSpecial) {
-            this.game = this.gameCreator.createSpecialOfflineGame(gameCreationParams, true);
-        } else {
-            this.game = this.gameCreator.createOfflineGame(gameCreationParams, true);
-        }
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -253,6 +192,44 @@ export class GameManagerService {
         }
         this.resetServices();
         this.game = undefined;
+    }
+
+    private createConvertedGame(forfeitedGameState: ForfeitedGameState, isSpecial: boolean) {
+        const timePerTurn = (this.game as OnlineGame).timePerTurn;
+        this.stopGame();
+        const gameCreationParams: OfflineGameCreationParams = { timePerTurn, randomBonus: forfeitedGameState.randomBonus };
+        if (isSpecial) {
+            this.game = this.gameCreator.createSpecialOfflineGame(gameCreationParams, true);
+        } else {
+            this.game = this.gameCreator.createOfflineGame(gameCreationParams, true);
+        }
+    }
+
+    private transitionBoard(forfeitedGameState: ForfeitedGameState) {
+        (this.game as OfflineGame).board = this.boardService.board;
+        const nRows = BOARD_DIMENSION;
+        const nCols = BOARD_DIMENSION;
+        const newGrid = forfeitedGameState.grid;
+
+        for (let i = 0; i < nRows; i++) {
+            for (let j = 0; j < nCols; j++) {
+                this.boardService.board.grid[i][j] = newGrid[i][j];
+            }
+        }
+    }
+
+    private transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
+        if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
+            const playerInfo = forfeitedGameState.players;
+
+            for (let i = 0; i < playerInfo.length; i++) {
+                for (let j = 0; j < playerInfo[i].letterRack.length; j++) {
+                    this.game.players[i].letterRack[j] = playerInfo[i].letterRack[j];
+                }
+            }
+            this.game.players[0].points = playerInfo[userIndex].points;
+            this.game.players[1].points = playerInfo[botIndex].points;
+        }
     }
 
     private updateLeaboardWhenGameEnds(game: Game, gameMode: GameMode) {
