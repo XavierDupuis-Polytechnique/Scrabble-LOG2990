@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { NOT_FOUND } from '@app/game-logic/constants';
@@ -11,7 +11,10 @@ import { DictHttpService } from '@app/services/dict-http.service';
     styleUrls: ['./add-dict-dialog.component.scss'],
 })
 export class AddDictDialogComponent {
-    @ViewChild('fileInput') input: HTMLInputElement;
+    @ViewChild('fileInput') inputRef: ElementRef;
+    get input(): HTMLInputElement {
+        return this.inputRef.nativeElement;
+    }
     selectedFile = '';
 
     constructor(
