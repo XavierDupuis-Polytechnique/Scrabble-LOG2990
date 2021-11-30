@@ -35,24 +35,8 @@ export class ObjectiveCreator {
     createOnlineObjective(name: string, description: string, points: number): OnlineObjective {
         return new OnlineObjective(this.objectiveNotifier, name, description, points);
     }
-
-    private createObjectives(count: number, availableObjectivesIndex: number[]) {
-        const createdObjectives: Objective[] = [];
-        for (let index = 0; index < count; index++) {
-            const randomInt = getRandomInt(availableObjectivesIndex.length);
-            const randomObjectiveIndex = availableObjectivesIndex[randomInt];
-            const createdObjective = this.createObjective(randomObjectiveIndex);
-            createdObjectives.push(createdObjective);
-            availableObjectivesIndex.splice(randomInt, 1);
-        }
-        return createdObjectives;
-    }
-
-    private getAvailableObjectivesIndex() {
-        return [...Array(TOTAL_OBJECTIVE_COUNT).keys()];
-    }
-
-    private createObjective(objectiveIndex: number): Objective {
+    // TODO:mettre private si j'ai merdé
+    createObjective(objectiveIndex: number): Objective {
         switch (objectiveIndex) {
             case ObjectiveType.FourCorners:
                 return new FourCorners(this.objectiveNotifier);
@@ -73,5 +57,21 @@ export class ObjectiveCreator {
             default:
                 throw Error('Could not create objectif with specified index ' + objectiveIndex);
         }
+    }
+
+    private createObjectives(count: number, availableObjectivesIndex: number[]) {
+        const createdObjectives: Objective[] = [];
+        for (let index = 0; index < count; index++) {
+            const randomInt = getRandomInt(availableObjectivesIndex.length);
+            const randomObjectiveIndex = availableObjectivesIndex[randomInt];
+            const createdObjective = this.createObjective(randomObjectiveIndex);
+            createdObjectives.push(createdObjective);
+            availableObjectivesIndex.splice(randomInt, 1);
+        }
+        return createdObjectives;
+    }
+
+    private getAvailableObjectivesIndex() {
+        return [...Array(TOTAL_OBJECTIVE_COUNT).keys()];
     }
 }

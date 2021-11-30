@@ -19,7 +19,7 @@ import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/vali
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService } from '@app/services/jv-http.service';
+import { BotHttpService } from '@app/services/bot-http.service';
 import { of } from 'rxjs';
 
 describe('bot message service', () => {

@@ -6,9 +6,12 @@ import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
-import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
+import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
+import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -38,6 +41,12 @@ export class GameManagerService {
 
     private gameCreator: GameCreator;
     private newGameStateSubject = new Subject<GameStateToken>();
+    private forfeitedGameStateSubject = new Subject<GameStateToken>();
+
+    get lastGameState$(): Observable<GameStateToken> {
+        return this.forfeitedGameStateSubject;
+    }
+
     get newGameState$(): Observable<GameStateToken> {
         return this.newGameStateSubject;
     }
@@ -70,9 +79,6 @@ export class GameManagerService {
         this.endGame$.subscribe((endOfGame: EndOfGame) => {
             const gameToken = endOfGame.gameToken;
             if (endOfGame.reason === EndOfGameReason.GameEnded) {
-                this.updateLeaderboard(endOfGame.players);
-            }
-            if (endOfGame.reason === EndOfGameReason.Forfeit) {
                 this.updateLeaderboard(endOfGame.players);
             }
             this.deleteGame(gameToken);
@@ -138,13 +144,15 @@ export class GameManagerService {
         if (!playerRef) {
             return;
         }
-        this.activePlayers.delete(playerId);
-
         const gameToken = playerRef.gameToken;
         const game = this.activeGames.get(gameToken);
+        this.activePlayers.delete(playerId);
         if (!game) {
             return;
         }
+        this.createTransitionGameState(game);
+        // TODO replace for sendTransitionGameState() (aka forfeitedGameState)
+
         this.endForfeitedGame(game, playerRef.player.name);
         this.deleteGame(gameToken);
     }
@@ -178,6 +186,32 @@ export class GameManagerService {
 
     private endForfeitedGame(game: ServerGame, playerName: string) {
         game.forfeit(playerName);
+    }
+
+    private createTransitionGameState(game: ServerGame) {
+        if (game.activePlayerIndex === undefined) {
+            return;
+        }
+        const objConverter = new OnlineObjectiveConverter();
+        let translatedObjectives: TransitionObjectives[] = [];
+        const gameState = this.gameCompiler.compile(game);
+        if (game instanceof SpecialServerGame) {
+            translatedObjectives = translatedObjectives.concat(objConverter.convertObjectives(game.publicObjectives, game.privateObjectives));
+        }
+        const lastGameState: ForfeitedGameState = {
+            activePlayerIndex: gameState.activePlayerIndex,
+            consecutivePass: game.consecutivePass,
+            grid: gameState.grid,
+            isEndOfGame: gameState.isEndOfGame,
+            letterBag: game.letterBag.gameLetters,
+            players: gameState.players,
+            lettersRemaining: gameState.lettersRemaining,
+            winnerIndex: gameState.winnerIndex,
+            randomBonus: game.randomBonus,
+            objectives: translatedObjectives,
+        };
+        const lastGameToken: GameStateToken = { gameState: lastGameState, gameToken: game.gameToken };
+        this.forfeitedGameStateSubject.next(lastGameToken);
     }
 
     private deleteInactiveGame(gameToken: string) {

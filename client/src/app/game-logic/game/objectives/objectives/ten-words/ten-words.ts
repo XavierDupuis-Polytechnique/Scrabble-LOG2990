@@ -5,7 +5,7 @@ export class TenWords extends Objective {
     name = '10 mots';
     description = 'Placer au moins 10 mots dans une partie.';
     points = TEN_WORDS_POINTS;
-    private wordCounts = new Map<string, number>();
+    wordCounts = new Map<string, number>();
 
     protected updateProgression(action: Action): void {
         let wordCount = this.wordCounts.get(action.player.name);
