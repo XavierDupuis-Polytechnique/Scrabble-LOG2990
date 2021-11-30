@@ -154,7 +154,7 @@ describe('ActionCompilerService', () => {
     });
 
     it('should throw error when invalid settings command place', () => {
-        const placement: PlacementSetting[] = [{ x: 1, y: 1, direction: 'v' }];
+        const placement: PlacementSetting[] = [{ x: 1, y: 1, direction: Direction.Vertical}];
         const invalidCommand: OnlineAction = {
             type: OnlineActionType.Place,
             placementSettings: placement[2],
