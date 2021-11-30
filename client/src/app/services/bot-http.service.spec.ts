@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/bot-http.service';
 
 describe('BotHttpService', () => {
     let service: BotHttpService;

@@ -16,7 +16,7 @@ import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotType } from '@app/services/bot-http.service';
 import { of } from 'rxjs';
 
 describe('HardBot', () => {
@@ -64,6 +64,7 @@ describe('HardBot', () => {
             TestBed.inject(CommandExecuterService),
             TestBed.inject(ActionCreatorService),
             TestBed.inject(BotHttpService),
+            BotType.Expert,
         );
     });
 
