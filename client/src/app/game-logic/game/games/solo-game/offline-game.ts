@@ -28,8 +28,12 @@ export class OfflineGame extends Game {
         private pointCalculator: PointCalculatorService,
         private boardService: BoardService,
         private messagesService: MessagesService,
+        loadGame: boolean = false,
     ) {
         super();
+        if (loadGame) {
+            return;
+        }
         this.board = new Board(randomBonus);
         this.boardService.board = this.board;
     }
@@ -44,6 +48,14 @@ export class OfflineGame extends Game {
         }
         this.drawGameLetters();
         this.pickFirstPlayer();
+        this.startTurn();
+    }
+
+    resume(activePlayerIndex: number) {
+        if (this.players.length === 0) {
+            throw Error('Game started with no players');
+        }
+        this.activePlayerIndex = activePlayerIndex;
         this.startTurn();
     }
 
