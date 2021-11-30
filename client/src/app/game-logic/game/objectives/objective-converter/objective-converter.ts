@@ -15,7 +15,6 @@ export class ObjectiveConverter {
     constructor(private objectiveCreator: ObjectiveCreator) {}
 
     transitionObjectives(game: SpecialOfflineGame, transitionObjectives: TransitionObjectives[], userName: string, botName: string) {
-        console.log(game);
         game.privateObjectives = new Map<string, Objective[]>();
         game.publicObjectives = [];
 
