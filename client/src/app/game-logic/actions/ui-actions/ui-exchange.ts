@@ -13,8 +13,8 @@ export class UIExchange implements UIAction {
         return this.concernedIndexes.size > 0;
     }
 
-    receiveRightClick(args: unknown): void {
-        const letterIndex = args as number;
+    receiveRightClick(args: number): void {
+        const letterIndex = args;
         if (this.concernedIndexes.has(letterIndex)) {
             this.concernedIndexes.delete(letterIndex);
         } else {

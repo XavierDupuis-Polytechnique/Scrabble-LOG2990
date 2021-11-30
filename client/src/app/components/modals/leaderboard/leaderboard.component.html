@@ -2,7 +2,7 @@
     <div class="header">
         <div></div>
         <h3>Meilleurs Scores</h3>
-        <mat-icon [ngClass]="{ loading: loading }" (click)="refresh()">refresh</mat-icon>
+        <mat-icon [ngClass]="{ loading: isLoading }" (click)="refresh()">refresh</mat-icon>
     </div>
     <mat-tab-group mat-align-tabs="start" headerPosition="below">
         <mat-tab class="tab-classic" label="Mode Classique">
@@ -21,7 +21,7 @@
                     <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
 
                     <tr class="mat-row" *matNoDataRow>
-                        <td class="mat-cell" colspan="4">Impossible de se connecter au serveur</td>
+                        <td class="mat-cell" colspan="4">{{ errorMessage }}</td>
                     </tr>
                 </table>
             </div>

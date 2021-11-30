@@ -11,14 +11,14 @@ export class ThreeSameLetters extends Objective {
 
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         for (const word of params.formedWords) {
-            if (this.wordHasThreeSameLetters(word)) {
+            if (this.hasThreeSameLetters(word)) {
                 this.setPlayerProgression(action.player.name, 1);
                 return;
             }
         }
     }
 
-    private wordHasThreeSameLetters(word: Tile[]): boolean {
+    private hasThreeSameLetters(word: Tile[]): boolean {
         const letterMap = new Map<string, number>();
         for (const letter of word) {
             const char = letter.letterObject.char.toUpperCase();

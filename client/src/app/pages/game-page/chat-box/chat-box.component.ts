@@ -42,15 +42,13 @@ export class ChatBoxComponent implements AfterViewInit {
     }
 
     sendMessage() {
-        if (!this.messageValid) {
+        const content = this.messageContent;
+        if (!this.isMessageValid(content)) {
             return;
         }
-
-        const content = this.messageContent;
         const playerName = this.gameInfo.user.name;
         this.messageService.receiveMessagePlayer(playerName, content);
 
-        // this.messageForm.reset();
         this.resetMessageContent();
         this.cdRef.detectChanges();
         this.scrollDownChat();
@@ -64,11 +62,11 @@ export class ChatBoxComponent implements AfterViewInit {
         return this.messageService.messages$;
     }
 
-    get messageValid(): boolean {
-        if (this.messageContent === undefined) {
+    isMessageValid(messageContent: string): boolean {
+        if (messageContent === undefined) {
             return false;
         }
-        const content = this.messageContent;
+        const content = messageContent;
         return content.length !== 0 && content.length <= MAX_MESSAGE_LENGTH && NOT_ONLY_SPACE_RGX.test(content);
     }
 

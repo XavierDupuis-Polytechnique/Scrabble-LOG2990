@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { SocketMock } from '@app/game-logic/socket-mock';
@@ -15,6 +16,7 @@ describe('NewOnlineGameSocketHandler', () => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(NewOnlineGameSocketHandler);
         createSocketFunction = service.connectToSocket;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         service.connectToSocket = jasmine.createSpy().and.returnValue(new SocketMock());
         service.connect();
     });
@@ -44,7 +46,8 @@ describe('NewOnlineGameSocketHandler', () => {
         service.pendingGameId$.pipe(first()).subscribe((value) => {
             expect(value[0]).toEqual('aa');
         });
-        service.socket.peerSideEmit('pendingGameId', 'aa');
+
+        (service.socket as any).peerSideEmit('pendingGameId', 'aa');
     });
 
     it('join pending game should throw error if socket not connected', () => {
@@ -63,7 +66,7 @@ describe('NewOnlineGameSocketHandler', () => {
         service.joinPendingGame('abc', 'allo1');
         expect(service.listenForGameToken).toHaveBeenCalled();
 
-        service.socket.peerSideEmit('gameJoined', gameSettings);
+        (service.socket as any).peerSideEmit('gameJoined', gameSettings);
         service.listenForGameToken();
         service.startGame$.pipe(first()).subscribe((gameSettingsServer) => {
             expect(gameSettingsServer).not.toBeUndefined();
@@ -78,7 +81,7 @@ describe('NewOnlineGameSocketHandler', () => {
             expect(value).not.toBeUndefined();
         });
         service.listenForPendingGames();
-        service.socket.peerSideEmit('pendingGames', pendingGames as OnlineGameSettings[]);
+        (service.socket as any).peerSideEmit('pendingGames', pendingGames as OnlineGameSettings[]);
     });
 
     it('listenForError should return error message', () => {
@@ -87,7 +90,7 @@ describe('NewOnlineGameSocketHandler', () => {
             expect(value).toMatch(errorMessage);
         });
         service.listenErrorMessage();
-        service.socket.peerSideEmit('error', errorMessage);
+        (service.socket as any).peerSideEmit('error', errorMessage);
     });
 
     it('disconnect if connect to server fail', () => {
@@ -95,12 +98,12 @@ describe('NewOnlineGameSocketHandler', () => {
         service.isDisconnected$.pipe(take(1)).subscribe((value) => {
             expect(value).toBeTrue();
         });
-        service.socket.peerSideEmit('connect_error', true);
+        (service.socket as any).peerSideEmit('connect_error', true);
     });
 
     it('should not disconnect if socket not connected', () => {
         const spyDisconnect = spyOn(service.socket, 'disconnect');
-        service.socket = undefined;
+        (service.socket as any) = undefined;
         service.disconnectSocket();
         expect(spyDisconnect).not.toHaveBeenCalled();
     });

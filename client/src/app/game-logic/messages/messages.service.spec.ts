@@ -30,7 +30,7 @@ describe('Service: Messages', () => {
         onlineChatSpy = jasmine.createSpyObj(
             'OnlineChatHandler',
             ['sendMessage'],
-            ['connected', 'opponentMessage$', 'errorMessage$', 'systemMessage$'],
+            ['isConnected', 'opponentMessage$', 'errorMessage$', 'systemMessage$'],
         );
 
         (Object.getOwnPropertyDescriptor(onlineChatSpy, 'opponentMessage$')?.get as jasmine.Spy<() => Observable<ChatMessage>>).and.returnValue(
@@ -183,7 +183,7 @@ describe('Service: Messages', () => {
     it('should not send command to chat server', () => {
         const userName = 'Tim';
         const command = '!placer h8h hello';
-        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'connected')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'isConnected')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
         commandParserSpy.parse.and.returnValue(CommandType.Place);
         service.receiveMessagePlayer(userName, command);
         expect(onlineChatSpy.sendMessage).not.toHaveBeenCalled();
@@ -192,7 +192,7 @@ describe('Service: Messages', () => {
     it('should send message to chat server', () => {
         const userName = 'Tim';
         const message = 'hello';
-        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'connected')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
+        (Object.getOwnPropertyDescriptor(onlineChatSpy, 'isConnected')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
         commandParserSpy.parse.and.returnValue(undefined);
         service.receiveMessagePlayer(userName, message);
         expect(onlineChatSpy.sendMessage).toHaveBeenCalledOnceWith(message);

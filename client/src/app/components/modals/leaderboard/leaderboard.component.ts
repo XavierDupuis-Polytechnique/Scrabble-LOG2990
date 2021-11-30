@@ -7,13 +7,14 @@ import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { timer } from 'rxjs';
 
 const DELAY = 500;
+const ERROR_MESSAGE = 'Impossible de se connecter au serveur';
 @Component({
     selector: 'app-leaderboard',
     templateUrl: './leaderboard.component.html',
     styleUrls: ['./leaderboard.component.scss'],
 })
 export class LeaderboardComponent implements AfterContentChecked, OnInit {
-    columnsToDisplay = ['playerName', 'points'];
+    columnsToDisplay: string[] = ['playerName', 'points'];
     dataSourceClassic = new MatTableDataSource<HighScore>();
     dataSourceLog = new MatTableDataSource<HighScore>();
     columns = [
@@ -28,8 +29,8 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
             cell: (score: HighScore) => `${score.point}`,
         },
     ];
-    loading = false;
-
+    isLoading: boolean = false;
+    errorMessage: string = ERROR_MESSAGE;
     constructor(private leaderboardService: LeaderboardService, private cdref: ChangeDetectorRef) {}
 
     ngOnInit() {
@@ -41,10 +42,10 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
     }
 
     refresh() {
-        this.loading = true;
+        this.isLoading = true;
         this.getAllHighScores();
         timer(DELAY).subscribe(() => {
-            this.loading = false;
+            this.isLoading = false;
         });
     }
 
@@ -55,9 +56,14 @@ export class LeaderboardComponent implements AfterContentChecked, OnInit {
 
     private getHighScores(gameMode: GameMode) {
         const tableSource = gameMode === GameMode.Classic ? this.dataSourceClassic : this.dataSourceLog;
-        this.leaderboardService.getLeaderboard(gameMode).subscribe((scoresData: Score[]) => {
-            tableSource.data = this.filterScores(scoresData);
-        });
+        this.leaderboardService.getLeaderboard(gameMode).subscribe(
+            (scoresData: Score[]) => {
+                tableSource.data = this.filterScores(scoresData);
+            },
+            () => {
+                return;
+            },
+        );
     }
 
     private filterScores(scores: Score[]): HighScore[] {

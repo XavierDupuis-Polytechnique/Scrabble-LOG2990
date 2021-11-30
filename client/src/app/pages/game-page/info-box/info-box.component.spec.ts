@@ -77,12 +77,12 @@ describe('InfoBoxComponent', () => {
 
     it('timerIsLessThenOneMinute should return true', () => {
         testMock.timeLeft$ = MILISECONDS_IN_MINUTE / 2;
-        expect(component.timerIsLessOneMinute(testMock.timeLeft$)).toBeTruthy();
+        expect(component.isTimerLessOneMinute(testMock.timeLeft$)).toBeTruthy();
     });
 
     it('timerIsLessThenOneMinute should return false', () => {
         testMock.timeLeft$ = 2 * MILISECONDS_IN_MINUTE;
-        expect(component.timerIsLessOneMinute(testMock.timeLeft$)).toBeFalse();
+        expect(component.isTimerLessOneMinute(testMock.timeLeft$)).toBeFalse();
     });
 
     it('should not do anything when timerleft is undefined', (done) => {
@@ -111,7 +111,7 @@ describe('InfoBoxComponent', () => {
     });
 
     it('timer is less than one minute should return true when values are undefined and null', () => {
-        expect(component.timerIsLessOneMinute(null)).toBe(true);
-        expect(component.timerIsLessOneMinute(undefined)).toBe(true);
+        expect(component.isTimerLessOneMinute(null)).toBe(true);
+        expect(component.isTimerLessOneMinute(undefined)).toBe(true);
     });
 });

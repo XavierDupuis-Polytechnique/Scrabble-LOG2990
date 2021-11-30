@@ -17,6 +17,7 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
+import { Socket } from 'socket.io-client';
 import { OnlineGame } from './online-game';
 
 describe('OnlineGame', () => {
@@ -108,7 +109,7 @@ describe('OnlineGame', () => {
     });
 
     it('should forfeit', () => {
-        gameSocketHandlerService.socket = true;
+        gameSocketHandlerService.socket = {} as Socket;
         const forfeitSpy = spyOn(gameSocketHandlerService, 'disconnect').and.callFake(() => {
             return;
         });
