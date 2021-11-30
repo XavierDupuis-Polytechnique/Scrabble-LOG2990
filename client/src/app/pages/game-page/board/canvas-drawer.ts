@@ -1,28 +1,26 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Direction } from '@app/game-logic/direction.enum';
 import { Board } from '@app/game-logic/game/board/board';
+import { Vec2 } from '@app/game-logic/interfaces/vec2';
 import {
     BACKGROUND_COLOR,
     BLACK_LINE,
     BONUS_TEXT_COLOR,
     BORDER_COLOR,
+    BORDER_TEMP_TILE,
     DOUBLE_BONUS_LETTER,
     DOUBLE_BONUS_WORD,
-    TRIPLE_BONUS_LETTER,
+    IDENTIFIER_COLOR,
+    INDICATOR_COLOR,
     TILE_COLOR,
-    TRIPLE_BONUS_WORD
+    TRIPLE_BONUS_LETTER,
+    TRIPLE_BONUS_WORD,
 } from '@app/pages/game-page/board/canvas-colors';
-
-/* eslint-disable @typescript-eslint/no-magic-numbers */
-interface Vec2 {
-    x: number;
-    y: number;
-}
 
 enum BonusType {
     LetterBonus,
     WordBonus,
 }
-
 export class CanvasDrawer {
     canvas: CanvasRenderingContext2D;
     width: number;
@@ -57,7 +55,6 @@ export class CanvasDrawer {
             this.height - 2 * this.borderWidth - this.canvas.lineWidth,
         );
         this.canvas.globalAlpha = 1;
-        // this.canvas.fillStyle = '#000000';
         this.fontSize = fontsize;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
         for (let i = 1; i < 17; i++) {
@@ -75,9 +72,9 @@ export class CanvasDrawer {
                         this.drawHighlight(j, i);
                     }
                 } else if (board.grid[i][j].letterMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
+                    this.drawBonus({ x: j, y: i }, BonusType.LetterBonus, board.grid[i][j].letterMultiplicator);
                 } else if (board.grid[i][j].wordMultiplicator !== 1) {
-                    this.drawBonus(j, i, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
+                    this.drawBonus({ x: j, y: i }, BonusType.WordBonus, board.grid[i][j].wordMultiplicator);
                 }
             }
         }
@@ -114,29 +111,15 @@ export class CanvasDrawer {
     private drawRow(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
         this.canvas.fillStyle = BLACK_LINE;
-        // if (i === 1) {
-        //     this.canvas.fillStyle = BLACK_LINE;
-        // }
         const widthSize = this.width - 2 * this.borderWidth - this.tileSize - this.canvas.lineWidth;
         this.canvas.fillRect(this.borderWidth + this.tileSize + this.canvas.lineWidth, offset, widthSize, this.canvas.lineWidth);
-
-        // this.canvas.fillStyle = BLACK_LINE;
-        // this.canvas.fillRect(this.borderWidth, offset, this.tileSize + 2 * this.canvas.lineWidth, this.canvas.lineWidth);
     }
 
     private drawColumn(i: number) {
         const offset = i * (this.canvas.lineWidth + this.tileSize) + this.borderWidth;
-        // this.canvas.fillStyle = '#FFFFFF';
         this.canvas.fillStyle = BLACK_LINE;
-
-        // if (i === 1) {
-        //     this.canvas.fillStyle = '#000000';
-        // }
         const heightSize = this.height - 2 * this.borderWidth - this.tileSize - this.canvas.lineWidth;
         this.canvas.fillRect(offset, this.borderWidth + this.tileSize + this.canvas.lineWidth, this.canvas.lineWidth, heightSize);
-
-        // this.canvas.fillStyle = '#000000';
-        // this.canvas.fillRect(offset, this.borderWidth, this.canvas.lineWidth, this.tileSize + 2 * this.canvas.lineWidth);
     }
 
     private drawTile(letter: string, value: number, i: number, j: number) {
@@ -148,7 +131,7 @@ export class CanvasDrawer {
             this.tileSize - 2 * this.canvas.lineWidth,
             this.tileSize - 2 * this.canvas.lineWidth,
         );
-        this.canvas.strokeStyle = '#000000';
+        this.canvas.strokeStyle = BLACK_LINE;
         this.canvas.strokeRect(
             pos.x + 2 * this.canvas.lineWidth,
             pos.y + 2 * this.canvas.lineWidth,
@@ -156,12 +139,11 @@ export class CanvasDrawer {
             this.tileSize - this.canvas.lineWidth,
         );
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#000000';
+        this.canvas.fillStyle = BLACK_LINE;
 
         this.canvas.textAlign = 'center';
         this.canvas.textBaseline = 'alphabetic';
         const letterWidth = this.canvas.measureText(letter).width;
-        // this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
 
         const offset = this.tileSize / 3;
         this.canvas.font = `${this.fontSize}px ${this.font}`;
@@ -187,7 +169,7 @@ export class CanvasDrawer {
 
     private drawColumnIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#000000';
+        this.canvas.fillStyle = IDENTIFIER_COLOR;
 
         for (let i = 0; i < 15; i++) {
             const letter = String.fromCharCode(i + 65);
@@ -200,7 +182,7 @@ export class CanvasDrawer {
 
     private drawRowIdentifier() {
         this.canvas.font = `${this.fontSize}px ${this.font}`;
-        this.canvas.fillStyle = '#000000';
+        this.canvas.fillStyle = IDENTIFIER_COLOR;
 
         for (let i = 0; i < 15; i++) {
             const offset = i * (this.canvas.lineWidth + this.tileSize) + this.offset + this.tileSize / 2;
@@ -210,11 +192,11 @@ export class CanvasDrawer {
         }
     }
 
-    private drawBonus(i: number, j: number, type: BonusType, mul: number) {
+    private drawBonus(posBorder: Vec2, type: BonusType, mul: number) {
         this.canvas.font = `${this.fontSize * this.scale}px ${this.font}`;
         this.canvas.textAlign = 'center';
         let s = '';
-        const pos = this.tilePositionToCoord(i, j);
+        const pos = this.tilePositionToCoord(posBorder.x, posBorder.y);
 
         if (type === BonusType.LetterBonus) {
             s = 'Lettre';
@@ -232,12 +214,7 @@ export class CanvasDrawer {
             }
         }
 
-        this.canvas.fillRect(
-            pos.x + 1 * this.canvas.lineWidth,
-            pos.y + 1 * this.canvas.lineWidth, // TODO
-            this.tileSize,
-            this.tileSize,
-        );
+        this.canvas.fillRect(pos.x + 1 * this.canvas.lineWidth, pos.y + 1 * this.canvas.lineWidth, this.tileSize, this.tileSize);
 
         this.canvas.fillStyle = BONUS_TEXT_COLOR;
         this.canvas.fillText(s, pos.x + this.tileSize / 2, pos.y + this.tileSize / 5);
@@ -249,7 +226,7 @@ export class CanvasDrawer {
         this.canvas.fillStyle = 'rgba(0.5, 0, 0, 0.25)';
         this.canvas.fillRect(pos.x + this.canvas.lineWidth, pos.y + this.canvas.lineWidth, this.tileSize, this.tileSize);
 
-        this.canvas.fillStyle = '#90FF00';
+        this.canvas.fillStyle = INDICATOR_COLOR;
         if (this.indicatorDir === Direction.Horizontal) {
             this.canvas.beginPath();
             this.canvas.moveTo(pos.x, pos.y);
@@ -274,7 +251,7 @@ export class CanvasDrawer {
             this.tileSize - this.canvas.lineWidth,
             this.tileSize - this.canvas.lineWidth,
         );
-        this.canvas.strokeStyle = '#FF0000';
+        this.canvas.strokeStyle = BORDER_TEMP_TILE;
         this.canvas.strokeRect(
             pos.x + 2 * this.canvas.lineWidth,
             pos.y + 2 * this.canvas.lineWidth,
