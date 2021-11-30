@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
@@ -18,7 +19,7 @@ describe('EditDictDialogComponent', () => {
         dictHttpMock = jasmine.createSpyObj('DictHttpService', ['editDict', 'delete']);
         await TestBed.configureTestingModule({
             declarations: [EditDictDialogComponent],
-            imports: [AppMaterialModule, BrowserAnimationsModule],
+            imports: [AppMaterialModule, BrowserAnimationsModule, FormsModule],
             providers: [
                 { provide: MatDialog, useValue: matDialog },
                 { provide: MAT_DIALOG_DATA, useValue: String },
