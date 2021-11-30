@@ -7,7 +7,6 @@ import { Objective } from '@app/game-logic/game/objectives/objectives/objective'
 import { TenWords } from '@app/game-logic/game/objectives/objectives/ten-words/ten-words';
 import { TransitionObjectives } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 
-
 @Injectable({
     providedIn: 'root',
 })
