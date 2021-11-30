@@ -2,6 +2,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditBotDialogComponent } from '@app/components/modals/edit-bot-dialog/edit-bot-dialog.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BotHttpService, BotInfo, BotType } from '@app/services/bot-http.service';
 import { Observable, of, throwError } from 'rxjs';
 import { AdminBotComponent } from './admin-bot.component';
@@ -22,6 +23,7 @@ describe('AdminbotComponent', () => {
         botHttpServiceMock.getDataInfo.and.returnValue(obs);
         TestBed.configureTestingModule({
             declarations: [AdminBotComponent],
+            imports: [AppMaterialModule],
             providers: [
                 { provide: MatDialog, useValue: matDialogMock },
                 { provide: BotHttpService, useValue: botHttpServiceMock },

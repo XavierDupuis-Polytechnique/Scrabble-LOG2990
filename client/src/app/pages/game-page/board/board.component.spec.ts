@@ -50,7 +50,7 @@ describe('BoardComponent', () => {
     });
 
     it('should not change font size if value of slider(event) is undefined', () => {
-        const defaultValue = 19.5;
+        const defaultValue = 18;
         const event = new MatSliderChange();
         event.value = null;
         component.updateSetting(event);

@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
 import { of, throwError } from 'rxjs';
@@ -18,6 +19,7 @@ describe('admin-dictionary component', () => {
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         jasmine.createSpyObj('AdminDictComponent', ['ngOnInit']);
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [AdminDictComponent],
             providers: [
                 { provide: DictHttpService, useValue: dictHttpServiceMock },

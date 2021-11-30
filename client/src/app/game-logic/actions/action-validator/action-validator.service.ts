@@ -10,7 +10,7 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { HardBot } from '@app/game-logic/player/bot/hard-bot';
-import { placementSettingsToString } from '@app/game-logic/utils';
+import { isStringALowerCaseLetter, placementSettingsToString } from '@app/game-logic/utils';
 
 @Injectable({
     providedIn: 'root',
@@ -18,15 +18,14 @@ import { placementSettingsToString } from '@app/game-logic/utils';
 export class ActionValidatorService {
     constructor(private boardService: BoardService, private gameInfo: GameInfoService, private messageService: MessagesService) {}
 
-    sendAction(action: Action): boolean {
-        const isActionValid = this.validateAction(action);
+    sendAction(action: Action) {
+        const isActionValid = this.checkAction(action);
         if (!isActionValid) {
-            return false;
+            return;
         }
         this.sendActionArgsMessage(action);
         const player = action.player;
         player.play(action);
-        return true;
     }
 
     private sendActionArgsMessage(action: Action) {
@@ -43,50 +42,48 @@ export class ActionValidatorService {
         }
     }
 
-    private validateAction(action: Action): boolean {
-        if (!this.validateTurn(action)) {
+    private checkAction(action: Action): boolean {
+        if (!this.checkTurn(action)) {
             this.sendErrorMessage('Action demandé par ' + action.player.name + " pendant le tour d'un autre joueur");
             return false;
         }
 
         if (action instanceof PlaceLetter) {
-            return this.validatePlaceLetter(action as PlaceLetter);
+            return this.checkPlaceLetter(action as PlaceLetter);
         }
 
         if (action instanceof ExchangeLetter) {
-            return this.validateExchangeLetter(action as ExchangeLetter);
+            return this.checkExchangeLetter(action as ExchangeLetter);
         }
 
         if (action instanceof PassTurn) {
-            return this.validatePassTurn();
+            return this.checkPassTurn();
         }
 
         this.sendErrorMessage("Commande impossible à réaliser : le type d'action n'est pas  reconnu");
         return false;
     }
 
-    private validateTurn(action: Action): boolean {
+    private checkTurn(action: Action): boolean {
         return this.gameInfo.activePlayer === action.player;
     }
 
-    private validatePlaceLetter(action: PlaceLetter): boolean {
-        if (!this.validatePlacementWithBoard(action)) {
+    private checkPlaceLetter(action: PlaceLetter): boolean {
+        if (!this.checkPlacementWithBoard(action)) {
             return false;
         }
 
         const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
         const hasCenterTile = this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char !== EMPTY_CHAR;
-        if (hasCenterTile) {
-            return this.validateOtherPlaceLetter(action);
-        }
-        return this.validateFirstPlaceLetter(action);
+        const shouldCheckForNeighbors = hasCenterTile;
+        return this.checkPlaceLetterBoardRequirement(action, shouldCheckForNeighbors);
     }
 
-    private validatePlacementWithBoard(action: PlaceLetter) {
-        return this.validateBoardsLimits(action) && this.validateLettersCanBePlaced(action);
+    private checkPlacementWithBoard(action: PlaceLetter) {
+        return this.checkBoardsLimits(action) && this.checkLettersCanBePlaced(action);
     }
 
-    private validateLettersCanBePlaced(action: PlaceLetter) {
+    private checkLettersCanBePlaced(action: PlaceLetter) {
         let x = action.placement.x;
         let y = action.placement.y;
         let lettersNeeded = '';
@@ -127,7 +124,7 @@ export class ActionValidatorService {
         return true;
     }
 
-    private validateBoardsLimits(action: PlaceLetter): boolean {
+    private checkBoardsLimits(action: PlaceLetter): boolean {
         if (action.placement.y < 0 || action.placement.x < 0) {
             return false;
         }
@@ -146,46 +143,40 @@ export class ActionValidatorService {
         return true;
     }
 
-    private validateOtherPlaceLetter(action: PlaceLetter): boolean {
-        let hasNeighbour = false;
-        let x = action.placement.x;
-        let y = action.placement.y;
-        let index = 0;
-        while (index++ < action.word.length) {
-            hasNeighbour = this.boardService.board.hasNeighbour(x, y);
-            if (hasNeighbour) {
-                return true;
-            }
-            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
-        }
-        this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
-        return false;
-    }
-
-    private validateFirstPlaceLetter(action: PlaceLetter): boolean {
+    private checkPlaceLetterBoardRequirement(action: PlaceLetter, shouldCheckForNeighbors: boolean): boolean {
         const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
+        let isFillingPlacementCondition = false;
         let x = action.placement.x;
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
-            if (x === centerTilePosition && y === centerTilePosition) {
+            if (shouldCheckForNeighbors) {
+                isFillingPlacementCondition = this.boardService.board.hasNeighbour(x, y);
+            } else {
+                isFillingPlacementCondition = x === centerTilePosition && y === centerTilePosition;
+            }
+
+            if (isFillingPlacementCondition) {
                 return true;
             }
+
             if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
                 y++;
             } else {
                 x++;
             }
         }
-        this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
+
+        if (this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char === EMPTY_CHAR) {
+            this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
+        } else {
+            this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
+        }
+
         return false;
     }
 
-    private validateExchangeLetter(action: ExchangeLetter): boolean {
+    private checkExchangeLetter(action: ExchangeLetter): boolean {
         if (action.player instanceof HardBot && this.gameInfo.numberOfLettersRemaining >= action.lettersToExchange.length) {
             return true;
         }
@@ -209,7 +200,7 @@ export class ActionValidatorService {
         return true;
     }
 
-    private validatePassTurn() {
+    private checkPassTurn() {
         return true;
     }
 
@@ -232,13 +223,12 @@ export class ActionValidatorService {
         for (let char of actionChars) {
             let occurence = rackCharsOccurences.get(char);
             if (occurence === undefined || occurence === 0) {
-                if (char.toUpperCase() === char) {
-                    occurence = rackCharsOccurences.get(JOKER_CHAR);
-                    char = JOKER_CHAR;
-                    if (occurence === undefined || occurence === 0) {
-                        return false;
-                    }
-                } else {
+                if (isStringALowerCaseLetter(char)) {
+                    return false;
+                }
+                occurence = rackCharsOccurences.get(JOKER_CHAR);
+                char = JOKER_CHAR;
+                if (occurence === undefined || occurence === 0) {
                     return false;
                 }
             }

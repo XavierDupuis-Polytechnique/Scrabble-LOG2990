@@ -9,7 +9,7 @@ import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
 import { ENTER, ESCAPE } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
+import { InputComponent, InputType, UIInput, WheelRoll } from '@app/game-logic/interfaces/ui-input';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
@@ -41,6 +41,9 @@ export class UIInputControllerService {
     }
 
     receive(input: UIInput) {
+        if (this.info.isEndOfGame) {
+            return;
+        }
         this.processInput(input);
     }
 
@@ -60,13 +63,13 @@ export class UIInputControllerService {
         this.activeComponent = input.from;
     }
 
-    updateActiveAction(inputType: InputType): boolean {
+    updateActiveAction(inputType: InputType): void {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
                     this.discardAction();
                     this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
-                    return true;
+                    return;
                 }
                 break;
             case InputComponent.Horse:
@@ -74,31 +77,29 @@ export class UIInputControllerService {
                     if (!(this.activeAction instanceof UIExchange)) {
                         this.discardAction();
                         this.activeAction = new UIExchange(this.info.user);
-                        return true;
+                        return;
                     }
                 } else {
                     // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
                         this.discardAction();
                         this.activeAction = new UIMove(this.info.user);
-                        return true;
+                        return;
                     }
                 }
                 break;
             case InputComponent.Chatbox:
                 if (this.activeAction) {
                     this.discardAction();
-                    return true;
+                    return;
                 }
                 break;
             case InputComponent.Outside:
                 if (this.activeAction) {
                     this.discardAction();
                     this.activeComponent = InputComponent.Outside;
-                    return true;
                 }
         }
-        return false;
     }
 
     processInputType(input: UIInput) {
@@ -107,13 +108,13 @@ export class UIInputControllerService {
                 this.processLeftCLick(input.args);
                 break;
             case InputType.RightClick:
-                this.processRightCLick(input.args);
+                this.processRightCLick(input.args as number);
                 break;
             case InputType.KeyPress:
                 this.processKeyPress(input.args);
                 break;
             case InputType.MouseRoll:
-                this.processMouseRoll(input.args);
+                this.processMouseRoll(input.args as WheelRoll);
                 break;
             default:
                 throw Error('Unresolved input of type ' + input.type);
@@ -149,7 +150,7 @@ export class UIInputControllerService {
         this.activeAction = null;
     }
 
-    private processMouseRoll(args: unknown) {
+    private processMouseRoll(args?: WheelRoll) {
         if (this.activeAction) {
             this.activeAction.receiveRoll(args);
         }
@@ -180,7 +181,7 @@ export class UIInputControllerService {
         }
     }
 
-    private processRightCLick(args: unknown) {
+    private processRightCLick(args: number) {
         if (this.activeAction !== null) {
             this.activeAction.receiveRightClick(args);
             return;

@@ -1,5 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { DisconnectedFromServerComponent } from './disconnected-from-server.component';
 
 describe('DisconnectedFromServerComponent', () => {
@@ -8,6 +9,7 @@ describe('DisconnectedFromServerComponent', () => {
 
     beforeEach(async () => {
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [DisconnectedFromServerComponent],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();

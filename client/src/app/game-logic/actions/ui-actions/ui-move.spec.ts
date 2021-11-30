@@ -37,7 +37,7 @@ describe('UIMove', () => {
     });
 
     it('should not do anything when receiving a RightClick', () => {
-        action.receiveRightClick('');
+        action.receiveRightClick();
         expect().nothing();
     });
 

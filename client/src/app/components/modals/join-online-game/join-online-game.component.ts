@@ -12,8 +12,8 @@ const NO_WHITE_SPACE_RGX = /^\S*$/;
     styleUrls: ['./join-online-game.component.scss'],
 })
 export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
-    playerName: string;
     oppName: FormControl;
+    private playerName: string;
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettings,
         private dialogRef: MatDialogRef<JoinOnlineGameComponent>,
@@ -61,6 +61,6 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
     }
 
     get randomBonusType() {
-        return this.data.randomBonus === true ? 'Activé' : 'Désactivé';
+        return this.data.randomBonus ? 'est activé' : 'est désactivé';
     }
 }

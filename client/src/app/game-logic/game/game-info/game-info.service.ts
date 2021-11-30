@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EMPTY_CHAR, NOT_FOUND } from '@app/game-logic/constants';
 import { Game } from '@app/game-logic/game/games/game';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
@@ -64,18 +65,11 @@ export class GameInfoService {
         if (!this.game) {
             throw Error('No Game in GameInfo');
         }
-
-        if (this.game instanceof OfflineGame) {
-            return (this.game as OfflineGame).letterBag.countLetters();
-        }
-        return new Map<string, number>();
+        return this.game instanceof OfflineGame ? (this.game as OfflineGame).letterBag.countLetters() : new Map<string, number>();
     }
 
     get numberOfPlayers(): number {
-        if (!this.players) {
-            throw Error('No Players in GameInfo');
-        }
-        return this.players.length;
+        return this.players ? this.players.length : NOT_FOUND;
     }
 
     get activePlayer(): Player {
@@ -94,17 +88,11 @@ export class GameInfoService {
     }
 
     get numberOfLettersRemaining(): number {
-        if (!this.game) {
-            throw Error('No Game in GameInfo');
-        }
-        return this.game.getNumberOfLettersRemaining();
+        return this.game ? this.game.getNumberOfLettersRemaining() : NOT_FOUND;
     }
 
     get isEndOfGame(): boolean {
-        if (!this.game) {
-            throw Error('No Game in GameInfo');
-        }
-        return this.game.isEndOfGame();
+        return this.game ? this.game.isEndOfGame() : false;
     }
 
     get isOnlineGame(): boolean {
@@ -112,46 +100,30 @@ export class GameInfoService {
     }
 
     get winner(): Player[] {
-        if (!this.game) {
-            throw Error('No Game in GameInfo');
-        }
-        return this.game.getWinner();
+        return this.game ? this.game.getWinner() : [];
     }
 
     get gameId(): string {
-        if (!this.game) {
-            throw Error('No Game in GameInfo');
+        if (!this.game || !(this.game instanceof OnlineGame)) {
+            return EMPTY_CHAR;
         }
-
-        if (this.game instanceof OnlineGame) {
-            return (this.game as OnlineGame).gameToken;
-        }
-        return '';
+        return (this.game as OnlineGame).gameToken;
     }
 
     get isSpecialGame(): boolean {
-        if (!this.game) {
-            return false;
-        }
-        return this.game instanceof SpecialOfflineGame || this.game instanceof SpecialOnlineGame;
+        return this.game ? this.game instanceof SpecialOfflineGame || this.game instanceof SpecialOnlineGame : false;
     }
 
     getPrivateObjectives(playerName: string): Objective[] {
         if (!this.game || !this.user) {
-            throw Error('No Game or User in GameInfo');
+            return [];
         }
         const specialGame = this.game as SpecialGame;
         const privateObjectives = specialGame.privateObjectives.get(playerName);
-        if (!privateObjectives) {
-            return [];
-        }
-        return privateObjectives;
+        return privateObjectives ? privateObjectives : [];
     }
 
     get publicObjectives(): Objective[] {
-        if (!this.game) {
-            throw Error('No Game in GameInfo');
-        }
-        return (this.game as SpecialGame).publicObjectives;
+        return this.game ? (this.game as SpecialGame).publicObjectives : [];
     }
 }

@@ -1,6 +1,10 @@
 import { HttpStatusCode } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { BotHttpService, BotType } from '@app/services/bot-http.service';
 import { Observable, throwError } from 'rxjs';
 import { EditBotDialogComponent } from './edit-bot-dialog.component';
@@ -19,6 +23,7 @@ describe('EditbotDialogComponent', () => {
         botHttpMock = jasmine.createSpyObj('BotHttpService', ['editBot', 'addBot']);
 
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule, BrowserAnimationsModule, FormsModule],
             declarations: [EditBotDialogComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: String },
@@ -26,6 +31,7 @@ describe('EditbotDialogComponent', () => {
                 { provide: MatDialogRef, useValue: matDialogRefMock },
                 { provide: BotHttpService, useValue: botHttpMock },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 

@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { DictHttpService } from '@app/services/dict-http.service';
 import { of } from 'rxjs';
-
 import { AddDictDialogComponent } from './add-dict-dialog.component';
 
 describe('AddDictDialogComponent', () => {
@@ -18,6 +18,7 @@ describe('AddDictDialogComponent', () => {
         dialogRefSpy = jasmine.createSpyObj('MatDialogRef', ['close']);
         dictHttpServiceSpy = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict']);
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [AddDictDialogComponent],
             providers: [
                 { provide: MatDialog, useValue: dialogSpy },
