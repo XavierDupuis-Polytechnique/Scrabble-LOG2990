@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import { ForfeitedGameState, GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
@@ -144,7 +145,7 @@ describe('GameSocketHandler', () => {
         });
     });
 
-    it('should emit forfeited gamestate to client', (done) => {
+    it('should emit forfeited gamestate to client with valid game state', (done) => {
         stubGameManager.addPlayerToGame.returns();
         const forfeitedGameState: ForfeitedGameState = {
             players: [],
@@ -179,7 +180,7 @@ describe('GameSocketHandler', () => {
         });
     });
 
-    it('should emit forfeited gamestate to client', (done) => {
+    it('should emit forfeited gamestate to client with invalid game state', (done) => {
         stubGameManager.addPlayerToGame.returns();
         const forfeitedGameState: GameState = {
             players: [],
@@ -195,9 +196,8 @@ describe('GameSocketHandler', () => {
             gameToken,
             gameState: forfeitedGameState,
         };
-        clientSocket.on('transitionGameState', (lastGameState: GameState) => {
-            expect(lastGameState).to.deep.equal(forfeitedGameState);
-            done();
+        clientSocket.on('transitionGameState', () => {
+            expect.fail();
         });
 
         const userAuth: UserAuth = {
@@ -209,6 +209,11 @@ describe('GameSocketHandler', () => {
         serverSocket.on('joinGame', () => {
             mockFinaleGameState$.next(gameStateToken);
         });
+
+        setTimeout(() => {
+            expect(true).be.true;
+            done();
+        }, 20);
     });
 
     it('should send timer controls to client', (done) => {
