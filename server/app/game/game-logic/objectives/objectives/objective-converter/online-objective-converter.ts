@@ -28,7 +28,6 @@ export class OnlineObjectiveConverter {
     private translateObjective(objective: Objective): TransitionObjectives {
         const objectiveType = objective.constructor.name;
         const progressions: PlayerProgression[] = [];
-        // const letterProgressions: HalfAlphabetProgression[] = [];
 
         objective.progressions.forEach((progression: number, playerName: string) => {
             progressions.push({ playerName, progression });

@@ -86,12 +86,5 @@ export class GameSocketsHandler {
 
     private removePlayer(playerId: string) {
         this.gameManager.removePlayerFromGame(playerId);
-        const gameToken = this.gameManager.activePlayers.get(playerId)?.gameToken;
-        if (gameToken !== undefined) {
-            // TODO : remove or confirm next lines
-            // console.log(gameToken);
-            // const letterBag = this.gameManager.activeGames.get(gameToken)?.letterBag.gameLetters;
-            // this.sio.to(gameToken).emit('transitionGameState', gameState);
-        }
     }
 }

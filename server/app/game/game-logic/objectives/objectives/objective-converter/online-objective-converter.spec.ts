@@ -47,10 +47,10 @@ describe('OnlineObjectiveConverter', () => {
 
         for (let i = 0; i < totalNumberOfObjectives; i++) {
             const objective = objectives[i];
-            if (i < totalNumberOfObjectives - 1) {
-                publicObjectives.push(objective);
-            } else {
+            if (i === 0) {
                 privateObjectives.set('p1', [objective]);
+            } else {
+                publicObjectives.push(objective);
             }
             const expectedTransitionObjective: TransitionObjectives = {
                 objectiveType: i,
@@ -60,6 +60,13 @@ describe('OnlineObjectiveConverter', () => {
                 owner: undefined,
                 progressions: [],
             };
+            if (i === ObjectiveType.TenWords) {
+                expectedTransitionObjective.wordCounts = [];
+            }
+
+            if (i === ObjectiveType.HalfAlphabet) {
+                expectedTransitionObjective.placedLetters = [];
+            }
             expectedTransitionObjectives.push(expectedTransitionObjective);
         }
         const resultTransitionObjectives = onlineObjectiveConverter.convertObjectives(publicObjectives, privateObjectives);

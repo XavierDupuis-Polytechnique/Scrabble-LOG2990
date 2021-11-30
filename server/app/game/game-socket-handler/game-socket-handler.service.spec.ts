@@ -24,7 +24,7 @@ describe('GameSocketHandler', () => {
     let port: number;
     let sandbox: sinon.SinonSandbox;
     let stubGameManager: StubbedClass<GameManagerService>;
-    const mockNewFinaleGameState$ = new Subject<GameStateToken>();
+    const mockFinaleGameState$ = new Subject<GameStateToken>();
     const mockNewGameState$ = new Subject<GameStateToken>();
     const mockTimerControl$ = new Subject<TimerGameControl>();
 
@@ -35,7 +35,7 @@ describe('GameSocketHandler', () => {
 
             stubGameManager = createSinonStubInstance<GameManagerService>(GameManagerService);
             sinon.stub(stubGameManager, 'newGameState$').value(mockNewGameState$);
-            sinon.stub(stubGameManager, 'lastGameState$').value(mockNewFinaleGameState$);
+            sinon.stub(stubGameManager, 'lastGameState$').value(mockFinaleGameState$);
             sinon.stub(stubGameManager, 'timerControl$').value(mockTimerControl$);
             handler = new GameSocketsHandler(httpServer, stubGameManager);
             handler.handleSockets();
