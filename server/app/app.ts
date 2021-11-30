@@ -1,5 +1,7 @@
 import { HttpException } from '@app/classes/http.exception';
+import { BotInfoController } from '@app/controllers/bot-info.controller';
 import { DebugController } from '@app/controllers/debug.controller';
+import { DictionaryController } from '@app/controllers/dictionary.controller';
 import { LeaderboardController } from '@app/controllers/leaderboard-controller/leaderboard.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -16,7 +18,12 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
-    constructor(private readonly debugController: DebugController, private readonly leaderboardController: LeaderboardController) {
+    constructor(
+        private readonly debugController: DebugController,
+        private readonly leaderboardController: LeaderboardController,
+        private readonly botInfoController: BotInfoController,
+        private readonly dictionaryController: DictionaryController,
+    ) {
         this.app = express();
 
         this.swaggerOptions = {
@@ -39,6 +46,8 @@ export class Application {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/servergame', this.debugController.router);
         this.app.use('/api/scores', this.leaderboardController.router);
+        this.app.use('/api/botinfo', this.botInfoController.router);
+        this.app.use('/api/dictionary', this.dictionaryController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });

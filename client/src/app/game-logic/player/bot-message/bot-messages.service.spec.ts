@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { LocationStrategy } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { MockLocationStrategy } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
@@ -17,23 +18,26 @@ import { HardBot } from '@app/game-logic/player/bot/hard-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
-import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService } from '@app/services/jv-http.service';
+import { of } from 'rxjs';
 
 describe('bot message service', () => {
     let service: BotMessagesService;
-    let commandExecuterServiceMock: CommandExecuterService;
-    let messagesService: MessagesService;
-    const dict = new DictionaryService();
+    const commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
+    const messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
+    const httpClient = jasmine.createSpyObj('HttpClient', ['get']);
+    const botHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+    const obs = of(['Test1', 'Test2', 'Test3']);
+    botHttpService.getDataInfo.and.returnValue(obs);
     beforeEach(() => {
-        commandExecuterServiceMock = jasmine.createSpyObj('CommandExecuterService', ['execute'], ['isDebugModeActivated']);
-        messagesService = jasmine.createSpyObj('MessageService', ['receiveSystemMessage', 'receiveMessageOpponent']);
         TestBed.configureTestingModule({
             providers: [
-                { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesService },
                 { provide: CommandExecuterService, useValue: commandExecuterServiceMock },
+                { provide: HttpClient, useValue: httpClient },
                 { provide: LocationStrategy, useClass: MockLocationStrategy },
+                { provide: BotHttpService, useValue: botHttpService },
             ],
         });
         service = TestBed.inject(BotMessagesService);
@@ -44,6 +48,7 @@ describe('bot message service', () => {
     });
 
     it('sendAction should call sendPassTurnMessage', () => {
+        spyOn(service, 'sendAlternativeWords');
         const spy = spyOn(service, 'sendPassTurnMessage');
         const player = {
             name: 'test',
@@ -53,7 +58,8 @@ describe('bot message service', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('sendAction should call the correct function base on the instance of the action', () => {
+    it('sendAction should call the correct function base on the instance of the action 1/2', () => {
+        spyOn(service, 'sendAlternativeWords');
         const spy = spyOn(service, 'sendPlaceLetterMessage');
         const player = {
             name: 'test',
@@ -63,7 +69,14 @@ describe('bot message service', () => {
         service.sendAction(action);
 
         expect(spy).toHaveBeenCalled();
+    });
 
+    it('sendAction should call the correct function base on the instance of the action 2/2', () => {
+        const player = {
+            name: 'test',
+        };
+        const placement: PlacementSetting = { direction: Direction.Horizontal, x: 7, y: 7 };
+        const action = new PlaceLetter(player as Player, 'allo', placement, TestBed.inject(PointCalculatorService), TestBed.inject(WordSearcher));
         (Object.getOwnPropertyDescriptor(commandExecuterServiceMock, 'isDebugModeActivated')?.get as jasmine.Spy<() => boolean>).and.returnValue(
             true,
         );

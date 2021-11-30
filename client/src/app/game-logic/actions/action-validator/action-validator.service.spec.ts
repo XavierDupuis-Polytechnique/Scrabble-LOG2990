@@ -31,6 +31,8 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
+import { Observable } from 'rxjs';
 
 describe('ActionValidatorService', () => {
     let service: ActionValidatorService;
@@ -45,7 +47,7 @@ describe('ActionValidatorService', () => {
     let messagesSpy: MessagesService;
     let commandExecuterSpy: CommandExecuterService;
     let wordSearcher: WordSearcher;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
     const centerPosition = Math.floor(BOARD_DIMENSION / 2);
 
@@ -61,8 +63,15 @@ describe('ActionValidatorService', () => {
             return;
         }
     }
-
+    let mockBotHttpService: jasmine.SpyObj<BotHttpService>;
     beforeEach(() => {
+        mockBotHttpService = jasmine.createSpyObj('BotHttpService', ['getDataInfo']);
+        const dummyData: BotInfo[] = [{ name: 'Test', canEdit: true, type: BotType.Easy }];
+        const obs = new Observable<BotInfo[]>((sub) => {
+            sub.next(dummyData);
+        });
+        mockBotHttpService.getDataInfo.and.returnValue(obs);
+
         messagesSpy = jasmine.createSpyObj(MessagesService, ['receiveErrorMessage', 'receiveSystemMessage']);
         commandExecuterSpy = jasmine.createSpyObj(CommandExecuterService, ['any']);
         TestBed.configureTestingModule({
@@ -70,6 +79,7 @@ describe('ActionValidatorService', () => {
                 { provide: DictionaryService, useValue: dict },
                 { provide: MessagesService, useValue: messagesSpy },
                 { provide: CommandExecuterService, useValue: commandExecuterSpy },
+                { provide: BotHttpService, useValue: mockBotHttpService },
             ],
         });
         service = TestBed.inject(ActionValidatorService);
