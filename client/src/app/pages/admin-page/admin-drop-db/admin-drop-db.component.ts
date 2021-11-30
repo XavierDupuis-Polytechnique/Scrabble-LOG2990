@@ -5,10 +5,10 @@ import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { DictHttpService } from '@app/services/dict-http.service';
 import { BotHttpService } from '@app/services/bot-http.service';
 
-export enum StatusCodes{
-    OK = 200,
-    BAD_REQUEST = 400,
-    NOT_FOUND = 404,
+export enum StatusCodes {
+    Ok = 200,
+    BadRequest = 400,
+    NotFound = 404,
 }
 @Component({
     selector: 'app-admin-drop-db',
@@ -16,7 +16,12 @@ export enum StatusCodes{
     styleUrls: ['./admin-drop-db.component.scss'],
 })
 export class AdminDropDbComponent {
-    constructor(private botHttpService: BotHttpService, private dictHttpService: DictHttpService, private leaderboardService:LeaderboardService, private dialog: MatDialog) {}
+    constructor(
+        private botHttpService: BotHttpService,
+        private dictHttpService: DictHttpService,
+        private leaderboardService: LeaderboardService,
+        private dialog: MatDialog,
+    ) {}
 
     dropTables(): void {
         this.dialog
@@ -36,7 +41,7 @@ export class AdminDropDbComponent {
                     const isbotDropOk = await this.dropbotTable();
                     const isDictOk = await this.dropDictTable();
                     const isDeleteLBOk = await this.dropLeaderboardTables();
-                    if (!isbotDropOk || !isDictOk || !isDeleteLBOk ) {
+                    if (!isbotDropOk || !isDictOk || !isDeleteLBOk) {
                         this.dialog.open(AlertDialogComponent, {
                             width: '250px',
                             data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },

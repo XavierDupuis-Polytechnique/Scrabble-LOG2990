@@ -5,17 +5,20 @@ import { DictHttpService } from '@app/services/dict-http.service';
 import { BotHttpService } from '@app/services/bot-http.service';
 import { of } from 'rxjs';
 import { AdminDropDbComponent } from './admin-drop-db.component';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 
 describe('AdminDropDbComponent', () => {
     let component: AdminDropDbComponent;
 
     let botHttpServiceMock: jasmine.SpyObj<BotHttpService>;
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
+    let leaderboardServiceMock: jasmine.SpyObj<LeaderboardService>;
     let matDialogMock: jasmine.SpyObj<MatDialog>;
     let fixture: ComponentFixture<AdminDropDbComponent>;
 
     beforeEach(async () => {
         botHttpServiceMock = jasmine.createSpyObj('BotHttpService', ['dropTable']);
+        leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['dropCollections']);
         dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['dropTable']);
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         const dummyAnswer = of(true);
@@ -27,6 +30,7 @@ describe('AdminDropDbComponent', () => {
             providers: [
                 { provide: BotHttpService, useValue: botHttpServiceMock },
                 { provide: DictHttpService, useValue: dictHttpServiceMock },
+                { provide: LeaderboardService, useValue: leaderboardServiceMock },
                 { provide: MatDialog, useValue: matDialogMock },
             ],
         }).compileComponents();
@@ -66,6 +70,7 @@ describe('AdminDropDbComponent', () => {
 
         expect(botHttpServiceMock.dropTable).not.toHaveBeenCalled();
         expect(dictHttpServiceMock.dropTable).not.toHaveBeenCalled();
+        expect(leaderboardServiceMock.dropCollections).not.toHaveBeenCalled();
     });
 
     it('dropTables cover if path', async () => {

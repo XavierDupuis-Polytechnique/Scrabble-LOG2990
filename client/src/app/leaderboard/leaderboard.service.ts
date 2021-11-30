@@ -20,6 +20,6 @@ export class LeaderboardService {
     }
 
     dropCollections() {
-        return this.http.delete(this.url, {responseType: 'text'});
+        return this.http.delete(this.url, { responseType: 'text' });
     }
 }
