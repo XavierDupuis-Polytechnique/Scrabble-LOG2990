@@ -24,7 +24,7 @@ describe('OnlineGame', () => {
     let gameState: SpecialGameState;
     let lightObjective: LightObjective;
     let objectiveNotifierSpy: jasmine.SpyObj<ObjectiveNotifierService>;
-    const dict = new DictionaryService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
 
     beforeEach(() => {
         TestBed.configureTestingModule({

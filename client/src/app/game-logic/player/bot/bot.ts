@@ -12,12 +12,13 @@ import { BotCrawler } from '@app/game-logic/player/bot/bot-crawler';
 import { Player } from '@app/game-logic/player/player';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
 import { BehaviorSubject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { HORIZONTAL, ValidWord } from './valid-word';
 
 export abstract class Bot extends Player {
-    static botNames = ['Jimmy', 'Sasha', 'Beep'];
+    botNames: string[] = [];
     letterCreator = new LetterCreator();
     validWordList: ValidWord[];
     botCrawler: BotCrawler;
@@ -34,9 +35,17 @@ export abstract class Bot extends Player {
         protected gameInfo: GameInfoService,
         protected commandExecuter: CommandExecuterService,
         protected actionCreator: ActionCreatorService,
+        protected botHttpService: BotHttpService,
     ) {
         super('PlaceholderName');
-        this.name = this.generateBotName(name);
+        this.botHttpService.getDataInfo().subscribe((ans) => {
+            const list = ans as BotInfo[];
+            list.forEach((bot) => {
+                this.botNames.push(bot.name);
+            });
+            this.name = this.generateBotName(name);
+        });
+
         this.validWordList = [];
         this.botCrawler = new BotCrawler(this, this.dictionaryService, this.botCalculatorService, this.wordValidator);
     }
@@ -71,7 +80,7 @@ export abstract class Bot extends Player {
     }
 
     generateBotName(opponentName: string): string {
-        const generatedName = Bot.botNames[this.getRandomInt(Bot.botNames.length)];
+        const generatedName = this.botNames[this.getRandomInt(this.botNames.length)];
         return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
     }
 

@@ -1,20 +1,34 @@
 <h2>Configuration partie multijoueurs</h2>
-<mat-dialog-content>
+<br />
+<mat-dialog-content >
     <mat-form-field>
         <input matInput autocomplete="off" placeholder="Nom de joueur" [formControl]="oppName" />
         <mat-hint>Nom différent de l'adversaire. Min 3, Max 50 charactères</mat-hint>
     </mat-form-field>
-
+    
     <mat-form-field>
         <mat-label>Adversaire</mat-label>
         <input matInput [disabled]="true" [value]="data.playerName" />
     </mat-form-field>
+    
     <br />
     <br />
-    <mat-label #bonus>Bonus aléatoire {{ randomBonusType }} </mat-label>
+    <mat-form-field >
+        <mat-label #bonus>Bonus aléatoire </mat-label>
+        <input matInput [disabled]="true" [value]="randomBonusType" />
+    </mat-form-field>
+    
+    <mat-form-field >
+        <mat-label>Dictionnaire de la partie</mat-label>
+        <input matInput [disabled]="true" [value]="data.dictTitle" [matTooltip]="data.dictTitle" matTooltipPosition="right" />
+    </mat-form-field>
     <br />
-    <mat-label>Temps par tour de {{ data.timePerTurn | date: 'm:ss' }} min </mat-label>
+    <mat-form-field >
+        <mat-label>Temps par tour </mat-label>
+        <input matInput [disabled]="true" value="{{ data.timePerTurn | date: 'm:ss' }} min"  />
+    </mat-form-field>
     <br />
+    
 </mat-dialog-content>
 <br />
 <mat-dialog-actions>

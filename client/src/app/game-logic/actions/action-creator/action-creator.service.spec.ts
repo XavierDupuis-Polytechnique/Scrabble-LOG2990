@@ -14,8 +14,8 @@ import { WordSearcher } from '@app/game-logic/validator/word-search/word-searche
 describe('ActionCreatorService', () => {
     let service: ActionCreatorService;
     let player: Player;
-    const dict = new DictionaryService();
     const letterFactory = new LetterCreator();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }, PointCalculatorService, WordSearcher],

@@ -1,5 +1,6 @@
 import { Application } from '@app/app';
 import { DatabaseService } from '@app/database/database.service';
+import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
 import { GameSocketsHandler } from '@app/game/game-socket-handler/game-socket-handler.service';
 import { MessagesSocketHandler } from '@app/messages-service/message-socket-handler/messages-socket-handler.service';
@@ -24,6 +25,7 @@ export class Server {
         private gameManager: GameManagerService,
         private systemMessagesService: SystemMessagesService,
         private databaseService: DatabaseService,
+        private dictionaryService: DictionaryService,
     ) {}
     private static normalizePort(val: number | string): number | string | boolean {
         const port: number = typeof val === 'string' ? parseInt(val, this.baseDix) : val;
@@ -41,7 +43,7 @@ export class Server {
 
         this.server = http.createServer(this.application.app);
 
-        this.onlineGameManager = new NewGameSocketHandler(this.server, this.onlineGameService);
+        this.onlineGameManager = new NewGameSocketHandler(this.server, this.onlineGameService, this.dictionaryService);
         this.onlineGameManager.newGameHandler();
 
         this.gameSocketsHandler = new GameSocketsHandler(this.server, this.gameManager);

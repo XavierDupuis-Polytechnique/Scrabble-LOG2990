@@ -16,6 +16,7 @@ import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { getRandomInt } from '@app/game-logic/utils';
+import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { HorseComponent } from './horse.component';
@@ -42,6 +43,7 @@ describe('HorseComponent', () => {
     let component: HorseComponent;
     let fixture: ComponentFixture<HorseComponent>;
     const mockUIInputControllerService = new MockUIInputControllerService();
+    const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             imports: [AppMaterialModule, CommonModule],
@@ -50,6 +52,7 @@ describe('HorseComponent', () => {
                 { provide: GameManagerService, useClass: MockGameManagerService },
                 { provide: UIInputControllerService, useValue: mockUIInputControllerService },
                 { provide: GameInfoService, useClass: MockGameInfoService },
+                { provide: DictionaryService, useValue: dict },
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();

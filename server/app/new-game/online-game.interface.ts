@@ -6,6 +6,8 @@ export interface OnlineGameSettingsUI {
     playerName: string;
     opponentName?: string;
     randomBonus: boolean;
+    dictTitle: string;
+    dictDesc?: string;
 }
 
 export interface OnlineGameSettings extends OnlineGameSettingsUI {

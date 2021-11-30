@@ -1,14 +1,36 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 /* eslint-disable @typescript-eslint/no-magic-numbers*/
+import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
+import { of } from 'rxjs';
 
 describe('DictionaryService', () => {
-    const dictionaryService = new DictionaryService();
+    const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDict']);
+    dictHttpServiceMock.getDict.and.returnValue(of({ title: 'testTitle', description: 'testDesc', words: ['aa', 'bb', 'cc'] }));
+    const dictionaryService = new DictionaryService(dictHttpServiceMock);
+
+    beforeEach(() => {
+        if (!dictionaryService.isDefaultDict) {
+            dictionaryService['addDefault']();
+        }
+    });
 
     it('should be created', () => {
         expect(dictionaryService).toBeTruthy();
+    });
+
+    it('should load the default dict if not loaded already', () => {
+        dictionaryService.isDefaultDict = false;
+        dictionaryService.fetchDictionary(DEFAULT_DICTIONARY_TITLE);
+        expect(dictionaryService.isDefaultDict).toBeTruthy();
+    });
+
+    it('should fetch the dict if its not the default', () => {
+        dictionaryService.fetchDictionary('testTitle');
+        expect(dictionaryService.isWordInDict('cc')).toBeTruthy();
     });
 
     it('should return true if word is in dictionary', () => {
