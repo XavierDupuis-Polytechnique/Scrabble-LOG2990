@@ -24,7 +24,7 @@ export class HalfAlphabet extends Objective {
             currentPlacedLetters.add(letter);
         }
         this.placedLetters.set(action.player.name, currentPlacedLetters);
-        const newProgression = currentPlacedLetters.size / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE;
+        const newProgression = Math.min(currentPlacedLetters.size / N_LETTERS_IN_ALPHABET / HALF_ALPHABET_COMPLETION_PERCENTAGE, 1);
         this.setPlayerProgression(action.player.name, newProgression);
     }
 }
