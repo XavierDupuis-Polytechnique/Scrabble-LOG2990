@@ -83,7 +83,8 @@ describe('admin-dictionary component', () => {
 
     it('updateDictMap should open dialog if error', () => {
         dictHttpServiceMock.getDictInfoList.and.returnValue(throwError('error'));
-        component.updateDictMap();
+        // eslint-disable-next-line dot-notation
+        component['updateDictMap']();
         expect(matDialog.open).toHaveBeenCalled();
     });
 });
