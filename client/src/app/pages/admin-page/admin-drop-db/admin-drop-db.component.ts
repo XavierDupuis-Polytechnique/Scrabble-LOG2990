@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { BotHttpService } from '@app/services/bot-http.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 
 export enum StatusCodes {
     Ok = 200,

@@ -1,12 +1,13 @@
+/* eslint-disable dot-notation */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { DictHttpService } from '@app/services/dict-http.service';
 import { BotHttpService } from '@app/services/bot-http.service';
+import { DictHttpService } from '@app/services/dict-http.service';
 import { of } from 'rxjs';
 import { AdminDropDbComponent } from './admin-drop-db.component';
-import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 
 describe('AdminDropDbComponent', () => {
     let component: AdminDropDbComponent;
@@ -42,8 +43,8 @@ describe('AdminDropDbComponent', () => {
         fixture = TestBed.createComponent(AdminDropDbComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
-        // eslint-disable-next-line dot-notation
         component['refresh'] = jasmine.createSpy('refresh');
+        component['dropLeaderboardTables'] = jasmine.createSpy('dropLeaderboardTables');
     });
 
     it('should create', () => {
@@ -72,7 +73,6 @@ describe('AdminDropDbComponent', () => {
 
         expect(botHttpServiceMock.dropTable).not.toHaveBeenCalled();
         expect(dictHttpServiceMock.dropTable).not.toHaveBeenCalled();
-        expect(leaderboardServiceMock.dropCollections).not.toHaveBeenCalled();
     });
 
     it('dropTables cover if path', async () => {
@@ -86,5 +86,15 @@ describe('AdminDropDbComponent', () => {
         } as MatDialogRef<AlertDialogComponent>);
         component.dropTables();
         expect(matDialogMock.open).toHaveBeenCalled();
+    });
+
+    it('should not call dropTable', () => {
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of('400');
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        component.dropTables();
+        expect(leaderboardServiceMock.dropCollections).not.toHaveBeenCalled();
     });
 });
