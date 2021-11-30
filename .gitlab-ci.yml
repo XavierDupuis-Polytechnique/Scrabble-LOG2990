@@ -157,7 +157,9 @@ deploy:server:
         - |
             timeout 600 ssh -t -o ServerAliveInterval=15 -o ServerAliveCountMax=5 "${EC2_USER}@${EC2_HOST}" "
                 set -x -ev
-
+                # Force kill any node app or any app running on the server port
+                forever stopall && sudo fuser -k '${SERVER_PORT}/tcp' && sudo killall node
+                
                 # Clone the repository
                 git clone 'https://${GITLAB_DEPLOY_TOKEN_USERNAME}:${GITLAB_DEPLOY_TOKEN_PASSWORD}@${GITLAB_REPO_URL}' repo || echo Git repository already exist
                 cd repo
@@ -170,9 +172,6 @@ deploy:server:
                 cd server
                 npm ci
                 npm run build
-
-                # Force kill any node app or any app running on the server port
-                forever stopall && sudo fuser -k '${SERVER_PORT}/tcp' && sudo killall node
 
                 # Launch the server in background and append output to /var/log/messages for CloudWatch
                 forever start -a -l /var/log/messages out/index.js
