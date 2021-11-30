@@ -12,7 +12,7 @@ import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { HORIZONTAL, ValidWord, VERTICAL } from '@app/game-logic/player/bot/valid-word';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService, BotType } from '@app/services/jv-http.service';
+import { BotHttpService, BotType } from '@app/services/bot-http.service';
 import { of } from 'rxjs';
 
 const placeTestWords = (x: number, y: number, isVertical: boolean, word: string, boardService: BoardService) => {

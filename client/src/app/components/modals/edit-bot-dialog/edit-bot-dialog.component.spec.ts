@@ -1,35 +1,35 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { BotHttpService, BotType } from '@app/services/jv-http.service';
+import { BotHttpService, BotType } from '@app/services/bot-http.service';
 import { Observable } from 'rxjs';
-import { EditJvDialogComponent } from './edit-jv-dialog.component';
+import { EditBotDialogComponent } from './edit-bot-dialog.component';
 
-describe('EditJvDialogComponent', () => {
-    let component: EditJvDialogComponent;
-    let fixture: ComponentFixture<EditJvDialogComponent>;
+describe('EditbotDialogComponent', () => {
+    let component: EditBotDialogComponent;
+    let fixture: ComponentFixture<EditBotDialogComponent>;
 
     let matDialogMock: jasmine.SpyObj<MatDialog>;
-    let matDialogRefMock: jasmine.SpyObj<MatDialogRef<EditJvDialogComponent>>;
+    let matDialogRefMock: jasmine.SpyObj<MatDialogRef<EditBotDialogComponent>>;
 
-    let jvHttpMock: jasmine.SpyObj<BotHttpService>;
+    let botHttpMock: jasmine.SpyObj<BotHttpService>;
     beforeEach(async () => {
         matDialogMock = jasmine.createSpyObj('MatDialog', ['open']);
         matDialogRefMock = jasmine.createSpyObj('MatDialogRef', ['close']);
-        jvHttpMock = jasmine.createSpyObj('BotHttpService', ['editBot', 'addBot']);
+        botHttpMock = jasmine.createSpyObj('BotHttpService', ['editBot', 'addBot']);
 
         await TestBed.configureTestingModule({
-            declarations: [EditJvDialogComponent],
+            declarations: [EditBotDialogComponent],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: String },
                 { provide: MatDialog, useValue: matDialogMock },
                 { provide: MatDialogRef, useValue: matDialogRefMock },
-                { provide: BotHttpService, useValue: jvHttpMock },
+                { provide: BotHttpService, useValue: botHttpMock },
             ],
         }).compileComponents();
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(EditJvDialogComponent);
+        fixture = TestBed.createComponent(EditBotDialogComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -42,14 +42,14 @@ describe('EditJvDialogComponent', () => {
         const obs = new Observable<boolean>((subscriber) => {
             subscriber.next(true);
         });
-        jvHttpMock.editBot.and.returnValue(obs);
+        botHttpMock.editBot.and.returnValue(obs);
         const mockBot = { canEdit: true, name: 'test', type: BotType.Easy };
         const oldMockBot = { canEdit: true, name: 'old', type: BotType.Easy };
 
         component.editBotInfo = oldMockBot;
         component.bot = mockBot;
         component.editBot();
-        expect(jvHttpMock.editBot).toHaveBeenCalledOnceWith(oldMockBot, mockBot);
+        expect(botHttpMock.editBot).toHaveBeenCalledOnceWith(oldMockBot, mockBot);
         expect(matDialogRefMock.close).toHaveBeenCalled();
     });
 
@@ -59,7 +59,7 @@ describe('EditJvDialogComponent', () => {
         const obs = new Observable<boolean>((subscriber) => {
             subscriber.next(false);
         });
-        jvHttpMock.editBot.and.returnValue(obs);
+        botHttpMock.editBot.and.returnValue(obs);
         component.editBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
@@ -68,11 +68,11 @@ describe('EditJvDialogComponent', () => {
         const obs = new Observable<boolean>((subscriber) => {
             subscriber.next(true);
         });
-        jvHttpMock.addBot.and.returnValue(obs);
+        botHttpMock.addBot.and.returnValue(obs);
         const mockBot = { canEdit: true, name: 'test', type: BotType.Easy };
         component.bot = mockBot;
         component.addBot();
-        expect(jvHttpMock.addBot).toHaveBeenCalledOnceWith(mockBot);
+        expect(botHttpMock.addBot).toHaveBeenCalledOnceWith(mockBot);
         expect(matDialogRefMock.close).toHaveBeenCalled();
     });
 
@@ -82,7 +82,7 @@ describe('EditJvDialogComponent', () => {
         const obs = new Observable<boolean>((subscriber) => {
             subscriber.next(false);
         });
-        jvHttpMock.addBot.and.returnValue(obs);
+        botHttpMock.addBot.and.returnValue(obs);
         component.addBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });

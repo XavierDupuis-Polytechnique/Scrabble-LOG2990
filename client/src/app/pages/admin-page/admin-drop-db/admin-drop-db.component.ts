@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { BotHttpService } from '@app/services/jv-http.service';
+import { BotHttpService } from '@app/services/bot-http.service';
 @Component({
     selector: 'app-admin-drop-db',
     templateUrl: './admin-drop-db.component.html',
     styleUrls: ['./admin-drop-db.component.scss'],
 })
 export class AdminDropDbComponent {
-    constructor(private joueurVirtuelHttpService: BotHttpService, private dictHttpService: DictHttpService, private dialog: MatDialog) {}
+    constructor(private botHttpService: BotHttpService, private dictHttpService: DictHttpService, private dialog: MatDialog) {}
 
     dropTables(): void {
         this.dialog
@@ -26,9 +26,9 @@ export class AdminDropDbComponent {
             .afterClosed()
             .subscribe(async (ans) => {
                 if (ans === true) {
-                    const isJvDropOk = await this.dropJvTable();
+                    const isbotDropOk = await this.dropbotTable();
                     const isDictOk = await this.dropDictTable();
-                    if (!isJvDropOk && !isDictOk) {
+                    if (!isbotDropOk && !isDictOk) {
                         this.dialog.open(AlertDialogComponent, {
                             width: '250px',
                             data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },
@@ -40,9 +40,9 @@ export class AdminDropDbComponent {
             });
     }
 
-    private async dropJvTable() {
+    private async dropbotTable() {
         return new Promise<boolean>((resolve) => {
-            this.joueurVirtuelHttpService.dropTable().subscribe((res) => {
+            this.botHttpService.dropTable().subscribe((res) => {
                 const ans = JSON.parse(res.toString());
                 resolve(ans);
             });

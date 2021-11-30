@@ -10,7 +10,7 @@ import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messa
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService, BotType } from '@app/services/jv-http.service';
+import { BotHttpService, BotType } from '@app/services/bot-http.service';
 import { of } from 'rxjs';
 
 describe('Bot', () => {
@@ -42,7 +42,7 @@ describe('Bot', () => {
             TestBed.inject(CommandExecuterService),
             TestBed.inject(ActionCreatorService),
             TestBed.inject(BotHttpService),
-            BotType.Easy
+            BotType.Easy,
         );
     });
 
