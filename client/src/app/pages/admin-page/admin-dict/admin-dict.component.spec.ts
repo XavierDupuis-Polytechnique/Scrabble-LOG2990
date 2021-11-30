@@ -83,7 +83,7 @@ describe('admin-dictionary component', () => {
 
     it('updateDictMap should open dialog if error', () => {
         dictHttpServiceMock.getDictInfoList.and.returnValue(throwError('error'));
-        component['updateDictMap']();
+        component.updateDictMap();
         expect(matDialog.open).toHaveBeenCalled();
-    })
+    });
 });

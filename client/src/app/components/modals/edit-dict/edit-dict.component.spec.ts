@@ -62,15 +62,15 @@ describe('EditDictDialogComponent', () => {
     });
 
     it('uploadEdit should open dialog if error NOT_FOUND', () => {
-        dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.NotFound}));
+        dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.NotFound }));
         component.tempDict.title = 'test';
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();
     });
 
     it('uploadEdit should not open dialog if error not NOT_FOUND', () => {
-        dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout}));
-        component.tempDict.title ='test';
+        dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout }));
+        component.tempDict.title = 'test';
         component.uploadEdit();
         expect(matDialog.open).toHaveBeenCalled();
     });

@@ -89,13 +89,13 @@ describe('EditbotDialogComponent', () => {
     });
 
     it('editBot should open dialog if erro', () => {
-        botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.NotFound}));
+        botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.NotFound }));
         component.editBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 
     it('editBot should do nothing dialog if error is not NOTFound', () => {
-        botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout}));
+        botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout }));
         component.editBot();
         expect(matDialogMock.open).not.toHaveBeenCalled();
     });
