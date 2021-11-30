@@ -36,23 +36,24 @@ export class WordSearcher {
         const listOfValidWord: Word[] = [];
         const word = wordPlacement.word;
         const placement = wordPlacement.placement;
-        if (this.dictionaryService.isWordInDict(word)) {
-            const letters = this.stringToTile(word, placement);
-            const index = this.findIndexOfLetterToPlace(word, placement);
-            listOfValidWord.push({ letters, index });
-
-            const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
-            for (const coord of coordsOfLettersToPlace) {
-                const adjacentWordDirection = this.getAdjacentWordsDirection(placement.direction);
-                if (this.hasNeighbour(coord.x, coord.y, adjacentWordDirection)) {
-                    const wordToValidate = this.extractWord(word, placement, coord);
-                    if (this.isInDictionnary(wordToValidate.letters)) {
-                        listOfValidWord.push(wordToValidate);
-                    } else {
-                        return [];
-                    }
+        if (!this.dictionaryService.isWordInDict(word)) {
+            return [];
+        }
+        const letters = this.stringToTile(word, placement);
+        const index = this.findIndexOfLetterToPlace(word, placement);
+        listOfValidWord.push({ letters, index });
+        const coordsOfLettersToPlace = this.findCoordOfLettersToPlace(word, placement);
+        for (const coord of coordsOfLettersToPlace) {
+            const adjacentWordDirection = this.getAdjacentWordsDirection(placement.direction);
+            if (this.hasNeighbour(coord.x, coord.y, adjacentWordDirection)) {
+            const wordToValidate = this.extractWord(word, placement, coord);
+                if (this.isInDictionnary(wordToValidate.letters)) {
+                   listOfValidWord.push(wordToValidate);
                 }
-            }
+                else {
+                   return [];
+                }
+            } 
         }
         return listOfValidWord;
     }
