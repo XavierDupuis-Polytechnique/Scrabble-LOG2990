@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
-import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-dialog/abandon-dialog.component';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
@@ -32,7 +32,6 @@ import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-inf
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.

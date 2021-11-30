@@ -7,8 +7,8 @@ import { GameManagerService } from '@app/game-logic/game/games/game-manager/game
     templateUrl: './abandon-dialog.component.html',
     styleUrls: ['./abandon-dialog.component.scss'],
 })
-export class AbandonButtonComponent {
-    constructor(private dialogRef: MatDialogRef<AbandonButtonComponent>, private router: Router, private gameManager: GameManagerService) {}
+export class AbandonDialogComponent {
+    constructor(private dialogRef: MatDialogRef<AbandonDialogComponent>, private router: Router, private gameManager: GameManagerService) {}
 
     abandon() {
         this.gameManager.stopGame();
