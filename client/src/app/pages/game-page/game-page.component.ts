@@ -68,11 +68,7 @@ export class GamePageComponent {
     }
 
     get isEndOfGame(): boolean {
-        try {
-            return this.info.isEndOfGame;
-        } catch (e) {
-            return false;
-        }
+        return this.info.isEndOfGame;
     }
 
     get canPlace(): boolean {
