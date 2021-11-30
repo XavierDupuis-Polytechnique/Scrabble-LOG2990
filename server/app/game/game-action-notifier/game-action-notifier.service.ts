@@ -10,7 +10,7 @@ import { Service } from 'typedi';
 export interface GameActionNotification {
     gameToken: string;
     content: string;
-    to: string[]; // player names
+    to: string[];
 }
 
 @Service()
