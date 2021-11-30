@@ -34,6 +34,7 @@ export class AdminDropDbComponent {
                             data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },
                         });
                     }
+                    window.location.reload();
                 }
             });
     }

@@ -28,7 +28,12 @@ export class AddDictDialogComponent {
         if (!file) {
             return;
         }
-        this.selectedFile = file[0].name;
+        const fileName = file[0].name;
+        if (!fileName.includes('.json')) {
+            this.errorModal("Le fichier sélectionné n'est pas un fichier JSON");
+            return;
+        }
+        this.selectedFile = fileName;
     }
 
     async uploadFile() {
@@ -64,18 +69,22 @@ export class AddDictDialogComponent {
             this.errorModal('Le dictionnaire fournie ne contient pas de titre');
             return;
         }
+
         if (dict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
             this.errorModal('Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.');
             return;
         }
+
         if (dict.description === undefined || null) {
             this.errorModal('Le dictionnaire fournie ne contient pas de description');
             return;
         }
+
         if (dict.words === undefined || null) {
             this.errorModal('Le dictionnaire fournie ne contient pas une liste de mots');
             return;
         }
+
         this.dictHttpService.uploadDict(dict).subscribe((value) => {
             if (value) {
                 this.dialogRef.close();
