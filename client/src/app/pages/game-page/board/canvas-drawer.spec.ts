@@ -38,7 +38,7 @@ describe('Canvas drawer test', () => {
 
     it('default board should call fillRect 61 times for the bonus', () => {
         const fillRectSpy = spyOn(canvasDrawer.canvas, 'fillRect');
-        const fillRectOtherCount = 62;
+        const fillRectOtherCount = 37;
         const fillRectBonusCount = 61;
         const numberCall = fillRectBonusCount + fillRectOtherCount;
         canvasDrawer.drawGrid(board, FONT_SIZE);
