@@ -107,10 +107,7 @@ export class WordSearcher {
 
     private isInDictionnary(word: Tile[]): boolean {
         const wordString = this.tileToString(word).toLowerCase();
-        if (this.dictionaryService.isWordInDict(wordString)) {
-            return true;
-        }
-        return false;
+        return this.dictionaryService.isWordInDict(wordString);
     }
 
     private isPreviousTileUsed(coord: Vec2, adjacentWordDirection: Direction, letterPosition: Vec2): boolean {
