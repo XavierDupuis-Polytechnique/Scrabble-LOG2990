@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatRipple, RippleConfig } from '@angular/material/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { LoadingGameComponent } from '@app/components/modals/loading-game/loading-game.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -177,8 +178,23 @@ export class ClassicGameComponent {
                 }
                 this.router.navigate(['/game']);
             });
+            this.openLoadingGame(gameReady$);
         }
-        // TODO - add loading screen?
+    }
+
+    openLoadingGame(gameReady$: BehaviorSubject<boolean>) {
+        const loadingGameDialogConfig = new MatDialogConfig();
+        loadingGameDialogConfig.disableClose = true;
+        loadingGameDialogConfig.width = '250px';
+        loadingGameDialogConfig.height = '250px';
+        const loadingGameDialog = this.dialog.open(LoadingGameComponent, loadingGameDialogConfig);
+        loadingGameDialog.afterOpened().subscribe(() => {
+            gameReady$.subscribe((gameReady) => {
+                if (gameReady) {
+                    loadingGameDialog.close();
+                }
+            });
+        });
     }
 
     get isSpecialGame() {
