@@ -19,6 +19,7 @@ import { TransitionObjective } from '@app/game-logic/game/objectives/objectives/
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { Player } from '@app/game-logic/player/player';
+import { User } from '@app/game-logic/player/user';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { BotHttpService } from '@app/services/bot-http.service';
@@ -431,5 +432,22 @@ describe('GameManagerService Online Edition', () => {
             forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char,
         );
         expect((service['game'] as SpecialOfflineGame).publicObjectives[0].name).toBe(objective.name);
+    });
+
+    it('should throw error if game is not created first when resuming a game', () => {
+        expect(() => {
+            service['resumeGame'](0);
+        }).toThrowError('No game created yet');
+    });
+
+    // it('should not be able to start a converted game if there is no game', () => {
+    //     const updateLeaboardWhenGameEndsSpy = spyOn(service, 'updateLeaboardWhenGameEnds');
+    //     service['startConvertedGame'](0, GameMode.Classic);
+    //     expect(updateLeaboardWhenGameEndsSpy).not.toHaveBeenCalled();
+    // });
+
+    it('should not allocate players if there is no game', () => {
+        service['allocatePlayers']([new User('p1'), new User('p2')]);
+        expect(service['game']?.players).toBe(undefined);
     });
 });

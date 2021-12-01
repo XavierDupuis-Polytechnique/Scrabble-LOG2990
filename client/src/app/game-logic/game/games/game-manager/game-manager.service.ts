@@ -140,10 +140,6 @@ export class GameManagerService {
             throw Error('No opponent name was entered');
         }
 
-        if (!gameSettings.playerName) {
-            throw Error('player name not entered');
-        }
-
         const username = userAuth.playerName;
         const timePerTurn = Number(gameSettings.timePerTurn);
         const gameCreationParams: OnlineGameCreationParams = { id: gameSettings.id, timePerTurn, username };
@@ -172,14 +168,6 @@ export class GameManagerService {
         this.game.start();
     }
 
-    resumeGame(activePlayerIndex: number) {
-        this.resetServices();
-        if (!this.game) {
-            throw Error('No game created yet');
-        }
-        (this.game as OfflineGame).resume(activePlayerIndex);
-    }
-
     stopGame(): void {
         this.game?.stop();
         if (this.game instanceof OnlineGame) {
@@ -189,11 +177,19 @@ export class GameManagerService {
         this.game = undefined;
     }
 
+    private resumeGame(activePlayerIndex: number) {
+        this.resetServices();
+        if (!this.game) {
+            throw Error('No game created yet');
+        }
+        (this.game as OfflineGame).resume(activePlayerIndex);
+    }
+
     private startConvertedGame(activePlayerIndex: number, gameMode: GameMode) {
-        this.resumeGame(activePlayerIndex);
         if (!this.game) {
             return;
         }
+        this.resumeGame(activePlayerIndex);
         this.updateLeaboardWhenGameEnds(this.game, gameMode);
     }
 
