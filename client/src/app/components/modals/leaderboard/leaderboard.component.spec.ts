@@ -86,17 +86,4 @@ describe('LeaderboardComponent', () => {
         const dataTable = component['dataSourceClassic'];
         expect(dataTable.data.length).toEqual(testScores.length);
     });
-
-    // it('should be a full table ', () => {
-    //     component.refresh();
-    //     // eslint-disable-next-line dot-notation
-    //     component['scores$'].next([
-    //         { name: 'Player3', point: 10 },
-    //         { name: 'Player4', point: 5 },
-    //     ]);
-    //     const tableLength = 2;
-    //     const dom = fixture.nativeElement as HTMLElement;
-    //     const table = dom.querySelectorAll('tr')[0];
-    //     expect(table.cells.length).toBe(tableLength);
-    // });
 });

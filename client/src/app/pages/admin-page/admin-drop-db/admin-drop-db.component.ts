@@ -5,11 +5,6 @@ import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { BotHttpService } from '@app/services/bot-http.service';
 import { DictHttpService } from '@app/services/dict-http.service';
 
-export enum StatusCodes {
-    Ok = 200,
-    BadRequest = 400,
-    NotFound = 404,
-}
 @Component({
     selector: 'app-admin-drop-db',
     templateUrl: './admin-drop-db.component.html',
@@ -74,7 +69,8 @@ export class AdminDropDbComponent {
     private async dropLeaderboardTables() {
         return new Promise<boolean>((resolve) => {
             this.leaderboardService.dropCollections().subscribe((res) => {
-                resolve(res in StatusCodes);
+                const ans = res.ok;
+                resolve(ans);
             });
         });
     }
