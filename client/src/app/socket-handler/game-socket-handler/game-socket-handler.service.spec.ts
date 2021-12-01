@@ -8,7 +8,7 @@ import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { take } from 'rxjs/operators';
 import { GameSocketHandlerService } from './game-socket-handler.service';
 
-describe('GameSocketHandlerService', () => {
+fdescribe('GameSocketHandlerService', () => {
     let service: GameSocketHandlerService;
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -34,6 +34,13 @@ describe('GameSocketHandlerService', () => {
         const spy = spyOn(service, 'receiveGameState');
         const mockGameState = {};
         (service.socket as any).peerSideEmit('gameState', mockGameState);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('on transitionGameState should call receiveTransitionGameState', () => {
+        const spy = spyOn(service, 'receiveTransitionGameState');
+        const mockGameState = {};
+        (service.socket as any).peerSideEmit('transitionGameState', mockGameState);
         expect(spy).toHaveBeenCalled();
     });
 

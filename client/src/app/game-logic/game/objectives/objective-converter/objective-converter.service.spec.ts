@@ -1,4 +1,4 @@
-import { ObjectiveConverter } from "@app/game-logic/game/objectives/objective-converter/objective-converter";
+import { ObjectiveConverter } from "@app/game-logic/game/objectives/objective-converter/objective-converter.service";
 import { HalfAlphabetProgression, TenWordsProgression, TransitionObjectives } from "@app/game-logic/game/objectives/objectives/transition-objectives";
 import { PlayerProgression } from "@app/game-logic/game/games/online-game/game-state";
 import { SpecialOfflineGame } from "@app/game-logic/game/games/special-games/special-offline-game";
