@@ -65,7 +65,7 @@ describe('HorseComponent', () => {
     });
 
     it('should initialise player rack', () => {
-        component.ngAfterContentInit();
+        component.ngAfterContentChecked();
         expect(component.playerRack).toBeDefined();
     });
 
@@ -79,7 +79,7 @@ describe('HorseComponent', () => {
     });
 
     it('should return the correct boolean for a rackLetter selection depending on the current UIAction', () => {
-        component.ngAfterContentInit();
+        component.ngAfterContentChecked();
         const index = getRandomInt(RACK_LETTER_COUNT);
         mockUIInputControllerService.activeAction = new UIMove(mockPlayers[0]);
         mockUIInputControllerService.activeAction.concernedIndexes.add(index);
@@ -106,7 +106,7 @@ describe('HorseComponent', () => {
     });
 
     it('should return the correct boolean for a rackLetter selection (UIMove)', () => {
-        component.ngAfterContentInit();
+        component.ngAfterContentChecked();
         mockUIInputControllerService.activeAction = new UIMove(mockPlayers[0]);
         for (let index = 0; index < RACK_LETTER_COUNT; index++) {
             mockUIInputControllerService.activeAction.concernedIndexes.add(index);
@@ -119,7 +119,7 @@ describe('HorseComponent', () => {
     });
 
     it('should return the correct boolean for a rackLetter selection (UIExchange)', () => {
-        component.ngAfterContentInit();
+        component.ngAfterContentChecked();
         mockUIInputControllerService.activeAction = new UIExchange(mockPlayers[0]);
         for (let index = 0; index < RACK_LETTER_COUNT; index++) {
             if (index % 2) {
@@ -136,7 +136,7 @@ describe('HorseComponent', () => {
     });
 
     it('should return the correct boolean for a rackLetter selection (UIPlace)', () => {
-        component.ngAfterContentInit();
+        component.ngAfterContentChecked();
         mockUIInputControllerService.activeAction = new UIPlace(
             TestBed.inject(GameInfoService),
             TestBed.inject(PointCalculatorService),
