@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
-import { GameState } from '@app/game-logic/game/games/online-game/game-state';
+import { ForfeitedGameState, GameState } from '@app/game-logic/game/games/online-game/game-state';
 import { TimerControls } from '@app/game-logic/game/timer/timer-controls.enum';
 import { SocketMock } from '@app/game-logic/socket-mock';
 import { OnlineAction, OnlineActionType } from '@app/socket-handler/interfaces/online-action.interface';
@@ -97,5 +97,15 @@ fdescribe('GameSocketHandlerService', () => {
         const gameState = { isEndOfGame: false } as GameState;
         service.receiveGameState(gameState);
         expect(gameStateSubject.isEndOfGame).toBeFalse();
+    });
+
+    it('receiveTransitionGameState should set lastGameStateSubject', () => {
+        let lastGameStateSubject: ForfeitedGameState = {} as ForfeitedGameState;
+        service.forfeitGameState$.pipe(take(1)).subscribe((value) => {
+            lastGameStateSubject = value;
+        });
+        const lastGameState = { lettersRemaining: 3 } as ForfeitedGameState;
+        service.receiveTransitionGameState(lastGameState);
+        expect(lastGameStateSubject.lettersRemaining).toEqual(3);
     });
 });

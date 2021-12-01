@@ -12,7 +12,7 @@ import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
-import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter';
+import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
 import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.service';
