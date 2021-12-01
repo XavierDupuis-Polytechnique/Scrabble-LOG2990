@@ -36,11 +36,6 @@ export class GameSocketHandlerService {
         return this.timerControlsSubject;
     }
 
-    private endTurnSubject = new Subject<void>();
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
-    }
-
     private disconnectedFromServerSubject = new Subject<void>();
     get disconnectedFromServer$(): Observable<void> {
         return this.disconnectedFromServerSubject;
