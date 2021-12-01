@@ -1,12 +1,15 @@
+/* eslint-disable max-lines */
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatRipple } from '@angular/material/core';
 import { MatDialog, MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatToolbar } from '@angular/material/toolbar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
+import { LoadingGameComponent } from '@app/components/modals/loading-game/loading-game.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-player/waiting-for-player.component';
@@ -37,11 +40,12 @@ describe('ClassicGameComponent', () => {
             ['createGameMulti', 'listenForPendingGames', 'disconnectSocket', 'joinPendingGames', 'resetGameToken'],
             ['isDisconnected$', 'startGame$'],
         );
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame']);
+        ready$.next(false);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['joinOnlineGame', 'createGame', 'createSpecialGame', 'stopGame']);
         gameManagerSpy.createGame.and.returnValue(ready$);
         gameManagerSpy.createSpecialGame.and.returnValue(ready$);
         await TestBed.configureTestingModule({
-            declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar],
+            declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar, MatRipple],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
@@ -138,9 +142,27 @@ describe('ClassicGameComponent', () => {
 
     it('start solo game should create a game', async () => {
         spyOn(router, 'navigate');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of(false);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<LoadingGameComponent>);
         component.startSoloGame();
         expect(gameManagerSpy.createGame).toHaveBeenCalled();
         ready$.next(true);
+        expect(router.navigate).toHaveBeenCalled();
+    });
+
+    it('start solo game should navigate if already ready', async () => {
+        const subscription = ready$.subscribe();
+        component.gameReady$$ = subscription;
+        spyOn(router, 'navigate');
+        ready$.next(true);
+        component.startSoloGame();
+        expect(gameManagerSpy.createGame).toHaveBeenCalled();
         expect(router.navigate).toHaveBeenCalled();
     });
 
@@ -335,6 +357,15 @@ describe('ClassicGameComponent', () => {
     });
 
     it('#startSoloGame should create special game', () => {
+        spyOn(router, 'navigate');
+        matDialog.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+            close: () => {
+                return;
+            },
+        } as MatDialogRef<LoadingGameComponent>);
         component.gameMode = GameMode.Special;
         component.startSoloGame();
         expect(gameManagerSpy.createSpecialGame).toHaveBeenCalled();
@@ -345,5 +376,11 @@ describe('ClassicGameComponent', () => {
         expect(component.gameMode).toBe(GameMode.Classic);
         component.isSpecialGame = true;
         expect(component.gameMode).toBe(GameMode.Special);
+    });
+
+    it('should triggerRipple', () => {
+        spyOn(component, 'triggerRipple').and.callThrough();
+        component.triggerRipple();
+        expect(component.triggerRipple).toHaveBeenCalled();
     });
 });

@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatRipple, RippleConfig } from '@angular/material/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoadingGameComponent } from '@app/components/modals/loading-game/loading-game.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
@@ -176,25 +176,25 @@ export class ClassicGameComponent {
                 if (!gameReady) {
                     return;
                 }
+                loadingScreen.close();
                 this.router.navigate(['/game']);
             });
-            this.openLoadingGame(gameReady$);
+            const loadingScreen = this.openLoadingGame();
         }
     }
 
-    openLoadingGame(gameReady$: BehaviorSubject<boolean>) {
+    openLoadingGame(): MatDialogRef<LoadingGameComponent> {
         const loadingGameDialogConfig = new MatDialogConfig();
         loadingGameDialogConfig.disableClose = true;
-        loadingGameDialogConfig.width = '250px';
-        loadingGameDialogConfig.height = '250px';
+        loadingGameDialogConfig.width = '255px';
         const loadingGameDialog = this.dialog.open(LoadingGameComponent, loadingGameDialogConfig);
-        loadingGameDialog.afterOpened().subscribe(() => {
-            gameReady$.subscribe((gameReady) => {
-                if (gameReady) {
-                    loadingGameDialog.close();
-                }
-            });
+        loadingGameDialog.afterClosed().subscribe((isCanceled) => {
+            if (isCanceled) {
+                this.gameReady$$.unsubscribe();
+                this.gameManager.stopGame();
+            }
         });
+        return loadingGameDialog;
     }
 
     get isSpecialGame() {

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 
 const SPINNER_WIDTH_STROKE = 7;
 const SPINNER_DIAMETER = 40;
@@ -13,12 +12,14 @@ const SPINNER_DIAMETER = 40;
 export class LoadingGameComponent {
     spinnerStrokeWidth = SPINNER_WIDTH_STROKE;
     spinnerDiameter = SPINNER_DIAMETER;
-    isSoloReady: boolean = false;
+    isCanceled: boolean;
 
-    constructor(private dialogRef: MatDialogRef<LoadingGameComponent>, private classicGameComponent: ClassicGameComponent) {}
+    constructor(private dialogRef: MatDialogRef<LoadingGameComponent>) {
+        this.isCanceled = false;
+    }
 
     cancel() {
-        this.classicGameComponent.gameReady$$.unsubscribe();
-        this.dialogRef.close();
+        this.isCanceled = true;
+        this.dialogRef.close(this.isCanceled);
     }
 }
