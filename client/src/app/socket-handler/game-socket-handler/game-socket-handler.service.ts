@@ -21,9 +21,9 @@ const GAME_ALREADY_JOINED = 'You have already joined a game';
 export class GameSocketHandlerService {
     socket: Socket;
 
-    private lastGameStateSubject = new Subject<ForfeitedGameState>();
+    private forfeitGameStateSubject = new Subject<ForfeitedGameState>();
     get forfeitGameState$(): Subject<ForfeitedGameState> {
-        return this.lastGameStateSubject;
+        return this.forfeitGameStateSubject;
     }
 
     private gameStateSubject = new Subject<GameState>();
@@ -34,11 +34,6 @@ export class GameSocketHandlerService {
     private timerControlsSubject = new Subject<TimerControls>();
     get timerControls$(): Observable<TimerControls> {
         return this.timerControlsSubject;
-    }
-
-    private endTurnSubject = new Subject<void>();
-    get endTurn$(): Observable<void> {
-        return this.endTurnSubject;
     }
 
     private disconnectedFromServerSubject = new Subject<void>();

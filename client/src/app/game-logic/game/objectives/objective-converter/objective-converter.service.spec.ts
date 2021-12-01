@@ -1,21 +1,21 @@
 import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter.service';
-import { HalfAlphabetProgression, TenWordsProgression, TransitionObjectives } from '@app/game-logic/game/objectives/objectives/transition-objectives';
+import { HalfAlphabetProgression, TenWordsProgression, TransitionObjective } from '@app/game-logic/game/objectives/objectives/transition-objectives';
+import { TestBed } from '@angular/core/testing';
+import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { PlayerProgression } from '@app/game-logic/game/games/online-game/game-state';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
-import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
-import { Player } from '@app/game-logic/player/player';
-import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
-import { TestBed } from '@angular/core/testing';
-import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
+import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
+import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
+import { Player } from '@app/game-logic/player/player';
 
 describe('ObjectiveConverter', () => {
     let objectiveConverter: ObjectiveConverter;
     let game: SpecialOfflineGame;
     let objectiveNotifier: ObjectiveNotifierService;
 
-    let transitionObjectives: TransitionObjectives[] = [];
+    let transitionObjectives: TransitionObjective[] = [];
     const player1 = { name: 'player1name' } as Player;
     const player2 = { name: 'player2name' } as Player;
     beforeEach(() => {
@@ -64,7 +64,7 @@ describe('ObjectiveConverter', () => {
             wordCount: tenWordsCount,
         };
 
-        const halfAlphabet: TransitionObjectives = {
+        const halfAlphabet: TransitionObjective = {
             description: 'description',
             objectiveType: ObjectiveType.HalfAlphabet,
             name: '',
@@ -74,7 +74,7 @@ describe('ObjectiveConverter', () => {
             placedLetters: [halfAlphabetProgression1, halfAlphabet2Progression2],
         };
 
-        const fourCorners: TransitionObjectives = {
+        const fourCorners: TransitionObjective = {
             description: 'description',
             objectiveType: ObjectiveType.FourCorners,
             name: '',
@@ -83,7 +83,7 @@ describe('ObjectiveConverter', () => {
             progressions: [playerProgression1],
         };
 
-        const tenWords: TransitionObjectives = {
+        const tenWords: TransitionObjective = {
             description: 'description',
             objectiveType: ObjectiveType.TenWords,
             name: '',
@@ -113,7 +113,7 @@ describe('ObjectiveConverter', () => {
             playerName: player2.name,
             progression: 0,
         };
-        const fourCorners: TransitionObjectives = {
+        const fourCorners: TransitionObjective = {
             description: 'description',
             objectiveType: ObjectiveType.FourCorners,
             name: '',

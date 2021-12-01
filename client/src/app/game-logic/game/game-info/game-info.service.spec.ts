@@ -9,6 +9,8 @@ import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -258,8 +260,9 @@ describe('GameInfoService Online Edition', () => {
     let onlineGame: OnlineGame;
     let timer: TimerService;
     let board: BoardService;
+    let specialOnlineGame: SpecialOnlineGame;
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
-
+    const objectiveCreatorMock = jasmine.createSpyObj(ObjectiveCreator, ['createObjective']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: LeaderboardService, useValue: leaderboardServiceMock }],
@@ -276,6 +279,17 @@ describe('GameInfoService Online Edition', () => {
             new GameSocketHandlerService(),
             board,
             TestBed.inject(OnlineActionCompilerService),
+        );
+
+        specialOnlineGame = new SpecialOnlineGame(
+            '0',
+            DEFAULT_TIME_PER_TURN,
+            'QWERTY',
+            timer,
+            new GameSocketHandlerService(),
+            board,
+            TestBed.inject(OnlineActionCompilerService),
+            objectiveCreatorMock,
         );
         onlineGame.players = [new User('p1'), new User('p2')];
     });
@@ -331,5 +345,27 @@ describe('GameInfoService Online Edition', () => {
 
     it('#is special game should return false when there is no game', () => {
         expect(service.isSpecialGame).toBeFalse();
+    });
+
+    it('should throw when getting opponent when no players received', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.opponent;
+        }).toThrowError();
+    });
+
+    it('should get opponent properly', () => {
+        const p1 = new User('p1');
+        const p2 = new User('p2');
+        service.players = [p1, p2];
+        service.receiveUser(p1);
+        expect(service.opponent).toBe(p2);
+        service.receiveUser(p2);
+        expect(service.opponent).toBe(p1);
+    });
+
+    it('should get is special game properly when online', () => {
+        service.receiveGame(specialOnlineGame);
+        expect(service.isSpecialGame).toBeTrue();
     });
 });

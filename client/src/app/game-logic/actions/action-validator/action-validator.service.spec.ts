@@ -31,7 +31,7 @@ import { User } from '@app/game-logic/player/user';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/bot-http.service';
 import { Observable } from 'rxjs';
 
 describe('ActionValidatorService', () => {

@@ -99,13 +99,38 @@ describe('GameSocketHandlerService', () => {
         expect(gameStateSubject.isEndOfGame).toBeFalse();
     });
 
-    it('receiveTransitionGameState should set lastGameStateSubject', () => {
-        let lastGameStateSubject: ForfeitedGameState = {} as ForfeitedGameState;
+    it('receiveTransitionGameState should set forfeitGameStateSubject', () => {
+        let forfeitGameStateSubject: ForfeitedGameState = {} as ForfeitedGameState;
         service.forfeitGameState$.pipe(take(1)).subscribe((value) => {
-            lastGameStateSubject = value;
+            forfeitGameStateSubject = value;
         });
-        const lastGameState = { lettersRemaining: 3 } as ForfeitedGameState;
-        service.receiveTransitionGameState(lastGameState);
-        expect(lastGameStateSubject.lettersRemaining).toEqual(3);
+        const forfeitGameState = { lettersRemaining: 3 } as ForfeitedGameState;
+        service.receiveTransitionGameState(forfeitGameState);
+        expect(forfeitGameStateSubject.lettersRemaining).toEqual(3);
+    });
+
+    it('should receive disconnected event and handle it properly', (done) => {
+        service.disconnectedFromServer$.subscribe(() => {
+            expect(true).toBeTrue();
+            done();
+        });
+        (service.socket as any).peerSideEmit('disconnected');
+    });
+
+    it('should receive forfeited gamestate and handle it properly', (done) => {
+        service.forfeitGameState$.subscribe((forfeitedState) => {
+            expect(forfeitedState).toBeTruthy();
+            done();
+        });
+        const forfeitedGameState = {} as unknown as ForfeitedGameState;
+        (service.socket as any).peerSideEmit('transitionGameState', forfeitedGameState);
+    });
+
+    it('should emit disconnected from server when receiving connect_error', (done) => {
+        service.disconnectedFromServer$.subscribe(() => {
+            expect(true).toBeTrue();
+            done();
+        });
+        (service.socket as any).peerSideEmit('connect_error');
     });
 });

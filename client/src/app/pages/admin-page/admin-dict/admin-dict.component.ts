@@ -52,9 +52,14 @@ export class AdminDictComponent implements OnInit {
     }
 
     async deleteDict(dict: DictInfo) {
-        this.dictHttpService.deleteDict(dict.title).subscribe(() => {
-            this.updateDictMap();
-        });
+        this.dictHttpService.deleteDict(dict.title).subscribe(
+            () => {
+                this.updateDictMap();
+            },
+            () => {
+                this.updateDictMap();
+            },
+        );
     }
 
     private updateDictMap(): void {
@@ -64,16 +69,19 @@ export class AdminDictComponent implements OnInit {
                 this.dictDataSource = list;
             },
             () => {
-                this.dialog.open(AlertDialogComponent, {
-                    width: '250px',
-                    data: {
-                        message: 'Le connection avec le serveur a échoué',
-                        button1: 'Ok',
-                        button2: '',
-                    },
-                    id: '404',
-                });
+                this.errorModal('Le connection avec le serveur a échoué');
             },
         );
+    }
+
+    private errorModal(error: string) {
+        this.dialog.open(AlertDialogComponent, {
+            width: '250px',
+            data: {
+                message: error,
+                button1: 'Ok',
+                button2: '',
+            },
+        });
     }
 }

@@ -72,6 +72,16 @@ describe('Canvas drawer test', () => {
         expect(drawImageSpy).toHaveBeenCalledTimes(2);
     });
 
+    it('if indicator is not on board, should not call fill', () => {
+        board.grid[0][0].letterObject = { char: 'A', value: 2, isTemp: false };
+        canvasDrawer.setIndicator(0, 0);
+        canvasDrawer.setDirection(Direction.Horizontal);
+
+        const drawImageSpy = spyOn(canvasDrawer.canvas, 'fill');
+        canvasDrawer.drawGrid(board, FONT_SIZE);
+        expect(drawImageSpy).not.toHaveBeenCalled();
+    });
+
     it('if 1 temp letter is placed, should call strokeRect', () => {
         const strokeRectSpy = spyOn(canvasDrawer.canvas, 'strokeRect');
         board.grid[0][0].letterObject = { char: 'A', value: 2, isTemp: true };

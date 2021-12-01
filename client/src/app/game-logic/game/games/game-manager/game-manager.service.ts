@@ -42,7 +42,7 @@ export class GameManagerService {
         return this.disconnectedFromServerSubject;
     }
 
-    get disconnectedState$(): Observable<ForfeitedGameState> {
+    get forfeitGameState$(): Observable<ForfeitedGameState> {
         return this.gameSocketHandler.forfeitGameState$;
     }
 
@@ -122,18 +122,13 @@ export class GameManagerService {
         const botName = this.game.players[botIndex].name;
         this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
 
-        // TODO fix this
         this.info.receiveGame(this.game);
-        if (this.game instanceof SpecialOfflineGame) {
-            if (forfeitedGameState.objectives) {
-                this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
-            }
+
+        if (this.game instanceof SpecialOfflineGame && forfeitedGameState.objectives) {
+            this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
         }
-        // STARTS LOADED GAME
-        const activePlayerIndex = forfeitedGameState.activePlayerIndex;
-        this.resumeGame(activePlayerIndex);
         const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
-        this.updateLeaboardWhenGameEnds(this.game, gameMode);
+        this.startConvertedGame(forfeitedGameState.activePlayerIndex, gameMode);
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -143,10 +138,6 @@ export class GameManagerService {
 
         if (!gameSettings.opponentName) {
             throw Error('No opponent name was entered');
-        }
-
-        if (!gameSettings.playerName) {
-            throw Error('player name not entered');
         }
 
         const username = userAuth.playerName;
@@ -177,14 +168,6 @@ export class GameManagerService {
         this.game.start();
     }
 
-    resumeGame(activePlayerIndex: number) {
-        this.resetServices();
-        if (!this.game) {
-            throw Error('No game created yet');
-        }
-        (this.game as OfflineGame).resume(activePlayerIndex);
-    }
-
     stopGame(): void {
         this.game?.stop();
         if (this.game instanceof OnlineGame) {
@@ -192,6 +175,22 @@ export class GameManagerService {
         }
         this.resetServices();
         this.game = undefined;
+    }
+
+    private resumeGame(activePlayerIndex: number) {
+        this.resetServices();
+        if (!this.game) {
+            throw Error('No game created yet');
+        }
+        (this.game as OfflineGame).resume(activePlayerIndex);
+    }
+
+    private startConvertedGame(activePlayerIndex: number, gameMode: GameMode) {
+        if (!this.game) {
+            return;
+        }
+        this.resumeGame(activePlayerIndex);
+        this.updateLeaboardWhenGameEnds(this.game, gameMode);
     }
 
     private createConvertedGame(forfeitedGameState: ForfeitedGameState, isSpecial: boolean) {

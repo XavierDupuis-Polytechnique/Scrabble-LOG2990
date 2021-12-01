@@ -1,4 +1,6 @@
+/* eslint-disable dot-notation */
 /* tslint:disable:no-unused-variable */
+import { HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -50,7 +52,6 @@ describe('LeaderboardComponent', () => {
             { name: 'Player3', point: 10 },
             { name: 'Player4', point: 5 },
         ];
-        // eslint-disable-next-line dot-notation
         let highScores = component['filterScores'](testScores);
         expect(highScores[0].names[0]).toEqual(testScores[0].name);
         expect(highScores.length).toEqual(testScores.length);
@@ -65,7 +66,6 @@ describe('LeaderboardComponent', () => {
         ];
         const playersInFirstPos = 2;
         const tableLength = 5;
-        // eslint-disable-next-line dot-notation
         highScores = component['filterScores'](testScores);
         expect(highScores[0].names.length).toEqual(playersInFirstPos);
         expect(highScores.length).toEqual(tableLength);
@@ -82,21 +82,21 @@ describe('LeaderboardComponent', () => {
         const req = mockHttpClient.expectOne('http://localhost:3000/api/scores/gameMode?gameMode=classic');
         req.flush(testScores);
         component.refresh();
-        // eslint-disable-next-line dot-notation
         const dataTable = component['dataSourceClassic'];
         expect(dataTable.data.length).toEqual(testScores.length);
     });
 
-    // it('should be a full table ', () => {
-    //     component.refresh();
-    //     // eslint-disable-next-line dot-notation
-    //     component['scores$'].next([
-    //         { name: 'Player3', point: 10 },
-    //         { name: 'Player4', point: 5 },
-    //     ]);
-    //     const tableLength = 2;
-    //     const dom = fixture.nativeElement as HTMLElement;
-    //     const table = dom.querySelectorAll('tr')[0];
-    //     expect(table.cells.length).toBe(tableLength);
-    // });
+    it('should return if get leaderboard catch error', () => {
+        const errorResponse = new HttpErrorResponse({
+            error: { code: 'code', message: 'message.' },
+            status: 400,
+            statusText: 'Bad Request',
+        });
+        const req = mockHttpClient.expectOne('http://localhost:3000/api/scores/gameMode?gameMode=classic');
+        req.flush('', errorResponse);
+
+        component.refresh();
+        const dataTable = component['dataSourceClassic'];
+        expect(dataTable.data.length).toEqual(0);
+    });
 });
