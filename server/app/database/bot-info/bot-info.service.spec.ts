@@ -85,13 +85,11 @@ describe('BotInfoService', () => {
         expect(await service.deleteBot(testBotInfo[0])).to.equal(true);
     });
 
-    // TODO find how to throw collection.deleteOne
     it('dropCollection should drop all expect default bot', async () => {
         await service.clearDropCollection();
         const ans = await service.getBotInfoList();
-
-        expect(ans.length).to.equal(1);
-        expect(ans[0]).to.deep.equal(testBotInfo[1]);
+        const numberDefaultBot = 6;
+        expect(ans.length).to.equal(numberDefaultBot);
     });
 
     it('isBotExist should return true', async () => {

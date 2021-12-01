@@ -70,4 +70,11 @@ export class EditBotDialogComponent {
             } else this.dialogRef.close();
         });
     }
+
+    get isBotFill() {
+        if (this.bot.name && this.bot.name !== '' && this.bot.type) {
+            return false;
+        }
+        return true;
+    }
 }
