@@ -68,7 +68,7 @@ app-chat-box {
     display: flex;
     justify-content: center;
     align-self: center;
-    align-items: center;
+    align-items: flex-start;
     padding: 1%;
     padding-left: 15%;
 
@@ -83,7 +83,7 @@ app-chat-box {
     display: flex;
     justify-content: center;
     align-self: center;
-    align-items: center;
+    align-items: flex-start;
     padding-left: 2%;
     button {
         width: 60%;
