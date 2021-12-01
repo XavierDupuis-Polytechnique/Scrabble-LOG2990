@@ -202,14 +202,16 @@ export class CanvasDrawer {
             s = 'Lettre';
             if (mul === 2) {
                 this.canvas.fillStyle = DOUBLE_BONUS_LETTER;
-            } else if (mul === 3) {
+            }
+            if (mul === 3) {
                 this.canvas.fillStyle = TRIPLE_BONUS_LETTER;
             }
         } else {
             s = 'Mot';
             if (mul === 2) {
                 this.canvas.fillStyle = DOUBLE_BONUS_WORD;
-            } else if (mul === 3) {
+            }
+            if (mul === 3) {
                 this.canvas.fillStyle = TRIPLE_BONUS_WORD;
             }
         }
