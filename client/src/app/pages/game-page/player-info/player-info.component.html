@@ -10,7 +10,9 @@
         <mat-divider inset></mat-divider>
         <mat-card-content class="grid-container">
             <span class="score"> {{ player.points }} points </span><br />
-            <span class="score" *ngIf="!player.isLetterRackFull"> {{ player.letterRack.length }} lettres restantes dans le chevalet </span>
+            <span class="score" *ngIf="!player.isLetterRackFull && info.numberOfLettersRemaining === 0">
+                {{ player.letterRack.length }} lettres restantes dans le chevalet
+            </span>
         </mat-card-content>
     </mat-card>
 </div>
