@@ -16,7 +16,7 @@ describe('PlayerInfoComponent', () => {
     let info: jasmine.SpyObj<GameInfoService>;
     beforeEach(async () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['stopGame']);
-        info = jasmine.createSpyObj('GameInfoService', [], ['activePlayer', 'numberOfLettersRemaining'])
+        info = jasmine.createSpyObj('GameInfoService', [], ['activePlayer', 'numberOfLettersRemaining']);
         info['game'] = {} as unknown as Game;
         const mockPlayer = {} as unknown as Player;
         info.players = [mockPlayer, mockPlayer];
