@@ -62,8 +62,8 @@ export class BotInfoService {
     }
 
     async clearDropCollection() {
-        this.collection.drop();
-        this.collection.insertMany(DEFAULT_EASY_BOT);
-        this.collection.insertMany(DEFAULT_EXPERT_BOT);
+        await this.collection.drop();
+        await this.collection.insertMany(DEFAULT_EASY_BOT);
+        await this.collection.insertMany(DEFAULT_EXPERT_BOT);
     }
 }
