@@ -251,10 +251,6 @@ describe('GameManagerService Online Edition', () => {
         });
         service = TestBed.inject(GameManagerService);
         gameSocketHandler = TestBed.inject(GameSocketHandlerService);
-        // const mockSubjectForfeitGameState = new Subject<ForfeitedGameState>();
-        // (
-        //     Object.getOwnPropertyDescriptor(gameSocketHandler, 'forfeitGameStateSubject')?.get as jasmine.Spy<() => Observable<ForfeitedGameState>>
-        // ).and.returnValue(mockSubjectForfeitGameState);
     });
 
     it('should join an online game', () => {
@@ -356,11 +352,11 @@ describe('GameManagerService Online Edition', () => {
         expect(result).toBeTruthy();
     });
 
-    // it('should test the [] subject', () => {
-    //     const result = service.forfeitedState$.subscribe();
-    //     gameSocketHandler['forfeitGameStateSubject'].next();
-    //     expect(result).toBeTruthy();
-    // });
+    it('should test the forfeitedGameState subject', () => {
+        const result = service.forfeitGameState$.subscribe();
+        gameSocketHandler['forfeitGameState$'].next();
+        expect(result).toBeTruthy();
+    });
 
     it('should join an online game when you are the opponent', () => {
         const onlineGameSettings: OnlineGameSettings = {

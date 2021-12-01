@@ -42,7 +42,7 @@ export class GameManagerService {
         return this.disconnectedFromServerSubject;
     }
 
-    get disconnectedState$(): Observable<ForfeitedGameState> {
+    get forfeitGameState$(): Observable<ForfeitedGameState> {
         return this.gameSocketHandler.forfeitGameState$;
     }
 
