@@ -16,6 +16,7 @@ export class EditDictDialogComponent {
     tempDict: DictInfo;
 
     isEditedCorrectly = true;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: DictInfo,
         public dialogRef: MatDialogRef<EditDictDialogComponent>,

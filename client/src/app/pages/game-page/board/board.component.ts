@@ -28,6 +28,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     canvasDrawer: CanvasDrawer;
     canvasContext: CanvasRenderingContext2D;
     canvasElement: HTMLElement | null;
+
     constructor(private boardService: BoardService, private inputController: UIInputControllerService) {
         this.board = this.boardService.board;
         this.fontSize = (this.minFontSize + this.maxFontSize) / 2;

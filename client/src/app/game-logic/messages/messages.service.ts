@@ -21,7 +21,7 @@ export class MessagesService {
             this.receiveMessageOpponent(forwarder, content);
         });
 
-        commandParser.errorMessage$.subscribe((error) => {
+        this.commandParser.errorMessage$.subscribe((error) => {
             this.receiveErrorMessage(error);
         });
 

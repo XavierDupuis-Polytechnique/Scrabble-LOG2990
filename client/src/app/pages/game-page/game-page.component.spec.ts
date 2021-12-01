@@ -140,37 +140,37 @@ describe('GamePageComponent', () => {
     });
 
     it('should open the DisconnectedModal when calling the openDisconnected method', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
         mockClosedModal$.next();
-        expect(component.dialogRef).toBeUndefined();
+        expect(component['dialogRef']).toBeUndefined();
     });
 
     it('should not open the DisconnectedModal a second time when calling the openDisconnected method if the modal is opened', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
 
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
     });
 
     it('should open the DisconnectedModal a second time when calling the openDisconnected method if the modal was closed', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(1);
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
 
         mockClosedModal$.next();
-        expect(component.dialogRef).toBeUndefined();
+        expect(component['dialogRef']).toBeUndefined();
 
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(2);
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
     });
 
     it('should open disconnected modal', () => {

@@ -9,6 +9,7 @@ import { LeaderboardComponent } from '@app/components/modals/leaderboard/leaderb
 })
 export class HomepageComponent {
     constructor(private matDialog: MatDialog) {}
+
     openLeaderboard() {
         this.matDialog.open(LeaderboardComponent, {
             width: '500px',

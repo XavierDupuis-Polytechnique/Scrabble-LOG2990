@@ -12,6 +12,7 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
     privateObjectives: Map<string, Objective[]>;
     publicObjectives: Objective[];
+
     constructor(
         public randomBonus: boolean,
         public timePerTurn: number,

@@ -13,11 +13,8 @@ export const FLOAT_TO_PERCENT = 100;
 export class InfoBoxComponent implements OnInit {
     timeLeft$: Observable<number | undefined>;
     timeLeftPercent$: Observable<number | undefined>;
-    info: GameInfoService;
 
-    constructor(info: GameInfoService) {
-        this.info = info;
-    }
+    constructor(private info: GameInfoService) {}
 
     ngOnInit() {
         this.timeLeft$ = this.info.timeLeftForTurn.pipe(
@@ -38,16 +35,6 @@ export class InfoBoxComponent implements OnInit {
         );
     }
 
-    timerIsLessOneMinute(timeLeft: number | null | undefined): boolean {
-        if (timeLeft === null || timeLeft === undefined) {
-            return true;
-        }
-        if (timeLeft < MILISECONDS_IN_MINUTE) {
-            return true;
-        }
-        return false;
-    }
-
     showWinner(): string {
         const winner = this.info.winner;
         let winnerString = '';
@@ -57,5 +44,13 @@ export class InfoBoxComponent implements OnInit {
             winnerString = winner[0].name;
         }
         return winnerString;
+    }
+
+    get numberOfLettersRemaining(): number {
+        return this.info.numberOfLettersRemaining;
+    }
+
+    get isEndOfGame(): boolean {
+        return this.info.isEndOfGame;
     }
 }

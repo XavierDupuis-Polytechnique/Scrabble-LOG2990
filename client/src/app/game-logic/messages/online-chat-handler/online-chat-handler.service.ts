@@ -16,6 +16,7 @@ export class OnlineChatHandlerService {
     private newRoomMessageSubject = new Subject<ChatMessage>();
     private errorSubject = new Subject<string>();
     private sysMessageSubject = new Subject<string>();
+
     constructor(private gameInfo: GameInfoService) {}
 
     joinChatRoom(roomID: string, userName: string) {

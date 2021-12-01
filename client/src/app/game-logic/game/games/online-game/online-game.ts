@@ -47,7 +47,7 @@ export class OnlineGame extends Game {
     ) {
         super();
         this.boardService.board = new Board();
-        this.userName = userName;
+
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });

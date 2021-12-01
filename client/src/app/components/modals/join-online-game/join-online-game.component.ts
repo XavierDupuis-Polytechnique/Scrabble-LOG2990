@@ -14,6 +14,7 @@ const NO_WHITE_SPACE_RGX = /^\S*$/;
 export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
     playerName: string;
     oppName: FormControl;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettings,
         private dialogRef: MatDialogRef<JoinOnlineGameComponent>,
@@ -21,6 +22,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: NewOnlineGameSocketHandler,
     ) {}
+
     ngOnInit() {
         this.playerName = this.data.playerName;
         this.oppName = new FormControl('', [
