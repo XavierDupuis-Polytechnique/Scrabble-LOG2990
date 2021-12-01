@@ -117,6 +117,15 @@ describe('OnlineGame', () => {
         expect(forfeitSpy).toHaveBeenCalled();
     });
 
+    it('should not forfeit', () => {
+        gameSocketHandlerService.socket = undefined as unknown as Socket;
+        const forfeitSpy = spyOn(gameSocketHandlerService, 'disconnect').and.callFake(() => {
+            return;
+        });
+        onlineGame.forfeit();
+        expect(forfeitSpy).not.toHaveBeenCalled();
+    });
+
     it('should close the game', () => {
         const p1: LightPlayer = {
             name: 'p3',
