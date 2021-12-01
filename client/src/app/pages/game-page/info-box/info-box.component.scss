@@ -5,7 +5,16 @@ mat-card {
     color: var(--black-chocolate);
 }
 
-::ng-deep .mat-progress-spinner circle, .mat-spinner circle {
+.timer-container {
+    height: 125px;
+    margin-left: -30%;
+    .mat-progress-spinner {
+        display: inline;
+    }
+}
+
+::ng-deep .mat-progress-spinner circle,
+.mat-spinner circle {
     stroke: var(--black-chocolate);
 }
 
@@ -13,33 +22,22 @@ mat-card {
     transition: none !important;
 }
 
-#timer-less-one-minute {
-    position: relative;
-    top: -58px;
-    left: 41px;
+::ng-deep .background circle {
+    stroke: var(--black-chocolate);
+    stroke-opacity: 0.3 !important;
 }
 
-#timer-greater-one-minute {
+#timer {
     position: relative;
-    top: -58px;
-    left: 29px;
+    top: 42px;
+    left: 35px;
 }
 
 .game-info {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
     font-size: 125%;
-}
-
-.name {
-    font-size: 100%;
-    font-weight: 700;
-}
-
-.timer {
-    justify-content: center;
 }
 
 #letters-in-bag {
