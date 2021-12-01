@@ -8,7 +8,7 @@ import { UserAuth } from '@app/socket-handler/interfaces/user-auth.interface';
 import { take } from 'rxjs/operators';
 import { GameSocketHandlerService } from './game-socket-handler.service';
 
-fdescribe('GameSocketHandlerService', () => {
+describe('GameSocketHandlerService', () => {
     let service: GameSocketHandlerService;
     beforeEach(() => {
         TestBed.configureTestingModule({});
