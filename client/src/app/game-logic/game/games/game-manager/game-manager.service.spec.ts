@@ -4,7 +4,7 @@
 import { TestBed } from '@angular/core/testing';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
-import { BOARD_DIMENSION, DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { BOARD_DIMENSION, DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN, MIDDLE_OF_BOARD } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Tile } from '@app/game-logic/game/board/tile';
@@ -20,6 +20,7 @@ import { TransitionObjective } from '@app/game-logic/game/objectives/objectives/
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { Player } from '@app/game-logic/player/player';
+import { User } from '@app/game-logic/player/user';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { BotHttpService } from '@app/services/bot-http.service';
@@ -189,6 +190,7 @@ describe('GameManagerService Online Edition', () => {
         }
         grid.push([...row]);
     }
+    grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char = 'X';
 
     const p1: LightPlayer = {
         letterRack: [
@@ -230,7 +232,7 @@ describe('GameManagerService Online Edition', () => {
 
     const objective: TransitionObjective = {
         description: 'objectiveDescription',
-        name: 'objectiveName',
+        name: 'Quatre Coins',
         objectiveType: 0,
         owner: undefined,
         points: 20,
@@ -347,8 +349,14 @@ describe('GameManagerService Online Edition', () => {
     });
 
     it('should test the disconnectedFromServerSubject subject', () => {
-        gameSocketHandler['disconnectedFromServerSubject'].next();
         const result = service.disconnectedFromServer$.subscribe();
+        gameSocketHandler['disconnectedFromServerSubject'].next();
+        expect(result).toBeTruthy();
+    });
+
+    it('should test the forfeitedGameState subject', () => {
+        const result = service.forfeitGameState$.subscribe();
+        gameSocketHandler['forfeitGameState$'].next();
         expect(result).toBeTruthy();
     });
 
@@ -399,12 +407,17 @@ describe('GameManagerService Online Edition', () => {
     });
 
     it('should convert and resume an OnlineGame (converted to OfflineGame)', () => {
+        forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char = 'X';
         service['game'] = new OnlineGame('gameToken', 10000, 'p1', timer, gameSocketHandler, board, actionCompiler);
         spyOn(service['onlineChat'], 'leaveChatRoom').and.callFake(() => {
             return;
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(OfflineGame);
+        expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
+        expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
+            forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char,
+        );
     });
 
     it('should convert and resume a SpecialOnlineGame (converted to SpecialOfflineGame)', () => {
@@ -415,5 +428,27 @@ describe('GameManagerService Online Edition', () => {
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(SpecialOfflineGame);
+        expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
+        expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
+            forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char,
+        );
+        expect((service['game'] as SpecialOfflineGame).publicObjectives[0].name).toBe(objective.name);
+    });
+
+    it('should throw error if game is not created first when resuming a game', () => {
+        expect(() => {
+            service['resumeGame'](0);
+        }).toThrowError('No game created yet');
+    });
+
+    // it('should not be able to start a converted game if there is no game', () => {
+    //     const updateLeaboardWhenGameEndsSpy = spyOn(service, 'updateLeaboardWhenGameEnds');
+    //     service['startConvertedGame'](0, GameMode.Classic);
+    //     expect(updateLeaboardWhenGameEndsSpy).not.toHaveBeenCalled();
+    // });
+
+    it('should not allocate players if there is no game', () => {
+        service['allocatePlayers']([new User('p1'), new User('p2')]);
+        expect(service['game']?.players).toBe(undefined);
     });
 });

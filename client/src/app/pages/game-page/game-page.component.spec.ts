@@ -60,7 +60,7 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         mockClosedModal$ = new Subject();
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'disconnectedState$']);
+        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'forfeitGameState$']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
@@ -82,7 +82,7 @@ describe('GamePageComponent', () => {
         (
             Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'disconnectedFromServer$')?.get as jasmine.Spy<() => Observable<void>>
         ).and.returnValue(mockObservableDisconnect);
-        (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'disconnectedState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
+        (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'forfeitGameState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
             mockObservableForfeited,
         );
 

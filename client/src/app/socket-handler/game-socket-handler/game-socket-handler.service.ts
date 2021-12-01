@@ -21,9 +21,9 @@ const GAME_ALREADY_JOINED = 'You have already joined a game';
 export class GameSocketHandlerService {
     socket: Socket;
 
-    private lastGameState$ = new Subject<ForfeitedGameState>();
+    private forfeitGameStateSubject = new Subject<ForfeitedGameState>();
     get forfeitGameState$(): Subject<ForfeitedGameState> {
-        return this.lastGameState$;
+        return this.forfeitGameStateSubject;
     }
 
     private gameStateSubject = new Subject<GameState>();

@@ -12,10 +12,10 @@
         <input matInput autocomplete="off" placeholder="Difficulté" readonly [value]="bot.type" />
     </mat-form-field>
     <div style="display: flex; flex-direction: row" *ngIf="isEdit">
-        <button mat-button (click)="editBot()">Upload Edit</button>
+        <button mat-button (click)="editBot()" [disabled]="isBotFill">Upload Edit</button>
     </div>
 
     <div style="display: flex; flex-direction: row" *ngIf="!isEdit">
-        <button mat-button (click)="addBot()">Create bot</button>
+        <button mat-button (click)="addBot()" [disabled]="isBotFill">Create bot</button>
     </div>
 </mat-dialog-content>

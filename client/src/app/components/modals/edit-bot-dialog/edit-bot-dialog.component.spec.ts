@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { BotHttpService, BotType } from '@app/services/bot-http.service';
+import { BotHttpService, BotInfo, BotType } from '@app/services/bot-http.service';
 import { Observable, throwError } from 'rxjs';
 import { EditBotDialogComponent } from './edit-bot-dialog.component';
 
@@ -104,5 +104,23 @@ describe('EditbotDialogComponent', () => {
         botHttpMock.editBot.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout }));
         component.editBot();
         expect(matDialogMock.open).not.toHaveBeenCalled();
+    });
+
+    it('isBotFill should return false if bot is correctly defined', () => {
+        const errorBot = {
+            name: 'test',
+            type: BotType.Easy,
+        };
+        component.bot = errorBot as unknown as BotInfo;
+        expect(component.isBotFill).toBe(false);
+    });
+
+    it('isBotFill should return true if bot is not correctly defined', () => {
+        const errorBot = {
+            name: undefined,
+            type: BotType.Easy,
+        };
+        component.bot = errorBot as unknown as BotInfo;
+        expect(component.isBotFill).toBe(true);
     });
 });
