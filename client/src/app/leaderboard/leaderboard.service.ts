@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Score } from '@app/leaderboard/leaderboard.interface';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
@@ -19,7 +19,7 @@ export class LeaderboardService {
         this.http.post(`${this.url}/gameMode?gameMode=${mode}`, score, { responseType: 'text' }).subscribe();
     }
 
-    dropCollections() {
-        return this.http.delete(this.url, { responseType: 'text' });
+    dropCollections(): Observable<HttpResponse<number>> {
+        return this.http.delete(`${this.url}/`, { observe: 'response' }) as Observable<HttpResponse<number>>;
     }
 }

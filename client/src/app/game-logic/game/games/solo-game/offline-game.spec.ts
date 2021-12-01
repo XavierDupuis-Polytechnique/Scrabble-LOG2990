@@ -38,6 +38,11 @@ describe('Game', () => {
         expect(game).toBeTruthy();
     });
 
+    it('should not create instance', () => {
+        const forfeitedGame = new OfflineGame(randomBonus, TIME_PER_TURN, timerSpy, pointCalculatorSpy, boardSpy, messageSpy, true);
+        expect(forfeitedGame.board).toBeUndefined();
+    });
+
     it('#start should throw error when no players', () => {
         game.players = [];
         expect(() => {
@@ -135,5 +140,18 @@ describe('Game', () => {
         const nextPlayer = game.getActivePlayer();
         const isSamePlayer = currentPlayer.name === nextPlayer.name;
         expect(isSamePlayer).toBeFalse();
+    });
+
+    it('game should not resume if no players', () => {
+        game.players = [];
+        expect(() => {
+            game.resume(0);
+        }).toThrowError();
+    });
+
+    it('game should resume', () => {
+        spyOn(game, 'start');
+        game.resume(0);
+        expect(game.start).not.toHaveBeenCalled();
     });
 });

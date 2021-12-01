@@ -1,12 +1,11 @@
 /* tslint:disable:no-unused-variable */
-
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Score } from '@app/leaderboard/leaderboard.interface';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 
-describe('BotHttpService', () => {
+describe('LeaderboardService', () => {
     let service: LeaderboardService;
     let httpClientMock: HttpTestingController;
 
@@ -44,5 +43,15 @@ describe('BotHttpService', () => {
         const req = httpClientMock.expectOne('http://localhost:3000/api/scores/gameMode?gameMode=classic');
         expect(req.request.method).toEqual('POST');
         req.flush(true);
+    });
+
+    it('should send delete request', () => {
+        const expectedResponseCode = 200;
+        service.dropCollections().subscribe((res) => {
+            expect(res.status).toEqual(expectedResponseCode);
+        });
+        const req = httpClientMock.expectOne('http://localhost:3000/api/scores/');
+        expect(req.request.method).toEqual('DELETE');
+        req.flush(expectedResponseCode);
     });
 });

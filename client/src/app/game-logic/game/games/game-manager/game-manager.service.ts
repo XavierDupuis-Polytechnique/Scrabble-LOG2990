@@ -122,18 +122,13 @@ export class GameManagerService {
         const botName = this.game.players[botIndex].name;
         this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
 
-        // TODO fix this
         this.info.receiveGame(this.game);
-        if (this.game instanceof SpecialOfflineGame) {
-            if (forfeitedGameState.objectives) {
-                this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
-            }
+
+        if (this.game instanceof SpecialOfflineGame && forfeitedGameState.objectives) {
+            this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
         }
-        // STARTS LOADED GAME
-        const activePlayerIndex = forfeitedGameState.activePlayerIndex;
-        this.resumeGame(activePlayerIndex);
         const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
-        this.updateLeaboardWhenGameEnds(this.game, gameMode);
+        this.startConvertedGame(forfeitedGameState.activePlayerIndex, gameMode);
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -192,6 +187,14 @@ export class GameManagerService {
         }
         this.resetServices();
         this.game = undefined;
+    }
+
+    private startConvertedGame(activePlayerIndex: number, gameMode: GameMode) {
+        this.resumeGame(activePlayerIndex);
+        if (!this.game) {
+            return;
+        }
+        this.updateLeaboardWhenGameEnds(this.game, gameMode);
     }
 
     private createConvertedGame(forfeitedGameState: ForfeitedGameState, isSpecial: boolean) {

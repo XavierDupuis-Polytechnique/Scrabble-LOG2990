@@ -5,7 +5,7 @@ import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator
 import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TenWords } from '@app/game-logic/game/objectives/objectives/ten-words/ten-words';
-import { TransitionObjectives } from '@app/game-logic/game/objectives/objectives/transition-objectives';
+import { TransitionObjective } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +13,7 @@ import { TransitionObjectives } from '@app/game-logic/game/objectives/objectives
 export class ObjectiveConverter {
     constructor(private objectiveCreator: ObjectiveCreator) {}
 
-    transitionObjectives(game: SpecialOfflineGame, transitionObjectives: TransitionObjectives[], userName: string, botName: string) {
+    transitionObjectives(game: SpecialOfflineGame, transitionObjectives: TransitionObjective[], userName: string, botName: string) {
         game.privateObjectives = new Map<string, Objective[]>();
         game.publicObjectives = [];
 
@@ -47,7 +47,7 @@ export class ObjectiveConverter {
         }
     }
 
-    private transitionHalfAlphabetLetters(game: SpecialOfflineGame, transition: TransitionObjectives, objective: Objective) {
+    private transitionHalfAlphabetLetters(game: SpecialOfflineGame, transition: TransitionObjective, objective: Objective) {
         if (transition.placedLetters === undefined) {
             return objective;
         }
@@ -65,7 +65,7 @@ export class ObjectiveConverter {
         return objective;
     }
 
-    private transitionTenWords(game: SpecialOfflineGame, transition: TransitionObjectives, objective: Objective) {
+    private transitionTenWords(game: SpecialOfflineGame, transition: TransitionObjective, objective: Objective) {
         if (transition.objectiveType === ObjectiveType.TenWords && transition.wordCounts) {
             (objective as TenWords).wordCounts = new Map<string, number>();
             for (const wordCount of transition.wordCounts) {
