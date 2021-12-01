@@ -1,5 +1,6 @@
 import { BOT_INFO_COLLECTION } from '@app/constants';
 import { BotInfo } from '@app/database/bot-info/bot-info';
+import { DEFAULT_EASY_BOT, DEFAULT_EXPERT_BOT } from '@app/database/bot-info/default-bot-names';
 import { DatabaseService } from '@app/database/database.service';
 import { Collection } from 'mongodb';
 import { Service } from 'typedi';
@@ -61,6 +62,8 @@ export class BotInfoService {
     }
 
     async clearDropCollection() {
-        this.collection.deleteMany({ canEdit: true });
+        this.collection.drop();
+        this.collection.insertMany(DEFAULT_EASY_BOT);
+        this.collection.insertMany(DEFAULT_EXPERT_BOT);
     }
 }
