@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, EventEmitter, Output } from '@angular/core';
+import { AfterContentChecked, Component, EventEmitter, Output } from '@angular/core';
 import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
 import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
 import { UIMove } from '@app/game-logic/actions/ui-actions/ui-move';
@@ -12,7 +12,7 @@ import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/u
     templateUrl: './horse.component.html',
     styleUrls: ['./horse.component.scss'],
 })
-export class HorseComponent implements AfterContentInit {
+export class HorseComponent implements AfterContentChecked {
     @Output() clickLetter = new EventEmitter();
     readonly self = InputComponent.Horse;
 
@@ -22,7 +22,7 @@ export class HorseComponent implements AfterContentInit {
 
     constructor(private info: GameInfoService, private inputController: UIInputControllerService) {}
 
-    ngAfterContentInit(): void {
+    ngAfterContentChecked(): void {
         this.playerRack = this.info.user.letterRack;
     }
 

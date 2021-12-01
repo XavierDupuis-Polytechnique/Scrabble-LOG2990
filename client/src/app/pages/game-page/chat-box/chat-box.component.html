@@ -6,15 +6,12 @@
             [ngClass]="{ system: message.type === 'System', player1: message.type === 'Player1', player2: message.type === 'Player2' }"
         >
             <b>{{ message.from }} : </b>
-            <span
-                [innerHTML]="generateMessageContentHTML(message.content)"
-            ></span>
+            <span [innerHTML]="generateMessageContentHTML(message.content)"></span>
         </div>
     </mat-card>
     <mat-form-field appearance="fill">
         <input matInput #enter type="text" [(ngModel)]="messageContent" autocomplete="off" autofocus (keyup.enter)="sendMessage()" placeholder="Aa" />
         <mat-icon matSuffix matTooltipPosition="above" matTooltip="Entrer !aide pour la liste des commandes">help</mat-icon>
-        <mat-hint #red *ngIf="isError(enter.value.length)" style="color: #e53935">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
-        <mat-hint *ngIf="!isError(enter.value.length)" style="color: #ffffff">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
+        <mat-hint #red [ngClass]="{ error: isError(enter.value.length) }">{{ enter.value.length }}/{{ maxMessageLength }}</mat-hint>
     </mat-form-field>
 </div>

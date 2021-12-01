@@ -1,8 +1,9 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-dialog/abandon-dialog.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
+import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
 import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
@@ -10,14 +11,17 @@ import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-game-page',
     templateUrl: './game-page.component.html',
     styleUrls: ['./game-page.component.scss'],
 })
-export class GamePageComponent {
+export class GamePageComponent implements OnDestroy {
     dialogRef: MatDialogRef<DisconnectedFromServerComponent> | undefined;
+    private disconnected$$: Subscription;
+    private forfeited$$: Subscription;
     constructor(
         private gameManager: GameManagerService,
         public info: GameInfoService,
@@ -30,8 +34,16 @@ export class GamePageComponent {
         } catch (e) {
             this.router.navigate(['/']);
         }
-        this.gameManager.disconnectedFromServer$.subscribe(() => {
+
+        this.disconnected$$ = this.gameManager.disconnectedFromServer$.subscribe(() => {
             this.openDisconnected();
+        });
+        this.forfeited$$ = this.gameManager.disconnectedState$.subscribe((forfeitedGameState) => {
+            const data = 'Votre adversaire a abandonné la partie et sera remplacé par un joueur virtuel';
+            const forfeitedDialogRef = this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
+            forfeitedDialogRef.afterClosed().subscribe(() => {
+                this.gameManager.instanciateGameFromForfeitedState(forfeitedGameState);
+            });
         });
     }
 
@@ -39,6 +51,11 @@ export class GamePageComponent {
     keypressEvent($event: KeyboardEvent) {
         const input: UIInput = { type: InputType.KeyPress, args: $event.key };
         this.inputController.receive(input);
+    }
+
+    ngOnDestroy() {
+        this.disconnected$$?.unsubscribe();
+        this.forfeited$$?.unsubscribe();
     }
 
     receiveInput(input: UIInput) {
@@ -56,7 +73,7 @@ export class GamePageComponent {
         this.router.navigate(['/']);
     }
 
-    get isItMyTurn() {
+    get isItMyTurn(): boolean {
         try {
             if (this.isEndOfGame) {
                 return false;
@@ -67,19 +84,15 @@ export class GamePageComponent {
         }
     }
 
-    get isEndOfGame() {
-        try {
-            return this.info.isEndOfGame;
-        } catch (e) {
-            return false;
-        }
+    get isEndOfGame(): boolean {
+        return this.info.isEndOfGame;
     }
 
-    get canPlace() {
+    get canPlace(): boolean {
         return this.isItMyTurn && this.inputController.activeAction instanceof UIPlace && this.inputController.canBeExecuted;
     }
 
-    get canExchange() {
+    get canExchange(): boolean {
         return (
             this.isItMyTurn &&
             this.inputController.activeAction instanceof UIExchange &&
@@ -88,11 +101,11 @@ export class GamePageComponent {
         );
     }
 
-    get canPass() {
+    get canPass(): boolean {
         return this.isItMyTurn;
     }
 
-    get canCancel() {
+    get canCancel(): boolean {
         return this.canPlace || this.canExchange;
     }
 

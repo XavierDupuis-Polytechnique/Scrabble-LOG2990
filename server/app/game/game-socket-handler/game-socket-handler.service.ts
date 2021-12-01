@@ -1,4 +1,4 @@
-import { GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { ForfeitedGameState, GameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { TimerControls } from '@app/game/game-logic/timer/timer-controls.enum';
 import { TimerGameControl } from '@app/game/game-logic/timer/timer-game-control.interface';
 import { GameManagerService } from '@app/game/game-manager/game-manager.services';
@@ -25,6 +25,14 @@ export class GameSocketsHandler {
             const gameToken = timerGameControl.gameToken;
             const timerControl = timerGameControl.control;
             this.emitTimerControl(timerControl, gameToken);
+        });
+
+        this.gameManager.lastGameState$.subscribe((forfeitedGameState: GameStateToken) => {
+            const gameToken = forfeitedGameState.gameToken;
+            const gameState = forfeitedGameState.gameState;
+            if ('letterBag' in gameState) {
+                this.emitTransitionGameState(gameState, gameToken);
+            }
         });
     }
 
@@ -60,6 +68,10 @@ export class GameSocketsHandler {
 
     private emitGameState(gameState: GameState, gameToken: string) {
         this.sio.to(gameToken).emit('gameState', gameState);
+    }
+
+    private emitTransitionGameState(gameState: ForfeitedGameState, gameToken: string) {
+        this.sio.to(gameToken).emit('transitionGameState', gameState);
     }
 
     private addPlayerToGame(socketId: string, userAuth: UserAuth) {

@@ -21,19 +21,27 @@ export class SpecialOfflineGame extends OfflineGame implements SpecialGame {
         boardService: BoardService,
         messagesService: MessagesService,
         private objectiveCreator: ObjectiveCreator,
+        loadGame: boolean = false,
     ) {
-        super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService);
+        super(randomBonus, timePerTurn, timer, pointCalculator, boardService, messagesService, loadGame);
     }
 
     allocateObjectives() {
         const generatedObjectives = this.objectiveCreator.chooseObjectives();
         this.publicObjectives = generatedObjectives.publicObjectives;
-
+        for (const objective of this.publicObjectives) {
+            this.players.forEach((player) => {
+                objective.progressions.set(player.name, 0);
+            });
+        }
         this.privateObjectives = new Map<string, Objective[]>();
         for (let index = 0; index < this.players.length; index++) {
             const playerName = this.players[index].name;
             const privateObjectives = generatedObjectives.privateObjectives[index];
             this.privateObjectives.set(playerName, privateObjectives);
+            for (const objective of privateObjectives) {
+                objective.progressions.set(playerName, 0);
+            }
         }
     }
 

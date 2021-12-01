@@ -50,6 +50,7 @@ export class UIPlace implements UIAction {
     }
 
     receiveKey(key: string): void {
+        let letterPlacement = null;
         if (this.info.activePlayer !== this.info.user) {
             return;
         }
@@ -58,7 +59,9 @@ export class UIPlace implements UIAction {
                 this.moveBackwards();
                 return;
             default:
-                if (this.useLetter(key)) {
+                letterPlacement = this.canUseLetter(key);
+                if (letterPlacement) {
+                    this.placeTempLetter(letterPlacement, key);
                     this.moveForwards();
                 }
                 break;
@@ -89,7 +92,7 @@ export class UIPlace implements UIAction {
         this.pointerPosition = null;
     }
 
-    private isSamePositionClicked(clickPosition: { x: number; y: number }) {
+    private isSamePositionClicked(clickPosition: { x: number; y: number }): boolean {
         if (!this.pointerPosition) {
             return false;
         }
@@ -97,24 +100,24 @@ export class UIPlace implements UIAction {
     }
 
     private getWordFromBoard(): WordPlacement {
-        let wordPlacementFound = this.direction === Direction.Horizontal ? this.getHorizontalWordFromBoard() : this.getVerticalWordFromBoard();
+        let wordPlacementFound = this.getWordFromBoardCrawler();
         if (wordPlacementFound.word.length < MIN_PLACE_LETTER_ARG_SIZE - 1) {
-            wordPlacementFound = this.direction === Direction.Horizontal ? this.getVerticalWordFromBoard() : this.getHorizontalWordFromBoard();
             this.direction = this.direction === Direction.Horizontal ? Direction.Vertical : Direction.Horizontal;
+            wordPlacementFound = this.getWordFromBoardCrawler();
         }
         return wordPlacementFound;
     }
 
-    private getVerticalWordFromBoard(): WordPlacement {
+    private getWordFromBoardCrawler(): WordPlacement {
         const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
-        const x = lastLetterPlacement.x;
+        let x = lastLetterPlacement.x;
         let y = lastLetterPlacement.y;
         let currentTileChar;
         let word = '';
         while (this.isThereALetter(x, y)) {
-            y++;
+            [x, y] = this.direction === Direction.Horizontal ? [++x, y] : [x, ++y];
         }
-        y--;
+        [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         do {
             currentTileChar = this.boardService.board.grid[y][x].letterObject;
             if (currentTileChar.value === 0) {
@@ -122,68 +125,51 @@ export class UIPlace implements UIAction {
             } else {
                 word = currentTileChar.char.toLowerCase() + word;
             }
-            y--;
+            [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         } while (this.isThereALetter(x, y));
-        y++;
+        [x, y] = this.direction === Direction.Horizontal ? [++x, y] : [x, ++y];
         return { word, x, y };
     }
 
-    private getHorizontalWordFromBoard(): WordPlacement {
-        const lastLetterPlacement = this.orderedIndexes[this.orderedIndexes.length - 1];
-        let x = lastLetterPlacement.x;
-        const y = lastLetterPlacement.y;
-        let currentTileChar;
-        let word = '';
-        while (this.isThereALetter(x, y)) {
-            x++;
-        }
-        x--;
-        do {
-            currentTileChar = this.boardService.board.grid[y][x].letterObject;
-            if (currentTileChar.value === 0) {
-                word = currentTileChar.char.toUpperCase() + word;
-            } else {
-                word = currentTileChar.char.toLowerCase() + word;
-            }
-            x--;
-        } while (this.isThereALetter(x, y));
-        x++;
-        return { word, x, y };
-    }
-
-    private isThereALetter(x: number, y: number) {
+    private isThereALetter(x: number, y: number): boolean {
         if (!this.isInsideOfBoard(x, y)) {
             return false;
         }
         return this.boardService.board.grid[y][x].letterObject.char !== EMPTY_CHAR;
     }
 
-    private useLetter(key: string): boolean {
+    private canUseLetter(key: string): LetterPlacement | null {
         if (!this.pointerPosition) {
-            return false;
+            return null;
         }
-        const possibleLetterIndex = this.canUseLetter(key);
+        const possibleLetterIndex = this.findLetterIndexInRack(key);
         if (possibleLetterIndex === null) {
-            return false;
+            return null;
         }
-        const newLetterPlacement: LetterPlacement = { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
-        this.concernedIndexes.add(possibleLetterIndex);
-        this.orderedIndexes.push(newLetterPlacement);
+        return { x: this.pointerPosition.x, y: this.pointerPosition.y, rackIndex: possibleLetterIndex };
+    }
+
+    private placeTempLetter(letterPlacement: LetterPlacement, key: string) {
+        if (!this.pointerPosition) {
+            return;
+        }
+        this.concernedIndexes.add(letterPlacement.rackIndex);
+        this.orderedIndexes.push(letterPlacement);
         const concernedTile = this.boardService.board.grid[this.pointerPosition.y][this.pointerPosition.x];
-        const usedChar = this.info.user.letterRack[possibleLetterIndex].char;
+        const usedChar = this.info.user.letterRack[letterPlacement.rackIndex].char;
         if (usedChar === JOKER_CHAR) {
             concernedTile.letterObject = this.letterCreator.createBlankLetter(key);
             concernedTile.letterObject.isTemp = true;
-            return true;
+            return;
         }
         concernedTile.letterObject = this.letterCreator.createLetter(usedChar);
         concernedTile.letterObject.isTemp = true;
-        return true;
+        return;
     }
 
-    private moveForwards(): boolean {
+    private moveForwards(): void {
         if (!this.pointerPosition) {
-            return false;
+            return;
         }
 
         let deltaX = 0;
@@ -201,26 +187,25 @@ export class UIPlace implements UIAction {
             y += deltaY;
             if (this.canPlaceALetterHere(x, y)) {
                 this.pointerPosition = { x, y };
-                return true;
+                return;
             }
         } while (this.isInsideOfBoard(x, y));
 
         this.pointerPosition = null;
-        return false;
     }
 
-    private canUseLetter(key: string): number | null {
+    private findLetterIndexInRack(key: string): number | null {
         let letter = convertToProperLetter(key);
         if (isStringAnUpperCaseLetter(letter)) {
             letter = JOKER_CHAR;
         }
         if (isStringALowerCaseLetter(letter) || letter === JOKER_CHAR) {
-            return this.findUnusedLetterIndex(letter);
+            return this.getUnusedLetterIndexInRack(letter);
         }
         return null;
     }
 
-    private findUnusedLetterIndex(char: string): number | null {
+    private getUnusedLetterIndexInRack(char: string): number | null {
         for (let index = 0; index < this.info.user.letterRack.length; index++) {
             const rackLetter = this.info.user.letterRack[index];
             if (rackLetter.char.toLowerCase() === char && !this.concernedIndexes.has(index)) {
@@ -241,16 +226,15 @@ export class UIPlace implements UIAction {
         return x >= BOARD_MIN_POSITION && x <= BOARD_MAX_POSITION && y >= BOARD_MIN_POSITION && y <= BOARD_MAX_POSITION;
     }
 
-    private moveBackwards(): boolean {
+    private moveBackwards(): void {
         const lastLetter = this.orderedIndexes.pop();
-        if (lastLetter !== undefined) {
-            const newBlankLetter = this.letterCreator.createBlankLetter(' ');
-            this.boardService.board.grid[lastLetter.y][lastLetter.x].letterObject = newBlankLetter;
-            this.concernedIndexes.delete(lastLetter.rackIndex);
-            this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
-            return true;
+        if (lastLetter === undefined) {
+            return;
         }
-        return false;
+        const newBlankLetter = this.letterCreator.createBlankLetter(' ');
+        this.boardService.board.grid[lastLetter.y][lastLetter.x].letterObject = newBlankLetter;
+        this.concernedIndexes.delete(lastLetter.rackIndex);
+        this.pointerPosition = { x: lastLetter.x, y: lastLetter.y };
     }
 
     private isPlacementInProgress(): boolean {

@@ -113,4 +113,22 @@ describe('SpecialOfflineGame', () => {
         const p2Objective = (game.privateObjectives.get(p2.name) as Objective[])[0];
         expect(p2Objective.isCompleted).toBeFalsy();
     });
+
+    it('should not update private objective when no private objective', () => {
+        const mockPublicObjectives = {
+            update: () => {
+                return;
+            },
+        } as unknown as Objective;
+        game.publicObjectives = [mockPublicObjectives, mockPublicObjectives];
+        game.privateObjectives = new Map<string, Objective[]>();
+        const mockAction = {
+            player: {
+                name: 'test',
+            },
+        } as unknown as Action;
+        expect(() => {
+            game.updateObjectives(mockAction, {} as unknown as ObjectiveUpdateParams);
+        }).not.toThrow();
+    });
 });

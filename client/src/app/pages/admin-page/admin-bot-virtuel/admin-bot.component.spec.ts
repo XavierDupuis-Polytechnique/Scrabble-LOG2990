@@ -1,14 +1,15 @@
 /* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
-import { BotHttpService, BotInfo, BotType } from '@app/services/jv-http.service';
-import { Observable, of } from 'rxjs';
-import { AdminJoueurVirtuelComponent } from './admin-jv.component';
+import { EditBotDialogComponent } from '@app/components/modals/edit-bot-dialog/edit-bot-dialog.component';
+import { AppMaterialModule } from '@app/modules/material.module';
+import { BotHttpService, BotInfo, BotType } from '@app/services/bot-http.service';
+import { Observable, of, throwError } from 'rxjs';
+import { AdminBotComponent } from './admin-bot.component';
 
-describe('AdminJvComponent', () => {
-    let component: AdminJoueurVirtuelComponent;
-    let fixture: ComponentFixture<AdminJoueurVirtuelComponent>;
+describe('AdminbotComponent', () => {
+    let component: AdminBotComponent;
+    let fixture: ComponentFixture<AdminBotComponent>;
     let matDialogMock: jasmine.SpyObj<MatDialog>;
     let botHttpServiceMock: jasmine.SpyObj<BotHttpService>;
     beforeEach(() => {
@@ -21,7 +22,8 @@ describe('AdminJvComponent', () => {
         });
         botHttpServiceMock.getDataInfo.and.returnValue(obs);
         TestBed.configureTestingModule({
-            declarations: [AdminJoueurVirtuelComponent],
+            declarations: [AdminBotComponent],
+            imports: [AppMaterialModule],
             providers: [
                 { provide: MatDialog, useValue: matDialogMock },
                 { provide: BotHttpService, useValue: botHttpServiceMock },
@@ -30,7 +32,7 @@ describe('AdminJvComponent', () => {
     });
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(AdminJoueurVirtuelComponent);
+        fixture = TestBed.createComponent(AdminBotComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -44,24 +46,24 @@ describe('AdminJvComponent', () => {
             afterClosed: () => {
                 return of({});
             },
-        } as MatDialogRef<EditJvDialogComponent>);
+        } as MatDialogRef<EditBotDialogComponent>);
         component.addBot();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 
     it('deleteBot should call http service', () => {
-        const jvMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
+        const botMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
         // eslint-disable-next-line @typescript-eslint/ban-types
         const obs = new Observable<string>((subscribe) => {
             subscribe.next('');
         });
         botHttpServiceMock.deleteBot.and.returnValue(obs);
-        component.deleteBot(jvMock);
-        expect(botHttpServiceMock.deleteBot).toHaveBeenCalledWith(jvMock);
+        component.deleteBot(botMock);
+        expect(botHttpServiceMock.deleteBot).toHaveBeenCalledWith(botMock);
     });
 
     it('showUpdateMenu should open dialog', () => {
-        const jvMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
+        const botMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
 
         matDialogMock.open.and.returnValue({
             afterClosed: () => {
@@ -70,9 +72,16 @@ describe('AdminJvComponent', () => {
             close: () => {
                 return;
             },
-        } as MatDialogRef<EditJvDialogComponent>);
+        } as MatDialogRef<EditBotDialogComponent>);
 
-        component.showUpdateMenu(jvMock);
+        component.showUpdateMenu(botMock);
+        expect(matDialogMock.open).toHaveBeenCalled();
+    });
+
+    it('updatelist should open dialog if error', () => {
+        botHttpServiceMock.getDataInfo.and.returnValues(throwError({ status: 404 }));
+        // eslint-disable-next-line dot-notation
+        component['updateList']();
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 });

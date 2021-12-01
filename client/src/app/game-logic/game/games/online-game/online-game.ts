@@ -30,7 +30,6 @@ export class OnlineGame extends Game {
     hasGameEnded: boolean = false;
     winnerNames: string[];
     playersWithIndex = new Map<string, PlayerWithIndex>();
-
     private letterCreator = new LetterCreator();
 
     private gameState$$: Subscription;

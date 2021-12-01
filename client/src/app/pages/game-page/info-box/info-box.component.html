@@ -1,8 +1,9 @@
 <mat-card class="game-info">
-    <div class="timer">
+    <div class="timer-container">
+        <mat-progress-spinner class="background" [value]="100"></mat-progress-spinner>
         <mat-progress-spinner class="timer-spinner" [value]="timeLeftPercent$ | async"></mat-progress-spinner>
-        <p id="timer-greater-one-minute" *ngIf="!timerIsLessOneMinute(timeLeft$ | async)">{{ timeLeft$ | async | date: 'mm:ss' }}</p>
-        <p id="timer-less-one-minute" *ngIf="timerIsLessOneMinute(timeLeft$ | async)">{{ timeLeft$ | async | date: 'ss' }}</p>
+
+        <p id="timer">{{ timeLeft$ | async | date: 'm:ss' }}</p>
     </div>
     <p id="letters-in-bag">Il reste {{ numberOfLettersRemaining }} lettres dans le sac</p>
 </mat-card>
@@ -10,4 +11,3 @@
 <div *ngIf="isEndOfGame">
     <H1>Félicitation à: {{ this.showWinner() }}</H1>
 </div>
-

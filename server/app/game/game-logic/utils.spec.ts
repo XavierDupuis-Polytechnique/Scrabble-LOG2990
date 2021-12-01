@@ -29,7 +29,7 @@ describe('placementSettingsToString', () => {
         const placementSettings = {
             x: 0,
             y: 15,
-            direction: 'a',
+            direction: 'a' as Direction,
         };
         expect(() => {
             placementSettingsToString(placementSettings);

@@ -9,6 +9,13 @@ mat-icon {
     color: var(--white);
     font-size: medium;
 }
+mat-hint {
+    color: var(--white);
+}
+
+.error {
+    color: #e53935;
+}
 
 .chatContainer {
     height: 100%;

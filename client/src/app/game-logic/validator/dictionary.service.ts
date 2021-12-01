@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import { DEFAULT_DICTIONARY_TITLE, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/game-logic/constants';
+import { DEFAULT_DICTIONARY_TITLE, RACK_LETTER_COUNT, MAX_WORD_LENGTH, START_OF_STRING, RESET, NOT_FOUND } from '@app/game-logic/constants';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import {
     DictInitialSearchSettings,
-    DictRegexSettings,
     DictSubSearchSettings,
     DictWholeSearchSettings,
+    DictRegexSettings,
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictionaryHelper } from '@app/game-logic/validator/dictionary-helper';
 import { DictHttpService } from '@app/services/dict-http.service';
+
 import { BehaviorSubject } from 'rxjs';
 import data from 'src/assets/dictionary.json';
 
@@ -37,6 +38,7 @@ export class DictionaryService {
             this.ready();
             return this.dictReady$;
         }
+        this.dictReady$.next(false);
         this.dictHttpService.getDict(dictTitle).subscribe((res) => {
             const dictionary = res as Dictionary;
             this.addWords(dictionary);
@@ -131,7 +133,6 @@ export class DictionaryService {
 
     private ready() {
         this.dictReady$.next(true);
-        this.dictReady$.complete();
     }
 
     private clearWords() {

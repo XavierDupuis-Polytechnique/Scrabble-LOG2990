@@ -62,7 +62,7 @@ export class CanvasDrawer {
             for (let j = 0; j < board.grid.length; j++) {
                 if (board.grid[i][j].letterObject.char !== ' ') {
                     this.drawTile(board.grid[i][j].letterObject.char, board.grid[i][j].letterObject.value, i, j);
-                    if (board.grid[i][j].letterObject.isTemp === true) {
+                    if (board.grid[i][j].letterObject.isTemp) {
                         this.drawHighlight(j, i);
                     }
                 } else if (board.grid[i][j].letterMultiplicator !== 1) {
@@ -196,14 +196,16 @@ export class CanvasDrawer {
             s = 'Lettre';
             if (mul === 2) {
                 this.canvas.fillStyle = DOUBLE_BONUS_LETTER;
-            } else if (mul === 3) {
+            }
+            if (mul === 3) {
                 this.canvas.fillStyle = TRIPLE_BONUS_LETTER;
             }
         } else {
             s = 'Mot';
             if (mul === 2) {
                 this.canvas.fillStyle = DOUBLE_BONUS_WORD;
-            } else if (mul === 3) {
+            }
+            if (mul === 3) {
                 this.canvas.fillStyle = TRIPLE_BONUS_WORD;
             }
         }

@@ -1,15 +1,28 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+/* eslint-disable max-lines */
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
+import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
-import { DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { BOARD_DIMENSION, DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { BoardService } from '@app/game-logic/game/board/board.service';
+import { Letter } from '@app/game-logic/game/board/letter.interface';
+import { Tile } from '@app/game-logic/game/board/tile';
 import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
+import { ForfeitedGameState, LightPlayer } from '@app/game-logic/game/games/online-game/game-state';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
+import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
+import { TransitionObjective } from '@app/game-logic/game/objectives/objectives/transition-objectives';
+import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { EasyBot } from '@app/game-logic/player/bot/easy-bot';
 import { Player } from '@app/game-logic/player/player';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
-import { BotHttpService } from '@app/services/jv-http.service';
+import { BotHttpService } from '@app/services/bot-http.service';
 import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handler/game-socket-handler.service';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
@@ -164,6 +177,69 @@ describe('GameManagerService Online Edition', () => {
     mockBotHttpService.getDataInfo.and.returnValue(obs);
     const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
     const dict = new DictionaryService(dictHttpServiceMock);
+    const timer: TimerService = jasmine.createSpyObj('TimerService', ['start']);
+    const board: BoardService = jasmine.createSpyObj('BoardService', [], ['board']);
+    const actionCompiler: OnlineActionCompilerService = jasmine.createSpyObj('OnlineActionCompilerService', ['compileActionOnline']);
+    const objectiveCreator: ObjectiveCreator = jasmine.createSpyObj('ObjectiveCreator', ['chooseObjectives']);
+    const grid: Tile[][] = [];
+    for (let i = 0; i < BOARD_DIMENSION; i++) {
+        const row: Tile[] = [];
+        for (let j = 0; j < BOARD_DIMENSION; j++) {
+            row.push(new Tile());
+        }
+        grid.push([...row]);
+    }
+
+    const p1: LightPlayer = {
+        letterRack: [
+            { char: 'A', value: 0 },
+            { char: 'B', value: 0 },
+            { char: 'C', value: 0 },
+        ],
+        name: 'p1',
+        points: 123,
+    };
+
+    const p2: LightPlayer = {
+        letterRack: [
+            { char: 'D', value: 0 },
+            { char: 'E', value: 0 },
+            { char: 'F', value: 0 },
+        ],
+        name: 'p2',
+        points: 456,
+    };
+
+    const letterBag: Letter[] = [
+        { char: 'G', value: 0 },
+        { char: 'H', value: 0 },
+        { char: 'I', value: 0 },
+    ];
+
+    const forfeitedGameState: ForfeitedGameState = {
+        letterBag,
+        consecutivePass: 0,
+        randomBonus: false,
+        players: [p1, p2],
+        activePlayerIndex: 0,
+        grid,
+        lettersRemaining: letterBag.length,
+        isEndOfGame: false,
+        winnerIndex: [],
+    };
+
+    const objective: TransitionObjective = {
+        description: 'objectiveDescription',
+        name: 'objectiveName',
+        objectiveType: 0,
+        owner: undefined,
+        points: 20,
+        progressions: [
+            { playerName: 'p1', progression: 0 },
+            { playerName: 'p2', progression: 0 },
+        ],
+    };
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
@@ -315,5 +391,29 @@ describe('GameManagerService Online Edition', () => {
         const spy = spyOn(service['onlineChat'], 'leaveChatRoom');
         service['stopGame']();
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('should not convert and resume an OnlineGame if there was no game', () => {
+        service.instanciateGameFromForfeitedState(forfeitedGameState);
+        expect(service['game']).toBe(undefined);
+    });
+
+    it('should convert and resume an OnlineGame (converted to OfflineGame)', () => {
+        service['game'] = new OnlineGame('gameToken', 10000, 'p1', timer, gameSocketHandler, board, actionCompiler);
+        spyOn(service['onlineChat'], 'leaveChatRoom').and.callFake(() => {
+            return;
+        });
+        service.instanciateGameFromForfeitedState(forfeitedGameState);
+        expect(service['game']).toBeInstanceOf(OfflineGame);
+    });
+
+    it('should convert and resume a SpecialOnlineGame (converted to SpecialOfflineGame)', () => {
+        forfeitedGameState.objectives = [objective];
+        service['game'] = new SpecialOnlineGame('gameToken', 10000, 'p1', timer, gameSocketHandler, board, actionCompiler, objectiveCreator);
+        spyOn(service['onlineChat'], 'leaveChatRoom').and.callFake(() => {
+            return;
+        });
+        service.instanciateGameFromForfeitedState(forfeitedGameState);
+        expect(service['game']).toBeInstanceOf(SpecialOfflineGame);
     });
 });
