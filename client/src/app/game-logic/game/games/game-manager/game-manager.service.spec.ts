@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-magic-numbers */
 /* eslint-disable max-lines */
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
-import { BOARD_DIMENSION, DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { BOARD_DIMENSION, DEFAULT_DICTIONARY_TITLE, DEFAULT_TIME_PER_TURN, MIDDLE_OF_BOARD } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Tile } from '@app/game-logic/game/board/tile';
@@ -189,6 +188,7 @@ describe('GameManagerService Online Edition', () => {
         }
         grid.push([...row]);
     }
+    grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char = 'X';
 
     const p1: LightPlayer = {
         letterRack: [
@@ -230,7 +230,7 @@ describe('GameManagerService Online Edition', () => {
 
     const objective: TransitionObjective = {
         description: 'objectiveDescription',
-        name: 'objectiveName',
+        name: 'Quatre Coins',
         objectiveType: 0,
         owner: undefined,
         points: 20,
@@ -251,6 +251,10 @@ describe('GameManagerService Online Edition', () => {
         });
         service = TestBed.inject(GameManagerService);
         gameSocketHandler = TestBed.inject(GameSocketHandlerService);
+        // const mockSubjectForfeitGameState = new Subject<ForfeitedGameState>();
+        // (
+        //     Object.getOwnPropertyDescriptor(gameSocketHandler, 'forfeitGameStateSubject')?.get as jasmine.Spy<() => Observable<ForfeitedGameState>>
+        // ).and.returnValue(mockSubjectForfeitGameState);
     });
 
     it('should join an online game', () => {
@@ -347,10 +351,16 @@ describe('GameManagerService Online Edition', () => {
     });
 
     it('should test the disconnectedFromServerSubject subject', () => {
-        gameSocketHandler['disconnectedFromServerSubject'].next();
         const result = service.disconnectedFromServer$.subscribe();
+        gameSocketHandler['disconnectedFromServerSubject'].next();
         expect(result).toBeTruthy();
     });
+
+    // it('should test the [] subject', () => {
+    //     const result = service.forfeitedState$.subscribe();
+    //     gameSocketHandler['forfeitGameStateSubject'].next();
+    //     expect(result).toBeTruthy();
+    // });
 
     it('should join an online game when you are the opponent', () => {
         const onlineGameSettings: OnlineGameSettings = {
@@ -399,12 +409,17 @@ describe('GameManagerService Online Edition', () => {
     });
 
     it('should convert and resume an OnlineGame (converted to OfflineGame)', () => {
+        forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char = 'X';
         service['game'] = new OnlineGame('gameToken', 10000, 'p1', timer, gameSocketHandler, board, actionCompiler);
         spyOn(service['onlineChat'], 'leaveChatRoom').and.callFake(() => {
             return;
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(OfflineGame);
+        expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
+        expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
+            forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char,
+        );
     });
 
     it('should convert and resume a SpecialOnlineGame (converted to SpecialOfflineGame)', () => {
@@ -415,5 +430,10 @@ describe('GameManagerService Online Edition', () => {
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(SpecialOfflineGame);
+        expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
+        expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
+            forfeitedGameState.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char,
+        );
+        expect((service['game'] as SpecialOfflineGame).publicObjectives[0].name).toBe(objective.name);
     });
 });
