@@ -108,4 +108,12 @@ describe('GameSocketHandlerService', () => {
         const forfeitedGameState = {} as unknown as ForfeitedGameState;
         (service.socket as any).peerSideEmit('transitionGameState', forfeitedGameState);
     });
+
+    it('should emit disconnected from server when receiving connect_error', (done) => {
+        service.disconnectedFromServer$.subscribe(() => {
+            expect(true).toBeTrue();
+            done();
+        });
+        (service.socket as any).peerSideEmit('connect_error');
+    });
 });
