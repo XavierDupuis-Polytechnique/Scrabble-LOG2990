@@ -28,7 +28,7 @@ export class DatabaseService {
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
-            throw new Error('Database connection error');
+            // throw new Error('Database connection error');
         }
 
         this.createLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
