@@ -276,6 +276,27 @@ describe('GameManagerService Online Edition', () => {
         expect(result).toBeInstanceOf(OnlineGame);
     });
 
+    it('should join a special online game', () => {
+        const onlineGameSettings: OnlineGameSettings = {
+            timePerTurn: DEFAULT_TIME_PER_TURN,
+            playerName: 'p1',
+            opponentName: 'p2',
+            randomBonus: false,
+            id: '0',
+            dictTitle: DEFAULT_DICTIONARY_TITLE,
+            gameMode: GameMode.Special,
+        };
+
+        const userAuth: UserAuth = {
+            playerName: 'p1',
+            gameToken: '0',
+        };
+
+        service.joinOnlineGame(userAuth, onlineGameSettings);
+        const result = service['game'];
+        expect(result).toBeInstanceOf(OnlineGame);
+    });
+
     it('should stop game if offline game exist on join an online game', () => {
         const gameSettings: GameSettings = {
             timePerTurn: 10,
