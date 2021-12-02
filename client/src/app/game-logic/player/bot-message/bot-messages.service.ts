@@ -45,7 +45,7 @@ export class BotMessagesService {
         }
     }
 
-    formatAlternativeWord(word: ValidWord): string {
+    private formatAlternativeWord(word: ValidWord): string {
         let posLetters = '';
         const formedWords: string[] = [];
         for (let wordIndex = 0; wordIndex < word.adjacentWords.length; wordIndex++) {
@@ -88,7 +88,7 @@ export class BotMessagesService {
         return out;
     }
 
-    sendAlternativeWords(validWordList: ValidWord[]) {
+    private sendAlternativeWords(validWordList: ValidWord[]) {
         let content = END_LINE;
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
             if (i === validWordList.length) {
@@ -101,7 +101,7 @@ export class BotMessagesService {
         this.messagesService.receiveSystemMessage(content);
     }
 
-    sendNextBestWords(bestWordList: ValidWord[]) {
+    private sendNextBestWords(bestWordList: ValidWord[]) {
         let content = END_LINE;
         for (let i = 1; i < bestWordList.length; i++) {
             const word = bestWordList[i];
@@ -110,13 +110,13 @@ export class BotMessagesService {
         this.messagesService.receiveSystemMessage(content);
     }
 
-    sendPlaceLetterMessage(pickedWord: string, placementSetting: PlacementSetting, name: string) {
+    private sendPlaceLetterMessage(pickedWord: string, placementSetting: PlacementSetting, name: string) {
         const placement = placementSettingsToString(placementSetting);
         const content = `${CommandType.Place} ${placement} ${pickedWord}`;
         this.messagesService.receiveMessageOpponent(name, content);
     }
 
-    sendExchangeLettersMessage(letters: Letter[], name: string) {
+    private sendExchangeLettersMessage(letters: Letter[], name: string) {
         let lettersString = '';
         letters.forEach((letter) => {
             const charToExchange = letter.char.toLowerCase();
@@ -126,7 +126,7 @@ export class BotMessagesService {
         this.messagesService.receiveMessageOpponent(name, content);
     }
 
-    sendPassTurnMessage(name: string) {
+    private sendPassTurnMessage(name: string) {
         const content: string = CommandType.Pass;
         this.messagesService.receiveMessageOpponent(name, content);
     }

@@ -49,7 +49,7 @@ export class PointCalculatorService {
         }
     }
 
-    calculatePointsOfWord(word: Tile[]): number {
+    private calculatePointsOfWord(word: Tile[]): number {
         let sumOfWord = 0;
         let totalWordMultiplicator = 1;
         const lettersInWord = new Set(word);
@@ -61,7 +61,7 @@ export class PointCalculatorService {
         return sumOfWord;
     }
 
-    calculatePointsOfRack(player: Player): number {
+    private calculatePointsOfRack(player: Player): number {
         let sumOfRack = 0;
         const letterRack = player.letterRack;
         for (const letter of letterRack) {
@@ -70,7 +70,7 @@ export class PointCalculatorService {
         return sumOfRack;
     }
 
-    desactivateMultiplicators(action: PlaceLetter): void {
+    private desactivateMultiplicators(action: PlaceLetter): void {
         const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
         const direction = action.placement.direction;
         const word = action.word;

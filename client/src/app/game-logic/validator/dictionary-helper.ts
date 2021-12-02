@@ -116,16 +116,6 @@ export class DictionaryHelper {
         }
     }
 
-    setStartingTile(partWord: ValidWord, newWord: ValidWord, foundIndex: number) {
-        if (partWord.isVertical) {
-            newWord.startingTileX = partWord.startingTileX;
-            newWord.startingTileY = partWord.startingTileY - foundIndex;
-        } else {
-            newWord.startingTileX = partWord.startingTileX - foundIndex;
-            newWord.startingTileY = partWord.startingTileY;
-        }
-    }
-
     placedWordReformat(placedLetters: string) {
         let placedWord = '';
         for (const letter of placedLetters) {
@@ -218,7 +208,7 @@ export class DictionaryHelper {
         return regexSettings.placedWord;
     }
 
-    deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {
+    private deleteTmpLetter(placedLetter: string, mapRack: Map<string, number>) {
         const letterCount = mapRack.get(placedLetter);
         if (letterCount && letterCount > 1) {
             mapRack.set(placedLetter, letterCount - 1);
@@ -227,7 +217,7 @@ export class DictionaryHelper {
         }
     }
 
-    tmpLetterLeft(mapRack: Map<string, number>): string {
+    private tmpLetterLeft(mapRack: Map<string, number>): string {
         let lettersLeft = '';
         for (const key of mapRack.keys()) {
             if (key !== '*') {
@@ -235,5 +225,15 @@ export class DictionaryHelper {
             }
         }
         return lettersLeft;
+    }
+
+    private setStartingTile(partWord: ValidWord, newWord: ValidWord, foundIndex: number) {
+        if (partWord.isVertical) {
+            newWord.startingTileX = partWord.startingTileX;
+            newWord.startingTileY = partWord.startingTileY - foundIndex;
+        } else {
+            newWord.startingTileX = partWord.startingTileX - foundIndex;
+            newWord.startingTileY = partWord.startingTileY;
+        }
     }
 }

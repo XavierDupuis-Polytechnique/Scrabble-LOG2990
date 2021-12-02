@@ -101,7 +101,7 @@ export class BotCrawler {
         }
     }
 
-    getAllPossibilitiesOnLine(lettersOnLine: ValidWord): ValidWord[] {
+    private getAllPossibilitiesOnLine(lettersOnLine: ValidWord): ValidWord[] {
         const allPossibilities: ValidWord[] = [];
         const notFound = -1;
         const startOfLine = 0;

@@ -63,10 +63,6 @@ export class OfflineGame extends Game {
         this.timer.stop();
     }
 
-    nextPlayer() {
-        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
-    }
-
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
@@ -83,12 +79,6 @@ export class OfflineGame extends Game {
 
     getActivePlayer() {
         return this.players[this.activePlayerIndex];
-    }
-
-    onEndOfGame() {
-        this.pointCalculator.endOfGamePointDeduction(this);
-        this.displayLettersLeft();
-        this.isEndOfGameSubject.next();
     }
 
     doAction(action: Action) {
@@ -112,6 +102,16 @@ export class OfflineGame extends Game {
             }
         }
         return winners;
+    }
+
+    private onEndOfGame() {
+        this.pointCalculator.endOfGamePointDeduction(this);
+        this.displayLettersLeft();
+        this.isEndOfGameSubject.next();
+    }
+
+    private nextPlayer() {
+        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
     private pickFirstPlayer() {

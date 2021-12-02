@@ -20,13 +20,6 @@ export class NewOnlineGameSocketHandler {
         this.startGame$.next(undefined);
     }
 
-    connect() {
-        this.socket = this.connectToSocket();
-        this.socket.on('connect_error', () => {
-            this.isDisconnected$.next(true);
-        });
-    }
-
     createGameMulti(gameSettings: OnlineGameSettingsUI) {
         this.connect();
         if (!isGameSettings(gameSettings)) {
@@ -40,12 +33,6 @@ export class NewOnlineGameSocketHandler {
         this.connect();
         this.socket.on('pendingGames', (pendingGames: OnlineGameSettings[]) => {
             this.pendingGames$.next(pendingGames);
-        });
-    }
-
-    listenErrorMessage() {
-        this.socket.on('error', (errorContent: string) => {
-            this.error$.next(errorContent);
         });
     }
 
@@ -65,21 +52,34 @@ export class NewOnlineGameSocketHandler {
         this.socket.disconnect();
     }
 
-    waitForSecondPlayer() {
+    private connect() {
+        this.socket = this.connectToSocket();
+        this.socket.on('connect_error', () => {
+            this.isDisconnected$.next(true);
+        });
+    }
+
+    private listenErrorMessage() {
+        this.socket.on('error', (errorContent: string) => {
+            this.error$.next(errorContent);
+        });
+    }
+
+    private waitForSecondPlayer() {
         this.socket.on('pendingGameId', (pendingGameid: string) => {
             this.pendingGameId$.next(pendingGameid);
         });
         this.listenForGameToken();
     }
 
-    listenForGameToken() {
+    private listenForGameToken() {
         this.socket.on('gameJoined', (gameSetting: OnlineGameSettings) => {
             this.startGame$.next(gameSetting);
             this.disconnectSocket();
         });
     }
 
-    connectToSocket() {
+    private connectToSocket() {
         return io(environment.serverSocketUrl, { path: '/newGame' });
     }
 }

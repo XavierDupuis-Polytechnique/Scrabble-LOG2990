@@ -18,25 +18,6 @@ export class OnlineChatHandlerService {
 
     constructor(private gameInfo: GameInfoService) {}
 
-    joinChatRoom(roomID: string, userName: string) {
-        if (this.socket) {
-            this.socket.on('error', (errorContent: string) => {
-                this.receiveChatServerError(errorContent);
-            });
-
-            this.socket.on('roomMessages', (message: ChatMessage) => {
-                this.receiveServerMessage(message);
-            });
-
-            this.socket.on('systemMessages', (content: string) => {
-                this.receiveSystemMessage(content);
-            });
-
-            this.socket.emit('userName', userName);
-            this.socket.emit('joinRoom', roomID);
-        }
-    }
-
     joinChatRoomWithUser(roomID: string) {
         const userName = this.gameInfo.user.name;
         this.socket = this.connectToSocket();
@@ -58,19 +39,38 @@ export class OnlineChatHandlerService {
         this.socket.emit('newMessage', content);
     }
 
-    connectToSocket() {
+    private joinChatRoom(roomID: string, userName: string) {
+        if (this.socket) {
+            this.socket.on('error', (errorContent: string) => {
+                this.receiveChatServerError(errorContent);
+            });
+
+            this.socket.on('roomMessages', (message: ChatMessage) => {
+                this.receiveServerMessage(message);
+            });
+
+            this.socket.on('systemMessages', (content: string) => {
+                this.receiveSystemMessage(content);
+            });
+
+            this.socket.emit('userName', userName);
+            this.socket.emit('joinRoom', roomID);
+        }
+    }
+
+    private connectToSocket() {
         return io(environment.serverSocketUrl, { path: '/messages' });
     }
 
-    receiveChatServerError(content: string) {
+    private receiveChatServerError(content: string) {
         this.errorSubject.next(content);
     }
 
-    receiveServerMessage(message: ChatMessage) {
+    private receiveServerMessage(message: ChatMessage) {
         this.newRoomMessageSubject.next(message);
     }
 
-    receiveSystemMessage(content: string) {
+    private receiveSystemMessage(content: string) {
         this.sysMessageSubject.next(content);
     }
 

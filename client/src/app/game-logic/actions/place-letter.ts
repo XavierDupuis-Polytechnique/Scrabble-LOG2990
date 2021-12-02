@@ -29,7 +29,6 @@ export class PlaceLetter extends Action {
         super(player);
     }
 
-    // TODO : if possible, refactor this method
     protected perform(game: OfflineGame) {
         const previousGrid = copyGrid(game.board.grid);
         const validWordList = this.wordSearcher.listOfValidWord(this);
