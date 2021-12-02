@@ -86,6 +86,7 @@ export class DatabaseService {
             await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
             this.populateBotInfoCollection();
         } catch (error) {
+            throw Error('Data base collection creation error');
         }
     }
 
@@ -94,6 +95,7 @@ export class DatabaseService {
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
         } catch (error) {
+            throw Error('Data base collection population error');
         }
     }
 
