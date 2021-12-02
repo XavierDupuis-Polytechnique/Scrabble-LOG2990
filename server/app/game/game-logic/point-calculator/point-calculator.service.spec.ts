@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-
 import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-/* eslint-disable deprecation/deprecation */
 import { Location } from '@angular/common';
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -20,8 +19,8 @@ describe('Router: App', () => {
             declarations: [HomepageComponent, ClassicGameComponent],
         });
 
-        router = TestBed.get(Router);
-        location = TestBed.get(Location);
+        router = TestBed.inject(Router);
+        location = TestBed.inject(Location);
 
         fixture = TestBed.createComponent(AppComponent);
         router.initialNavigation();

@@ -7,7 +7,7 @@ import { GameInfoService } from '@app/game-logic/game/game-info/game-info.servic
 import { User } from '@app/game-logic/player/user';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { InfoBoxComponent, MILISECONDS_IN_MINUTE } from './info-box.component';
+import { InfoBoxComponent } from './info-box.component';
 
 class MockGameInfoService {
     user: User;
@@ -75,16 +75,6 @@ describe('InfoBoxComponent', () => {
         expect(component.showWinner()).toBe('sam et test');
     });
 
-    it('timerIsLessThenOneMinute should return true', () => {
-        testMock.timeLeft$ = MILISECONDS_IN_MINUTE / 2;
-        expect(component.isTimerLessOneMinute(testMock.timeLeft$)).toBeTruthy();
-    });
-
-    it('timerIsLessThenOneMinute should return false', () => {
-        testMock.timeLeft$ = 2 * MILISECONDS_IN_MINUTE;
-        expect(component.isTimerLessOneMinute(testMock.timeLeft$)).toBeFalse();
-    });
-
     it('should not do anything when timerleft is undefined', (done) => {
         // eslint-disable-next-line dot-notation
         testMock['t'].next(undefined);
@@ -108,10 +98,5 @@ describe('InfoBoxComponent', () => {
             expect(val).toBe(undefined);
             done();
         });
-    });
-
-    it('timer is less than one minute should return true when values are undefined and null', () => {
-        expect(component.isTimerLessOneMinute(null)).toBe(true);
-        expect(component.isTimerLessOneMinute(undefined)).toBe(true);
     });
 });

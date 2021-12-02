@@ -1,8 +1,8 @@
-<div *ngFor="let player of info.players; index as i">
+<div *ngFor="let player of players; index as i">
     <mat-card
         class="playerInfo"
         id="{{ i }}"
-        [ngClass]="{ active: player.name === info.activePlayer.name, inactive: player.name !== info.activePlayer.name }"
+        [ngClass]="{ active: player.name === activePlayerName, inactive: player.name !== activePlayerName }"
     >
         <mat-card-header>
             <span class="name">{{ player.name }} </span>
@@ -10,7 +10,9 @@
         <mat-divider inset></mat-divider>
         <mat-card-content class="grid-container">
             <span class="score"> {{ player.points }} points </span><br />
-            <span class="score" *ngIf="!player.isLetterRackFull"> {{ player.letterRack.length }} lettres restantes dans le chevalet </span>
+            <span class="score" *ngIf="!player.isLetterRackFull && lettersRemaining === 0">
+                {{ player.letterRack.length }} lettres restantes dans le chevalet
+            </span>
         </mat-card-content>
     </mat-card>
 </div>

@@ -45,8 +45,8 @@ export class ObjectiveCreator {
         return [...Array(TOTAL_OBJECTIVE_COUNT).keys()];
     }
 
-    private createObjective(gameToken: string, objectiveIndex: number): Objective {
-        switch (objectiveIndex) {
+    private createObjective(gameToken: string, objectiveType: ObjectiveType): Objective {
+        switch (objectiveType) {
             case ObjectiveType.FourCorners:
                 return new FourCorners(gameToken, this.objectiveNotifier);
             case ObjectiveType.TripleBonus:
@@ -64,7 +64,7 @@ export class ObjectiveCreator {
             case ObjectiveType.ThreeSameLetters:
                 return new ThreeSameLetters(gameToken, this.objectiveNotifier);
             default:
-                throw Error('Could not create objectif with specified index ' + objectiveIndex);
+                throw Error('Could not create objectif with specified index ' + objectiveType);
         }
     }
 }

@@ -21,6 +21,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: NewOnlineGameSocketHandler,
     ) {}
+
     ngOnInit() {
         this.playerName = this.data.playerName;
         this.oppName = new FormControl('', [

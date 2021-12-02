@@ -16,7 +16,6 @@ describe('NewOnlineGameSocketHandler', () => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(NewOnlineGameSocketHandler);
         createSocketFunction = service.connectToSocket;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         service.connectToSocket = jasmine.createSpy().and.returnValue(new SocketMock());
         service.connect();
     });

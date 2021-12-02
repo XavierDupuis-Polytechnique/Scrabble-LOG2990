@@ -11,6 +11,7 @@ import { GameSocketHandlerService } from '@app/socket-handler/game-socket-handle
 export class SpecialOnlineGame extends OnlineGame implements SpecialGame {
     privateObjectives = new Map<string, Objective[]>();
     publicObjectives = [] as Objective[];
+
     constructor(
         public gameToken: string,
         public timePerTurn: number,

@@ -26,6 +26,7 @@ export class OnlineObjectiveConverter {
     }
 
     private translateObjective(objective: Objective): TransitionObjectives {
+        // TODO CHANGE THIS
         const objectiveType = objective.constructor.name;
         const progressions: PlayerProgression[] = [];
 

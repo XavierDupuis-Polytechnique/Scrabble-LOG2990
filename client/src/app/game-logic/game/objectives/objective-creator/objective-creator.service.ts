@@ -35,9 +35,9 @@ export class ObjectiveCreator {
     createOnlineObjective(name: string, description: string, points: number): OnlineObjective {
         return new OnlineObjective(this.objectiveNotifier, name, description, points);
     }
-    // TODO:mettre private si j'ai merdé
-    createObjective(objectiveIndex: number): Objective {
-        switch (objectiveIndex) {
+
+    createObjective(objectiveType: ObjectiveType): Objective {
+        switch (objectiveType) {
             case ObjectiveType.FourCorners:
                 return new FourCorners(this.objectiveNotifier);
             case ObjectiveType.TripleBonus:
@@ -55,7 +55,7 @@ export class ObjectiveCreator {
             case ObjectiveType.ThreeSameLetters:
                 return new ThreeSameLetters(this.objectiveNotifier);
             default:
-                throw Error('Could not create objectif with specified index ' + objectiveIndex);
+                throw Error('Could not create objectif with specified index ' + objectiveType);
         }
     }
 
