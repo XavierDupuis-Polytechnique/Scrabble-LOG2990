@@ -50,17 +50,17 @@ export class OnlineObjectiveConverter {
 
         if (objective instanceof TenWords) {
             const wordCounts = (objective as TenWords).wordCounts;
-            translatedObjective.wordCounts = [];
             wordCounts.forEach((wordCount, playerName) => {
-                translatedObjective.wordCounts?.push({ playerName, wordCount });
+                translatedObjective.wordCounts = [];
+                translatedObjective.wordCounts.push({ playerName, wordCount });
             });
         }
 
         if (objective instanceof HalfAlphabet) {
             const letters = (objective as HalfAlphabet).placedLetters;
-            translatedObjective.placedLetters = [];
             letters.forEach((placedLetters, playerName) => {
-                translatedObjective.placedLetters?.push({ playerName, placedLetters: [...placedLetters] });
+                translatedObjective.placedLetters = [];
+                translatedObjective.placedLetters.push({ playerName, placedLetters: [...placedLetters] });
             });
         }
         return translatedObjective;
