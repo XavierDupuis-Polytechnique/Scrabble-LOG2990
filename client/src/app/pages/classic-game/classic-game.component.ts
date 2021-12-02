@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatRipple, RippleConfig } from '@angular/material/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { LoadingGameComponent } from '@app/components/modals/loading-game/loading-game.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -152,6 +153,20 @@ export class ClassicGameComponent {
             });
     }
 
+    openLoadingGame(): MatDialogRef<LoadingGameComponent> {
+        const loadingGameDialogConfig = new MatDialogConfig();
+        loadingGameDialogConfig.disableClose = true;
+        loadingGameDialogConfig.width = '255px';
+        const loadingGameDialog = this.dialog.open(LoadingGameComponent, loadingGameDialogConfig);
+        loadingGameDialog.afterClosed().subscribe((isCanceled) => {
+            if (isCanceled) {
+                this.gameReady$$.unsubscribe();
+                this.gameManager.stopGame();
+            }
+        });
+        return loadingGameDialog;
+    }
+
     private startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
@@ -175,10 +190,11 @@ export class ClassicGameComponent {
                 if (!gameReady) {
                     return;
                 }
+                loadingScreen.close();
                 this.router.navigate(['/game']);
             });
+            const loadingScreen = this.openLoadingGame();
         }
-        // TODO - add loading screen?
     }
 
     get isSpecialGame() {

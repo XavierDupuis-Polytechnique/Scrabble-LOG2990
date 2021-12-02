@@ -228,6 +228,7 @@ describe('GameManagerService Online Edition', () => {
         lettersRemaining: letterBag.length,
         isEndOfGame: false,
         winnerIndex: [],
+        objectives: [],
     };
 
     const objective: TransitionObjective = {
@@ -461,12 +462,6 @@ describe('GameManagerService Online Edition', () => {
             service['resumeGame'](0);
         }).toThrowError('No game created yet');
     });
-
-    // it('should not be able to start a converted game if there is no game', () => {
-    //     const updateLeaboardWhenGameEndsSpy = spyOn(service, 'updateLeaboardWhenGameEnds');
-    //     service['startConvertedGame'](0, GameMode.Classic);
-    //     expect(updateLeaboardWhenGameEndsSpy).not.toHaveBeenCalled();
-    // });
 
     it('should not allocate players if there is no game', () => {
         service['allocatePlayers']([new User('p1'), new User('p2')]);

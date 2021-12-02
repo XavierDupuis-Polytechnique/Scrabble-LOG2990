@@ -12,7 +12,8 @@ import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
-import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter';
+import { ObjectiveLoader } from '@app/game-logic/game/objectives/objective-loader/objective-loader';
+import { PlayerNames } from '@app/game-logic/game/objectives/objective-loader/players-names.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
 import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.service';
@@ -57,7 +58,7 @@ export class GameManagerService {
         private dictionaryService: DictionaryService,
         private gameCreator: GameCreatorService,
         private boardService: BoardService,
-        private objectiveConverter: ObjectiveConverter,
+        private objectiveLoader: ObjectiveLoader,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -109,7 +110,7 @@ export class GameManagerService {
         if (!(this.game instanceof OfflineGame)) {
             throw Error('The type of game is not offlineGame after converting the online game to offline');
         }
-        this.transitionBoard(forfeitedGameState);
+        this.loadBoard(forfeitedGameState);
         this.game.letterBag.gameLetters = forfeitedGameState.letterBag;
         this.game.consecutivePass = forfeitedGameState.consecutivePass;
         const playerInfo = forfeitedGameState.players;
@@ -120,12 +121,16 @@ export class GameManagerService {
 
         const botIndex = (userIndex + 1) % 2;
         const botName = this.game.players[botIndex].name;
-        this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
+        this.loadPlayerInfo(userIndex, botIndex, forfeitedGameState);
 
         this.info.receiveGame(this.game);
 
         if (this.game instanceof SpecialOfflineGame && forfeitedGameState.objectives) {
-            this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
+            const playerNames: PlayerNames = {
+                userName,
+                botName,
+            };
+            this.objectiveLoader.loadObjectivesIntoGame(this.game, forfeitedGameState.objectives, playerNames);
         }
         const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
         this.startConvertedGame(forfeitedGameState.activePlayerIndex, gameMode);
@@ -204,7 +209,7 @@ export class GameManagerService {
         }
     }
 
-    private transitionBoard(forfeitedGameState: ForfeitedGameState) {
+    private loadBoard(forfeitedGameState: ForfeitedGameState) {
         (this.game as OfflineGame).board = this.boardService.board;
         const nRows = BOARD_DIMENSION;
         const nCols = BOARD_DIMENSION;
@@ -217,7 +222,7 @@ export class GameManagerService {
         }
     }
 
-    private transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
+    private loadPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
         if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
             const playerInfo = forfeitedGameState.players;
 
