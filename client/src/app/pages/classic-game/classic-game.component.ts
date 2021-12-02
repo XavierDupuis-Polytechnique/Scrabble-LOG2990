@@ -153,6 +153,20 @@ export class ClassicGameComponent {
             });
     }
 
+    openLoadingGame(): MatDialogRef<LoadingGameComponent> {
+        const loadingGameDialogConfig = new MatDialogConfig();
+        loadingGameDialogConfig.disableClose = true;
+        loadingGameDialogConfig.width = '255px';
+        const loadingGameDialog = this.dialog.open(LoadingGameComponent, loadingGameDialogConfig);
+        loadingGameDialog.afterClosed().subscribe((isCanceled) => {
+            if (isCanceled) {
+                this.gameReady$$.unsubscribe();
+                this.gameManager.stopGame();
+            }
+        });
+        return loadingGameDialog;
+    }
+
     private startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
@@ -181,20 +195,6 @@ export class ClassicGameComponent {
             });
             const loadingScreen = this.openLoadingGame();
         }
-    }
-
-    openLoadingGame(): MatDialogRef<LoadingGameComponent> {
-        const loadingGameDialogConfig = new MatDialogConfig();
-        loadingGameDialogConfig.disableClose = true;
-        loadingGameDialogConfig.width = '255px';
-        const loadingGameDialog = this.dialog.open(LoadingGameComponent, loadingGameDialogConfig);
-        loadingGameDialog.afterClosed().subscribe((isCanceled) => {
-            if (isCanceled) {
-                this.gameReady$$.unsubscribe();
-                this.gameManager.stopGame();
-            }
-        });
-        return loadingGameDialog;
     }
 
     get isSpecialGame() {
