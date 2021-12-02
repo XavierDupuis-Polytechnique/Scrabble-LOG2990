@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { CommonModule } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
