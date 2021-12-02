@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { PlayerNames } from '@app/game-logic/game/objectives/objective-loader/players-names.interface';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
 import { HalfAlphabet } from '@app/game-logic/game/objectives/objectives/half-alphabet/half-alphabet';
@@ -10,10 +11,12 @@ import { TransitionObjective } from '@app/game-logic/game/objectives/objectives/
 @Injectable({
     providedIn: 'root',
 })
-export class ObjectiveConverter {
+export class ObjectiveLoader {
     constructor(private objectiveCreator: ObjectiveCreator) {}
 
-    convertTransitionObjectives(game: SpecialOfflineGame, transitionObjectives: TransitionObjective[], userName: string, botName: string) {
+    loadObjectivesIntoGame(game: SpecialOfflineGame, transitionObjectives: TransitionObjective[], playerNames: PlayerNames) {
+        const userName = playerNames.userName;
+        const botName = playerNames.botName;
         game.privateObjectives = new Map<string, Objective[]>();
         game.publicObjectives = [];
 
