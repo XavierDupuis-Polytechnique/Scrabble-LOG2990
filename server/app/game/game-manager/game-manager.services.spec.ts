@@ -562,7 +562,7 @@ describe('GameManagerService', () => {
         const player = new Player('test01');
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
-            gameMode: GameMode.Classic,
+            gameMode: GameMode.Special,
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
@@ -571,7 +571,7 @@ describe('GameManagerService', () => {
             dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
-        service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [player] });
         expect(service.activeGames.size).to.be.equal(0);
     });
 
