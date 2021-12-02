@@ -4,7 +4,7 @@ import { FourCorners } from '@app/game/game-logic/objectives/objectives/four-cor
 import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-alphabet/half-alphabet';
 import { NineLettersWord } from '@app/game/game-logic/objectives/objectives/nine-letters-word/nine-letters-word';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
-import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
+import { HalfAlphabetProgression, TenWordsProgression, TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 import { Palindrome } from '@app/game/game-logic/objectives/objectives/palindrome/palindrome';
 import { SameWordTwice } from '@app/game/game-logic/objectives/objectives/same-word-twice/same-word-twice';
 import { TenWords } from '@app/game/game-logic/objectives/objectives/ten-words/ten-words';
@@ -50,18 +50,20 @@ export class OnlineObjectiveConverter {
 
         if (objective instanceof TenWords) {
             const wordCounts = (objective as TenWords).wordCounts;
+            const tempWordCounts: TenWordsProgression[] = [];
             wordCounts.forEach((wordCount, playerName) => {
-                translatedObjective.wordCounts = [];
-                translatedObjective.wordCounts.push({ playerName, wordCount });
+                tempWordCounts.push({ playerName, wordCount });
             });
+            translatedObjective.wordCounts = tempWordCounts;
         }
 
         if (objective instanceof HalfAlphabet) {
             const letters = (objective as HalfAlphabet).placedLetters;
+            const tempPlacedLetters:HalfAlphabetProgression[]=[];
             letters.forEach((placedLetters, playerName) => {
-                translatedObjective.placedLetters = [];
-                translatedObjective.placedLetters.push({ playerName, placedLetters: [...placedLetters] });
+                tempPlacedLetters.push({ playerName, placedLetters: [...placedLetters] });
             });
+            translatedObjective.placedLetters = tempPlacedLetters;
         }
         return translatedObjective;
     }

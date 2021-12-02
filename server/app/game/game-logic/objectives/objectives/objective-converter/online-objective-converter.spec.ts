@@ -70,7 +70,13 @@ describe('OnlineObjectiveConverter', () => {
                 owner: undefined,
                 progressions: [],
             };
-          
+            if (i === ObjectiveType.TenWords) {
+                expectedTransitionObjective.wordCounts = [];
+            }
+
+            if (i === ObjectiveType.HalfAlphabet) {
+                expectedTransitionObjective.placedLetters = [];
+            }
             expectedTransitionObjectives.push(expectedTransitionObjective);
         }
         const resultTransitionObjectives = onlineObjectiveConverter.convertObjectives(publicObjectives, privateObjectives);
