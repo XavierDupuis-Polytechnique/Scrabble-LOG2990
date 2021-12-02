@@ -4,7 +4,11 @@ import { FourCorners } from '@app/game/game-logic/objectives/objectives/four-cor
 import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-alphabet/half-alphabet';
 import { NineLettersWord } from '@app/game/game-logic/objectives/objectives/nine-letters-word/nine-letters-word';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
-import { HalfAlphabetProgression, TenWordsProgression, TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
+import {
+    HalfAlphabetProgression,
+    TenWordsProgression,
+    TransitionObjectives,
+} from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 import { Palindrome } from '@app/game/game-logic/objectives/objectives/palindrome/palindrome';
 import { SameWordTwice } from '@app/game/game-logic/objectives/objectives/same-word-twice/same-word-twice';
 import { TenWords } from '@app/game/game-logic/objectives/objectives/ten-words/ten-words';
@@ -59,7 +63,7 @@ export class OnlineObjectiveConverter {
 
         if (objective instanceof HalfAlphabet) {
             const letters = (objective as HalfAlphabet).placedLetters;
-            const tempPlacedLetters:HalfAlphabetProgression[]=[];
+            const tempPlacedLetters: HalfAlphabetProgression[] = [];
             letters.forEach((placedLetters, playerName) => {
                 tempPlacedLetters.push({ playerName, placedLetters: [...placedLetters] });
             });

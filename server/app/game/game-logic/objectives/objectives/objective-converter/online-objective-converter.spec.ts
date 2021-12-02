@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Action } from '@app/game/game-logic/actions/action';
 import { PlayerProgression } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveType } from '@app/game/game-logic/objectives/objective-creator/objective-type';
@@ -7,7 +8,11 @@ import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-al
 import { NineLettersWord } from '@app/game/game-logic/objectives/objectives/nine-letters-word/nine-letters-word';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
-import { HalfAlphabetProgression, TenWordsProgression, TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
+import {
+    HalfAlphabetProgression,
+    TenWordsProgression,
+    TransitionObjectives,
+} from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 import { ObjectiveUpdateParams } from '@app/game/game-logic/objectives/objectives/objective-update-params.interface';
 import { Palindrome } from '@app/game/game-logic/objectives/objectives/palindrome/palindrome';
 import { SameWordTwice } from '@app/game/game-logic/objectives/objectives/same-word-twice/same-word-twice';
@@ -17,12 +22,11 @@ import { TripleBonus } from '@app/game/game-logic/objectives/objectives/triple-b
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
 
-
-class ErrorObjective extends Objective{
+class ErrorObjective extends Objective {
+    // eslint-disable-next-line no-unused-vars
     protected updateProgression(action: Action, params: ObjectiveUpdateParams): void {
         return;
     }
-    
 }
 describe('OnlineObjectiveConverter', () => {
     const onlineObjectiveConverter = new OnlineObjectiveConverter();
@@ -83,63 +87,65 @@ describe('OnlineObjectiveConverter', () => {
         expect(resultTransitionObjectives).to.be.deep.equal(expectedTransitionObjectives);
     });
 
-    it("should throw error 'objective not in objective type'",()=>{
-        const unexistingObjective = new ErrorObjective(gameToken,stubObjectiveNotifier); 
+    it("should throw error 'objective not in objective type'", () => {
+        const unexistingObjective = new ErrorObjective(gameToken, stubObjectiveNotifier);
         const publicObjectives: Objective[] = [];
         const privateObjectives = new Map<string, Objective[]>();
         publicObjectives.push(unexistingObjective);
-        privateObjectives.set('p1',[unexistingObjective]);
-        expect(()=>onlineObjectiveConverter.convertObjectives(publicObjectives,privateObjectives)).to.throw('objective not in objective type');
-
+        privateObjectives.set('p1', [unexistingObjective]);
+        expect(() => onlineObjectiveConverter.convertObjectives(publicObjectives, privateObjectives)).to.throw('objective not in objective type');
     });
 
-    it('should set accurate word count',()=>{
+    it('should set accurate word count', () => {
         const publicObjectives: Objective[] = [];
         const privateObjectives = new Map<string, Objective[]>();
         const tenWords = objectives[3] as TenWords;
-        tenWords.wordCounts.set('p1',0);
-        tenWords.progressions.set('p1',0);
+        tenWords.wordCounts.set('p1', 0);
+        tenWords.progressions.set('p1', 0);
         publicObjectives.push(tenWords);
-        privateObjectives.set('p1',[tenWords]);
+        privateObjectives.set('p1', [tenWords]);
 
-        const tenWordsProgression:TenWordsProgression ={
-            wordCount:0,playerName:'p1',
-        }
-        const playerProgression:PlayerProgression = {
-            playerName:'p1',progression:0
-        }
+        const tenWordsProgression: TenWordsProgression = {
+            wordCount: 0,
+            playerName: 'p1',
+        };
+        const playerProgression: PlayerProgression = {
+            playerName: 'p1',
+            progression: 0,
+        };
         const expectedTransitionObjective: TransitionObjectives = {
             objectiveType: 3,
             name: tenWords.name,
             description: tenWords.description,
             points: tenWords.points,
             owner: undefined,
-            wordCounts:[tenWordsProgression],
+            wordCounts: [tenWordsProgression],
             progressions: [playerProgression],
         };
 
-        const  testObjective = onlineObjectiveConverter.convertObjectives(publicObjectives,privateObjectives);
+        const testObjective = onlineObjectiveConverter.convertObjectives(publicObjectives, privateObjectives);
         expect(testObjective[0]).to.deep.equal(expectedTransitionObjective);
-
     });
 
-    it('should set accurate letter placed',()=>{
+    it('should set accurate letter placed', () => {
         const publicObjectives: Objective[] = [];
         const privateObjectives = new Map<string, Objective[]>();
-        const halfAlphabetLetters =  new Set<string>();
+        const halfAlphabetLetters = new Set<string>();
         halfAlphabetLetters.add('a');
         const halfAlphabet = objectives[5] as HalfAlphabet;
-        halfAlphabet.placedLetters.set('p1',halfAlphabetLetters);
+        halfAlphabet.placedLetters.set('p1', halfAlphabetLetters);
         publicObjectives.push(halfAlphabet);
-        privateObjectives.set('p1',[halfAlphabet]);
-        halfAlphabet.progressions.set('p1',1/13);
+        privateObjectives.set('p1', [halfAlphabet]);
+        halfAlphabet.progressions.set('p1', 1 / 13);
 
-        const halfAlphabetProgression:HalfAlphabetProgression ={
-            placedLetters:['a'],playerName:'p1',
-        }
-        const playerProgression:PlayerProgression = {
-            playerName:'p1',progression:1/13
-        }
+        const halfAlphabetProgression: HalfAlphabetProgression = {
+            placedLetters: ['a'],
+            playerName: 'p1',
+        };
+        const playerProgression: PlayerProgression = {
+            playerName: 'p1',
+            progression: 1 / 13,
+        };
 
         const expectedTransitionObjective: TransitionObjectives = {
             objectiveType: 5,
@@ -147,12 +153,11 @@ describe('OnlineObjectiveConverter', () => {
             description: halfAlphabet.description,
             points: halfAlphabet.points,
             owner: undefined,
-            placedLetters:[halfAlphabetProgression],
+            placedLetters: [halfAlphabetProgression],
             progressions: [playerProgression],
         };
 
-        const  testObjective = onlineObjectiveConverter.convertObjectives(publicObjectives,privateObjectives);
+        const testObjective = onlineObjectiveConverter.convertObjectives(publicObjectives, privateObjectives);
         expect(testObjective[0]).to.deep.equal(expectedTransitionObjective);
     });
-
 });
