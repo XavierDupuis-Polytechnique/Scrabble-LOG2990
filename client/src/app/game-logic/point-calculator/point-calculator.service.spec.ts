@@ -1,5 +1,4 @@
 /* eslint-disable dot-notation */
-/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';

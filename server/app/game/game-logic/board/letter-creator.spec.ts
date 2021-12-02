@@ -1,5 +1,3 @@
-/* tslint:disable:no-unused-variable */
-
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
 import { ASCII_CODE } from '@app/game/game-logic/constants';

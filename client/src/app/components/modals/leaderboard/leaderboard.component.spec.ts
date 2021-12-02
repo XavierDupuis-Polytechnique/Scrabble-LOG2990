@@ -1,5 +1,4 @@
 /* eslint-disable dot-notation */
-/* tslint:disable:no-unused-variable */
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';

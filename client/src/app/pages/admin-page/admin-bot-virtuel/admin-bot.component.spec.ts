@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { EditBotDialogComponent } from '@app/components/modals/edit-bot-dialog/edit-bot-dialog.component';
@@ -53,7 +52,6 @@ describe('AdminbotComponent', () => {
 
     it('deleteBot should call http service', () => {
         const botMock: BotInfo = { canEdit: true, name: 'test', type: BotType.Easy };
-        // eslint-disable-next-line @typescript-eslint/ban-types
         const obs = new Observable<string>((subscribe) => {
             subscribe.next('');
         });
