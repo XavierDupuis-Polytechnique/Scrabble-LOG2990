@@ -20,11 +20,13 @@ export const DATABASE_NAME = 'scrabble';
 @Service()
 export class DatabaseService {
     private db: Db;
+    // TODO : Remove next line
     private client: MongoClient;
 
     async start(url: string = DATABASE_URL) {
         try {
             const client = await MongoClient.connect(url);
+            // TODO : Remove next line
             this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
@@ -36,11 +38,12 @@ export class DatabaseService {
         this.createBotInfoCollection();
     }
 
+    // TODO : Remove next function
     async closeConnection(): Promise<void> {
         return this.client.close();
     }
 
-    async populateLeaderboardCollection(name: string): Promise<void> {
+    private async populateLeaderboardCollection(name: string): Promise<void> {
         try {
             const defaultPopulation = name === LEADERBOARD_CLASSIC_COLLECTION ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
             if ((await this.db.collection(name).countDocuments()) === 0) {
@@ -83,7 +86,6 @@ export class DatabaseService {
             await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
             this.populateBotInfoCollection();
         } catch (error) {
-            throw Error('Data base collection creation error');
         }
     }
 
@@ -92,7 +94,6 @@ export class DatabaseService {
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
             await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
         } catch (error) {
-            throw Error('Data base collection population error');
         }
     }
 
