@@ -99,13 +99,6 @@ export class OnlineGame extends Game {
         });
     }
 
-    forfeit() {
-        if (!this.onlineSocket.socket) {
-            return;
-        }
-        this.onlineSocket.disconnect();
-    }
-
     getWinner() {
         const winners = this.winnerNames.map((name) => {
             const playerWithIndex = this.playersWithIndex.get(name);
@@ -123,6 +116,13 @@ export class OnlineGame extends Game {
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
         this.updateEndOfGame(gameState);
+    }
+
+    private forfeit() {
+        if (!this.onlineSocket.socket) {
+            return;
+        }
+        this.onlineSocket.disconnect();
     }
 
     private setupPlayersWithIndex() {

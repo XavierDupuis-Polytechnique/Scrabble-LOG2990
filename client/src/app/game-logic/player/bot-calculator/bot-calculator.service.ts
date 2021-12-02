@@ -22,7 +22,7 @@ export class BotCalculatorService {
         return { wordsPoints, totalPoints, isBingo };
     }
 
-    calculatePointsOfWord(word: Tile[]): number {
+    private calculatePointsOfWord(word: Tile[]): number {
         let sumOfWord = 0;
         let totalWordMultiplicator = 1;
         const lettersInWord = new Set(word);
@@ -34,7 +34,7 @@ export class BotCalculatorService {
         return sumOfWord;
     }
 
-    calculatePointsForEachWord(wordList: Tile[][]): WordPointsEstimation[] {
+    private calculatePointsForEachWord(wordList: Tile[][]): WordPointsEstimation[] {
         const wordPoints: WordPointsEstimation[] = wordList.map((wordTile) => {
             const word = this.tileToString(wordTile);
             const points = this.calculatePointsOfWord(wordTile);
@@ -43,7 +43,7 @@ export class BotCalculatorService {
         return wordPoints;
     }
 
-    tileToString(word: Tile[]): string {
+    private tileToString(word: Tile[]): string {
         let wordTemp = '';
         word.forEach((tile) => {
             wordTemp = wordTemp.concat(tile.letterObject.char.valueOf());

@@ -82,11 +82,6 @@ export abstract class Bot extends Player {
         return Math.floor(Math.random() * (max - min) + min);
     }
 
-    generateBotName(opponentName: string): string {
-        const generatedName = this.botNames[this.getRandomInt(this.botNames.length)];
-        return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
-    }
-
     bruteForceStart(): ValidWord[] {
         const grid = this.boardService.board.grid;
         const startingX = 0;
@@ -102,5 +97,10 @@ export abstract class Bot extends Player {
             this.botCrawler.boardCrawler(startingPosition, grid, startingDirection);
         }
         return this.validWordList;
+    }
+
+    private generateBotName(opponentName: string): string {
+        const generatedName = this.botNames[this.getRandomInt(this.botNames.length)];
+        return generatedName === opponentName ? this.generateBotName(opponentName) : generatedName;
     }
 }
