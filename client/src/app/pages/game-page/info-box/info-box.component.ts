@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 
 export const MILISECONDS_IN_MINUTE = 60000;
 export const FLOAT_TO_PERCENT = 100;
@@ -15,8 +17,13 @@ export class InfoBoxComponent implements OnInit {
     timeLeftPercent$: Observable<number | undefined>;
     info: GameInfoService;
 
-    constructor(info: GameInfoService) {
+    constructor(info: GameInfoService, private dialog: MatDialog) {
         this.info = info;
+        if (this.info.game) {
+            this.info.game.isEndOfGame$.pipe(first()).subscribe(() => {
+                this.openWinner();
+            });
+        }
     }
 
     ngOnInit() {
@@ -57,5 +64,10 @@ export class InfoBoxComponent implements OnInit {
             winnerString = winner[0].name;
         }
         return winnerString;
+    }
+
+    openWinner() {
+        const data = 'Félicitation ' + this.showWinner();
+        this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
     }
 }

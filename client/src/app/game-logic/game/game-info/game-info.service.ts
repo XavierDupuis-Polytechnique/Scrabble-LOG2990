@@ -18,7 +18,7 @@ import { Observable, Subject } from 'rxjs';
 export class GameInfoService {
     players: Player[];
     user: User;
-    private game: Game | undefined;
+    game: Game | undefined;
 
     private endTurnSubject = new Subject<void>();
     get endTurn$(): Observable<void> {
