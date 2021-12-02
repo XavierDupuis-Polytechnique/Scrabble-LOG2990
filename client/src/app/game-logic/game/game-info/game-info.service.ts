@@ -18,11 +18,15 @@ import { Observable, Subject } from 'rxjs';
 export class GameInfoService {
     players: Player[];
     user: User;
-    game: Game | undefined;
+    private game: Game | undefined;
 
     private endTurnSubject = new Subject<void>();
     get endTurn$(): Observable<void> {
         return this.endTurnSubject;
+    }
+
+    get endOfGame(){
+        return this.game?.isEndOfGame$;
     }
 
     constructor(private timer: TimerService) {}

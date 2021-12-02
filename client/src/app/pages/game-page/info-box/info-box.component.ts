@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
+import { WinnersDialogComponent } from '@app/components/modals/winners-dialog/winners-dialog.component';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
@@ -19,8 +19,8 @@ export class InfoBoxComponent implements OnInit {
 
     constructor(info: GameInfoService, private dialog: MatDialog) {
         this.info = info;
-        if (this.info.game) {
-            this.info.game.isEndOfGame$.pipe(first()).subscribe(() => {
+        if (this.info.endOfGame) {
+            this.info.endOfGame.pipe(first()).subscribe(() => {
                 this.openWinner();
             });
         }
@@ -68,6 +68,6 @@ export class InfoBoxComponent implements OnInit {
 
     openWinner() {
         const data = 'Félicitation ' + this.showWinner();
-        this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
+        this.dialog.open(WinnersDialogComponent, { disableClose: true, autoFocus: true, data });
     }
 }
