@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -68,7 +70,7 @@ describe('CommandExecuterService', () => {
             type: CommandType.Debug,
             from: ' ',
         };
-        service.execute(command);
+        service['execute'](command);
         expect(service.isDebugModeActivated).toBe(true);
     });
 
@@ -77,8 +79,8 @@ describe('CommandExecuterService', () => {
             type: CommandType.Debug,
             from: ' ',
         };
-        service.execute(command);
-        service.execute(command);
+        service['execute'](command);
+        service['execute'](command);
         expect(service.isDebugModeActivated).toBe(false);
     });
 
@@ -89,7 +91,7 @@ describe('CommandExecuterService', () => {
             { type: CommandType.Place, from: ' ' },
         ];
         for (const actionCommand of actionCommands) {
-            service.execute(actionCommand);
+            service['execute'](actionCommand);
         }
         expect(actionCompilerServiceSpy.translate.calls.count()).toBe(actionCommands.length);
     });
@@ -100,14 +102,14 @@ describe('CommandExecuterService', () => {
             { type: CommandType.Help, from: ' ' },
         ];
         for (const actionCommand of notActionCommands) {
-            service.execute(actionCommand);
+            service['execute'](actionCommand);
         }
         expect(actionCompilerServiceSpy.translate.calls.count()).toBe(0);
     });
 
     it('should call #receiveSystemMessage from messageService', () => {
         const debugCommand = { type: CommandType.Debug, from: ' ' };
-        service.execute(debugCommand);
+        service['execute'](debugCommand);
         expect(messageServiceSpy.receiveSystemMessage.calls.count()).toBe(1);
     });
 
@@ -118,7 +120,7 @@ describe('CommandExecuterService', () => {
             { type: CommandType.Place, from: ' ' },
         ];
         for (const notDebugCommand of notDebugCommands) {
-            service.execute(notDebugCommand);
+            service['execute'](notDebugCommand);
         }
         expect(messageServiceSpy.receiveSystemMessage.calls.count()).toBe(0);
     });
@@ -128,7 +130,7 @@ describe('CommandExecuterService', () => {
             from: 'asdfg',
             type: CommandType.Debug,
         };
-        service.execute(command);
+        service['execute'](command);
         service.resetDebug();
         expect(service.isDebugModeActivated).toBeFalsy();
         gameManager.stopGame();
@@ -139,7 +141,7 @@ describe('CommandExecuterService', () => {
             from: 'Tim',
             type: CommandType.Debug,
         };
-        const spy = spyOn(service, 'execute');
+        const spy = spyOn<any>(service, 'execute');
         mockParsedCommand$.next(command);
         expect(spy).toHaveBeenCalled();
     });
@@ -149,7 +151,7 @@ describe('CommandExecuterService', () => {
             from: 'Tim',
             type: CommandType.Reserve,
         };
-        service.execute(command);
+        service['execute'](command);
         expect(messageServiceSpy.receiveErrorMessage).toHaveBeenCalledWith(RESERVE_NOT_ACCESSIBLE);
     });
 
@@ -158,13 +160,13 @@ describe('CommandExecuterService', () => {
             from: 'Tim',
             type: CommandType.Debug,
         };
-        service.execute(debug);
+        service['execute'](debug);
         messageServiceSpy.receiveSystemMessage.calls.reset();
         const command = {
             from: 'Tim',
             type: CommandType.Reserve,
         };
-        service.execute(command);
+        service['execute'](command);
         expect(messageServiceSpy.receiveSystemMessage).toHaveBeenCalled();
     });
 
@@ -173,13 +175,13 @@ describe('CommandExecuterService', () => {
             from: 'Tim',
             type: CommandType.Debug,
         };
-        service.execute(debug);
+        service['execute'](debug);
         messageServiceSpy.receiveSystemMessage.calls.reset();
         const command = {
             from: 'Tim',
             type: CommandType.Reserve,
         };
-        service.execute(command);
+        service['execute'](command);
         const expectedMessage = `Reserve:${END_LINE}A : 4${END_LINE}B : 3${END_LINE}C : 1${END_LINE}`;
         // const expectedCalls: string[] = ['affichages de débogage activés', expectedMessage];
         expect(messageServiceSpy.receiveSystemMessage).toHaveBeenCalledOnceWith(expectedMessage);
@@ -189,11 +191,11 @@ describe('CommandExecuterService', () => {
         const commandReserve: Command = { type: CommandType.Reserve, from: 'test' };
         const commandDebug: Command = { type: CommandType.Debug, from: 'test' };
 
-        service.execute(commandDebug);
+        service['execute'](commandDebug);
         (Object.getOwnPropertyDescriptor(gameInfoSpy, 'isOnlineGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(true);
         (Object.getOwnPropertyDescriptor(gameInfoSpy, 'gameId')?.get as jasmine.Spy<() => string>).and.returnValue('1');
 
-        service.execute(commandReserve);
+        service['execute'](commandReserve);
         const req = mockHttpClient.expectOne('http://localhost:3000/api/servergame/letterbag?gameId=1');
         const obj = {
             A: 2,
@@ -208,7 +210,7 @@ describe('CommandExecuterService', () => {
             from: 'Tim',
             type: CommandType.Help,
         };
-        service.execute(help);
+        service['execute'](help);
         expect(messageServiceSpy.receiveSystemMessage).toHaveBeenCalled();
     });
 });

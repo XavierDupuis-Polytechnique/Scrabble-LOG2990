@@ -153,7 +153,7 @@ export class ClassicGameComponent {
             });
     }
 
-    startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
+    private startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
@@ -161,7 +161,7 @@ export class ClassicGameComponent {
         this.router.navigate(['/game']);
     }
 
-    startSoloGame() {
+    private startSoloGame() {
         this.gameReady$$?.unsubscribe();
         let gameReady$: BehaviorSubject<boolean>;
         if (this.isSpecialGame) {

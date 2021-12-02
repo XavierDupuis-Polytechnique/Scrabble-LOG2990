@@ -52,7 +52,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         });
     }
 
-    forbiddenNameValidator(): ValidatorFn {
+    private forbiddenNameValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: unknown } | null =>
             control.value !== this.playerName ? null : { forbidden: control.value };
     }

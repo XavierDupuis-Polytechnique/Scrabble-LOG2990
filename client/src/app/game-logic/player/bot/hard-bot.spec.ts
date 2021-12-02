@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
@@ -81,8 +82,8 @@ describe('HardBot', () => {
             { char: 'O', value: 1 },
         ];
         hardBot.letterRack = letters;
-        const actionSpy = spyOn(hardBot, 'actionPicker').and.callThrough();
-        spyOn(hardBot, 'getRandomInt').and.returnValue(0);
+        const actionSpy = spyOn<any>(hardBot, 'actionPicker').and.callThrough();
+        spyOn<any>(hardBot, 'getRandomInt').and.returnValue(0);
 
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);
@@ -100,8 +101,8 @@ describe('HardBot', () => {
             { char: 'A', value: 1 },
         ];
         hardBot.letterRack = letters;
-        const actionSpy = spyOn(hardBot, 'actionPicker').and.callThrough();
-        spyOn(hardBot, 'getRandomInt').and.returnValue(1);
+        const actionSpy = spyOn<any>(hardBot, 'actionPicker').and.callThrough();
+        spyOn<any>(hardBot, 'getRandomInt').and.returnValue(1);
 
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);
@@ -116,7 +117,7 @@ describe('HardBot', () => {
     it('should exchange letters because it cant play)', fakeAsync(() => {
         const letters: Letter[] = [{ char: 'A', value: 1 }];
         hardBot.letterRack = letters;
-        const exchangeSpy = spyOn(hardBot, 'exchangeAction').and.callThrough();
+        const exchangeSpy = spyOn<any>(hardBot, 'exchangeAction').and.callThrough();
 
         hardBot.setActive();
         tick(TIME_BUFFER_BEFORE_ACTION);
@@ -129,7 +130,7 @@ describe('HardBot', () => {
     it('should exchange letters because it cant play and >0 <7 letters left)', fakeAsync(() => {
         const letters: Letter[] = [{ char: 'A', value: 1 }];
         hardBot.letterRack = letters;
-        const exchangeSpy = spyOn(hardBot, 'exchangeAction').and.callThrough();
+        const exchangeSpy = spyOn<any>(hardBot, 'exchangeAction').and.callThrough();
         spyOnProperty(gameInfo, 'numberOfLettersRemaining').and.returnValue(5);
 
         hardBot.setActive();
@@ -143,7 +144,7 @@ describe('HardBot', () => {
     it('should pass because it cant play and there is no letters to draw)', fakeAsync(() => {
         const letters: Letter[] = [{ char: 'A', value: 1 }];
         hardBot.letterRack = letters;
-        const passSpy = spyOn(hardBot, 'passAction').and.callThrough();
+        const passSpy = spyOn<any>(hardBot, 'passAction').and.callThrough();
         spyOnProperty(gameInfo, 'numberOfLettersRemaining').and.returnValue(0);
 
         hardBot.setActive();

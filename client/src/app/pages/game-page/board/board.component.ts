@@ -49,14 +49,6 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         this.canvasDrawer.drawGrid(this.board, this.fontSize);
     }
 
-    setupCanvasDrawer() {
-        if (this.canvasElement) {
-            this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
-            this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
-            this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
-        }
-    }
-
     ngDoCheck() {
         if (this.canvasDrawer) {
             if (this.inputController.activeAction instanceof UIPlace) {
@@ -93,5 +85,13 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         const pos = this.canvasDrawer.coordToTilePosition(event.offsetX, event.offsetY);
         const input: UIInput = { from: this.self, type: InputType.LeftClick, args: { x: pos.indexI, y: pos.indexJ } };
         this.clickTile.emit(input);
+    }
+
+    private setupCanvasDrawer() {
+        if (this.canvasElement) {
+            this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
+            this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
+            this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
+        }
     }
 }

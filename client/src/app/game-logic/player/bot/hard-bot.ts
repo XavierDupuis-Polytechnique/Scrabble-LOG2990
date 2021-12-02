@@ -19,7 +19,7 @@ export class HardBot extends Bot {
         });
     }
 
-    actionPicker(): Action {
+    private actionPicker(): Action {
         const validWordsList = this.bruteForceStart();
         if (validWordsList.length === 0) {
             return this.exchangeAction();
@@ -29,7 +29,7 @@ export class HardBot extends Bot {
         }
     }
 
-    bestWordPicker(validWordsList: ValidWord[]): ValidWord[] {
+    private bestWordPicker(validWordsList: ValidWord[]): ValidWord[] {
         const numberOfWords = 4;
         const zeroValueWord = new ValidWord('');
         zeroValueWord.value.totalPoints = 0;
@@ -51,7 +51,7 @@ export class HardBot extends Bot {
         return this.bestWordList;
     }
 
-    playAction(pickedWord: ValidWord): Action {
+    private playAction(pickedWord: ValidWord): Action {
         const placeSetting: PlacementSetting = {
             x: pickedWord.startingTileX,
             y: pickedWord.startingTileY,
@@ -60,7 +60,7 @@ export class HardBot extends Bot {
         return this.actionCreator.createPlaceLetter(this, pickedWord.word, placeSetting);
     }
 
-    exchangeAction(): Action {
+    private exchangeAction(): Action {
         if (this.gameInfo.numberOfLettersRemaining >= RACK_LETTER_COUNT) {
             return this.actionCreator.createExchange(this, this.letterRack);
         }
@@ -75,7 +75,7 @@ export class HardBot extends Bot {
         return this.passAction();
     }
 
-    passAction(): Action {
+    private passAction(): Action {
         return this.actionCreator.createPassTurn(this);
     }
 }

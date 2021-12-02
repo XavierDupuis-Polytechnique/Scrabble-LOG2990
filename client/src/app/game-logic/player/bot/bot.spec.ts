@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
@@ -54,7 +55,7 @@ describe('Bot', () => {
         const numberOfTime = 1000;
         const opponentName = 'Jimmy';
         for (let i = 0; i < numberOfTime; i++) {
-            const botName = bot.generateBotName(opponentName);
+            const botName = bot['generateBotName'](opponentName);
             const sameName: boolean = botName === opponentName;
             expect(sameName).toBeFalsy();
         }
