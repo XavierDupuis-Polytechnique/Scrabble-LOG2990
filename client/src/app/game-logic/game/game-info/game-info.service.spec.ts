@@ -349,6 +349,7 @@ describe('GameInfoService Online Edition', () => {
 
     it('should throw when getting opponent when no players received', () => {
         expect(() => {
+            // eslint-disable-next-line no-unused-expressions
             service.opponent;
         }).toThrowError();
     });
