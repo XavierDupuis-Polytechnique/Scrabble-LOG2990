@@ -16,6 +16,7 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
     spinnerDiameter = SPINNER_DIAMETER;
     botDifficulty: string;
     isSoloStarted: boolean = false;
+
     constructor(
         private dialogRef: MatDialogRef<WaitingForPlayerComponent>,
         private dialog: MatDialog,

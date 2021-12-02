@@ -16,7 +16,16 @@ import { Service } from 'typedi';
 export class Application {
     app: express.Application;
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
-    private readonly swaggerOptions: swaggerJSDoc.Options;
+    private readonly swaggerOptions: swaggerJSDoc.Options = {
+        swaggerDefinition: {
+            openapi: '3.0.0',
+            info: {
+                title: 'Cadriciel Serveur',
+                version: '1.0.0',
+            },
+        },
+        apis: ['**/*.ts'],
+    };
 
     constructor(
         private readonly debugController: DebugController,
@@ -25,20 +34,7 @@ export class Application {
         private readonly dictionaryController: DictionaryController,
     ) {
         this.app = express();
-
-        this.swaggerOptions = {
-            swaggerDefinition: {
-                openapi: '3.0.0',
-                info: {
-                    title: 'Cadriciel Serveur',
-                    version: '1.0.0',
-                },
-            },
-            apis: ['**/*.ts'],
-        };
-
         this.config();
-
         this.bindRoutes();
     }
 

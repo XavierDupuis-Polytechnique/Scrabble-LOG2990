@@ -14,6 +14,7 @@ export class EditBotDialogComponent {
     bot: BotInfo;
     editBotInfo: BotInfo;
     isEdit: boolean = false;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: BotInfo,
         private readonly botHttpService: BotHttpService,
