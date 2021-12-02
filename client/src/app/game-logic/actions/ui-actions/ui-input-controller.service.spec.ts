@@ -152,85 +152,72 @@ describe('UIInputControllerService', () => {
     /// updateActiveAction TESTS ///
     it('should create a new UIPlace action if the activeAction is null', () => {
         service.activeComponent = InputComponent.Board;
-        const wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
     });
 
     it('should create a new UIExchange action if the activeAction is null', () => {
         service.activeComponent = InputComponent.Horse;
-        const wasActionCreated = service.updateActiveAction(InputType.RightClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
     });
 
     it('should create a new UIMove action if the activeAction is null (with click)', () => {
         service.activeComponent = InputComponent.Horse;
-        const wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
     it('should create a new UIMove action if the activeAction is null (with keypress)', () => {
         service.activeComponent = InputComponent.Horse;
-        const wasActionCreated = service.updateActiveAction(InputType.KeyPress);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.KeyPress);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
     it('should set the activeAction null if the InputComponent was "Outside"', () => {
         service.activeAction = new UIExchange(player);
         service.activeComponent = InputComponent.Outside;
-        const wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction).toBeNull();
     });
 
     it('should not create a new UIPlace action if the activeAction is already a UIPlace', () => {
         service.activeComponent = InputComponent.Board;
-        let wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
 
         service.activeComponent = InputComponent.Board;
-        wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeFalsy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
     });
 
     it('should not create a new UIExchange action if the activeAction is already a UIExchange', () => {
         service.activeComponent = InputComponent.Horse;
-        let wasActionCreated = service.updateActiveAction(InputType.RightClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
 
         service.activeComponent = InputComponent.Horse;
-        wasActionCreated = service.updateActiveAction(InputType.RightClick);
-        expect(wasActionCreated).toBeFalsy();
+        service.updateActiveAction(InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
     });
 
     it('should not create a new UIMove action if the activeAction is already a UIMove (double LeftClick)', () => {
         service.activeComponent = InputComponent.Horse;
-        let wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
 
         service.activeComponent = InputComponent.Horse;
-        wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeFalsy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
     it('should not create a new UIMove action if the activeAction is already a UIMove (LeftClick, then KeyPress)', () => {
         service.activeComponent = InputComponent.Horse;
-        let wasActionCreated = service.updateActiveAction(InputType.LeftClick);
-        expect(wasActionCreated).toBeTruthy();
+        service.updateActiveAction(InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
 
         service.activeComponent = InputComponent.Horse;
-        wasActionCreated = service.updateActiveAction(InputType.KeyPress);
-        expect(wasActionCreated).toBeFalsy();
+        service.updateActiveAction(InputType.KeyPress);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 

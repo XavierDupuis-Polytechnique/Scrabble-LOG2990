@@ -11,11 +11,11 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root',
 })
 export class OnlineChatHandlerService {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    socket: Socket | any;
+    socket: Socket;
     private newRoomMessageSubject = new Subject<ChatMessage>();
     private errorSubject = new Subject<string>();
     private sysMessageSubject = new Subject<string>();
+
     constructor(private gameInfo: GameInfoService) {}
 
     joinChatRoom(roomID: string, userName: string) {
@@ -48,7 +48,7 @@ export class OnlineChatHandlerService {
             throw Error('No socket to disconnect from room');
         }
         this.socket.close();
-        this.socket = undefined;
+        this.socket = undefined as unknown as Socket;
     }
 
     sendMessage(content: string) {
@@ -74,7 +74,7 @@ export class OnlineChatHandlerService {
         this.sysMessageSubject.next(content);
     }
 
-    get connected(): boolean {
+    get isConnected(): boolean {
         return isSocketConnected(this.socket);
     }
 

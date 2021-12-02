@@ -7,13 +7,9 @@ export class LetterBag {
 
     gameLetters: Letter[] = [];
     private letterCreator: LetterCreator = new LetterCreator();
+
     constructor() {
-        for (let letterIndex = 0; letterIndex < LetterCreator.gameLetters.length; letterIndex++) {
-            for (let count = 0; count < LetterCreator.gameLettersCount[letterIndex]; count++) {
-                const letter = LetterCreator.gameLetters[letterIndex];
-                this.gameLetters.push(this.letterCreator.createLetter(letter));
-            }
-        }
+        this.initGameLetters();
     }
 
     drawEmptyRackLetters(): Letter[] {
@@ -61,5 +57,14 @@ export class LetterBag {
 
     get isEmpty(): boolean {
         return this.gameLetters.length === 0;
+    }
+
+    private initGameLetters() {
+        for (let letterIndex = 0; letterIndex < LetterCreator.gameLetters.length; letterIndex++) {
+            for (let count = 0; count < LetterCreator.gameLettersCount[letterIndex]; count++) {
+                const letter = LetterCreator.gameLetters[letterIndex];
+                this.gameLetters.push(this.letterCreator.createLetter(letter));
+            }
+        }
     }
 }

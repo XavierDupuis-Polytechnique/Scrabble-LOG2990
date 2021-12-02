@@ -18,6 +18,7 @@ export interface BotInfo {
 })
 export class BotHttpService {
     constructor(private http: HttpClient) {}
+
     editBot(oldBot: BotInfo, newBot: BotInfo) {
         return this.http.put(`${environment.serverUrl}/botinfo`, [oldBot, newBot]);
     }

@@ -24,6 +24,7 @@ describe('GamePageComponent', () => {
     let cdRefSpy: jasmine.SpyObj<ChangeDetectorRef>;
     let uiInput: UIInput;
     let mockObservableDisconnect: Subject<void>;
+    let mockObservableForfeited: Subject<void>;
     let mockClosedModal$: Subject<void>;
     let mockInfo: jasmine.SpyObj<GameInfoService>;
     class ActionValidatorServiceMock {
@@ -59,9 +60,10 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         mockClosedModal$ = new Subject();
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$']);
+        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'forfeitGameState$']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
+        mockObservableForfeited = new Subject<void>();
         mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, DisconnectedFromServerComponent],
@@ -80,6 +82,9 @@ describe('GamePageComponent', () => {
         (
             Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'disconnectedFromServer$')?.get as jasmine.Spy<() => Observable<void>>
         ).and.returnValue(mockObservableDisconnect);
+        (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'forfeitGameState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
+            mockObservableForfeited,
+        );
 
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
@@ -140,37 +145,37 @@ describe('GamePageComponent', () => {
     });
 
     it('should open the DisconnectedModal when calling the openDisconnected method', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
         mockClosedModal$.next();
-        expect(component.dialogRef).toBeUndefined();
+        expect(component['dialogRef']).toBeUndefined();
     });
 
     it('should not open the DisconnectedModal a second time when calling the openDisconnected method if the modal is opened', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
 
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
     });
 
     it('should open the DisconnectedModal a second time when calling the openDisconnected method if the modal was closed', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(1);
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
 
         mockClosedModal$.next();
-        expect(component.dialogRef).toBeUndefined();
+        expect(component['dialogRef']).toBeUndefined();
 
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(2);
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
     });
 
     it('should open disconnected modal', () => {
@@ -192,7 +197,7 @@ describe('GamePageComponent', () => {
     });
 
     it('#isEndOfGame should work properly', () => {
-        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.throwError('error');
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
         expect(component.isEndOfGame).toBeFalse();
     });
 });

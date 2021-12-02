@@ -5,7 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderBarComponent } from '@app/components/header-bar/header-bar.component';
-import { AbandonDialogComponent } from '@app/components/modals/abandon-button/abandon-dialog.component';
+import { AbandonDialogComponent } from '@app/components/modals/abandon-dialog/abandon-dialog.component';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
@@ -22,7 +22,7 @@ import { CommandExecuterService } from '@app/game-logic/commands/command-execute
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
-import { AdminJoueurVirtuelComponent } from '@app/pages/admin-page/admin-joueur-virtuel/admin-jv.component';
+import { AdminBotComponent } from '@app/pages/admin-page/admin-bot-virtuel/admin-bot.component';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
 import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
@@ -37,7 +37,7 @@ import { HomepageComponent } from '@app/pages/homepage/homepage.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
 import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
-import { EditJvDialogComponent } from './components/modals/edit-jv-dialog/edit-jv-dialog.component';
+import { EditBotDialogComponent } from './components/modals/edit-bot-dialog/edit-bot-dialog.component';
 import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
 import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
@@ -80,8 +80,8 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         AdminPageComponent,
         EditDictDialogComponent,
         AlertDialogComponent,
-        AdminJoueurVirtuelComponent,
-        EditJvDialogComponent,
+        AdminBotComponent,
+        EditBotDialogComponent,
         AdminDropDbComponent,
         ObjectivesListComponent,
         ObjectiveComponent,

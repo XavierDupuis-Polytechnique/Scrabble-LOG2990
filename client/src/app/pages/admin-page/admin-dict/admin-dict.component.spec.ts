@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 describe('admin-dictionary component', () => {
     let component: AdminDictComponent;
@@ -12,12 +13,12 @@ describe('admin-dictionary component', () => {
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
     let matDialog: jasmine.SpyObj<MatDialog>;
     beforeEach(async () => {
-        // eslint-disable-next-line no-unused-vars
         dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['uploadDict', 'getDict', 'getDictInfoList', 'deleteDict']);
         dictHttpServiceMock.getDictInfoList.and.returnValue(of([{ title: 'test', description: 'test', canEdit: true }]));
         matDialog = jasmine.createSpyObj('MatDialog', ['open']);
         jasmine.createSpyObj('AdminDictComponent', ['ngOnInit']);
         await TestBed.configureTestingModule({
+            imports: [AppMaterialModule],
             declarations: [AdminDictComponent],
             providers: [
                 { provide: DictHttpService, useValue: dictHttpServiceMock },
@@ -72,5 +73,19 @@ describe('admin-dictionary component', () => {
         dictHttpServiceMock.deleteDict.and.returnValue(of(''));
         component.deleteDict(dictInfoMock);
         expect(dictHttpServiceMock.deleteDict).toHaveBeenCalledWith(dictInfoMock.title);
+    });
+
+    it('deleteDict should update dict if error', () => {
+        dictHttpServiceMock.deleteDict.and.returnValue(throwError('error'));
+
+        component.deleteDict({} as unknown as DictInfo);
+        expect(dictHttpServiceMock.getDictInfoList).toHaveBeenCalled();
+    });
+
+    it('updateDictMap should open dialog if error', () => {
+        dictHttpServiceMock.getDictInfoList.and.returnValue(throwError('error'));
+        // eslint-disable-next-line dot-notation
+        component['updateDictMap']();
+        expect(matDialog.open).toHaveBeenCalled();
     });
 });

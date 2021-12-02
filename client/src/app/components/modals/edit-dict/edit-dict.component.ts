@@ -16,6 +16,7 @@ export class EditDictDialogComponent {
     tempDict: DictInfo;
 
     isEditedCorrectly = true;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: DictInfo,
         public dialogRef: MatDialogRef<EditDictDialogComponent>,
@@ -38,7 +39,8 @@ export class EditDictDialogComponent {
                     this.close();
                     return;
                 }
-                this.errorModal('Le titre du dictionnaire est déjà utilisé par un autre dictionnaire');
+                this.errorModal(`Le titre du dictionnaire est déjà utilisé par un autre dictionnaire ou n'existe pas dans la base de données.
+                Veuillez rafraichir la page pour obtenir la liste la plus récente des dictionnaires`);
                 this.isEditedCorrectly = false;
             },
             (error: HttpErrorResponse) => {

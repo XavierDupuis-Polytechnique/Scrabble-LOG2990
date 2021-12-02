@@ -4,11 +4,13 @@
 /* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
-import { DEFAULT_TIME_PER_TURN } from '@app/game-logic/constants';
+import { DEFAULT_TIME_PER_TURN, EMPTY_CHAR, NOT_FOUND } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
+import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
+import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -81,18 +83,12 @@ describe('GameInfoService', () => {
         }).toThrowError('No Players in GameInfo');
     });
 
-    it('should throw Error for numberOfPlayers if no players were received', () => {
-        expect(() => {
-            const n = service.numberOfPlayers;
-            n.toString();
-        }).toThrowError('No Players in GameInfo');
+    it('should return -1 for numberOfPlayers if there are no players', () => {
+        expect(service.numberOfPlayers).toBe(NOT_FOUND);
     });
 
-    it('should throw Error for numberOfLettersRemaining if no game was received', () => {
-        expect(() => {
-            const n = service.numberOfLettersRemaining;
-            n.toString();
-        }).toThrowError('No Game in GameInfo');
+    it('should return -1 for numberOfLettersRemaining if there is no game', () => {
+        expect(service.numberOfLettersRemaining).toBe(NOT_FOUND);
     });
 
     it('should throw Error if no game was received on letterOcurrence call', () => {
@@ -178,7 +174,7 @@ describe('GameInfoService', () => {
     it('should get the gameId offline', () => {
         service.receiveGame(game);
         const result = service.gameId;
-        const expected = '';
+        const expected = EMPTY_CHAR;
         expect(result).toEqual(expected);
     });
 
@@ -198,25 +194,17 @@ describe('GameInfoService', () => {
         expect(service.timeLeftPercentForTurn).toBeInstanceOf(Observable);
     });
 
-    it('winner should throw error when no game', () => {
-        expect(() => {
-            // eslint-disable-next-line no-unused-expressions
-            service.winner;
-        }).toThrow();
+    it('should return empty array for winner when no game', () => {
+        expect(service.winner).toEqual([]);
     });
 
-    it('gameID should throw when there is no game', () => {
-        expect(() => {
-            // eslint-disable-next-line no-unused-expressions
-            service.gameId;
-        }).toThrow();
+    it('should return empty string for gameID when there is no game', () => {
+        expect(service.gameId).toBe(EMPTY_CHAR);
     });
 
-    it('private objective should throw when no game', () => {
-        expect(() => {
-            // eslint-disable-next-line no-unused-expressions
-            service.getPrivateObjectives(service.user.name);
-        }).toThrow();
+    it('should return empty array for private objective when no game', () => {
+        service.receiveUser(game.players[0]);
+        expect(service.getPrivateObjectives(service.user.name)).toEqual([]);
     });
 
     it('should return isSpecial game properly', () => {
@@ -262,11 +250,8 @@ describe('GameInfoService', () => {
         expect(service.getPrivateObjectives(user.name).length).toBe(0);
     });
 
-    it('should throw when getting public objective when no game', () => {
-        expect(() => {
-            // eslint-disable-next-line no-unused-expressions
-            service.publicObjectives;
-        }).toThrow();
+    it('should return empty array for public objectives when no game', () => {
+        expect(service.publicObjectives).toEqual([]);
     });
 });
 
@@ -275,8 +260,9 @@ describe('GameInfoService Online Edition', () => {
     let onlineGame: OnlineGame;
     let timer: TimerService;
     let board: BoardService;
+    let specialOnlineGame: SpecialOnlineGame;
     const leaderboardServiceMock = jasmine.createSpyObj('LeaderboardService', ['updateLeaderboard']);
-
+    const objectiveCreatorMock = jasmine.createSpyObj(ObjectiveCreator, ['createObjective']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: LeaderboardService, useValue: leaderboardServiceMock }],
@@ -293,6 +279,17 @@ describe('GameInfoService Online Edition', () => {
             new GameSocketHandlerService(),
             board,
             TestBed.inject(OnlineActionCompilerService),
+        );
+
+        specialOnlineGame = new SpecialOnlineGame(
+            '0',
+            DEFAULT_TIME_PER_TURN,
+            'QWERTY',
+            timer,
+            new GameSocketHandlerService(),
+            board,
+            TestBed.inject(OnlineActionCompilerService),
+            objectiveCreatorMock,
         );
         onlineGame.players = [new User('p1'), new User('p2')];
     });
@@ -342,14 +339,33 @@ describe('GameInfoService Online Edition', () => {
         expect(result).toEqual(expected);
     });
 
-    it('#isEndGame should throw when there is no game', () => {
-        expect(() => {
-            // eslint-disable-next-line no-unused-expressions
-            service.isEndOfGame;
-        }).toThrow();
+    it('should return false for isEndOfGame when there is no game', () => {
+        expect(service.isEndOfGame).toBeFalsy();
     });
 
     it('#is special game should return false when there is no game', () => {
         expect(service.isSpecialGame).toBeFalse();
+    });
+
+    it('should throw when getting opponent when no players received', () => {
+        expect(() => {
+            // eslint-disable-next-line no-unused-expressions
+            service.opponent;
+        }).toThrowError();
+    });
+
+    it('should get opponent properly', () => {
+        const p1 = new User('p1');
+        const p2 = new User('p2');
+        service.players = [p1, p2];
+        service.receiveUser(p1);
+        expect(service.opponent).toBe(p2);
+        service.receiveUser(p2);
+        expect(service.opponent).toBe(p1);
+    });
+
+    it('should get is special game properly when online', () => {
+        service.receiveGame(specialOnlineGame);
+        expect(service.isSpecialGame).toBeTrue();
     });
 });

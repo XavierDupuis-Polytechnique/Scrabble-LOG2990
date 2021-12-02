@@ -8,7 +8,7 @@ import { BotMessagesService } from '@app/game-logic/player/bot-message/bot-messa
 import { Bot } from '@app/game-logic/player/bot/bot';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { BotHttpService } from '@app/services/jv-http.service';
+import { BotHttpService, BotType } from '@app/services/bot-http.service';
 import { EasyBot } from './easy-bot';
 import { HardBot } from './hard-bot';
 
@@ -27,6 +27,7 @@ export class BotCreatorService {
         private actionFactory: ActionCreatorService,
         private botHttpService: BotHttpService,
     ) {}
+
     createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
             return new HardBot(
@@ -40,6 +41,7 @@ export class BotCreatorService {
                 this.commandExecuter,
                 this.actionFactory,
                 this.botHttpService,
+                BotType.Expert,
             );
         } else {
             return new EasyBot(
@@ -53,6 +55,7 @@ export class BotCreatorService {
                 this.commandExecuter,
                 this.actionFactory,
                 this.botHttpService,
+                BotType.Easy,
             );
         }
     }

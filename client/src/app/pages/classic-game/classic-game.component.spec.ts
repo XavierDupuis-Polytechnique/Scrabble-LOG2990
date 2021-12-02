@@ -140,6 +140,7 @@ describe('ClassicGameComponent', () => {
         spyOn(router, 'navigate');
         component.startSoloGame();
         expect(gameManagerSpy.createGame).toHaveBeenCalled();
+        ready$.next(true);
         expect(router.navigate).toHaveBeenCalled();
     });
 

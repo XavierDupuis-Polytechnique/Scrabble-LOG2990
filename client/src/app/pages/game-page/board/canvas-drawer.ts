@@ -22,9 +22,6 @@ enum BonusType {
     WordBonus,
 }
 export class CanvasDrawer {
-    canvas: CanvasRenderingContext2D;
-    width: number;
-    height: number;
     fontSize = 20;
     private tileSize: number;
     private scale: number = 0.5;
@@ -35,10 +32,7 @@ export class CanvasDrawer {
     private indicatorPos: Vec2 = { x: -1, y: -1 };
     private indicatorDir: Direction;
 
-    constructor(canvasContext: CanvasRenderingContext2D, w: number, h: number) {
-        this.canvas = canvasContext;
-        this.width = w;
-        this.height = h;
+    constructor(public canvas: CanvasRenderingContext2D, public width: number, public height: number) {
         this.canvas.lineWidth = 1;
         this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 17) / 16;
         this.offset = this.tileSize + this.borderWidth;
@@ -68,7 +62,7 @@ export class CanvasDrawer {
             for (let j = 0; j < board.grid.length; j++) {
                 if (board.grid[i][j].letterObject.char !== ' ') {
                     this.drawTile(board.grid[i][j].letterObject.char, board.grid[i][j].letterObject.value, i, j);
-                    if (board.grid[i][j].letterObject.isTemp === true) {
+                    if (board.grid[i][j].letterObject.isTemp) {
                         this.drawHighlight(j, i);
                     }
                 } else if (board.grid[i][j].letterMultiplicator !== 1) {
@@ -202,14 +196,16 @@ export class CanvasDrawer {
             s = 'Lettre';
             if (mul === 2) {
                 this.canvas.fillStyle = DOUBLE_BONUS_LETTER;
-            } else if (mul === 3) {
+            }
+            if (mul === 3) {
                 this.canvas.fillStyle = TRIPLE_BONUS_LETTER;
             }
         } else {
             s = 'Mot';
             if (mul === 2) {
                 this.canvas.fillStyle = DOUBLE_BONUS_WORD;
-            } else if (mul === 3) {
+            }
+            if (mul === 3) {
                 this.canvas.fillStyle = TRIPLE_BONUS_WORD;
             }
         }

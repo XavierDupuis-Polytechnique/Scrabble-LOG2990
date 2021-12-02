@@ -14,8 +14,7 @@ export class NewOnlineGameSocketHandler {
     startGame$ = new BehaviorSubject<OnlineGameSettings | undefined>(undefined);
     isDisconnected$ = new Subject<boolean>();
     error$ = new Subject<string>();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    socket: Socket | any;
+    socket: Socket;
 
     resetGameToken() {
         this.startGame$.next(undefined);

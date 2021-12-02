@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
-import { EditJvDialogComponent } from '@app/components/modals/edit-jv-dialog/edit-jv-dialog.component';
-import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
+import { EditBotDialogComponent } from '@app/components/modals/edit-bot-dialog/edit-bot-dialog.component';
+import { BotHttpService, BotInfo } from '@app/services/bot-http.service';
 
 @Component({
-    selector: 'app-admin-jv',
-    templateUrl: './admin-jv.component.html',
-    styleUrls: ['./admin-jv.component.scss'],
+    selector: 'app-admin-bot',
+    templateUrl: './admin-bot.component.html',
+    styleUrls: ['./admin-bot.component.scss'],
 })
-export class AdminJoueurVirtuelComponent implements OnInit {
+export class AdminBotComponent implements OnInit {
     botDataInfo: BotInfo[];
     dataSource: BotInfo[];
     botDisplayedColumns: string[] = ['name', 'type', 'edit', 'delete'];
@@ -22,7 +22,7 @@ export class AdminJoueurVirtuelComponent implements OnInit {
 
     showUpdateMenu(bot: BotInfo): void {
         this.dialog
-            .open(EditJvDialogComponent, {
+            .open(EditBotDialogComponent, {
                 width: '250px',
                 data: bot,
             })
@@ -34,7 +34,7 @@ export class AdminJoueurVirtuelComponent implements OnInit {
 
     addBot(): void {
         this.dialog
-            .open(EditJvDialogComponent, {
+            .open(EditBotDialogComponent, {
                 width: '250px',
                 data: { dialogBot: {}, isEdit: false },
             })
@@ -58,17 +58,15 @@ export class AdminJoueurVirtuelComponent implements OnInit {
                 this.dataSource = [...this.botDataInfo];
             },
             () => {
-                if (!this.dialog.getDialogById('404')) {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '250px',
-                        data: {
-                            message: 'Le connection avec le serveur a échoué',
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                        id: '404',
-                    });
-                }
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: {
+                        message: 'Le connection avec le serveur a échoué pour les joueurs virtuels',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                    id: '404',
+                });
             },
         );
     }

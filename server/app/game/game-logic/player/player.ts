@@ -8,13 +8,10 @@ export class Player {
     action$: Subject<Action> = new Subject();
 
     points: number = 0;
-    name: string = '';
     isActive: boolean;
     letterRack: Letter[] = [];
 
-    constructor(name: string) {
-        this.name = name;
-    }
+    constructor(public name: string) {}
 
     play(action: Action) {
         this.action$.next(action);

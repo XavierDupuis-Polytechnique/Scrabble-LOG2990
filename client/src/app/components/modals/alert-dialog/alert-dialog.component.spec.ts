@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog, MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AppMaterialModule } from '@app/modules/material.module';
 import { AlertDialogComponent } from './alert-dialog.component';
 
 describe('AlertDialogComponent', () => {
@@ -9,7 +10,7 @@ describe('AlertDialogComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [AlertDialogComponent],
-            imports: [MatDialogModule],
+            imports: [AppMaterialModule],
             providers: [
                 { provide: MatDialog, useValue: matDialog },
                 { provide: MAT_DIALOG_DATA, useValue: String },

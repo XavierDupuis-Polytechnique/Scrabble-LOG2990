@@ -5,7 +5,14 @@ import { ActionValidatorService } from '@app/game-logic/actions/action-validator
 import { ActionCompilerService } from '@app/game-logic/commands/action-compiler/action-compiler.service';
 import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
-import { DEBUG_MESSAGE_ACTIVATED, DEBUG_MESSAGE_DEACTIVATED, END_LINE, HELP, RESERVE_NOT_ACCESSIBLE } from '@app/game-logic/constants';
+import {
+    DEBUG_MESSAGE_ACTIVATED,
+    DEBUG_MESSAGE_DEACTIVATED,
+    END_LINE,
+    ERROR_GET_REQUEST_DEBUG,
+    HELP,
+    RESERVE_NOT_ACCESSIBLE,
+} from '@app/game-logic/constants';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { environment } from 'src/environments/environment';
@@ -59,8 +66,9 @@ export class CommandExecuterService {
             try {
                 const action = this.actionCompilerService.translate(command);
                 this.sendAction(action);
-                // eslint-disable-next-line no-empty
-            } catch (e) {}
+            } catch (e) {
+                return;
+            }
         }
     }
     private executeReserve() {
@@ -82,16 +90,21 @@ export class CommandExecuterService {
     }
 
     private showLetterBagOnline() {
-        this.http.get(`${environment.serverUrl}/servergame/letterbag?gameId=${this.gameInfo.gameId}`).subscribe((data) => {
-            const letterOccurences = Object.entries(data);
-            let stringOccurences = '';
-            for (const letterOccurence of letterOccurences) {
-                const letter = letterOccurence[0];
-                const occurence = letterOccurence[1];
-                stringOccurences = stringOccurences.concat(`${letter} : ${occurence}${END_LINE}`);
-            }
-            this.messageService.receiveSystemMessage(`Reserve:${END_LINE}${stringOccurences}`);
-        });
+        this.http.get(`${environment.serverUrl}/servergame/letterbag?gameId=${this.gameInfo.gameId}`).subscribe(
+            (data) => {
+                const letterOccurences = Object.entries(data);
+                let stringOccurences = '';
+                for (const letterOccurence of letterOccurences) {
+                    const letter = letterOccurence[0];
+                    const occurence = letterOccurence[1];
+                    stringOccurences = stringOccurences.concat(`${letter} : ${occurence}${END_LINE}`);
+                }
+                this.messageService.receiveSystemMessage(`Reserve:${END_LINE}${stringOccurences}`);
+            },
+            () => {
+                this.messageService.receiveSystemMessage(ERROR_GET_REQUEST_DEBUG);
+            },
+        );
     }
 
     private executeDebug() {

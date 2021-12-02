@@ -59,4 +59,10 @@ describe('ObjectivesListComponent', () => {
     it('should get opponent private objectives properly', () => {
         expect(component.opponentPrivateObjectives.length).toEqual(1);
     });
+
+    it('should get opponent private objectives properly', () => {
+        expect(component.isOwnedByOpponent).toBeFalsy();
+        component.opponentPrivateObjectives[0].owner = mockGameInfo.opponent.name;
+        expect(component.isOwnedByOpponent).toBeTruthy();
+    });
 });

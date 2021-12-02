@@ -65,7 +65,7 @@ describe('JoinOnlineGameComponent', () => {
         const bonus = dom.querySelectorAll('mat-label')[1];
         expect(bonus?.innerHTML).toBe('Bonus aléatoire ');
         component.data.randomBonus = true;
-        expect(component.randomBonusType).toBe('Activé');
+        expect(component.randomBonusType).toBe('est activé');
     });
 
     it('cancel', () => {
@@ -88,7 +88,8 @@ describe('JoinOnlineGameComponent', () => {
     it('startGame not responsive if second player name is playerName', () => {
         const dom = fixture.nativeElement as HTMLElement;
         const startGameButton = dom.querySelectorAll('button')[1];
-        component.playerName = 'Simon';
+        // eslint-disable-next-line dot-notation
+        component['playerName'] = 'Simon';
         component.oppName.setValue('Simon');
         component.oppName.updateValueAndValidity();
         fixture.detectChanges();

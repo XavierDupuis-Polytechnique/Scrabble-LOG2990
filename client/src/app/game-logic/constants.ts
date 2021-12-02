@@ -4,8 +4,8 @@ export const BOARD_MIN_POSITION = 0;
 export const BOARD_MAX_POSITION = BOARD_DIMENSION - 1;
 export const JOKER_CHAR = '*';
 export const EMPTY_CHAR = ' ';
-export const CHARACTER_V = 'v'.charCodeAt(0);
-export const CHARACTER_H = 'h'.charCodeAt(0);
+export const CHARACTER_V = 'v';
+export const CHARACTER_H = 'h';
 export const MIN_PLACE_LETTER_ARG_SIZE = 3;
 export const MAX_PLACE_LETTER_ARG_SIZE = 4;
 export const TIME_FOR_REVERT = 3000;
@@ -40,6 +40,7 @@ export const HELP =
     'Affiche les mots alternatifs que le joueur virtuel aurait pu placer.\\n' +
     '#!réserve# (!debug doit être activé)\\n Affiche la fréquence des lettres restantes de la réserve. \\n' +
     '#!aide# \\n Affiche la liste des commandes disponibles.';
+export const ERROR_GET_REQUEST_DEBUG = 'Échec de la commande';
 export const ASCII_CODE = 65;
 export const TIMER_STEP = 100;
 export const BACKSPACE = 'Backspace';
@@ -70,3 +71,4 @@ export const TEN_WORDS_NUMBER_OF_WORDS_TO_PLACE = 10;
 export const THREE_SAME_LETTERS_NUMBER_OF_OCCURENCES = 3;
 export const TRIPLE_BONUS_NUMBER_OF_BONUS = 3;
 export const HIGHSCORES_TO_DISPLAY = 5;
+export const NOT_ONLY_SPACE_RGX = new RegExp('.*[^ ].*');

@@ -2,22 +2,24 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
-import { BotHttpService, BotInfo } from '@app/services/jv-http.service';
+import { NOT_ONLY_SPACE_RGX } from '@app/game-logic/constants';
+import { BotHttpService, BotInfo } from '@app/services/bot-http.service';
 
 @Component({
-    selector: 'app-edit-jv-dialog',
-    templateUrl: './edit-jv-dialog.component.html',
-    styleUrls: ['./edit-jv-dialog.component.scss'],
+    selector: 'app-edit-bot-dialog',
+    templateUrl: './edit-bot-dialog.component.html',
+    styleUrls: ['./edit-bot-dialog.component.scss'],
 })
-export class EditJvDialogComponent {
+export class EditBotDialogComponent {
     bot: BotInfo;
     editBotInfo: BotInfo;
     isEdit: boolean = false;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: BotInfo,
         private readonly botHttpService: BotHttpService,
         private dialog: MatDialog,
-        private dialogRef: MatDialogRef<EditJvDialogComponent>,
+        private dialogRef: MatDialogRef<EditBotDialogComponent>,
     ) {
         this.bot = { name: data.name, type: data.type, canEdit: data.canEdit };
         this.editBotInfo = { name: data.name, type: data.type, canEdit: data.canEdit };
@@ -69,5 +71,9 @@ export class EditJvDialogComponent {
                 });
             } else this.dialogRef.close();
         });
+    }
+
+    get isValuesValid() {
+        return this.bot.name && this.bot.type && NOT_ONLY_SPACE_RGX.test(this.bot.name);
     }
 }

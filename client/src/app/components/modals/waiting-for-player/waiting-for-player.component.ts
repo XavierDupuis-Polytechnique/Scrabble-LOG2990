@@ -1,5 +1,5 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AfterContentChecked, ChangeDetectorRef, Component } from '@angular/core';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { ConvertToSoloFormComponent } from '@app/components/modals/convert-to-solo-form/convert-to-solo-form.component';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { Observable } from 'rxjs';
@@ -16,8 +16,8 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
     spinnerDiameter = SPINNER_DIAMETER;
     botDifficulty: string;
     isSoloStarted: boolean = false;
+
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: string,
         private dialogRef: MatDialogRef<WaitingForPlayerComponent>,
         private dialog: MatDialog,
         private cdref: ChangeDetectorRef,

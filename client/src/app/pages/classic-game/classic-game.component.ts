@@ -27,6 +27,7 @@ export class ClassicGameComponent {
     gameSettings: GameSettings;
     startGame$$: Subscription;
     gameMode = GameMode.Classic;
+    gameReady$$: Subscription;
 
     constructor(
         private router: Router,
@@ -160,17 +161,20 @@ export class ClassicGameComponent {
     }
 
     startSoloGame() {
+        this.gameReady$$?.unsubscribe();
         let gameReady$: BehaviorSubject<boolean>;
         if (this.isSpecialGame) {
             gameReady$ = this.gameManager.createSpecialGame(this.gameSettings);
         } else {
             gameReady$ = this.gameManager.createGame(this.gameSettings);
         }
-
         if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
         } else {
-            gameReady$.subscribe(() => {
+            this.gameReady$$ = gameReady$.subscribe((gameReady: boolean) => {
+                if (!gameReady) {
+                    return;
+                }
                 this.router.navigate(['/game']);
             });
         }

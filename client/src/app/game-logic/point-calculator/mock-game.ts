@@ -28,6 +28,7 @@ export class MockGame extends OfflineGame {
         this.players = [this.activePlayer, this.otherPlayer];
         this.board = boardService.board;
     }
+
     getActivePlayer() {
         return this.activePlayer;
     }

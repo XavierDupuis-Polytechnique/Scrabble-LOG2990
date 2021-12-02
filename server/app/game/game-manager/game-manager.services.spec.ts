@@ -558,7 +558,7 @@ describe('GameManagerService', () => {
         expect(service.activeGames.size).to.be.equal(0);
     });
 
-    it('should update leaderboard when it finishes on forfeit', () => {
+    it('should not update leaderboard when it finishes on forfeit', () => {
         const player = new Player('test01');
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
@@ -574,4 +574,39 @@ describe('GameManagerService', () => {
         service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });
         expect(service.activeGames.size).to.be.equal(0);
     });
+
+    // it('should create appropriate transition objectives', () => {
+    //     const testObjectives = new Set<string>();
+    //     service.lastGameState$.subscribe((transitionObjectives) => {
+    //         (transitionObjectives.gameState as ForfeitedGameSate).objectives?.forEach((objectives) => testObjectives.add(objectives.name));
+    //     });
+    //     const gameToken = '1';
+    //     const playerName = 'test1';
+    //     const opponentName = 'test2';
+    //     const gameMode = GameMode.Special;
+    //     const gameSettings: OnlineGameSettings = {
+    //         id: gameToken,
+    //         timePerTurn: 60000,
+    //         randomBonus: false,
+    //         playerName,
+    //         opponentName,
+    //         gameMode,
+    //     };
+
+    //     service.createGame(gameToken, gameSettings);
+    //     const userAuth: UserAuth = {
+    //         gameToken: '1',
+    //         playerName: opponentName,
+    //     };
+    //     const userId1 = 'abc';
+    //     service.addPlayerToGame(userId1, userAuth);
+    //     const specialGame = service.activeGames.get(gameToken) as SpecialServerGame;
+    //     const privateobjectives = specialGame.privateObjectives.get(opponentName);
+    //     const publicObjectives = specialGame.publicObjectives;
+    //     const allObjectives = new Set<string>();
+    //     privateobjectives?.forEach((objective) => allObjectives.add(objective.name));
+    //     publicObjectives?.forEach((objective) => allObjectives.add(objective.name));
+    //     service.removePlayerFromGame(userId1);
+    //     expect(allObjectives).to.equal(testObjectives);
+    // });
 });

@@ -1,4 +1,4 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
@@ -21,7 +21,7 @@ const NO_WHITE_SPACE_RGX = /^\S*$/;
     templateUrl: './new-solo-game-form.component.html',
     styleUrls: ['./new-solo-game-form.component.scss'],
 })
-export class NewSoloGameFormComponent implements AfterContentChecked {
+export class NewSoloGameFormComponent implements AfterContentChecked, OnInit {
     soloGameSettingsForm = new FormGroup({
         playerName: new FormControl('', [
             Validators.required,
@@ -50,11 +50,9 @@ export class NewSoloGameFormComponent implements AfterContentChecked {
         private dialogRef: MatDialogRef<NewSoloGameFormComponent>,
         private cdref: ChangeDetectorRef,
         private dictHttpService: DictHttpService,
-    ) {
-        this.onInit();
-    }
+    ) {}
 
-    onInit() {
+    ngOnInit() {
         this.dictHttpService.getDictInfoList().subscribe((dictList) => {
             this.dictList = dictList as DictInfo[];
         });

@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { NOT_ONLY_SPACE_RGX } from '@app/game-logic/constants';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { InputComponent, InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 import { Message } from '@app/game-logic/messages/message.interface';
@@ -7,7 +8,6 @@ import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
 import { NewlinePipe } from '@app/pipes/newline-pipe/newline.pipe';
 import { Observable } from 'rxjs';
 
-const NOT_ONLY_SPACE_RGX = new RegExp('.*[^ ].*');
 const MAX_MESSAGE_LENGTH = 512;
 
 @Component({
@@ -42,15 +42,13 @@ export class ChatBoxComponent implements AfterViewInit {
     }
 
     sendMessage() {
-        if (!this.messageValid) {
+        const content = this.messageContent;
+        if (!this.isMessageValid(content)) {
             return;
         }
-
-        const content = this.messageContent;
         const playerName = this.gameInfo.user.name;
         this.messageService.receiveMessagePlayer(playerName, content);
 
-        // this.messageForm.reset();
         this.resetMessageContent();
         this.cdRef.detectChanges();
         this.scrollDownChat();
@@ -64,11 +62,11 @@ export class ChatBoxComponent implements AfterViewInit {
         return this.messageService.messages$;
     }
 
-    get messageValid(): boolean {
-        if (this.messageContent === undefined) {
+    isMessageValid(messageContent: string): boolean {
+        if (messageContent === undefined) {
             return false;
         }
-        const content = this.messageContent;
+        const content = messageContent;
         return content.length !== 0 && content.length <= MAX_MESSAGE_LENGTH && NOT_ONLY_SPACE_RGX.test(content);
     }
 
