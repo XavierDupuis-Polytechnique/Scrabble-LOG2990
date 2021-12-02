@@ -558,7 +558,7 @@ describe('GameManagerService', () => {
         expect(service.activeGames.size).to.be.equal(0);
     });
 
-    it('should update leaderboard when it finishes on forfeit', () => {
+    it('should not update leaderboard when it finishes on forfeit', () => {
         const player = new Player('test01');
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
