@@ -27,6 +27,7 @@ export class BotCreatorService {
         private actionFactory: ActionCreatorService,
         private botHttpService: BotHttpService,
     ) {}
+
     createBot(playerName: string, botDifficulty: string): Bot {
         if (botDifficulty === 'hard') {
             return new HardBot(

@@ -14,6 +14,7 @@ import { DictHttpService } from '@app/services/dict-http.service';
 
 import { BehaviorSubject } from 'rxjs';
 import data from 'src/assets/dictionary.json';
+
 @Injectable({
     providedIn: 'root',
 })

@@ -101,15 +101,7 @@ export class Board {
     grid: Tile[][];
 
     constructor(public randomBonus: boolean = false) {
-        this.grid = [];
-        for (let i = 0; i < BOARD_DIMENSION; i++) {
-            this.grid[i] = [];
-            for (let j = 0; j < BOARD_DIMENSION; j++) {
-                this.grid[i][j] = new Tile();
-                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
-            }
-        }
-        this.generateMultiplicators(randomBonus);
+        this.initGrid(randomBonus);
     }
 
     hasNeighbour(x: number, y: number): boolean {
@@ -134,6 +126,18 @@ export class Board {
             }
         }
         return false;
+    }
+
+    private initGrid(randomBonus: boolean) {
+        this.grid = [];
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
+            this.grid[i] = [];
+            for (let j = 0; j < BOARD_DIMENSION; j++) {
+                this.grid[i][j] = new Tile();
+                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
+            }
+        }
+        this.generateMultiplicators(randomBonus);
     }
 
     private randomMultiplicators(): BoardSettingPosition[] {

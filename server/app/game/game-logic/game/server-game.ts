@@ -26,7 +26,7 @@ export class ServerGame {
     forfeitedGameState$ = new Subject<ForfeitedGameState>();
     isEnded$ = new Subject<undefined>();
     endReason: EndOfGameReason;
-    // Checkez ca
+    // TODO Checkez ca
     get lastGameState() {
         return this.forfeitedGameState$;
     }

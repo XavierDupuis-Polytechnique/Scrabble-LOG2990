@@ -14,7 +14,7 @@ import { Service } from 'typedi';
 export class WordSearcher {
     letterCreator = new LetterCreator();
 
-    constructor(public dictionaryService: DictionaryService) {}
+    constructor(private dictionaryService: DictionaryService) {}
 
     listOfValidWord(action: PlaceLetter, grid: Tile[][], gameToken: string): Word[] {
         const listOfValidWord: Word[] = [];
