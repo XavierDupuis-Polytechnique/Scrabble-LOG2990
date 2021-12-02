@@ -57,6 +57,15 @@ export class GameInfoService {
         return this.players[index].points;
     }
 
+    getPrivateObjectives(playerName: string): Objective[] {
+        if (!this.game || !this.user) {
+            return [];
+        }
+        const specialGame = this.game as SpecialGame;
+        const privateObjectives = specialGame.privateObjectives.get(playerName);
+        return privateObjectives ? privateObjectives : [];
+    }
+
     get opponent(): Player {
         if (!this.players) {
             throw new Error('No Players in GameInfo');
@@ -116,15 +125,6 @@ export class GameInfoService {
 
     get isSpecialGame(): boolean {
         return this.game ? this.game instanceof SpecialOfflineGame || this.game instanceof SpecialOnlineGame : false;
-    }
-
-    getPrivateObjectives(playerName: string): Objective[] {
-        if (!this.game || !this.user) {
-            return [];
-        }
-        const specialGame = this.game as SpecialGame;
-        const privateObjectives = specialGame.privateObjectives.get(playerName);
-        return privateObjectives ? privateObjectives : [];
     }
 
     get publicObjectives(): Objective[] {

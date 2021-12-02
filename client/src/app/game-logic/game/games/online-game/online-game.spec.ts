@@ -113,7 +113,7 @@ describe('OnlineGame', () => {
         const forfeitSpy = spyOn(gameSocketHandlerService, 'disconnect').and.callFake(() => {
             return;
         });
-        onlineGame.forfeit();
+        onlineGame['forfeit']();
         expect(forfeitSpy).toHaveBeenCalled();
     });
 
@@ -122,7 +122,7 @@ describe('OnlineGame', () => {
         const forfeitSpy = spyOn(gameSocketHandlerService, 'disconnect').and.callFake(() => {
             return;
         });
-        onlineGame.forfeit();
+        onlineGame['forfeit']();
         expect(forfeitSpy).not.toHaveBeenCalled();
     });
 

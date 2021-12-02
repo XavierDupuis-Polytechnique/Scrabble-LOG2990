@@ -7,6 +7,7 @@ export class ExchangeLetter extends Action {
     constructor(player: Player, readonly lettersToExchange: Letter[]) {
         super(player);
     }
+
     protected perform(game: ServerGame) {
         const lettersFromBag: Letter[] = game.letterBag.drawGameLetters(this.lettersToExchange.length);
         const rackLettersToExchange = this.player.getLettersFromRack(this.lettersToExchange);

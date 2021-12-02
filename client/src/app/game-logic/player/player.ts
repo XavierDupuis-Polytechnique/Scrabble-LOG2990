@@ -8,15 +8,11 @@ export abstract class Player {
     action$: Subject<Action> = new Subject();
 
     points: number = 0;
-    name: string = Player.defaultName;
     isActive: boolean;
     letterRack: Letter[] = [];
 
-    constructor(name?: string) {
-        if (name) {
-            this.name = name;
-        }
-    }
+    constructor(public name = Player.defaultName) {}
+
     play(action: Action) {
         this.action$.next(action);
     }

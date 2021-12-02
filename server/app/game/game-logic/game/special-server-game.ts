@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 export class SpecialServerGame extends ServerGame {
     privateObjectives: Map<string, Objective[]>;
     publicObjectives: Objective[];
+
     constructor(
         timerController: TimerController,
         public randomBonus: boolean,

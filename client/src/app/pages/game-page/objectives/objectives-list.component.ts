@@ -7,7 +7,7 @@ import { GameInfoService } from '@app/game-logic/game/game-info/game-info.servic
     styleUrls: ['./objectives-list.component.scss'],
 })
 export class ObjectivesListComponent {
-    constructor(public info: GameInfoService) {}
+    constructor(private info: GameInfoService) {}
 
     get publicObjectives() {
         return this.info.publicObjectives;
@@ -23,5 +23,9 @@ export class ObjectivesListComponent {
 
     get isOwnedByOpponent() {
         return this.opponentPrivateObjectives[0].owner === this.info.opponent.name;
+    }
+
+    get isSpecialGame() {
+        return this.info.isSpecialGame;
     }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { TestBed } from '@angular/core/testing';
 import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { Tile } from '@app/game-logic/game/board/tile';

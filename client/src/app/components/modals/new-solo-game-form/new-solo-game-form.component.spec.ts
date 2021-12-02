@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -16,8 +15,9 @@ describe('NewSoloGameFormComponent', () => {
     dictHttpServiceSpy.getDictInfoList.and.returnValue(of([{ title: 'testTitle', description: 'testDescription' }]));
 
     const mockDialog = {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        close: () => {},
+        close: () => {
+            return;
+        },
     };
     beforeEach(async () => {
         await TestBed.configureTestingModule({

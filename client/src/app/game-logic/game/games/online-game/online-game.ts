@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Action } from '@app/game-logic/actions/action';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -46,7 +45,7 @@ export class OnlineGame extends Game {
     ) {
         super();
         this.boardService.board = new Board();
-        this.userName = userName;
+
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });
@@ -99,13 +98,6 @@ export class OnlineGame extends Game {
         });
     }
 
-    forfeit() {
-        if (!this.onlineSocket.socket) {
-            return;
-        }
-        this.onlineSocket.disconnect();
-    }
-
     getWinner() {
         const winners = this.winnerNames.map((name) => {
             const playerWithIndex = this.playersWithIndex.get(name);
@@ -123,6 +115,13 @@ export class OnlineGame extends Game {
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
         this.updateEndOfGame(gameState);
+    }
+
+    private forfeit() {
+        if (!this.onlineSocket.socket) {
+            return;
+        }
+        this.onlineSocket.disconnect();
     }
 
     private setupPlayersWithIndex() {

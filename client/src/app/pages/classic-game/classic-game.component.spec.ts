@@ -1,3 +1,6 @@
+/* eslint-disable max-lines */
+/* eslint-disable dot-notation */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from '@angular/common';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -71,7 +74,7 @@ describe('ClassicGameComponent', () => {
 
     it('dialog should set game setting and start game', () => {
         ready$.next(true);
-        spyOn(component, 'startSoloGame');
+        spyOn<any>(component, 'startSoloGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
                 return of({
@@ -88,11 +91,11 @@ describe('ClassicGameComponent', () => {
         } as MatDialogRef<NewSoloGameFormComponent>);
         component.openSoloGameForm();
         expect(component.gameSettings).toBeDefined();
-        expect(component.startSoloGame).toHaveBeenCalled();
+        expect(component['startSoloGame']).toHaveBeenCalled();
     });
 
     it('dialog should set game setting and start game when ready', () => {
-        spyOn(component, 'startSoloGame');
+        spyOn<any>(component, 'startSoloGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
                 return of({
@@ -110,11 +113,11 @@ describe('ClassicGameComponent', () => {
         component.openSoloGameForm();
         ready$.next(true);
         expect(component.gameSettings).toBeDefined();
-        expect(component.startSoloGame).toHaveBeenCalled();
+        expect(component['startSoloGame']).toHaveBeenCalled();
     });
 
     it('dialog should not set game setting and start game if form is undefined', () => {
-        spyOn(component, 'startSoloGame');
+        spyOn<any>(component, 'startSoloGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
                 return of(undefined);
@@ -125,7 +128,7 @@ describe('ClassicGameComponent', () => {
         } as MatDialogRef<NewSoloGameFormComponent>);
         component.openSoloGameForm();
         expect(component.gameSettings).toBeUndefined();
-        expect(component.startSoloGame).not.toHaveBeenCalled();
+        expect(component['startSoloGame']).not.toHaveBeenCalled();
     });
 
     it('button partie solo should call openSoloGameForm', () => {
@@ -138,7 +141,7 @@ describe('ClassicGameComponent', () => {
 
     it('start solo game should create a game', async () => {
         spyOn(router, 'navigate');
-        component.startSoloGame();
+        component['startSoloGame']();
         expect(gameManagerSpy.createGame).toHaveBeenCalled();
         ready$.next(true);
         expect(router.navigate).toHaveBeenCalled();
@@ -187,7 +190,7 @@ describe('ClassicGameComponent', () => {
     });
 
     it('openWaitingForPlayer should start solo game if bot difficulty is return', () => {
-        spyOn(component, 'startSoloGame');
+        spyOn<any>(component, 'startSoloGame');
         component.gameSettings = {
             playerName: 'Sam',
             botDifficulty: '',
@@ -213,11 +216,11 @@ describe('ClassicGameComponent', () => {
         expect(matDialog.open).toHaveBeenCalled();
         expect(component.gameSettings).toEqual(soloGameSettings);
         expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
-        expect(component.startSoloGame).toHaveBeenCalled();
+        expect(component['startSoloGame']).toHaveBeenCalled();
     });
 
     it('openWaitingForPlayer should disconnectSocket if player is disconnected from server and should not startOnlineGame', () => {
-        spyOn(component, 'startOnlineGame');
+        spyOn<any>(component, 'startOnlineGame');
         component.gameSettings = {
             playerName: 'Sam',
             botDifficulty: '',
@@ -239,13 +242,13 @@ describe('ClassicGameComponent', () => {
         component.openWaitingForPlayer('Sam');
         mockIsDisconnect$.next(true);
         mockStartGame$.next(undefined);
-        expect(component.startOnlineGame).not.toHaveBeenCalled();
+        expect(component['startOnlineGame']).not.toHaveBeenCalled();
         expect(onlineSocketHandlerSpy.disconnectSocket).toHaveBeenCalled();
     });
 
     it('openWaitingForPlayer should start onlineGame', () => {
         spyOn(component, 'openWaitingForPlayer').and.callThrough();
-        spyOn(component, 'startOnlineGame');
+        spyOn<any>(component, 'startOnlineGame');
         const gameSettings = {
             id: 'abc',
             playerName: 'Sam',
@@ -269,14 +272,14 @@ describe('ClassicGameComponent', () => {
         component.openWaitingForPlayer('Sam');
         mockIsDisconnect$.next(false);
         mockStartGame$.next(gameSettings);
-        expect(component.startOnlineGame).toHaveBeenCalledWith('Sam', gameSettings);
+        expect(component['startOnlineGame']).toHaveBeenCalledWith('Sam', gameSettings);
         component.openWaitingForPlayer('Sam');
         expect(component.openWaitingForPlayer).toHaveBeenCalledTimes(2);
     });
 
     it('openPendingGames should open dialog unsubscribe and if name start onlineGame', () => {
         spyOn(component, 'openPendingGames').and.callThrough();
-        spyOn(component, 'startOnlineGame').and.callThrough();
+        spyOn<any>(component, 'startOnlineGame').and.callThrough();
         const onlineGameSettings = {
             id: 'abc',
             playerName: 'Sam',
@@ -297,13 +300,13 @@ describe('ClassicGameComponent', () => {
         mockStartGame$.next(onlineGameSettings);
         expect(matDialog.open).toHaveBeenCalled();
         expect(gameManagerSpy.joinOnlineGame).toHaveBeenCalled();
-        expect(component.startOnlineGame).toHaveBeenCalledWith('name', onlineGameSettings);
+        expect(component['startOnlineGame']).toHaveBeenCalledWith('name', onlineGameSettings);
         component.openPendingGames();
         expect(component.openPendingGames).toHaveBeenCalledTimes(2);
     });
 
     it('openPendingGames should open dialog and return if name was not provided', () => {
-        spyOn(component, 'startOnlineGame');
+        spyOn<any>(component, 'startOnlineGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
                 return of('name');
@@ -315,11 +318,11 @@ describe('ClassicGameComponent', () => {
         component.openPendingGames();
         mockStartGame$.next(undefined);
         expect(matDialog.open).toHaveBeenCalled();
-        expect(component.startOnlineGame).not.toHaveBeenCalled();
+        expect(component['startOnlineGame']).not.toHaveBeenCalled();
     });
 
     it('openPendingGames should not do anything when closing pending name with an undefined name', () => {
-        spyOn(component, 'startOnlineGame');
+        spyOn<any>(component, 'startOnlineGame');
         matDialog.open.and.returnValue({
             afterClosed: () => {
                 return of(undefined as unknown as string);
@@ -331,12 +334,12 @@ describe('ClassicGameComponent', () => {
         component.openPendingGames();
         mockStartGame$.next(undefined);
         expect(matDialog.open).toHaveBeenCalled();
-        expect(component.startOnlineGame).not.toHaveBeenCalled();
+        expect(component['startOnlineGame']).not.toHaveBeenCalled();
     });
 
     it('#startSoloGame should create special game', () => {
         component.gameMode = GameMode.Special;
-        component.startSoloGame();
+        component['startSoloGame']();
         expect(gameManagerSpy.createSpecialGame).toHaveBeenCalled();
     });
 

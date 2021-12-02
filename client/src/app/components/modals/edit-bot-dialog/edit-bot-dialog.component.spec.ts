@@ -112,7 +112,7 @@ describe('EditbotDialogComponent', () => {
             type: BotType.Easy,
         };
         component.bot = errorBot as unknown as BotInfo;
-        expect(component.isBotFill).toBe(false);
+        expect(!component.isValuesValid).toBe(false);
     });
 
     it('isBotFill should return true if bot is not correctly defined', () => {
@@ -121,6 +121,15 @@ describe('EditbotDialogComponent', () => {
             type: BotType.Easy,
         };
         component.bot = errorBot as unknown as BotInfo;
-        expect(component.isBotFill).toBe(true);
+        expect(!component.isValuesValid).toBe(true);
+    });
+
+    it('isBotFill should return true if bot is only space', () => {
+        const errorBot = {
+            name: ' ',
+            type: BotType.Easy,
+        };
+        component.bot = errorBot as unknown as BotInfo;
+        expect(!component.isValuesValid).toBe(true);
     });
 });

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { WinnersDialogComponent } from '@app/components/modals/winners-dialog/winners-dialog.component';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Observable } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import {  map } from 'rxjs/operators';
 
 export const MILISECONDS_IN_MINUTE = 60000;
 export const FLOAT_TO_PERCENT = 100;
@@ -15,16 +13,8 @@ export const FLOAT_TO_PERCENT = 100;
 export class InfoBoxComponent implements OnInit {
     timeLeft$: Observable<number | undefined>;
     timeLeftPercent$: Observable<number | undefined>;
-    info: GameInfoService;
 
-    constructor(info: GameInfoService, private dialog: MatDialog) {
-        this.info = info;
-        if (this.info.endOfGame) {
-            this.info.endOfGame.pipe(first()).subscribe(() => {
-                this.openWinner();
-            });
-        }
-    }
+    constructor(private info: GameInfoService) {}
 
     ngOnInit() {
         this.timeLeft$ = this.info.timeLeftForTurn.pipe(
@@ -45,16 +35,6 @@ export class InfoBoxComponent implements OnInit {
         );
     }
 
-    isTimerLessOneMinute(timeLeft: number | null | undefined): boolean {
-        if (timeLeft === null || timeLeft === undefined) {
-            return true;
-        }
-        if (timeLeft < MILISECONDS_IN_MINUTE) {
-            return true;
-        }
-        return false;
-    }
-
     showWinner(): string {
         const winner = this.info.winner;
         let winnerString = '';
@@ -66,8 +46,11 @@ export class InfoBoxComponent implements OnInit {
         return winnerString;
     }
 
-    openWinner() {
-        const data = 'Félicitation ' + this.showWinner();
-        this.dialog.open(WinnersDialogComponent, { disableClose: true, autoFocus: true, data });
+    get numberOfLettersRemaining(): number {
+        return this.info.numberOfLettersRemaining;
+    }
+
+    get isEndOfGame(): boolean {
+        return this.info.isEndOfGame;
     }
 }

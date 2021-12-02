@@ -43,7 +43,7 @@ export class CommandExecuterService {
         this.debugMode = false;
     }
 
-    execute(command: Command) {
+    private execute(command: Command) {
         const type = command.type;
         if (type === CommandType.Debug) {
             this.executeDebug();
@@ -71,6 +71,7 @@ export class CommandExecuterService {
             }
         }
     }
+
     private executeReserve() {
         if (this.gameInfo.isOnlineGame) {
             this.showLetterBagOnline();
@@ -78,6 +79,7 @@ export class CommandExecuterService {
             this.showLetterBag();
         }
     }
+
     private showLetterBag() {
         const letterOccurences = this.gameInfo.letterOccurences;
         let stringOccurences = '';

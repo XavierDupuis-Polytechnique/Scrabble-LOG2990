@@ -21,6 +21,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         private cdref: ChangeDetectorRef,
         private onlineSocketHandler: NewOnlineGameSocketHandler,
     ) {}
+
     ngOnInit() {
         this.playerName = this.data.playerName;
         this.oppName = new FormControl('', [
@@ -51,7 +52,7 @@ export class JoinOnlineGameComponent implements AfterContentChecked, OnInit {
         });
     }
 
-    forbiddenNameValidator(): ValidatorFn {
+    private forbiddenNameValidator(): ValidatorFn {
         return (control: AbstractControl): { [key: string]: unknown } | null =>
             control.value !== this.playerName ? null : { forbidden: control.value };
     }

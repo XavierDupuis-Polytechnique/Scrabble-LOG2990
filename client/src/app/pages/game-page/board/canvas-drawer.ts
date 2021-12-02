@@ -22,9 +22,6 @@ enum BonusType {
     WordBonus,
 }
 export class CanvasDrawer {
-    canvas: CanvasRenderingContext2D;
-    width: number;
-    height: number;
     fontSize = 20;
     private tileSize: number;
     private scale: number = 0.5;
@@ -35,10 +32,7 @@ export class CanvasDrawer {
     private indicatorPos: Vec2 = { x: -1, y: -1 };
     private indicatorDir: Direction;
 
-    constructor(canvasContext: CanvasRenderingContext2D, w: number, h: number) {
-        this.canvas = canvasContext;
-        this.width = w;
-        this.height = h;
+    constructor(public canvas: CanvasRenderingContext2D, public width: number, public height: number) {
         this.canvas.lineWidth = 1;
         this.tileSize = (this.width - 2 * this.borderWidth - this.canvas.lineWidth * 17) / 16;
         this.offset = this.tileSize + this.borderWidth;

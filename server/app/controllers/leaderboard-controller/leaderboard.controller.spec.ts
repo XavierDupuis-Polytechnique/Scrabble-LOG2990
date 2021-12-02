@@ -39,7 +39,7 @@ describe('LeaderboardController', () => {
 
     it('should return NOT FOUND if get throws', async () => {
         leaderboardService.getScores.throws();
-        return supertest(expressApp).get('/api/scores/gameMode?').expect(StatusCodes.NOT_FOUND);
+        return supertest(expressApp).get('/api/scores/gameMode?').expect(StatusCodes.BAD_REQUEST);
     });
 
     it('should return OK if score was received', async () => {

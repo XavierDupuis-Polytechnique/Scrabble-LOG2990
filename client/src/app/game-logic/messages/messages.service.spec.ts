@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { TestBed } from '@angular/core/testing';
 import { CommandParserService } from '@app/game-logic/commands/command-parser/command-parser.service';
 import { CommandType } from '@app/game-logic/commands/command.interface';

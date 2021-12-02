@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { By } from '@angular/platform-browser';
@@ -75,7 +76,6 @@ describe('AddDictDialogComponent', () => {
             description: 'test',
             words: [''],
         };
-        // eslint-disable-next-line dot-notation
         component['uploadDictionary'](dict as unknown as Dictionary);
         expect(dialogSpy.open).toHaveBeenCalled();
     });
@@ -86,7 +86,6 @@ describe('AddDictDialogComponent', () => {
             description: 'test',
             words: [''],
         };
-        // eslint-disable-next-line dot-notation
         component['uploadDictionary'](dict as unknown as Dictionary);
         expect(dialogSpy.open).toHaveBeenCalled();
     });
@@ -97,7 +96,6 @@ describe('AddDictDialogComponent', () => {
             description: undefined,
             words: [''],
         };
-        // eslint-disable-next-line dot-notation
         component['uploadDictionary'](dict as unknown as Dictionary);
         expect(dialogSpy.open).toHaveBeenCalled();
     });
@@ -108,7 +106,6 @@ describe('AddDictDialogComponent', () => {
             description: 'test',
             words: undefined,
         };
-        // eslint-disable-next-line dot-notation
         component['uploadDictionary'](dict as unknown as Dictionary);
         expect(dialogSpy.open).toHaveBeenCalled();
     });

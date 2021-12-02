@@ -2,6 +2,7 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { NOT_ONLY_SPACE_RGX } from '@app/game-logic/constants';
 import { BotHttpService, BotInfo } from '@app/services/bot-http.service';
 
 @Component({
@@ -13,6 +14,7 @@ export class EditBotDialogComponent {
     bot: BotInfo;
     editBotInfo: BotInfo;
     isEdit: boolean = false;
+
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: BotInfo,
         private readonly botHttpService: BotHttpService,
@@ -71,10 +73,7 @@ export class EditBotDialogComponent {
         });
     }
 
-    get isBotFill() {
-        if (this.bot.name && this.bot.name !== '' && this.bot.type) {
-            return false;
-        }
-        return true;
+    get isValuesValid() {
+        return this.bot.name && this.bot.type && NOT_ONLY_SPACE_RGX.test(this.bot.name);
     }
 }
