@@ -125,7 +125,7 @@ export class GameManagerService {
         this.info.receiveGame(this.game);
 
         if (this.game instanceof SpecialOfflineGame && forfeitedGameState.objectives) {
-            this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
+            this.objectiveConverter.convertTransitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
         }
         const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
         this.startConvertedGame(forfeitedGameState.activePlayerIndex, gameMode);

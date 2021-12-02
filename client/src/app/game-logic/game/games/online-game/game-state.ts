@@ -36,6 +36,7 @@ export interface ForfeitedGameState extends GameState {
     randomBonus: boolean;
     objectives: TransitionObjective[];
 }
+
 export interface SpecialGameState extends GameState {
     publicObjectives: LightObjective[];
     privateObjectives: PrivateLightObjectives[];

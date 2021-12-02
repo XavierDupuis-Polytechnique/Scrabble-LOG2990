@@ -98,12 +98,12 @@ describe('ObjectiveConverter', () => {
     });
 
     it('should create appropriate number of public objectives', () => {
-        objectiveConverter.transitionObjectives(game, transitionObjectives, player1.name, 'Bot');
+        objectiveConverter.convertTransitionObjectives(game, transitionObjectives, player1.name, 'Bot');
         expect(game.publicObjectives.length).toEqual(PUBLIC_OBJECTIVE_COUNT);
     });
 
     it('should create appropriate number of private objectives', () => {
-        objectiveConverter.transitionObjectives(game, transitionObjectives, player1.name, 'Bot');
+        objectiveConverter.convertTransitionObjectives(game, transitionObjectives, player1.name, 'Bot');
         expect(game.privateObjectives.size).toEqual(PRIVATE_OBJECTIVE_COUNT);
     });
 
@@ -122,7 +122,7 @@ describe('ObjectiveConverter', () => {
             progressions: [playerProgression2],
         };
         transitionObjectives.push(fourCorners);
-        objectiveConverter.transitionObjectives(game, transitionObjectives, player1.name, 'Bot');
+        objectiveConverter.convertTransitionObjectives(game, transitionObjectives, player1.name, 'Bot');
         expect(game.privateObjectives.size).toEqual(PRIVATE_OBJECTIVE_COUNT);
     });
 });

@@ -13,7 +13,7 @@ import { TransitionObjective } from '@app/game-logic/game/objectives/objectives/
 export class ObjectiveConverter {
     constructor(private objectiveCreator: ObjectiveCreator) {}
 
-    transitionObjectives(game: SpecialOfflineGame, transitionObjectives: TransitionObjective[], userName: string, botName: string) {
+    convertTransitionObjectives(game: SpecialOfflineGame, transitionObjectives: TransitionObjective[], userName: string, botName: string) {
         game.privateObjectives = new Map<string, Objective[]>();
         game.publicObjectives = [];
 
