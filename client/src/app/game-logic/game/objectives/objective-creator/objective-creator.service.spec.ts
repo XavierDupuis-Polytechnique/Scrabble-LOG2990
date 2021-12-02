@@ -84,7 +84,6 @@ describe('ObjectiveCreator', () => {
 
     it('should throw error when requesting an unknown objective index', () => {
         expect(() => {
-            // eslint-disable-next-line dot-notation
             service['createObjective'](TOTAL_OBJECTIVE_COUNT + 1);
         }).toThrow();
     });

@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Action } from '@app/game-logic/actions/action';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
