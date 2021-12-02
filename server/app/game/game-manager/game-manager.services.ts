@@ -6,12 +6,9 @@ import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
-import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
-import { ForfeitedGameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
-import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
-import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -25,7 +22,7 @@ import { SystemMessagesService } from '@app/messages-service/system-messages-ser
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
-
+// 44,192-195,214-215
 export interface PlayerRef {
     gameToken: string;
     player: Player;
@@ -43,7 +40,7 @@ export class GameManagerService {
     private newGameStateSubject = new Subject<GameStateToken>();
     private forfeitedGameStateSubject = new Subject<GameStateToken>();
 
-    get lastGameState$(): Observable<GameStateToken> {
+    get forfeitedGameState$(): Observable<GameStateToken> {
         return this.forfeitedGameStateSubject;
     }
 
@@ -150,7 +147,7 @@ export class GameManagerService {
         if (!game) {
             return;
         }
-        this.createTransitionGameState(game);
+        this.sendForfeitedGameState(game);
         // TODO replace for sendTransitionGameState() (aka forfeitedGameState)
 
         this.endForfeitedGame(game, playerRef.player.name);
@@ -188,29 +185,13 @@ export class GameManagerService {
         game.forfeit(playerName);
     }
 
-    private createTransitionGameState(game: ServerGame) {
+    private sendForfeitedGameState(game: ServerGame) {
         if (game.activePlayerIndex === undefined) {
             return;
         }
-        const objConverter = new OnlineObjectiveConverter();
-        let translatedObjectives: TransitionObjectives[] = [];
-        const gameState = this.gameCompiler.compile(game);
-        if (game instanceof SpecialServerGame) {
-            translatedObjectives = translatedObjectives.concat(objConverter.convertObjectives(game.publicObjectives, game.privateObjectives));
-        }
-        const lastGameState: ForfeitedGameState = {
-            activePlayerIndex: gameState.activePlayerIndex,
-            consecutivePass: game.consecutivePass,
-            grid: gameState.grid,
-            isEndOfGame: gameState.isEndOfGame,
-            letterBag: game.letterBag.gameLetters,
-            players: gameState.players,
-            lettersRemaining: gameState.lettersRemaining,
-            winnerIndex: gameState.winnerIndex,
-            randomBonus: game.randomBonus,
-            objectives: translatedObjectives,
-        };
-        const lastGameToken: GameStateToken = { gameState: lastGameState, gameToken: game.gameToken };
+        const gameToken = game.gameToken;
+        const gameState = this.gameCompiler.compileForfeited(game);
+        const lastGameToken: GameStateToken = { gameState, gameToken };
         this.forfeitedGameStateSubject.next(lastGameToken);
     }
 
