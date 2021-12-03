@@ -11,7 +11,6 @@ import { openErrorDialog } from '@app/game-logic/utils';
 })
 export class AdminBotComponent implements OnInit {
     botDataInfo: BotInfo[];
-    dataSource: BotInfo[];
     botDisplayedColumns: string[] = ['name', 'type', 'edit', 'delete'];
 
     constructor(private readonly botHttpService: BotHttpService, private dialog: MatDialog) {}
@@ -55,7 +54,6 @@ export class AdminBotComponent implements OnInit {
             (response) => {
                 const list = response as BotInfo[];
                 this.botDataInfo = list;
-                this.dataSource = [...this.botDataInfo];
             },
             () => {
                 openErrorDialog(this.dialog, '250px', 'Le connection avec le serveur a échoué pour les joueurs virtuels');
