@@ -3,13 +3,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable dot-notation */
 import { BOT_INFO_COLLECTION } from '@app/constants';
+import { DatabaseService } from '@app/database/database.service';
 import { LEADERBOARD_CLASSIC_COLLECTION, LEADERBOARD_LOG_COLLECTION } from '@app/database/leaderboard-service/leaderboard-constants';
 import { fail } from 'assert';
 import { expect } from 'chai';
 import { describe } from 'mocha';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { DatabaseService } from './database.service';
 
 describe('Database service', () => {
     let databaseService: DatabaseService;
