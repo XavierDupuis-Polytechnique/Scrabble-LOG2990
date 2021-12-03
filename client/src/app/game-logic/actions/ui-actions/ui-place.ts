@@ -39,14 +39,15 @@ export class UIPlace implements UIAction {
         if (this.isPlacementInProgress()) {
             return;
         }
-        if (this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
-            if (this.isSamePositionClicked(clickPosition)) {
-                this.toggleDirection();
-                return;
-            }
-            this.pointerPosition = clickPosition;
-            this.direction = Direction.Horizontal;
+        if (!this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
+            return;
         }
+        if (this.isSamePositionClicked(clickPosition)) {
+            this.toggleDirection();
+            return;
+        }
+        this.pointerPosition = clickPosition;
+        this.direction = Direction.Horizontal;
     }
 
     receiveKey(key: string): void {
@@ -120,11 +121,7 @@ export class UIPlace implements UIAction {
         [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         do {
             currentTileChar = this.boardService.board.grid[y][x].letterObject;
-            if (currentTileChar.value === 0) {
-                word = currentTileChar.char.toUpperCase() + word;
-            } else {
-                word = currentTileChar.char.toLowerCase() + word;
-            }
+            word = currentTileChar.value === 0 ? currentTileChar.char.toUpperCase() + word : currentTileChar.char.toLowerCase() + word;
             [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         } while (this.isThereALetter(x, y));
         [x, y] = this.direction === Direction.Horizontal ? [++x, y] : [x, ++y];
@@ -164,7 +161,6 @@ export class UIPlace implements UIAction {
         }
         concernedTile.letterObject = this.letterCreator.createLetter(usedChar);
         concernedTile.letterObject.isTemp = true;
-        return;
     }
 
     private moveForwards(): void {

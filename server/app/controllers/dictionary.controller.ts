@@ -18,17 +18,16 @@ export class DictionaryController {
         this.router.get('/', async (req, res) => {
             try {
                 const title = req.query.title as string;
-                if (title) {
-                    const dict = this.dictionaryServerService.getDictByTitle(title);
-                    if (dict) {
-                        res.json(dict);
-                    } else {
-                        res.sendStatus(StatusCodes.NOT_FOUND);
-                    }
-                } else {
+                if (!title) {
                     const dicts = this.dictionaryServerService.getDictsList();
                     res.json(dicts);
+                    return;
                 }
+                const dict = this.dictionaryServerService.getDictByTitle(title);
+                if (!dict) {
+                    res.sendStatus(StatusCodes.NOT_FOUND);
+                }
+                res.json(dict);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
@@ -42,9 +41,9 @@ export class DictionaryController {
                     clientDict.canEdit = true;
                     this.dictionaryServerService.addDict(clientDict);
                     res.send(true);
-                } else {
-                    res.send(false);
+                    return;
                 }
+                res.send(false);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
@@ -55,9 +54,9 @@ export class DictionaryController {
                 const title = req.query.title as string;
                 if (this.dictionaryServerService.deleteDict(title)) {
                     res.sendStatus(StatusCodes.OK);
-                } else {
-                    res.sendStatus(StatusCodes.NOT_FOUND);
+                    return;
                 }
+                res.sendStatus(StatusCodes.NOT_FOUND);
             } catch (error) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }
@@ -68,10 +67,10 @@ export class DictionaryController {
                 const clientDict = req.body as DictionaryServer[];
                 if (clientDict[0].title !== clientDict[1].title && this.dictionaryServerService.isDictExist(clientDict[1].title)) {
                     res.send(false);
-                } else {
-                    const ans = this.dictionaryServerService.updateDict(clientDict[0], clientDict[1]);
-                    res.send(ans);
+                    return;
                 }
+                const ans = this.dictionaryServerService.updateDict(clientDict[0], clientDict[1]);
+                res.send(ans);
             } catch (e) {
                 res.sendStatus(StatusCodes.NOT_FOUND);
             }

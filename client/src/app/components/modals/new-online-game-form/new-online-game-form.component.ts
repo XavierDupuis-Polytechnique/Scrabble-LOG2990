@@ -95,11 +95,11 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
                 const form = this.onlineGameSettingsUIForm.value;
                 form.dictDesc = this.getDescription(form.dictTitle);
                 this.dialogRef.close(form);
-            } else {
-                this.onlineGameSettingsUIForm.controls.dictTitle.setErrors({
-                    dictDeleted: true,
-                });
+                return;
             }
+            this.onlineGameSettingsUIForm.controls.dictTitle.setErrors({
+                dictDeleted: true,
+            });
         });
     }
 }

@@ -110,9 +110,8 @@ export class DictionaryService {
 
         if (dictWord.word === placedWord.toLowerCase()) {
             return placedWord;
-        } else {
-            return 'false';
         }
+        return 'false';
     }
 
     private addDefault() {

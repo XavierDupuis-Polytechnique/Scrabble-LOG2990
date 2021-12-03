@@ -36,9 +36,8 @@ export class BotInfoService {
         if (temp.length <= 0) {
             this.collection.updateOne({ name: oldBot.name }, { $set: newBot });
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     async deleteBot(bot: BotInfo): Promise<boolean> {

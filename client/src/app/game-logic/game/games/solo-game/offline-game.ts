@@ -84,9 +84,9 @@ export class OfflineGame extends Game {
     doAction(action: Action) {
         if (action instanceof PassTurn) {
             this.consecutivePass += 1;
-        } else {
-            this.consecutivePass = 0;
+            return;
         }
+        this.consecutivePass = 0;
     }
 
     getWinner(): Player[] {

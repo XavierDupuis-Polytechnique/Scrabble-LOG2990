@@ -24,17 +24,21 @@ export class DebugController {
          */
         this.router.get('/letterbag', async (req: Request, res: Response) => {
             const gameId = req.query.gameId?.toString();
-            if (gameId) {
-                const game = this.gameManager.activeGames.get(gameId);
-                if (game) {
-                    const letterOccurence = game.letterBag.countLetters();
-                    const obj = {};
-                    letterOccurence.forEach((value, key) => {
-                        obj[key] = value;
-                    });
-                    res.json(obj);
-                } else res.sendStatus(StatusCodes.NOT_FOUND);
-            } else res.sendStatus(StatusCodes.BAD_REQUEST);
+            if (!gameId) {
+                res.sendStatus(StatusCodes.BAD_REQUEST);
+                return;
+            }
+            const game = this.gameManager.activeGames.get(gameId);
+            if (!game) {
+                res.sendStatus(StatusCodes.NOT_FOUND);
+                return;
+            }
+            const letterOccurence = game.letterBag.countLetters();
+            const obj = {};
+            letterOccurence.forEach((value, key) => {
+                obj[key] = value;
+            });
+            res.json(obj);
         });
     }
 }

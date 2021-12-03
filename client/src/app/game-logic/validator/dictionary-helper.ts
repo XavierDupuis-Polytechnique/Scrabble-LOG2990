@@ -44,12 +44,13 @@ export class DictionaryHelper {
         const firstWord = settings.tmpWordList[ARRAY_BEGIN].word;
         for (const dictWord of settings.dictWords) {
             settings.foundIndex = dictWord.indexOf(firstWord);
-            if (settings.foundIndex !== NOT_FOUND && dictWord.length - settings.letterCountOfPartWord <= RACK_LETTER_COUNT) {
-                if (settings.foundIndex <= settings.partWord.leftCount) {
-                    const newWord: ValidWord = new ValidWord(dictWord, settings.foundIndex);
-                    this.setStartingTile(settings.partWord, newWord, settings.foundIndex);
-                    settings.tmpDict.push(newWord);
-                }
+            if (settings.foundIndex === NOT_FOUND || dictWord.length - settings.letterCountOfPartWord > RACK_LETTER_COUNT) {
+                continue;
+            }
+            if (settings.foundIndex <= settings.partWord.leftCount) {
+                const newWord: ValidWord = new ValidWord(dictWord, settings.foundIndex);
+                this.setStartingTile(settings.partWord, newWord, settings.foundIndex);
+                settings.tmpDict.push(newWord);
             }
         }
         const oldSubWordLength = firstWord.length;
@@ -63,22 +64,24 @@ export class DictionaryHelper {
             for (const tmpDictWord of initialSettings.tmpDict) {
                 const oldFoundIndex: number = tmpDictWord.indexFound + subSettings.oldSubWordLength;
                 const foundIndex = tmpDictWord.word.indexOf(tmpWord.word, oldFoundIndex);
-                if (foundIndex !== NOT_FOUND) {
-                    if (
-                        foundIndex - oldFoundIndex === tmpWord.emptyCount &&
-                        tmpDictWord.word.length - initialSettings.letterCountOfPartWord <= RACK_LETTER_COUNT
-                    ) {
-                        if (tmpIndex === lastIndex) {
-                            if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
-                                tmpDictWord.indexFound = foundIndex;
+                if (foundIndex === NOT_FOUND) {
+                    continue;
+                }
+                if (
+                    foundIndex - oldFoundIndex !== tmpWord.emptyCount ||
+                    tmpDictWord.word.length - initialSettings.letterCountOfPartWord > RACK_LETTER_COUNT
+                ) {
+                    continue;
+                }
+                if (tmpIndex !== lastIndex) {
+                    tmpDictWord.indexFound = foundIndex;
+                    subSettings.tmpDict2.push(tmpDictWord);
+                    continue;
+                }
+                if (tmpDictWord.word.length - (foundIndex + tmpWord.word.length) <= tmpWord.rightCount) {
+                    tmpDictWord.indexFound = foundIndex;
 
-                                subSettings.tmpDict2.push(tmpDictWord);
-                            }
-                        } else {
-                            tmpDictWord.indexFound = foundIndex;
-                            subSettings.tmpDict2.push(tmpDictWord);
-                        }
-                    }
+                    subSettings.tmpDict2.push(tmpDictWord);
                 }
             }
             initialSettings.tmpDict = subSettings.tmpDict2;
@@ -100,18 +103,19 @@ export class DictionaryHelper {
         let foundIndex = 0;
         for (const dictWord of wholeSettings.dictWords) {
             foundIndex = dictWord.indexOf(wholeSettings.partWord.word);
-            if (foundIndex !== NOT_FOUND && dictWord.length - wholeSettings.letterCountOfPartWord <= RACK_LETTER_COUNT) {
-                if (
-                    foundIndex <= wholeSettings.partWord.leftCount &&
-                    dictWord.length - (foundIndex + wholeSettings.partWord.word.length) <= wholeSettings.partWord.rightCount &&
-                    dictWord !== wholeSettings.partWord.word
-                ) {
-                    const newWord: ValidWord = new ValidWord(dictWord);
-                    newWord.isVertical = wholeSettings.partWord.isVertical;
-                    this.setStartingTile(wholeSettings.partWord, newWord, foundIndex);
-                    newWord.numberOfLettersPlaced = dictWord.length - wholeSettings.letterCountOfPartWord;
-                    wholeSettings.wordList.push(newWord);
-                }
+            if (foundIndex === NOT_FOUND || dictWord.length - wholeSettings.letterCountOfPartWord > RACK_LETTER_COUNT) {
+                continue;
+            }
+            if (
+                foundIndex <= wholeSettings.partWord.leftCount &&
+                dictWord.length - (foundIndex + wholeSettings.partWord.word.length) <= wholeSettings.partWord.rightCount &&
+                dictWord !== wholeSettings.partWord.word
+            ) {
+                const newWord: ValidWord = new ValidWord(dictWord);
+                newWord.isVertical = wholeSettings.partWord.isVertical;
+                this.setStartingTile(wholeSettings.partWord, newWord, foundIndex);
+                newWord.numberOfLettersPlaced = dictWord.length - wholeSettings.letterCountOfPartWord;
+                wholeSettings.wordList.push(newWord);
             }
         }
     }
@@ -121,9 +125,9 @@ export class DictionaryHelper {
         for (const letter of placedLetters) {
             if (letter === '-') {
                 placedWord += '.';
-            } else {
-                placedWord += letter;
+                continue;
             }
+            placedWord += letter;
         }
         return placedWord;
     }
@@ -133,9 +137,9 @@ export class DictionaryHelper {
             const letterCount = mapRack.get(letter.char.toLowerCase());
             if (letterCount !== undefined) {
                 mapRack.set(letter.char.toLowerCase(), letterCount + 1);
-            } else {
-                mapRack.set(letter.char.toLowerCase(), 1);
+                continue;
             }
+            mapRack.set(letter.char.toLowerCase(), 1);
         }
     }
 
@@ -145,19 +149,23 @@ export class DictionaryHelper {
             const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
             let regex = new RegExp('(?<=[' + lettersLeft + '])' + regexSettings.placedWord.toLowerCase());
             index = regexSettings.dictWord.word.search(regex);
-            if (index === NOT_FOUND) {
-                if (regexSettings.mapRack.has('*')) {
-                    regex = new RegExp(regexSettings.placedWord.toLowerCase());
-                    index = regexSettings.dictWord.word.search(regex);
-                    if (index === 0) break;
-                    this.deleteTmpLetter('*', regexSettings.mapRack);
-                    regexSettings.placedWord = regexSettings.dictWord.word[index - 1].toUpperCase() + regexSettings.placedWord;
-                } else break;
-            } else {
+            if (index !== NOT_FOUND) {
                 index--;
                 this.deleteTmpLetter(regexSettings.dictWord.word[index], regexSettings.mapRack);
                 regexSettings.placedWord = regexSettings.dictWord.word[index] + regexSettings.placedWord;
+                continue;
             }
+            if (regexSettings.mapRack.has('*')) {
+                regex = new RegExp(regexSettings.placedWord.toLowerCase());
+                index = regexSettings.dictWord.word.search(regex);
+                if (index === 0) {
+                    break;
+                }
+                this.deleteTmpLetter('*', regexSettings.mapRack);
+                regexSettings.placedWord = regexSettings.dictWord.word[index - 1].toUpperCase() + regexSettings.placedWord;
+                continue;
+            }
+            break;
         } while (index > FIRST_LETTER_INDEX);
         return regexSettings.placedWord;
     }
@@ -177,7 +185,9 @@ export class DictionaryHelper {
                     index = regexSettings.dictWord.word.search(regex);
                     this.deleteTmpLetter('*', regexSettings.mapRack);
                     regexSettings.placedWord = leftOfDot + regexSettings.dictWord.word[leftOfDot.length].toUpperCase() + rightOfDot;
-                } else break;
+                } else {
+                    break;
+                }
             } else {
                 this.deleteTmpLetter(regexSettings.dictWord.word[indexOfDot], regexSettings.mapRack);
                 regexSettings.placedWord = leftOfDot + regexSettings.dictWord.word[leftOfDot.length] + rightOfDot;
@@ -193,17 +203,19 @@ export class DictionaryHelper {
             const lettersLeft = this.tmpLetterLeft(regexSettings.mapRack);
             let regex = new RegExp(regexSettings.placedWord.toLowerCase() + '(?=[' + lettersLeft + '])');
             index = regexSettings.dictWord.word.search(regex);
-            if (index === NOT_FOUND || index > 0) {
-                if (regexSettings.mapRack.has('*')) {
-                    regex = new RegExp(regexSettings.placedWord.toLowerCase());
-                    index = regexSettings.dictWord.word.search(regex);
-                    this.deleteTmpLetter('*', regexSettings.mapRack);
-                    regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length].toUpperCase();
-                } else break;
-            } else {
+            if (index !== NOT_FOUND && index <= 0) {
                 this.deleteTmpLetter(regexSettings.dictWord.word[regexSettings.placedWord.length], regexSettings.mapRack);
                 regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length];
+                continue;
             }
+            if (regexSettings.mapRack.has('*')) {
+                regex = new RegExp(regexSettings.placedWord.toLowerCase());
+                index = regexSettings.dictWord.word.search(regex);
+                this.deleteTmpLetter('*', regexSettings.mapRack);
+                regexSettings.placedWord = regexSettings.placedWord + regexSettings.dictWord.word[regexSettings.placedWord.length].toUpperCase();
+                continue;
+            }
+            break;
         }
         return regexSettings.placedWord;
     }
@@ -212,9 +224,9 @@ export class DictionaryHelper {
         const letterCount = mapRack.get(placedLetter);
         if (letterCount && letterCount > 1) {
             mapRack.set(placedLetter, letterCount - 1);
-        } else {
-            mapRack.delete(placedLetter);
+            return;
         }
+        mapRack.delete(placedLetter);
     }
 
     private tmpLetterLeft(mapRack: Map<string, number>): string {

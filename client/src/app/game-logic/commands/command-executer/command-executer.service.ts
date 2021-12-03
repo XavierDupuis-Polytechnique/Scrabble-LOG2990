@@ -53,13 +53,15 @@ export class CommandExecuterService {
         if (type === CommandType.Reserve) {
             if (this.debugMode) {
                 this.executeReserve();
-            } else {
-                this.messageService.receiveErrorMessage(RESERVE_NOT_ACCESSIBLE);
+                return;
             }
+            this.messageService.receiveErrorMessage(RESERVE_NOT_ACCESSIBLE);
+            return;
         }
 
         if (type === CommandType.Help) {
             this.executeAide();
+            return;
         }
 
         if (type === CommandType.Exchange || type === CommandType.Pass || type === CommandType.Place) {
@@ -75,9 +77,9 @@ export class CommandExecuterService {
     private executeReserve() {
         if (this.gameInfo.isOnlineGame) {
             this.showLetterBagOnline();
-        } else {
-            this.showLetterBag();
+            return;
         }
+        this.showLetterBag();
     }
 
     private showLetterBag() {
@@ -113,9 +115,9 @@ export class CommandExecuterService {
         this.debugMode = !this.debugMode;
         if (this.debugMode) {
             this.messageService.receiveSystemMessage(DEBUG_MESSAGE_ACTIVATED);
-        } else {
-            this.messageService.receiveSystemMessage(DEBUG_MESSAGE_DEACTIVATED);
+            return;
         }
+        this.messageService.receiveSystemMessage(DEBUG_MESSAGE_DEACTIVATED);
     }
 
     private sendAction(action: Action) {

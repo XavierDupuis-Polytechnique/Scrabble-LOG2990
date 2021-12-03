@@ -204,9 +204,9 @@ export class GameManagerService {
         const gameCreationParams: OfflineGameCreationParams = { timePerTurn, randomBonus: forfeitedGameState.randomBonus };
         if (isSpecial) {
             this.game = this.gameCreator.createSpecialOfflineGame(gameCreationParams, true);
-        } else {
-            this.game = this.gameCreator.createOfflineGame(gameCreationParams, true);
+            return;
         }
+        this.game = this.gameCreator.createOfflineGame(gameCreationParams, true);
     }
 
     private loadBoard(forfeitedGameState: ForfeitedGameState) {
