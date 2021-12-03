@@ -148,6 +148,7 @@ export class GameManagerService {
         const gameCreationParams: OnlineGameCreationParams = { id: gameSettings.id, timePerTurn, username };
 
         this.game = this.createOnlineGame(gameCreationParams, gameSettings.gameMode);
+
         const onlineGame = this.game as OnlineGame;
         const opponentName = gameSettings.playerName === username ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(username, opponentName);
