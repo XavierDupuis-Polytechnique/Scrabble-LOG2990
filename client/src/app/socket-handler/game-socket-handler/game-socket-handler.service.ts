@@ -64,7 +64,7 @@ export class GameSocketHandlerService {
         });
 
         this.socket.on('transitionGameState', (lastGameState: ForfeitedGameState) => {
-            this.receiveTransitionGameState(lastGameState);
+            this.receiveForfeitedGameState(lastGameState);
         });
     }
 
@@ -99,7 +99,7 @@ export class GameSocketHandlerService {
         this.timerControlsSubject.next(timerControl);
     }
 
-    private receiveTransitionGameState(transitionGameState: ForfeitedGameState) {
-        this.forfeitGameState$.next(transitionGameState);
+    private receiveForfeitedGameState(forfeitedGameState: ForfeitedGameState) {
+        this.forfeitGameState$.next(forfeitedGameState);
     }
 }

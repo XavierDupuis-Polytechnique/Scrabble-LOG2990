@@ -38,8 +38,8 @@ describe('GameSocketHandlerService', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('on transitionGameState should call receiveTransitionGameState', () => {
-        const spy = spyOn(service, 'receiveTransitionGameState');
+    it('on transitionGameState should call receiveForfeitedGameState', () => {
+        const spy = spyOn<any>(service, 'receiveForfeitedGameState');
         const mockGameState = {};
         (service.socket as any).peerSideEmit('transitionGameState', mockGameState);
         expect(spy).toHaveBeenCalled();
@@ -106,7 +106,7 @@ describe('GameSocketHandlerService', () => {
             forfeitGameStateSubject = value;
         });
         const forfeitGameState = { lettersRemaining: 3 } as ForfeitedGameState;
-        service.receiveTransitionGameState(forfeitGameState);
+        service['receiveForfeitedGameState'](forfeitGameState);
         expect(forfeitGameStateSubject.lettersRemaining).toEqual(3);
     });
 
