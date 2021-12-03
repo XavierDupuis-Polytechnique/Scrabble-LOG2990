@@ -38,7 +38,7 @@ export class EasyBot extends Bot {
         const randomValue = Math.random();
         if (randomValue <= EasyBot.actionProbability.play) {
             let action = this.playAction();
-            if (action === undefined) {
+            if (!action) {
                 action = this.passAction();
             }
             return action;
@@ -89,7 +89,7 @@ export class EasyBot extends Bot {
     private playAction(): Action {
         const validWordsList = this.bruteForceStart();
         const pickedWord: ValidWord = this.randomWordPicker(validWordsList);
-        if (pickedWord !== undefined) {
+        if (pickedWord) {
             const placeSetting: PlacementSetting = {
                 x: pickedWord.startingTileX,
                 y: pickedWord.startingTileY,

@@ -74,7 +74,7 @@ export class NewGameSocketHandler {
             throw Error('Impossible de rejoindre la partie, les paramètres sont invalides.');
         }
         const gameToken = this.newGameManagerService.joinPendingGame(id, name);
-        if (gameToken === undefined) {
+        if (!gameToken) {
             throw Error("Impossible de rejoindre la partie, elle n'existe pas.");
         }
         socket.join(id);
@@ -85,7 +85,7 @@ export class NewGameSocketHandler {
         return this.newGameManagerService.getPendingGame(id);
     }
     private onDisconnect(gameId: string) {
-        if (gameId === undefined) {
+        if (!gameId) {
             return;
         }
         this.newGameManagerService.deletePendingGame(gameId);

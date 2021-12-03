@@ -79,7 +79,7 @@ export class CommandParserService {
     }
 
     private isExchangeLetterArgr(word: string): boolean {
-        if (word === undefined || INVALID_EXCHANGE_LETTER.test(word)) {
+        if (!word || INVALID_EXCHANGE_LETTER.test(word)) {
             this.sendErrorMessage('les paramètres sont invalides');
             return false;
         }

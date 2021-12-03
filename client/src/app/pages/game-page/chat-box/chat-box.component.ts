@@ -76,7 +76,7 @@ export class ChatBoxComponent implements AfterViewInit {
     }
 
     private isMessageValid(messageContent: string): boolean {
-        if (messageContent === undefined) {
+        if (!messageContent) {
             return false;
         }
         const content = messageContent;
