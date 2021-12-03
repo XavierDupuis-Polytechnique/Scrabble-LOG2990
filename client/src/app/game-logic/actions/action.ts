@@ -1,4 +1,4 @@
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { Player } from '@app/game-logic/player/player';
 import { Observable, Subject } from 'rxjs';
 

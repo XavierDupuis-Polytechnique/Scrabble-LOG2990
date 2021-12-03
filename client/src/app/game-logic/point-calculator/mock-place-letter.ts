@@ -1,5 +1,5 @@
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { Player } from '@app/game-logic/player/player';
 import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
