@@ -273,5 +273,8 @@ export class OnlineGame extends Game {
         this.winnerNames = gameState.winnerIndex.map((index: number) => {
             return gameState.players[index].name;
         });
+        if (gameState.isEndOfGame) {
+            this.isEndOfGameSubject.next();
+        }
     }
 }

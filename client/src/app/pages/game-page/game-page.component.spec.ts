@@ -25,6 +25,7 @@ describe('GamePageComponent', () => {
     let uiInput: UIInput;
     let mockObservableDisconnect: Subject<void>;
     let mockObservableForfeited: Subject<void>;
+    let mockEndOfGame$: Subject<void>;
     let mockClosedModal$: Subject<void>;
     let mockInfo: jasmine.SpyObj<GameInfoService>;
     class ActionValidatorServiceMock {
@@ -60,11 +61,16 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         mockClosedModal$ = new Subject();
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'forfeitGameState$']);
+        gameManagerServiceSpy = jasmine.createSpyObj(
+            'GameManagerService',
+            ['stopGame', 'instanciateGameFromForfeitedState', 'startConvertedGame'],
+            ['disconnectedFromServer$', 'forfeitGameState$'],
+        );
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
-        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame']);
+        mockEndOfGame$ = new Subject<void>();
+        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame', 'isEndOfGame$', 'winner']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, DisconnectedFromServerComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
@@ -85,6 +91,7 @@ describe('GamePageComponent', () => {
         (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'forfeitGameState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
             mockObservableForfeited,
         );
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfGame$);
 
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
@@ -197,7 +204,18 @@ describe('GamePageComponent', () => {
     });
 
     it('#isEndOfGame should work properly', () => {
+        const mockPlayer = { name: 'allo' } as unknown as Player;
+        (Object.getOwnPropertyDescriptor(mockInfo, 'winner')?.get as jasmine.Spy<() => Player[]>).and.returnValue([mockPlayer]);
+        (Object.getOwnPropertyDescriptor(mockInfo, 'user')?.get as jasmine.Spy<() => Player>).and.returnValue(mockPlayer);
+        mockEndOfGame$.next();
         (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
         expect(component.isEndOfGame).toBeFalse();
+    });
+
+    it('should receive forfeited game state properly', () => {
+        mockObservableForfeited.next();
+        mockClosedModal$.next();
+        expect(gameManagerServiceSpy.instanciateGameFromForfeitedState).toHaveBeenCalled();
+        expect(gameManagerServiceSpy.startConvertedGame).toHaveBeenCalled();
     });
 });

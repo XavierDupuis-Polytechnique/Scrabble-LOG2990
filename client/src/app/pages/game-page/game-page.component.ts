@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AbandonDialogComponent } from '@app/components/modals/abandon-dialog/abandon-dialog.component';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ErrorDialogComponent } from '@app/components/modals/error-dialog/error-dialog.component';
+import { WinnerDialogComponent, WinnerDialogData } from '@app/components/modals/winner-dialog/winner-dialog.component';
 import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
 import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
 import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
@@ -22,6 +23,8 @@ export class GamePageComponent implements OnDestroy {
     dialogRef: MatDialogRef<DisconnectedFromServerComponent> | undefined;
     private disconnected$$: Subscription;
     private forfeited$$: Subscription;
+    private endOfGame$$: Subscription;
+
     constructor(
         private gameManager: GameManagerService,
         public info: GameInfoService,
@@ -47,6 +50,14 @@ export class GamePageComponent implements OnDestroy {
                 this.gameManager.startConvertedGame(forfeitedGameState);
             });
         });
+
+        this.endOfGame$$ = this.info.isEndOfGame$.subscribe(() => {
+            const winnerNames = this.info.winner.map((player) => player.name);
+            const userName = this.info.user.name;
+            const isWinner = winnerNames.includes(userName);
+            const data: WinnerDialogData = { winnerNames, isWinner };
+            this.dialog.open(WinnerDialogComponent, { disableClose: true, autoFocus: true, data });
+        });
     }
 
     @HostListener('window:keyup', ['$event'])
@@ -58,6 +69,7 @@ export class GamePageComponent implements OnDestroy {
     ngOnDestroy() {
         this.disconnected$$?.unsubscribe();
         this.forfeited$$?.unsubscribe();
+        this.endOfGame$$?.unsubscribe();
     }
 
     receiveInput(input: UIInput) {

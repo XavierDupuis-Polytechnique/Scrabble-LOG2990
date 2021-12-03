@@ -66,15 +66,6 @@ describe('InfoBoxComponent', () => {
         expect(component.timeLeft$).toBeTruthy();
     });
 
-    it('showWinner should return the right winner string', () => {
-        expect(component.showWinner()).toBe('P1');
-    });
-
-    it('showWinner should show multiple winner', () => {
-        spyOnProperty(testMock, 'winner').and.returnValue([{ name: 'sam' }, { name: 'test' }]);
-        expect(component.showWinner()).toBe('sam et test');
-    });
-
     it('should not do anything when timerleft is undefined', (done) => {
         // eslint-disable-next-line dot-notation
         testMock['t'].next(undefined);
