@@ -153,12 +153,6 @@ describe('GamePageComponent', () => {
         expect(inputControllerSpy).toHaveBeenCalled();
     });
 
-    it('should call cancel', () => {
-        const inputControllerSpy = spyOn(component['inputController'], 'cancel');
-        component.cancel();
-        expect(inputControllerSpy).toHaveBeenCalled();
-    });
-
     it('should open the DisconnectedModal when calling the openDisconnected method', () => {
         component['dialogRef'] = undefined;
         component.openDisconnected();
