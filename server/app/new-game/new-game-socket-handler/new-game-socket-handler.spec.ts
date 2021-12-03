@@ -29,7 +29,6 @@ describe('New Online Game Service', () => {
         httpServer.listen(() => {
             process.setMaxListeners(0);
             port = (httpServer.address() as AddressInfo).port;
-            // no warning but slow
             newGameManagerService = createSinonStubInstance<NewGameManagerService>(NewGameManagerService);
             dictionaryService = createSinonStubInstance<DictionaryService>(DictionaryService);
             handler = new NewGameSocketHandler(httpServer, newGameManagerService, dictionaryService);
@@ -136,7 +135,7 @@ describe('New Online Game Service', () => {
         };
 
         newGameManagerService.createPendingGame.returns('a');
-        newGameManagerService.joinPendingGame.returns('id'); // ?
+        newGameManagerService.joinPendingGame.returns('id');
         newGameManagerService.getPendingGame.returns(gameSettings as OnlineGameSettings);
 
         const clientSocket2 = Client(`http://localhost:${port}`, { path: '/newGame', multiplex: false });
