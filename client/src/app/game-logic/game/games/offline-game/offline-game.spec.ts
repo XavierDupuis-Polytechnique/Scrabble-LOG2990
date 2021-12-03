@@ -4,7 +4,7 @@ import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { User } from '@app/game-logic/player/user';

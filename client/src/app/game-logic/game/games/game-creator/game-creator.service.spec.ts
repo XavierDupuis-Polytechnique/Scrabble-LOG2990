@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { OfflineGameCreationParams, OnlineGameCreationParams } from '@app/game-logic/game/games/game-creator/game-creation-params';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
 import { GameCreatorService } from './game-creator.service';

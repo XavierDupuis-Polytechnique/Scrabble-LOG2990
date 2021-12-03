@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { EMPTY_CHAR, NOT_FOUND } from '@app/game-logic/constants';
 import { Game } from '@app/game-logic/game/games/game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';

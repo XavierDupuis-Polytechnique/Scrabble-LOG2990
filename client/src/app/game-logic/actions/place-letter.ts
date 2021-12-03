@@ -3,7 +3,7 @@ import { EMPTY_CHAR, JOKER_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constan
 import { Direction } from '@app/game-logic/direction.enum';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';

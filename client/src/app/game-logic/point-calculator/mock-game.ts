@@ -1,7 +1,7 @@
 import { MAX_CONSECUTIVE_PASS } from '@app/game-logic/constants';
 import { Board } from '@app/game-logic/game/board/board';
 import { BoardService } from '@app/game-logic/game/board/board.service';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { Player } from '@app/game-logic/player/player';

@@ -1,6 +1,6 @@
 import { Action } from '@app/game-logic/actions/action';
 import { BoardService } from '@app/game-logic/game/board/board.service';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { SpecialGame } from '@app/game-logic/game/games/special-games/special-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';

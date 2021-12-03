@@ -3,7 +3,7 @@ import { PlaceLetter } from '@app/game-logic/actions/place-letter';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { Tile } from '@app/game-logic/game/board/tile';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { Player } from '@app/game-logic/player/player';
 
 const MAX_LETTER_IN_RACK = 7;

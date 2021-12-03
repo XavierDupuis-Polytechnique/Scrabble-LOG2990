@@ -1,6 +1,6 @@
 import { Action } from '@app/game-logic/actions/action';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { Player } from '@app/game-logic/player/player';
 
 export class ExchangeLetter extends Action {
