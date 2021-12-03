@@ -61,7 +61,11 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         mockClosedModal$ = new Subject();
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'forfeitGameState$']);
+        gameManagerServiceSpy = jasmine.createSpyObj(
+            'GameManagerService',
+            ['stopGame', 'instanciateGameFromForfeitedState', 'startConvertedGame'],
+            ['disconnectedFromServer$', 'forfeitGameState$'],
+        );
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
@@ -206,5 +210,12 @@ describe('GamePageComponent', () => {
         mockEndOfGame$.next();
         (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
         expect(component.isEndOfGame).toBeFalse();
+    });
+
+    it('should receive forfeited game state properly', () => {
+        mockObservableForfeited.next();
+        mockClosedModal$.next();
+        expect(gameManagerServiceSpy.instanciateGameFromForfeitedState).toHaveBeenCalled();
+        expect(gameManagerServiceSpy.startConvertedGame).toHaveBeenCalled();
     });
 });
