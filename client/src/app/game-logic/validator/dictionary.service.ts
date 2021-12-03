@@ -61,7 +61,9 @@ export class DictionaryService {
 
         let maxDictWordLength = 0;
         const missingLetters = partWord.word.length - letterCountOfPartWord + partWord.leftCount + partWord.rightCount;
-        if (missingLetters === 0) return wordList;
+        if (missingLetters === 0) {
+            return wordList;
+        }
         if (missingLetters > RACK_LETTER_COUNT) {
             maxDictWordLength = letterCountOfPartWord + RACK_LETTER_COUNT;
         } else {
