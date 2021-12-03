@@ -57,17 +57,11 @@ export class BotCrawler {
         let y = startingPosition.y;
         let isVertical = isVerticalFlag;
         let letterInBox = grid[y][x].letterObject.char;
-
         while (letterInBox === ' ') {
-            if (isVertical) {
-                if (y !== END_OF_BOARD) {
-                    y++;
-                } else break;
-            } else {
-                if (x !== END_OF_BOARD) {
-                    x++;
-                } else break;
-            }
+            const coord = isVertical ? y : x;
+            if (coord !== END_OF_BOARD) {
+                [x, y] = isVertical ? [x, y + 1] : [x + 1, y];
+            } else break;
             letterInBox = grid[y][x].letterObject.char;
         }
         if (letterInBox !== ' ') {
