@@ -91,7 +91,7 @@ describe('UIInputControllerService', () => {
         });
         service.receive(input);
         expect(processInputSpy).toHaveBeenCalledWith(input);
-    });    
+    });
 
     it('should override Keypress/MouseRoll/LeftClick/RightClick when activeComponent is Chatbox', () => {
         service.activeComponent = InputComponent.Outside;
@@ -126,7 +126,7 @@ describe('UIInputControllerService', () => {
         expect(service.activeComponent).toBe(InputComponent.Chatbox);
         expect(service.activeAction).toBeNull();
     });
-      
+
     it('should update activeComponent with the correct default component when "from" is not provided', () => {
         const input: UIInput = { type: InputType.LeftClick };
         service['processInputComponent'](input);
@@ -153,7 +153,7 @@ describe('UIInputControllerService', () => {
         service['processInputComponent'](input);
         expect(service.activeComponent).toBe(component);
     });
-      
+
     it('should create a new UIPlace action if the activeAction is null', () => {
         service.activeComponent = InputComponent.Board;
         service['updateActiveAction'](InputType.LeftClick);
@@ -379,5 +379,4 @@ describe('UIInputControllerService', () => {
         expect(service.activeAction).toBeNull();
         expect(sendActionSpy).toHaveBeenCalled();
     });
-
 });

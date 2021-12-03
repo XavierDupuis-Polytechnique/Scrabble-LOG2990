@@ -53,7 +53,7 @@ export class BotCrawler {
     }
 
     boardCrawler(startingPosition: Vec2, grid: Tile[][], isVerticalFlag: boolean) {
-        if (this.bot.timesUp){ 
+        if (this.bot.timesUp) {
             return;
         }
         let x = startingPosition.x;
