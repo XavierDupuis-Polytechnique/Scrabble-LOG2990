@@ -36,7 +36,7 @@ describe('GameSocketHandler', () => {
 
             stubGameManager = createSinonStubInstance<GameManagerService>(GameManagerService);
             sinon.stub(stubGameManager, 'newGameState$').value(mockNewGameState$);
-            sinon.stub(stubGameManager, 'lastGameState$').value(mockFinaleGameState$);
+            sinon.stub(stubGameManager, 'forfeitedGameState$').value(mockFinaleGameState$);
             sinon.stub(stubGameManager, 'timerControl$').value(mockTimerControl$);
             handler = new GameSocketsHandler(httpServer, stubGameManager);
             handler.handleSockets();
@@ -157,6 +157,7 @@ describe('GameSocketHandler', () => {
             consecutivePass: 0,
             randomBonus: false,
             letterBag: [],
+            objectives: [],
         };
 
         const gameToken = 'abc';

@@ -82,10 +82,9 @@ export class CanvasDrawer {
     }
 
     coordToTilePosition(x: number, y: number) {
-        const i = Math.floor((x - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
-        const j = Math.floor((y - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
-
-        return { indexI: i, indexJ: j };
+        const indexI = Math.floor((x - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
+        const indexJ = Math.floor((y - this.canvas.lineWidth - this.offset) / (this.tileSize + this.canvas.lineWidth));
+        return { indexI, indexJ };
     }
 
     setIndicator(i: number, j: number) {

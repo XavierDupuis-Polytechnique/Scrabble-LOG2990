@@ -20,12 +20,10 @@ export const DATABASE_NAME = 'scrabble';
 @Service()
 export class DatabaseService {
     private db: Db;
-    private client: MongoClient;
 
     async start(url: string = DATABASE_URL) {
         try {
             const client = await MongoClient.connect(url);
-            this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
@@ -36,11 +34,7 @@ export class DatabaseService {
         this.createBotInfoCollection();
     }
 
-    async closeConnection(): Promise<void> {
-        return this.client.close();
-    }
-
-    async populateLeaderboardCollection(name: string): Promise<void> {
+    private async populateLeaderboardCollection(name: string): Promise<void> {
         try {
             const defaultPopulation = name === LEADERBOARD_CLASSIC_COLLECTION ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
             if ((await this.db.collection(name).countDocuments()) === 0) {

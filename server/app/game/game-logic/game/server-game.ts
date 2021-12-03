@@ -68,10 +68,6 @@ export class ServerGame {
         this.isEnded$.next(undefined);
     }
 
-    nextPlayer() {
-        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
-    }
-
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
@@ -88,15 +84,6 @@ export class ServerGame {
 
     getActivePlayer() {
         return this.players[this.activePlayerIndex];
-    }
-
-    onEndOfGame(reason: EndOfGameReason) {
-        this.pointCalculator.endOfGamePointDeduction(this);
-        this.displayLettersLeft();
-        this.emitGameState();
-        if (reason === EndOfGameReason.GameEnded) {
-            this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
-        }
     }
 
     doAction(action: Action) {
@@ -126,6 +113,19 @@ export class ServerGame {
             }
         }
         return winners;
+    }
+
+    private onEndOfGame(reason: EndOfGameReason) {
+        this.pointCalculator.endOfGamePointDeduction(this);
+        this.displayLettersLeft();
+        this.emitGameState();
+        if (reason === EndOfGameReason.GameEnded) {
+            this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
+        }
+    }
+
+    private nextPlayer() {
+        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
     private pickFirstPlayer() {

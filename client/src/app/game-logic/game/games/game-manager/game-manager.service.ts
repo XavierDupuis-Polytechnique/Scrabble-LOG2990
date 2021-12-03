@@ -12,7 +12,8 @@ import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
 import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
-import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter.service';
+import { ObjectiveLoader } from '@app/game-logic/game/objectives/objective-loader/objective-loader';
+import { PlayerNames } from '@app/game-logic/game/objectives/objective-loader/players-names.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { OnlineChatHandlerService } from '@app/game-logic/messages/online-chat-handler/online-chat-handler.service';
 import { BotCreatorService } from '@app/game-logic/player/bot/bot-creator.service';
@@ -57,7 +58,7 @@ export class GameManagerService {
         private dictionaryService: DictionaryService,
         private gameCreator: GameCreatorService,
         private boardService: BoardService,
-        private objectiveConverter: ObjectiveConverter,
+        private objectiveLoader: ObjectiveLoader,
     ) {
         this.gameSocketHandler.disconnectedFromServer$.subscribe(() => {
             this.disconnectedFromServerSubject.next();
@@ -109,7 +110,7 @@ export class GameManagerService {
         if (!(this.game instanceof OfflineGame)) {
             throw Error('The type of game is not offlineGame after converting the online game to offline');
         }
-        this.transitionBoard(forfeitedGameState);
+        this.loadBoard(forfeitedGameState);
         this.game.letterBag.gameLetters = forfeitedGameState.letterBag;
         this.game.consecutivePass = forfeitedGameState.consecutivePass;
         const playerInfo = forfeitedGameState.players;
@@ -120,15 +121,17 @@ export class GameManagerService {
 
         const botIndex = (userIndex + 1) % 2;
         const botName = this.game.players[botIndex].name;
-        this.transitionPlayerInfo(userIndex, botIndex, forfeitedGameState);
+        this.loadPlayerInfo(userIndex, botIndex, forfeitedGameState);
 
         this.info.receiveGame(this.game);
 
         if (this.game instanceof SpecialOfflineGame && forfeitedGameState.objectives) {
-            this.objectiveConverter.transitionObjectives(this.game, forfeitedGameState.objectives, userName, botName);
+            const playerNames: PlayerNames = {
+                userName,
+                botName,
+            };
+            this.objectiveLoader.loadObjectivesIntoGame(this.game, forfeitedGameState.objectives, playerNames);
         }
-        const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
-        this.startConvertedGame(forfeitedGameState.activePlayerIndex, gameMode);
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -143,13 +146,8 @@ export class GameManagerService {
         const username = userAuth.playerName;
         const timePerTurn = Number(gameSettings.timePerTurn);
         const gameCreationParams: OnlineGameCreationParams = { id: gameSettings.id, timePerTurn, username };
-        let newGame;
-        if (gameSettings.gameMode === GameMode.Classic) {
-            newGame = this.gameCreator.createOnlineGame(gameCreationParams);
-        } else {
-            newGame = this.gameCreator.createSpecialOnlineGame(gameCreationParams);
-        }
-        this.game = newGame;
+
+        this.game = this.createOnlineGame(gameCreationParams, gameSettings.gameMode);
         const onlineGame = this.game as OnlineGame;
         const opponentName = gameSettings.playerName === username ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(username, opponentName);
@@ -177,6 +175,16 @@ export class GameManagerService {
         this.game = undefined;
     }
 
+    startConvertedGame(forfeitedGameState: ForfeitedGameState) {
+        if (!this.game) {
+            return;
+        }
+        const activePlayerIndex = forfeitedGameState.activePlayerIndex;
+        this.resumeGame(activePlayerIndex);
+        const gameMode = this.game instanceof SpecialOfflineGame ? GameMode.Special : GameMode.Classic;
+        this.updateLeaboardWhenGameEnds(this.game, gameMode);
+    }
+
     private resumeGame(activePlayerIndex: number) {
         this.resetServices();
         if (!this.game) {
@@ -185,26 +193,14 @@ export class GameManagerService {
         (this.game as OfflineGame).resume(activePlayerIndex);
     }
 
-    private startConvertedGame(activePlayerIndex: number, gameMode: GameMode) {
-        if (!this.game) {
-            return;
-        }
-        this.resumeGame(activePlayerIndex);
-        this.updateLeaboardWhenGameEnds(this.game, gameMode);
-    }
-
     private createConvertedGame(forfeitedGameState: ForfeitedGameState, isSpecial: boolean) {
         const timePerTurn = (this.game as OnlineGame).timePerTurn;
         this.stopGame();
         const gameCreationParams: OfflineGameCreationParams = { timePerTurn, randomBonus: forfeitedGameState.randomBonus };
-        if (isSpecial) {
-            this.game = this.gameCreator.createSpecialOfflineGame(gameCreationParams, true);
-        } else {
-            this.game = this.gameCreator.createOfflineGame(gameCreationParams, true);
-        }
+        this.game = this.createLoadedGame(gameCreationParams, isSpecial);
     }
 
-    private transitionBoard(forfeitedGameState: ForfeitedGameState) {
+    private loadBoard(forfeitedGameState: ForfeitedGameState) {
         (this.game as OfflineGame).board = this.boardService.board;
         const nRows = BOARD_DIMENSION;
         const nCols = BOARD_DIMENSION;
@@ -217,7 +213,7 @@ export class GameManagerService {
         }
     }
 
-    private transitionPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
+    private loadPlayerInfo(userIndex: number, botIndex: number, forfeitedGameState: ForfeitedGameState) {
         if (this.game instanceof SpecialOfflineGame || this.game instanceof OfflineGame) {
             const playerInfo = forfeitedGameState.players;
 
@@ -233,7 +229,7 @@ export class GameManagerService {
 
     private updateLeaboardWhenGameEnds(game: Game, gameMode: GameMode) {
         game.isEndOfGame$.pipe(first()).subscribe(() => {
-            if (this.game === undefined) {
+            if (!this.game) {
                 return;
             }
             this.updateLeaderboard(this.game.players, gameMode);
@@ -253,15 +249,15 @@ export class GameManagerService {
     }
 
     private updateLeaderboard(players: Player[], mode: GameMode) {
-        if (players === undefined) {
+        if (!players) {
             return;
         }
-        for (const player of players) {
+        players.forEach((player) => {
             if (player instanceof User) {
-                const score = { mode: GameMode.Classic, name: player.name, point: player.points };
+                const score = { mode, name: player.name, point: player.points };
                 this.leaderboardService.updateLeaderboard(mode, score);
             }
-        }
+        });
     }
 
     private createOfflinePlayers(playerName: string, botDifficulty: string): Player[] {
@@ -283,5 +279,20 @@ export class GameManagerService {
             return;
         }
         this.game.players = players;
+    }
+
+    private createOnlineGame(gameCreationParams: OnlineGameCreationParams, mode: GameMode) {
+        if (mode === GameMode.Classic) {
+            return this.gameCreator.createOnlineGame(gameCreationParams);
+        }
+        return this.gameCreator.createSpecialOnlineGame(gameCreationParams);
+    }
+
+    private createLoadedGame(gameCreationParams: OfflineGameCreationParams, isSpecial: boolean) {
+        const isLoaded = true;
+        if (isSpecial) {
+            return this.gameCreator.createSpecialOfflineGame(gameCreationParams, isLoaded);
+        }
+        return this.gameCreator.createOfflineGame(gameCreationParams, isLoaded);
     }
 }

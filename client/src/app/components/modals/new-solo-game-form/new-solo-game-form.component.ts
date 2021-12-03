@@ -91,11 +91,11 @@ export class NewSoloGameFormComponent implements AfterContentChecked, OnInit {
             const dictionary = this.dictList.find((dict) => dict.title === formSettings.value.dictTitle);
             if (dictionary) {
                 this.dialogRef.close(this.soloGameSettingsForm.value);
-            } else {
-                this.soloGameSettingsForm.controls.dictTitle.setErrors({
-                    dictDeleted: true,
-                });
+                return;
             }
+            this.soloGameSettingsForm.controls.dictTitle.setErrors({
+                dictDeleted: true,
+            });
         });
     }
 }

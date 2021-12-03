@@ -47,7 +47,7 @@ describe('DictionaryController', () => {
     });
 
     it('get should return not found if dict doesnt exist', async () => {
-        dictionaryServerService.getDictByTitle.returns(false);
+        dictionaryServerService.getDictByTitle.returns(undefined);
         return supertest(expressApp).get('/api/dictionary?title=Test').expect(StatusCodes.NOT_FOUND);
     });
 

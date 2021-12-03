@@ -41,6 +41,7 @@ import { EditBotDialogComponent } from './components/modals/edit-bot-dialog/edit
 import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
 import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
+import { LoadingGameComponent } from './components/modals/loading-game/loading-game.component';
 
 /**
  * Main module that is used in main.ts.
@@ -87,6 +88,7 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         ObjectiveComponent,
         AddDictDialogComponent,
         AbandonDialogComponent,
+        LoadingGameComponent,
     ],
     imports: [
         AppMaterialModule,
