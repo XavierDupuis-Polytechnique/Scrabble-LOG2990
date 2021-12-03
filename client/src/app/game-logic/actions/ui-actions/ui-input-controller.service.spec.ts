@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -17,12 +18,17 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { getRandomInt } from '@app/game-logic/utils';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
+import { Observable, Subject } from 'rxjs';
 import { UIInputControllerService } from './ui-input-controller.service';
 
 class MockGameInfoService {
     players: Player[];
     activePlayerIndex: number = 0;
     user: Player;
+    endOfTurnMockSubject = new Subject<void>();
+    get endTurn$(): Observable<void> {
+        return this.endOfTurnMockSubject;
+    }
     get activePlayer() {
         return this.user;
     }
@@ -45,7 +51,6 @@ describe('UIInputControllerService', () => {
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });
-        service = TestBed.inject(UIInputControllerService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         wordSearcher = TestBed.inject(WordSearcher);
         boardService = TestBed.inject(BoardService);
@@ -62,10 +67,17 @@ describe('UIInputControllerService', () => {
         info = TestBed.inject(GameInfoService);
         info.players = [player];
         info.user = player;
+        service = TestBed.inject(UIInputControllerService);
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
+    });
+
+    it('should discard current UIPlace action on end of turn', () => {
+        service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
+        (info as any as MockGameInfoService).endOfTurnMockSubject.next();
+        expect(service.activeAction).toBeNull();
     });
 
     it('should, if possible, return the canBeCreated boolean of an activeAction (true)', () => {
@@ -85,7 +97,6 @@ describe('UIInputControllerService', () => {
 
     it('should call processInputComponent upon receiving an input', () => {
         const input: UIInput = { type: InputType.LeftClick };
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const processInputSpy = spyOn<any>(service, 'processInput').and.callFake(() => {
             return;
         });
