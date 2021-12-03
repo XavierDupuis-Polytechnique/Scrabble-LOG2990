@@ -51,7 +51,7 @@ export class GamePageComponent implements OnDestroy {
             });
         });
 
-        this.endOfGame$$ = this.gameManager.isEndOfGame$.subscribe(() => {
+        this.endOfGame$$ = this.info.isEndOfGame$.subscribe(() => {
             const winnerNames = this.info.winner.map((player) => player.name);
             const userName = this.info.user.name;
             const isWinner = winnerNames.includes(userName);

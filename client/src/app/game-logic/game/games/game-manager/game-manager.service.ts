@@ -46,10 +46,6 @@ export class GameManagerService {
     get forfeitGameState$(): Observable<ForfeitedGameState> {
         return this.gameSocketHandler.forfeitGameState$;
     }
-    private isEndOfGameSubject = new Subject<void>();
-    get isEndOfGame$() {
-        return this.isEndOfGameSubject;
-    }
 
     constructor(
         private botService: BotCreatorService,
@@ -77,7 +73,6 @@ export class GameManagerService {
         const dictReady$ = this.dictionaryService.fetchDictionary(gameSettings.dictTitle);
 
         const newGame = this.gameCreator.createOfflineGame(gameSettings);
-        this.subscribeToEndOfGame(newGame);
         this.game = newGame;
 
         this.setupOfflineGame(gameSettings);
@@ -88,7 +83,6 @@ export class GameManagerService {
 
     createSpecialGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
         const newGame = this.gameCreator.createSpecialOfflineGame(gameSettings);
-        this.subscribeToEndOfGame(newGame);
         this.game = newGame;
 
         const dictReady$ = this.dictionaryService.fetchDictionary(gameSettings.dictTitle);
@@ -138,7 +132,6 @@ export class GameManagerService {
             };
             this.objectiveLoader.loadObjectivesIntoGame(this.game, forfeitedGameState.objectives, playerNames);
         }
-        this.subscribeToEndOfGame(this.game);
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -155,7 +148,6 @@ export class GameManagerService {
         const gameCreationParams: OnlineGameCreationParams = { id: gameSettings.id, timePerTurn, username };
 
         this.game = this.createOnlineGame(gameCreationParams, gameSettings.gameMode);
-        this.subscribeToEndOfGame(this.game);
 
         const onlineGame = this.game as OnlineGame;
         const opponentName = gameSettings.playerName === username ? gameSettings.opponentName : gameSettings.playerName;
@@ -192,12 +184,6 @@ export class GameManagerService {
         this.resumeGame(activePlayerIndex);
         const gameMode = this.game instanceof SpecialOfflineGame ? GameMode.Special : GameMode.Classic;
         this.updateLeaboardWhenGameEnds(this.game, gameMode);
-    }
-
-    private subscribeToEndOfGame(game: Game) {
-        game.isEndOfGame$.subscribe(() => {
-            this.isEndOfGameSubject.next();
-        });
     }
 
     private resumeGame(activePlayerIndex: number) {

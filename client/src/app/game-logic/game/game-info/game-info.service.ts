@@ -10,7 +10,7 @@ import { Objective } from '@app/game-logic/game/objectives/objectives/objective'
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { Player } from '@app/game-logic/player/player';
 import { User } from '@app/game-logic/player/user';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 
 @Injectable({
     providedIn: 'root',
@@ -19,7 +19,7 @@ export class GameInfoService {
     players: Player[];
     user: User;
     private game: Game | undefined;
-
+    private endTurn$$: Subscription;
     private endTurnSubject = new Subject<void>();
     get endTurn$(): Observable<void> {
         return this.endTurnSubject;
@@ -29,13 +29,26 @@ export class GameInfoService {
         return this.game?.isEndOfGame$;
     }
 
+    private isEndOfGame$$: Subscription;
+    private isEndOfGameSubject = new Subject<void>();
+    get isEndOfGame$() {
+        return this.isEndOfGameSubject;
+    }
+
     constructor(private timer: TimerService) {}
 
     receiveGame(game: Game): void {
+        this.endTurn$$?.unsubscribe();
+        this.isEndOfGame$$?.unsubscribe();
         this.players = game.players;
         this.game = game;
-        this.game.endTurn$.subscribe(() => {
+
+        this.endTurn$$ = this.game.endTurn$.subscribe(() => {
             this.endTurnSubject.next();
+        });
+
+        this.isEndOfGame$$ = this.game.isEndOfGame$.subscribe(() => {
+            this.isEndOfGameSubject.next();
         });
     }
 

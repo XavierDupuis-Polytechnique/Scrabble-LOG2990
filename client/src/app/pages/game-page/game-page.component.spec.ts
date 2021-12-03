@@ -25,6 +25,7 @@ describe('GamePageComponent', () => {
     let uiInput: UIInput;
     let mockObservableDisconnect: Subject<void>;
     let mockObservableForfeited: Subject<void>;
+    let mockEndOfGame$: Subject<void>;
     let mockClosedModal$: Subject<void>;
     let mockInfo: jasmine.SpyObj<GameInfoService>;
     class ActionValidatorServiceMock {
@@ -64,7 +65,8 @@ describe('GamePageComponent', () => {
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
-        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame']);
+        mockEndOfGame$ = new Subject<void>();
+        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame', 'isEndOfGame$']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, DisconnectedFromServerComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
@@ -85,6 +87,7 @@ describe('GamePageComponent', () => {
         (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'forfeitGameState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
             mockObservableForfeited,
         );
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfGame$);
 
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
