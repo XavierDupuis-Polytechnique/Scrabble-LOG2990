@@ -1,4 +1,4 @@
-import { RACK_LETTER_COUNT } from '@app/game/game-logic/constants';
+import { JOKER_CHAR, RACK_LETTER_COUNT } from '@app/game/game-logic/constants';
 import { LetterCreator } from './letter-creator';
 import { Letter } from './letter.interface';
 
@@ -38,7 +38,7 @@ export class LetterBag {
     countLetters(): Map<string, number> {
         const LETTER_A_CODE = 'A'.charCodeAt(0);
         const LETTER_Z_CODE = 'Z'.charCodeAt(0);
-        const letters: [string, number][] = [['*', 0]];
+        const letters: [string, number][] = [[JOKER_CHAR, 0]];
         for (let code = LETTER_A_CODE; code <= LETTER_Z_CODE; code++) {
             letters.push([String.fromCharCode(code), 0]);
         }

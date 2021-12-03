@@ -3,7 +3,7 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
-import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/game/game-logic/constants';
+import { EMPTY_CHAR, JOKER_CHAR, TIME_FOR_REVERT } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
@@ -118,7 +118,7 @@ export class PlaceLetter extends Action {
 
     private letterToRemove(char: string) {
         if (isCharUpperCase(char)) {
-            return this.letterFactory.createLetter('*');
+            return this.letterFactory.createLetter(JOKER_CHAR);
         }
         return this.letterFactory.createLetter(char);
     }
