@@ -134,4 +134,19 @@ describe('NewOnlineGameFormComponent', () => {
         component.dictList = [{ title: 'testTitle', description: 'testDesc', canEdit: true }];
         expect(component.getDescription('testTitle2')).toEqual('');
     });
+
+    it('playGame should not close dialog if error with server', () => {
+        const setting = {
+            playerName: 'samuel',
+            timePerTurn: 60000,
+            randomBonus: true,
+            dictTitle: 'deletedTitle',
+            dictDesc: '',
+        };
+        component.onlineGameSettingsUIForm.setValue(setting);
+
+        component.playGame();
+        const spy = spyOn(mockDialog, 'close');
+        expect(spy).not.toHaveBeenCalled();
+    });
 });

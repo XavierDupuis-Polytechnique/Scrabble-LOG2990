@@ -3,7 +3,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
 import { openErrorDialog } from '@app/game-logic/utils';
-import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
 export interface DictInfo {
@@ -18,10 +17,6 @@ export interface DictInfo {
     styleUrls: ['./admin-dict.component.scss'],
 })
 export class AdminDictComponent implements OnInit {
-    listDict: Dictionary[];
-    selectedFile: string = '';
-    displayedColumns: string[] = ['position', 'name', 'weight', 'edit', 'delete'];
-
     dictDataSource: DictInfo[];
     dictDisplayedColumns: string[] = ['title', 'description', 'edit', 'delete'];
 

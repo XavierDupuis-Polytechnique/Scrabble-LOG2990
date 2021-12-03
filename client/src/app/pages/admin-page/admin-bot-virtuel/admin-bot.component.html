@@ -3,7 +3,7 @@
         <table mat-table class="mat-elevation-z8" [dataSource]="botDataInfo ">
             <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef>Nom</th>
-                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                <td mat-cell *matCellDef="let element" class="overflow-name">{{ element.name }}</td>
             </ng-container>
 
             <ng-container matColumnDef="type">
