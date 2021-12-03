@@ -183,7 +183,6 @@ describe('CommandExecuterService', () => {
         };
         service['execute'](command);
         const expectedMessage = `Reserve:${END_LINE}A : 4${END_LINE}B : 3${END_LINE}C : 1${END_LINE}`;
-        // const expectedCalls: string[] = ['affichages de débogage activés', expectedMessage];
         expect(messageServiceSpy.receiveSystemMessage).toHaveBeenCalledOnceWith(expectedMessage);
     });
 
