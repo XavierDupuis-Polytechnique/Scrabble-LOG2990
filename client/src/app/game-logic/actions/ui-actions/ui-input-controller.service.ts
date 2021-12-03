@@ -80,7 +80,6 @@ export class UIInputControllerService {
                         return;
                     }
                 } else {
-                    // LEFTCLICK or KEYPRESS or MOUSEWHEEL
                     if (!(this.activeAction instanceof UIMove)) {
                         this.discardAction();
                         this.activeAction = new UIMove(this.info.user);
