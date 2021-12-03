@@ -38,8 +38,4 @@ export class InfoBoxComponent implements OnInit {
     get numberOfLettersRemaining(): number {
         return this.info.numberOfLettersRemaining;
     }
-
-    get isEndOfGame(): boolean {
-        return this.info.isEndOfGame;
-    }
 }
