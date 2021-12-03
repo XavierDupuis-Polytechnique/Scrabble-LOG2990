@@ -7,7 +7,7 @@ import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { BotHttpService } from '@app/services/bot-http.service';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AdminDropDbComponent } from './admin-drop-db.component';
 
 describe('AdminDropDbComponent', () => {
@@ -118,5 +118,19 @@ describe('AdminDropDbComponent', () => {
         } as MatDialogRef<AlertDialogComponent>);
         component.dropTables();
         expect(leaderboardServiceMock.dropCollections).not.toHaveBeenCalled();
+    });
+
+    it('all dropTable should resolve to false if http error', () => {
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        botHttpServiceMock.dropTable.and.returnValues(throwError({ status: 404 }));
+        dictHttpServiceMock.dropTable.and.returnValues(throwError({ status: 404 }));
+        leaderboardServiceMock.dropCollections.and.returnValue(throwError({ status: 404 }));
+
+        component.dropTables();
+        expect(component['refresh']).not.toHaveBeenCalled();
     });
 });
