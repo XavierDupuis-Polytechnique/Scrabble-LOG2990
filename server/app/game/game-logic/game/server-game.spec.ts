@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable dot-notation */
 import { GameCompiler } from '@app/game/game-compiler/game-compiler.service';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
@@ -84,7 +85,7 @@ describe('ServerGame', () => {
         p1.letterRack = [];
         expect(game.isEndOfGame()).to.be.equal(true);
         if (game.isEndOfGame()) {
-            game.onEndOfGame(EndOfGameReason.GameEnded);
+            game['onEndOfGame'](EndOfGameReason.GameEnded);
         }
     });
 
@@ -106,7 +107,7 @@ describe('ServerGame', () => {
     it('next player should return next player', () => {
         game.start();
         const currentPlayer = game.getActivePlayer();
-        game.nextPlayer();
+        game['nextPlayer']();
         const nextPlayer = game.getActivePlayer();
         const isSamePlayer = currentPlayer === nextPlayer;
         expect(isSamePlayer).to.be.equal(false);
@@ -163,7 +164,7 @@ describe('ServerGame', () => {
     it('endOfTurn should return true and call onEndOfGame if the endReason is defined', () => {
         game.stop();
         expect(game.endReason).to.be.equal(EndOfGameReason.Other);
-        const gameSpy = spy(game, 'onEndOfGame');
+        const gameSpy = spy(game, 'onEndOfGame' as any);
         game['startTurn']();
         expect(gameSpy.called).to.be.equal(true);
     });
@@ -181,7 +182,7 @@ describe('ServerGame', () => {
         game.start();
         game.consecutivePass = 6;
         game.endReason = EndOfGameReason.GameEnded;
-        const gameSpy = spy(game, 'onEndOfGame');
+        const gameSpy = spy(game, 'onEndOfGame' as any);
         game['endOfTurn'](action);
         expect(gameSpy.called).to.be.equal(true);
         expect(actionSpy.called).to.be.equal(false);
@@ -189,7 +190,7 @@ describe('ServerGame', () => {
 
     it('should call the onEndOfGame if the action passed to onEndOfTurn is undefined', () => {
         game.start();
-        const gameSpy = spy(game, 'onEndOfGame');
+        const gameSpy = spy(game, 'onEndOfGame' as any);
         game['endOfTurn'](undefined);
         expect(gameSpy.called).to.be.equal(true);
     });

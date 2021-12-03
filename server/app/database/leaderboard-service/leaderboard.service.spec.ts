@@ -23,7 +23,7 @@ describe('Leaderboard Service', () => {
             name: 'Player1',
             point: 50,
         };
-        await leaderboardService.getLeaderboardCollection(GameMode.Classic).insertOne({ name: testScore.name, point: testScore.point });
+        await leaderboardService['getLeaderboardCollection'](GameMode.Classic).insertOne({ name: testScore.name, point: testScore.point });
     });
 
     afterEach(async () => {
@@ -31,7 +31,7 @@ describe('Leaderboard Service', () => {
     });
 
     it('should get correct collection from DB', async () => {
-        const collection = leaderboardService.getLeaderboardCollection(GameMode.Classic);
+        const collection = leaderboardService['getLeaderboardCollection'](GameMode.Classic);
         expect(collection.collectionName).to.equal('leaderboardClassic');
     });
 
@@ -48,7 +48,7 @@ describe('Leaderboard Service', () => {
         };
 
         await leaderboardService.updateLeaderboard(newScore, GameMode.Classic);
-        const scores = await leaderboardService.getLeaderboardCollection(GameMode.Classic).find({}).toArray();
+        const scores = await leaderboardService['getLeaderboardCollection'](GameMode.Classic).find({}).toArray();
         expect(scores.length).to.equal(2);
         expect(scores.find((x) => x.name === newScore.name)?.name).to.deep.equals(newScore.name);
     });
@@ -60,7 +60,7 @@ describe('Leaderboard Service', () => {
         };
 
         await leaderboardService.updateLeaderboard(updatedScore, GameMode.Classic);
-        const scores = await leaderboardService.getLeaderboardCollection(GameMode.Classic).find({}).toArray();
+        const scores = await leaderboardService['getLeaderboardCollection'](GameMode.Classic).find({}).toArray();
         expect(scores.length).to.equal(1);
         expect(scores[0].name).to.deep.equals(updatedScore.name);
         expect(scores[0].point).to.deep.equals(updatedScore.point);
@@ -73,7 +73,7 @@ describe('Leaderboard Service', () => {
         };
 
         await leaderboardService.updateLeaderboard(updatedScore, GameMode.Classic);
-        const scores = await leaderboardService.getLeaderboardCollection(GameMode.Classic).find({}).toArray();
+        const scores = await leaderboardService['getLeaderboardCollection'](GameMode.Classic).find({}).toArray();
         expect(scores.length).to.equal(1);
         expect(scores[0].name).to.deep.equals(testScore.name);
         expect(scores[0].point).to.deep.equals(testScore.point);
@@ -102,7 +102,7 @@ describe('Leaderboard Service', () => {
     it('should delete and repopulate collection', async () => {
         await leaderboardService.deleteScores();
         const numberDefaultScore = 5;
-        const scores = await leaderboardService.getLeaderboardCollection(GameMode.Classic).find({}).toArray();
+        const scores = await leaderboardService['getLeaderboardCollection'](GameMode.Classic).find({}).toArray();
         expect(scores.length).to.equal(numberDefaultScore);
     });
 
