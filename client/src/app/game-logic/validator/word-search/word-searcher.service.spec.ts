@@ -51,23 +51,6 @@ describe('WordSearcher', () => {
         expect(coord[1]).toEqual({ x: 6, y: 2 });
     });
 
-    // it('should go to beginning of word', () => {
-    //     const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
-    //     const position: Vec2 = { x: 4, y: 1 };
-    //     const direction = placement.direction;
-    //     const beginPosition = wordSearcher.goToBeginningOfWord(direction, position);
-    //     expect(beginPosition).toEqual({ x: 4, y: 0 });
-    // });
-
-    // it('should go to end of word and return the word made', () => {
-    //     mockBoard.grid[2][5].letterObject = { char: 'L', value: 1 };
-    //     const placement: PlacementSetting = { x: 3, y: 1, direction: Direction.Horizontal };
-    //     const beginingPosition: Vec2 = { x: 5, y: 0 };
-    //     const letterPosition: Vec2 = { x: 5, y: 1 };
-    //     const word = wordSearcher.goToEndOfWord({ word: 'oui', placement }, beginingPosition, letterPosition);
-    //     expect(wordSearcher.tileToString(word.letters)).toEqual('NIL');
-    // });
-
     it('should find 0 neighbour if first word ', () => {
         const placement: PlacementSetting = { x: 4, y: 0, direction: Direction.Horizontal };
         const perpDirection: Direction = Direction.Vertical;

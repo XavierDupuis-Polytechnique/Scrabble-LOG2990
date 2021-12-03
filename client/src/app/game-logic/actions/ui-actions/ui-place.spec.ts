@@ -143,7 +143,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly update the pointerPosition following a keyPress (horizontal)', () => {
-        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1]; // first, ~middle, last
+        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1];
         action.receiveLeftClick({ x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD });
         let movedX = MIDDLE_OF_BOARD;
         for (const rackIndex of indexes) {
@@ -157,7 +157,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly update the pointerPosition following a keyPress (vertical)', () => {
-        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1]; // first, ~middle, last
+        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1];
         action.receiveLeftClick({ x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD });
         action.receiveLeftClick({ x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD });
         let movedY = MIDDLE_OF_BOARD;
@@ -269,7 +269,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly update the pointerPosition to the last placed letter following a backspace (horizontal)', () => {
-        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1]; // first, ~middle, last
+        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1];
         let x = MIDDLE_OF_BOARD;
         let y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });
@@ -293,7 +293,7 @@ describe('UIPlace', () => {
     });
 
     it('should properly update the pointerPosition to the last placed letter following a backspace (vertical)', () => {
-        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1]; // first, ~middle, last
+        const indexes = [0, getRandomInt(RACK_LETTER_COUNT - 2, 1), RACK_LETTER_COUNT - 1];
         let x = MIDDLE_OF_BOARD;
         let y = MIDDLE_OF_BOARD;
         action.receiveLeftClick({ x, y });

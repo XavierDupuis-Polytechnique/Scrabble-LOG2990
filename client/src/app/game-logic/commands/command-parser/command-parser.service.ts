@@ -29,6 +29,10 @@ export class CommandParserService {
         if (!message) {
             return;
         }
+        if (!this.isCommand(message)) {
+            return;
+        }
+
         const commandContent = message.split(' ').filter(Boolean);
         const commandType = commandContent[0] as CommandType;
 
@@ -52,6 +56,10 @@ export class CommandParserService {
         const command = this.createCommand(from, commandArguments, commandType);
         this.sendCommand(command);
         return commandType;
+    }
+
+    private isCommand(message: string) {
+        return message[0] === '!';
     }
 
     private createCommand(from: string, args: string[], commandType: CommandType): Command {

@@ -62,7 +62,6 @@ describe('Bot', () => {
     });
 
     it('should play before 3 seconds', fakeAsync(() => {
-        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         bot.chooseAction(new PassTurn(bot));
         tick(TIME_BEFORE_PICKING_ACTION);
@@ -71,7 +70,6 @@ describe('Bot', () => {
     }));
 
     it('should play after 3 seconds', fakeAsync(() => {
-        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         bot.chooseAction(new PassTurn(bot));
@@ -80,7 +78,6 @@ describe('Bot', () => {
     }));
 
     it('should pass turn after 20 seconds', fakeAsync(() => {
-        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         tick(TIME_BEFORE_PASS);

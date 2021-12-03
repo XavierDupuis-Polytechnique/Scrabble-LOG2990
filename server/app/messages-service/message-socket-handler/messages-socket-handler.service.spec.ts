@@ -27,7 +27,6 @@ describe('MessagesService', () => {
         httpServer = createServer();
         httpServer.listen(() => {
             port = (httpServer.address() as AddressInfo).port;
-            // no warning but slow
             const systemMessagesService = createSinonStubInstance<SystemMessagesService>(SystemMessagesService);
             sinon.stub(systemMessagesService, 'globalSystemMessages$').get(() => mockGlobalSystemMessages$);
             sinon.stub(systemMessagesService, 'individualSystemMessages$').get(() => mockIndividualSystemMessages$);
@@ -41,12 +40,6 @@ describe('MessagesService', () => {
     });
 
     beforeEach((done) => {
-        // fast but warning
-        // handler = new MessageHandler(httpServer);
-        // handler.handleSockets();
-        // handler.sio.once('connection', (socket) => {
-        //     serverSocket = socket;
-        // });
         clientSocket = Client(`http://localhost:${port}`, { path: '/messages' });
         clientSocket.on('connect', done);
     });

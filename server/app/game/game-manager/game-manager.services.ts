@@ -23,7 +23,7 @@ import { SystemMessagesService } from '@app/messages-service/system-messages-ser
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
 import { Observable, Subject } from 'rxjs';
 import { Service } from 'typedi';
-// 44,192-195,214-215
+
 export interface PlayerRef {
     gameToken: string;
     player: Player;
@@ -149,8 +149,6 @@ export class GameManagerService {
             return;
         }
         this.sendForfeitedGameState(game);
-        // TODO replace for sendTransitionGameState() (aka forfeitedGameState)
-
         this.endForfeitedGame(game, playerRef.player.name);
         this.deleteGame(gameToken);
     }
