@@ -149,7 +149,6 @@ export class GameManagerService {
             return;
         }
         this.sendForfeitedGameState(game);
-        
         this.endForfeitedGame(game, playerRef.player.name);
         this.deleteGame(gameToken);
     }
