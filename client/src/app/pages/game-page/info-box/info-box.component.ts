@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { Observable } from 'rxjs';
-import {  map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 export const MILISECONDS_IN_MINUTE = 60000;
 export const FLOAT_TO_PERCENT = 100;

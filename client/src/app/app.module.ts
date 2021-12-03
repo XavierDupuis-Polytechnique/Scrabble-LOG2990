@@ -42,6 +42,7 @@ import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-dro
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
 import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
 import { LoadingGameComponent } from './components/modals/loading-game/loading-game.component';
+import { WinnerDialogComponent } from './components/modals/winner-dialog/winner-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -89,6 +90,7 @@ import { LoadingGameComponent } from './components/modals/loading-game/loading-g
         AddDictDialogComponent,
         AbandonDialogComponent,
         LoadingGameComponent,
+        WinnerDialogComponent,
     ],
     imports: [
         AppMaterialModule,

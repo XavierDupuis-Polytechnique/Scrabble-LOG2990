@@ -25,7 +25,7 @@ export class GameInfoService {
         return this.endTurnSubject;
     }
 
-    get endOfGame(){
+    get endOfGame() {
         return this.game?.isEndOfGame$;
     }
 
