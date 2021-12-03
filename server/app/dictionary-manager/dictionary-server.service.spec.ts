@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
-import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
-import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
+import { DictionaryServer } from '@app/dictionary-manager/default-dictionary';
+import { DictionaryServerService } from '@app/dictionary-manager/dictionary-server.service';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { expect } from 'chai';
 import fs = require('fs');

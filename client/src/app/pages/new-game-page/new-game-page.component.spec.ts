@@ -18,15 +18,15 @@ import { WaitingForPlayerComponent } from '@app/components/modals/waiting-for-pl
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { routes } from '@app/modules/app-routing.module';
-import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
+import { NewGamePageComponent } from '@app/pages/new-game-page/new-game-page.component';
 import { GameMode } from '@app/socket-handler/interfaces/game-mode.interface';
 import { OnlineGameSettings } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-socket-handler/new-online-game-socket-handler.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 
 describe('ClassicGameComponent', () => {
-    let component: ClassicGameComponent;
-    let fixture: ComponentFixture<ClassicGameComponent>;
+    let component: NewGamePageComponent;
+    let fixture: ComponentFixture<NewGamePageComponent>;
     const mockIsDisconnect$ = new Subject<boolean>();
     const mockStartGame$ = new Subject<OnlineGameSettings>();
     let matDialog: jasmine.SpyObj<MatDialog>;
@@ -47,7 +47,7 @@ describe('ClassicGameComponent', () => {
         gameManagerSpy.createGame.and.returnValue(ready$);
         gameManagerSpy.createSpecialGame.and.returnValue(ready$);
         await TestBed.configureTestingModule({
-            declarations: [ClassicGameComponent, HeaderBarComponent, MatToolbar, MatRipple],
+            declarations: [NewGamePageComponent, HeaderBarComponent, MatToolbar, MatRipple],
             imports: [RouterTestingModule.withRoutes(routes), MatDialogModule, BrowserAnimationsModule, CommonModule],
             providers: [
                 { provide: MAT_DIALOG_DATA, useValue: {} },
@@ -65,7 +65,7 @@ describe('ClassicGameComponent', () => {
             Object.getOwnPropertyDescriptor(onlineSocketHandlerSpy, 'startGame$')?.get as jasmine.Spy<() => Observable<OnlineGameSettings>>
         ).and.returnValue(mockStartGame$);
 
-        fixture = TestBed.createComponent(ClassicGameComponent);
+        fixture = TestBed.createComponent(NewGamePageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
         router = TestBed.inject(Router);

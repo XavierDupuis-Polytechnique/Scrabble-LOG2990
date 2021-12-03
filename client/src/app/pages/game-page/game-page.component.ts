@@ -27,9 +27,9 @@ export class GamePageComponent implements OnDestroy {
 
     constructor(
         private gameManager: GameManagerService,
-        public info: GameInfoService,
+        private info: GameInfoService,
         private router: Router,
-        public dialog: MatDialog,
+        private dialog: MatDialog,
         private inputController: UIInputControllerService,
     ) {
         try {
@@ -67,9 +67,9 @@ export class GamePageComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
-        this.disconnected$$?.unsubscribe();
-        this.forfeited$$?.unsubscribe();
-        this.endOfGame$$?.unsubscribe();
+        this.disconnected$$.unsubscribe();
+        this.forfeited$$.unsubscribe();
+        this.endOfGame$$.unsubscribe();
     }
 
     receiveInput(input: UIInput) {
