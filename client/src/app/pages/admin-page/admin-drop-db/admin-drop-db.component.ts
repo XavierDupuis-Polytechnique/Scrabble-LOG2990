@@ -25,8 +25,8 @@ export class AdminDropDbComponent {
                 width: '250px',
                 data: {
                     message: `
-                    Attention si vous continuez, vous aller perdre toutes les données de la base de données.
-                    Voullez-vous continuer le processus?`,
+                    Attention si vous continuez, vous allez perdre toutes les données de la base de données.
+                    Voulez-vous continuer le processus?`,
                     button1: 'Non',
                     button2: 'Oui',
                 },
@@ -38,7 +38,11 @@ export class AdminDropDbComponent {
                     const isDictOk = await this.dropDictTable();
                     const isDeleteLBOk = await this.dropLeaderboardTables();
                     if (!isbotDropOk || !isDictOk || !isDeleteLBOk) {
-                        openErrorDialog(this.dialog, '250px', 'Une erreur est survenue avec la base de données');
+                        openErrorDialog(
+                            this.dialog,
+                            '300px',
+                            'Une erreur est survenue avec la base de données. Impossible de réinitialiser les données.',
+                        );
                         return;
                     }
                     this.refresh();
