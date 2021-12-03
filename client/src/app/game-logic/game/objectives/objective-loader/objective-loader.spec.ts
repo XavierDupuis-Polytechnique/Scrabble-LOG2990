@@ -1,18 +1,14 @@
-import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter.service';
-import { HalfAlphabetProgression, TenWordsProgression, TransitionObjective } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 import { TestBed } from '@angular/core/testing';
 import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { PlayerProgression } from '@app/game-logic/game/games/online-game/game-state';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
-<<<<<<< HEAD:client/src/app/game-logic/game/objectives/objective-loader/objective-converter.service.spec.ts
-=======
-import { ObjectiveLoader } from '@app/game-logic/game/objectives/objective-loader/objective-loader';
-import { PlayerNames } from '@app/game-logic/game/objectives/objective-loader/players-names.interface';
->>>>>>> dev:client/src/app/game-logic/game/objectives/objective-loader/objective-loader.spec.ts
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
+import { ObjectiveLoader } from '@app/game-logic/game/objectives/objective-loader/objective-loader';
+import { PlayerNames } from '@app/game-logic/game/objectives/objective-loader/players-names.interface';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
 import { Objective } from '@app/game-logic/game/objectives/objectives/objective';
+import { HalfAlphabetProgression, TenWordsProgression, TransitionObjective } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 import { Player } from '@app/game-logic/player/player';
 
 describe('ObjectiveLoader', () => {
