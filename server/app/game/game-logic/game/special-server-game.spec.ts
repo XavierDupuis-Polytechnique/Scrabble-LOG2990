@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-classes-per-file */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 
@@ -106,7 +107,7 @@ describe('SpecialServerGame', () => {
     });
 
     it('should allocate private and public objectives', () => {
-        game.allocateObjectives();
+        game['allocateObjectives']();
         expect(game.publicObjectives.length).to.be.equal(PUBLIC_OBJECTIVE_COUNT);
         for (const player of game.players) {
             expect(game.privateObjectives.get(player.name)?.length).to.be.equal(PRIVATE_OBJECTIVE_COUNT);
@@ -114,7 +115,7 @@ describe('SpecialServerGame', () => {
     });
 
     it('should properly update private and public objectives', () => {
-        game.allocateObjectives();
+        game['allocateObjectives']();
         const action = new MockAction(p1);
         const params: ObjectiveUpdateParams = {
             previousGrid: [],
