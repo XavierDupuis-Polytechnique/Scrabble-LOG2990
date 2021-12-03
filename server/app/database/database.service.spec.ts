@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable dot-notation */
+import { BOT_INFO_COLLECTION } from '@app/constants';
 import { LEADERBOARD_CLASSIC_COLLECTION, LEADERBOARD_LOG_COLLECTION } from '@app/database/leaderboard-service/leaderboard-constants';
 import { fail } from 'assert';
 import { expect } from 'chai';
@@ -64,10 +65,10 @@ describe('Database service', () => {
     it('should check the collection exists with a helper function', async () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService['db'] = client.db('scrabble');
-        let isCollectionExists = await databaseService['collectionExists'](LEADERBOARD_LOG_COLLECTION);
+        let isCollectionExists = await databaseService['isCollectionInDb'](LEADERBOARD_LOG_COLLECTION);
         expect(isCollectionExists).to.be.false;
         await databaseService['createLeaderboardCollection'](LEADERBOARD_LOG_COLLECTION);
-        isCollectionExists = await databaseService['collectionExists'](LEADERBOARD_LOG_COLLECTION);
+        isCollectionExists = await databaseService['isCollectionInDb'](LEADERBOARD_LOG_COLLECTION);
         expect(isCollectionExists).to.be.true;
     });
 
@@ -86,5 +87,17 @@ describe('Database service', () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService['db'] = client.db('scrabble');
         await databaseService['createBotInfoCollection']();
+    });
+
+    it('should not create the botinfo collection', async () => {
+        const client = await MongoClient.connect(mongoUri);
+        databaseService['db'] = client.db('scrabble');
+        await databaseService['createBotInfoCollection']();
+
+        let isCollectionExists = await databaseService['isCollectionInDb'](BOT_INFO_COLLECTION);
+        expect(isCollectionExists).to.be.true;
+        await databaseService['createBotInfoCollection']();
+        isCollectionExists = await databaseService['isCollectionInDb'](BOT_INFO_COLLECTION);
+        expect(isCollectionExists).to.be.true;
     });
 });

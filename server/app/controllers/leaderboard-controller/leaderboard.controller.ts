@@ -20,12 +20,12 @@ export class LeaderboardController {
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
                 if (scores.length === 0) {
-                    response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                    response.sendStatus(StatusCodes.BAD_REQUEST);
                     return;
                 }
                 response.send(scores);
             } catch (e) {
-                response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                response.sendStatus(StatusCodes.BAD_REQUEST);
             }
         });
 
@@ -48,12 +48,12 @@ export class LeaderboardController {
             try {
                 const isSuccessful = await this.leaderboardService.deleteScores();
                 if (!isSuccessful) {
-                    response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                    response.sendStatus(StatusCodes.BAD_REQUEST);
                     return;
                 }
                 response.status(StatusCodes.OK).send({ status: 'OK' });
             } catch (e) {
-                response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                response.sendStatus(StatusCodes.BAD_REQUEST);
             }
         });
     }
