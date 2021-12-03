@@ -43,31 +43,21 @@ export class DatabaseService {
         return this.client.close();
     }
 
-    private async populateLeaderboardCollection(name: string): Promise<void> {
-        try {
-            const defaultPopulation = name === LEADERBOARD_CLASSIC_COLLECTION ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
-            if ((await this.db.collection(name).countDocuments()) === 0) {
-                await this.db.collection(name).insertMany(defaultPopulation);
-            }
-        } catch (e) {
-            throw Error('Data base collection population error');
-        }
-    }
-
     private async createLeaderboardCollection(collectionName: string): Promise<void> {
         try {
-            const checkCollectionExists = await this.collectionExists(collectionName);
-            if (!checkCollectionExists) {
-                await this.db.createCollection(collectionName);
-                await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
-                await this.populateLeaderboardCollection(collectionName);
+            const collectionExists = await this.isCollectionInDb(collectionName);
+            if (collectionExists) {
+                return;
             }
+            await this.db.createCollection(collectionName);
+            await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
+            await this.populateLeaderboardCollection(collectionName);
         } catch (e) {
             throw Error('Data base collection creation error');
         }
     }
 
-    private async collectionExists(name: string): Promise<boolean> {
+    private async isCollectionInDb(name: string): Promise<boolean> {
         const collections = await this.db.listCollections().toArray();
         const collection = collections.find((collectionInDb: CollectionInfo) => collectionInDb.name === name);
         return collection !== undefined;
@@ -75,12 +65,12 @@ export class DatabaseService {
 
     private async createBotInfoCollection() {
         try {
-            const checkCollectionExists = await this.collectionExists(BOT_INFO_COLLECTION);
-            if (checkCollectionExists) {
+            const collectionExists = await this.isCollectionInDb(BOT_INFO_COLLECTION);
+            if (collectionExists) {
                 return;
             }
-            await this.database.createCollection(BOT_INFO_COLLECTION);
-            await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
+            await this.db.createCollection(BOT_INFO_COLLECTION);
+            await this.db.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
             this.populateBotInfoCollection();
         } catch (error) {
             throw Error('Data base collection creation error');
@@ -89,9 +79,20 @@ export class DatabaseService {
 
     private async populateBotInfoCollection() {
         try {
-            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
-            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
+            await this.db.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
+            await this.db.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
         } catch (error) {
+            throw Error('Data base collection population error');
+        }
+    }
+
+    private async populateLeaderboardCollection(name: string): Promise<void> {
+        try {
+            const defaultPopulation = name === LEADERBOARD_CLASSIC_COLLECTION ? DEFAULT_LEADERBOARD_CLASSIC : DEFAULT_LEADERBOARD_LOG;
+            if ((await this.db.collection(name).countDocuments()) === 0) {
+                await this.db.collection(name).insertMany(defaultPopulation);
+            }
+        } catch (e) {
             throw Error('Data base collection population error');
         }
     }
