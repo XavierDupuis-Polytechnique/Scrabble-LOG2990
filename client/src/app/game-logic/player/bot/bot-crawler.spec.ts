@@ -216,7 +216,7 @@ describe('BotCrawler2', () => {
         placeTestWords(5, 7, false, 'etre', boardService);
 
         let result: ValidWord[] = [];
-        const expected = 388; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 388;
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
