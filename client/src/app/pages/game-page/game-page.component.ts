@@ -27,10 +27,10 @@ export class GamePageComponent implements OnDestroy {
 
     constructor(
         private gameManager: GameManagerService,
-        public info: GameInfoService,
+        private info: GameInfoService,
         private router: Router,
-        public dialog: MatDialog,
-        public inputController: UIInputControllerService,
+        private dialog: MatDialog,
+        private inputController: UIInputControllerService,
     ) {
         try {
             this.gameManager.startGame();
@@ -107,7 +107,6 @@ export class GamePageComponent implements OnDestroy {
     }
 
     get canExchange(): boolean {
-        console.log(this.inputController.canBeExecuted);
         return (
             this.isItMyTurn &&
             this.inputController.activeAction instanceof UIExchange &&

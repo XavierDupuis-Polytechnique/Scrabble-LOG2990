@@ -125,7 +125,7 @@ describe('GamePageComponent', () => {
     });
 
     it('confirming to abandon should open dialog', () => {
-        const dialogSpy = spyOn(component.dialog, 'open');
+        const dialogSpy = spyOn(component['dialog'], 'open');
         component.abandon();
         expect(dialogSpy).toHaveBeenCalled();
     });
