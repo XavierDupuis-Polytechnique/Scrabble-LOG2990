@@ -96,9 +96,9 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
     setSelectedRow(row: OnlineGameSettings): void {
         if (this.selectedRow === row) {
             this.selectedRow = undefined;
-        } else {
-            this.selectedRow = row;
+            return;
         }
+        this.selectedRow = row;
     }
 
     joinGame(): void {

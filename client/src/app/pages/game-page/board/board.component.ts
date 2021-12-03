@@ -50,20 +50,21 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     }
 
     ngDoCheck() {
-        if (this.canvasDrawer) {
-            if (this.inputController.activeAction instanceof UIPlace) {
-                if (this.inputController.activeAction.pointerPosition) {
-                    this.canvasDrawer.setIndicator(
-                        this.inputController.activeAction.pointerPosition.x,
-                        this.inputController.activeAction.pointerPosition.y,
-                    );
-                    this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
-                }
-            } else {
-                this.canvasDrawer.setIndicator(NOT_FOUND, NOT_FOUND);
-            }
-            this.canvasDrawer.drawGrid(this.board, this.fontSize);
+        if (!this.canvasDrawer) {
+            return;
         }
+        if (this.inputController.activeAction instanceof UIPlace) {
+            if (this.inputController.activeAction.pointerPosition) {
+                this.canvasDrawer.setIndicator(
+                    this.inputController.activeAction.pointerPosition.x,
+                    this.inputController.activeAction.pointerPosition.y,
+                );
+                this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
+            }
+        } else {
+            this.canvasDrawer.setIndicator(NOT_FOUND, NOT_FOUND);
+        }
+        this.canvasDrawer.drawGrid(this.board, this.fontSize);
     }
 
     getFont(): string {

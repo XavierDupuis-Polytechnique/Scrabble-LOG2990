@@ -44,9 +44,9 @@ export class LetterBag {
             const occurrence = occurrences.get(char);
             if (occurrence === undefined) {
                 occurrences.set(char, 1);
-            } else {
-                occurrences.set(char, occurrence + 1);
+                continue;
             }
+            occurrences.set(char, occurrence + 1);
         }
         return occurrences;
     }

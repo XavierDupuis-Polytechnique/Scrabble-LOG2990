@@ -30,16 +30,18 @@ export class EditBotDialogComponent {
         this.botHttpService.editBot(this.editBotInfo, this.bot).subscribe(
             (res) => {
                 const ans = JSON.parse(res.toString());
-                if (!ans) {
-                    this.dialog.open(AlertDialogComponent, {
-                        width: '250px',
-                        data: {
-                            message: 'Le nom du joueur virtuel est déjà utilisé',
-                            button1: 'Ok',
-                            button2: '',
-                        },
-                    });
-                } else this.dialogRef.close();
+                if (ans) {
+                    this.dialogRef.close();
+                    return;
+                }
+                this.dialog.open(AlertDialogComponent, {
+                    width: '250px',
+                    data: {
+                        message: 'Le nom du joueur virtuel est déjà utilisé',
+                        button1: 'Ok',
+                        button2: '',
+                    },
+                });
             },
             (err: HttpErrorResponse) => {
                 if (err.status === HttpStatusCode.NotFound) {
@@ -60,16 +62,18 @@ export class EditBotDialogComponent {
     addBot() {
         this.botHttpService.addBot(this.bot).subscribe((res) => {
             const ans = JSON.parse(res.toString());
-            if (ans === false) {
-                this.dialog.open(AlertDialogComponent, {
-                    width: '250px',
-                    data: {
-                        message: 'Le nom du joueur virtuel est déjà utilisé',
-                        button1: 'Ok',
-                        button2: '',
-                    },
-                });
-            } else this.dialogRef.close();
+            if (ans) {
+                this.dialogRef.close();
+                return;
+            }
+            this.dialog.open(AlertDialogComponent, {
+                width: '250px',
+                data: {
+                    message: 'Le nom du joueur virtuel est déjà utilisé',
+                    button1: 'Ok',
+                    button2: '',
+                },
+            });
         });
     }
 

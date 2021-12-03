@@ -111,29 +111,23 @@ export class ActionValidatorService {
                 x++;
             }
         }
-        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
-            let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
-            if (this.hasAJoker(action.player.letterRack)) {
-                message = message.concat(
-                    ' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.',
-                );
-            }
-            this.sendErrorMessage(message);
-            return false;
+        if (this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
+            return true;
         }
-        return true;
+        let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
+        if (this.hasAJoker(action.player.letterRack)) {
+            message = message.concat(' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.');
+        }
+        this.sendErrorMessage(message);
+        return false;
     }
 
     private checkBoardsLimits(action: PlaceLetter): boolean {
         if (action.placement.y < 0 || action.placement.x < 0) {
             return false;
         }
-        let concernedAxisValue;
-        if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-            concernedAxisValue = action.placement.y;
-        } else {
-            concernedAxisValue = action.placement.x;
-        }
+        const isVertical = action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical;
+        const concernedAxisValue = isVertical ? action.placement.y : action.placement.x;
         const lastLetterPosition = concernedAxisValue + action.word.length - 1;
         const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION;
         if (doesLastPositionOverflow) {
@@ -150,11 +144,9 @@ export class ActionValidatorService {
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
-            if (shouldCheckForNeighbors) {
-                isFillingPlacementCondition = this.boardService.board.hasNeighbour(x, y);
-            } else {
-                isFillingPlacementCondition = x === centerTilePosition && y === centerTilePosition;
-            }
+            isFillingPlacementCondition = shouldCheckForNeighbors
+                ? this.boardService.board.hasNeighbour(x, y)
+                : x === centerTilePosition && y === centerTilePosition;
 
             if (isFillingPlacementCondition) {
                 return true;
@@ -215,25 +207,27 @@ export class ActionValidatorService {
             if (occurence) {
                 occurence++;
                 rackCharsOccurences.set(lowerChar, occurence);
-            } else {
-                rackCharsOccurences.set(lowerChar, 1);
+                continue;
             }
+            rackCharsOccurences.set(lowerChar, 1);
         }
 
-        for (let char of actionChars) {
+        for (const char of actionChars) {
             let occurence = rackCharsOccurences.get(char);
-            if (occurence === undefined || occurence === 0) {
-                if (isStringALowerCaseLetter(char)) {
-                    return false;
-                }
-                occurence = rackCharsOccurences.get(JOKER_CHAR);
-                char = JOKER_CHAR;
-                if (occurence === undefined || occurence === 0) {
-                    return false;
-                }
+            if (occurence !== undefined && occurence > 0) {
+                occurence--;
+                rackCharsOccurences.set(char, occurence);
+                continue;
             }
-            occurence--;
-            rackCharsOccurences.set(char, occurence);
+            if (isStringALowerCaseLetter(char)) {
+                return false;
+            }
+            let jokerOccurence = rackCharsOccurences.get(JOKER_CHAR);
+            if (jokerOccurence === undefined || jokerOccurence === 0) {
+                return false;
+            }
+            jokerOccurence--;
+            rackCharsOccurences.set(JOKER_CHAR, jokerOccurence);
         }
         return true;
     }

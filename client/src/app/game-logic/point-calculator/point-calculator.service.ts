@@ -42,10 +42,11 @@ export class PointCalculatorService {
             return;
         }
         for (const player of game.players) {
-            if (activePlayer !== player) {
-                activePlayer.points += this.calculatePointsOfRack(player);
-                player.points -= this.calculatePointsOfRack(player);
+            if (activePlayer === player) {
+                continue;
             }
+            activePlayer.points += this.calculatePointsOfRack(player);
+            player.points -= this.calculatePointsOfRack(player);
         }
     }
 
