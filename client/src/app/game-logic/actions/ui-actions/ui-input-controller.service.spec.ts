@@ -120,6 +120,17 @@ describe('UIInputControllerService', () => {
         expect(service.activeComponent).toBe(InputComponent.Chatbox);
         expect(service.activeAction).toBeNull();
     });
+
+    it('should not escape from ChatBox when the Escape key is pressed', () => {
+        service.activeComponent = InputComponent.Chatbox;
+        service.activeAction = null;
+
+        const args = ESCAPE;
+        const input: UIInput = { type: InputType.KeyPress, args };
+        service['processInput'](input);
+        expect(service.activeComponent).toBe(InputComponent.Chatbox);
+        expect(service.activeAction).toBeNull();
+    });
     /// //////////////////////// ///
 
     /// processInputComponent TESTS ///

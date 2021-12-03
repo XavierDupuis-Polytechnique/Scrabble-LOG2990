@@ -160,6 +160,9 @@ export class UIInputControllerService {
         const keyPressed = args as string;
         switch (keyPressed) {
             case ESCAPE:
+                if (this.activeComponent === InputComponent.Chatbox) {
+                    return;
+                }
                 this.discardAction();
                 this.activeComponent = InputComponent.Outside;
                 break;
