@@ -1,4 +1,4 @@
-import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
+import { DictionaryServer } from '@app/dictionary-manager/default-dictionary';
 import { NOT_FOUND } from '@app/game/game-logic/constants';
 import * as fs from 'fs';
 import { Service } from 'typedi';

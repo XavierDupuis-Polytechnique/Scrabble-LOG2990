@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { routes } from '@app/modules/app-routing.module';
 import { AppComponent } from '@app/pages/app/app.component';
-import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
+import { NewGamePageComponent } from '@app/pages/new-game-page/new-game-page.component';
 
 describe('Router: App', () => {
     let location: Location;
@@ -16,7 +16,7 @@ describe('Router: App', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [RouterTestingModule.withRoutes(routes)],
-            declarations: [HomepageComponent, ClassicGameComponent],
+            declarations: [HomepageComponent, NewGamePageComponent],
         });
 
         router = TestBed.inject(Router);

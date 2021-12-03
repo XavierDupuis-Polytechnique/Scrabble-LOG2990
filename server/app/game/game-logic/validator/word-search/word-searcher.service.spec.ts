@@ -1,4 +1,4 @@
-import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
+import { DictionaryServerService } from '@app/dictionary-manager/dictionary-server.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';

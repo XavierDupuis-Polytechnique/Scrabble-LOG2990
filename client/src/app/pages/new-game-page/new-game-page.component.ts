@@ -16,13 +16,12 @@ import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { first, takeWhile } from 'rxjs/operators';
 
-// TODO: change name to new-game-component (page)
 @Component({
-    selector: 'app-classic-game',
-    templateUrl: './classic-game.component.html',
-    styleUrls: ['./classic-game.component.scss'],
+    selector: 'app-new-game-page',
+    templateUrl: './new-game-page.component.html',
+    styleUrls: ['./new-game-page.component.scss'],
 })
-export class ClassicGameComponent {
+export class NewGamePageComponent {
     @ViewChild(MatRipple) ripple: MatRipple;
 
     gameSettings: GameSettings;
