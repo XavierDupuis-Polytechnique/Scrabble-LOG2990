@@ -1,6 +1,6 @@
 <div class="container">
     <div class="overflow mat-elevation-z8">
-        <table mat-table [dataSource]="dictDataSource" class="mat-elevation-z8" style="width: 100%">
+        <table id='table' mat-table [dataSource]="dictDataSource" class="mat-elevation-z8">
             <ng-container matColumnDef="title">
                 <th mat-header-cell *matHeaderCellDef>Titre</th>
                 <td mat-cell *matCellDef="let element">{{ element.title }}</td>

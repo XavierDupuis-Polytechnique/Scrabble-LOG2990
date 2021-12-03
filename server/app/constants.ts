@@ -1,6 +1,5 @@
 export const MAX_MESSAGE_LENGTH = 512;
 export const NEW_GAME_TIMEOUT = 5000;
-// TODO: maybe to put in env var
 const DB_USER = 'server';
 const DB_PSW = 'ACyZhkpcAUT812QB';
 const CLUSTER_URL = 'scrabblecluster.mqtnr.mongodb.net';

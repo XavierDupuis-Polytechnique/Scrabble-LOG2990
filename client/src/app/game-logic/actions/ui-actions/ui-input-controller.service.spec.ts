@@ -68,7 +68,6 @@ describe('UIInputControllerService', () => {
         expect(service).toBeTruthy();
     });
 
-    /// canBeExecuted TESTS ///
     it('should, if possible, return the canBeCreated boolean of an activeAction (true)', () => {
         service.activeAction = new UIMove(player);
         service.activeAction.concernedIndexes.add(0);
@@ -83,9 +82,7 @@ describe('UIInputControllerService', () => {
     it('should, if possible, return the canBeCreated boolean of an activeAction (false because null)', () => {
         expect(service.canBeExecuted).toBeFalsy();
     });
-    /// //////////////////////// ///
 
-    /// receive TESTS ///
     it('should call processInputComponent upon receiving an input', () => {
         const input: UIInput = { type: InputType.LeftClick };
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,9 +92,7 @@ describe('UIInputControllerService', () => {
         service.receive(input);
         expect(processInputSpy).toHaveBeenCalledWith(input);
     });
-    /// //////////////////////// ///
 
-    /// processInput TESTS ///
     it('should override Keypress/MouseRoll/LeftClick/RightClick when activeComponent is Chatbox', () => {
         service.activeComponent = InputComponent.Outside;
         service.activeAction = new UIMove(player);
@@ -131,9 +126,7 @@ describe('UIInputControllerService', () => {
         expect(service.activeComponent).toBe(InputComponent.Chatbox);
         expect(service.activeAction).toBeNull();
     });
-    /// //////////////////////// ///
 
-    /// processInputComponent TESTS ///
     it('should update activeComponent with the correct default component when "from" is not provided', () => {
         const input: UIInput = { type: InputType.LeftClick };
         service['processInputComponent'](input);
@@ -160,9 +153,7 @@ describe('UIInputControllerService', () => {
         service['processInputComponent'](input);
         expect(service.activeComponent).toBe(component);
     });
-    /// //////////////////////// ///
 
-    /// updateActiveAction TESTS ///
     it('should create a new UIPlace action if the activeAction is null', () => {
         service.activeComponent = InputComponent.Board;
         service['updateActiveAction'](InputType.LeftClick);
@@ -265,9 +256,7 @@ describe('UIInputControllerService', () => {
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
         expect(board.grid[pos][pos].letterObject.char).toBe(EMPTY_CHAR);
     });
-    /// //////////////////////// ///
 
-    /// processInputType TESTS ///
     it('should refer a LeftClick to the processLeftClick method', () => {
         service.activeAction = new UIMove(player);
         service.activeComponent = InputComponent.Horse;
@@ -341,18 +330,14 @@ describe('UIInputControllerService', () => {
         service['processInputType'](input);
         expect(receiveRightClickSpy).toHaveBeenCalledWith(args);
     });
-    /// //////////////////////// ///
 
-    /// cancel TESTS ///
     it('should call discard (remove the activeAction and set activeComponent to "Outside")', () => {
         service.activeComponent = InputComponent.Horse;
         service.cancel();
         expect(service.activeComponent).toBe(InputComponent.Outside);
         expect(service.activeAction).toBeNull();
     });
-    /// //////////////////////// ///
 
-    /// pass TESTS ///
     it('should pass', () => {
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
             return false;
@@ -361,9 +346,7 @@ describe('UIInputControllerService', () => {
         service.pass(player);
         expect(sendActionSpy).toHaveBeenCalledWith(new PassTurn(player));
     });
-    /// //////////////////////// ///
 
-    /// confirm TESTS ///
     it('should throw error if the activeAction is null', () => {
         service.activeAction = null;
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
@@ -396,5 +379,4 @@ describe('UIInputControllerService', () => {
         expect(service.activeAction).toBeNull();
         expect(sendActionSpy).toHaveBeenCalled();
     });
-    /// //////////////////////// ///
 });

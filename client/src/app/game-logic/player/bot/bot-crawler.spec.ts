@@ -115,7 +115,7 @@ describe('BotCrawler1', () => {
     it('should split a given line in all possible combination supercalifrafilisticexpialidocious', () => {
         const testLine = new ValidWord('super-cali--fragi---listic----expiali-----docious');
         let result: ValidWord[] = [];
-        const expected = 21; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 21;
 
         result = bot.botCrawler['getAllPossibilitiesOnLine'](testLine);
         expect(result.length).toEqual(expected);
@@ -182,7 +182,7 @@ describe('BotCrawler2', () => {
         placeTestWords(7, 6, true, 'tabac', boardService);
 
         let result: ValidWord[] = [];
-        const expected = 143; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 143;
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
@@ -196,7 +196,7 @@ describe('BotCrawler2', () => {
         bot.letterRack = letters;
 
         let result: ValidWord[] = [];
-        const expected = 54; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 54;
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
     });
@@ -216,7 +216,7 @@ describe('BotCrawler2', () => {
         placeTestWords(5, 7, false, 'etre', boardService);
 
         let result: ValidWord[] = [];
-        const expected = 388; // It would take too long to list all the possibilities with any more details in this test.
+        const expected = 388;
 
         result = bot.bruteForceStart();
         expect(result.length).toEqual(expected);
