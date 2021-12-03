@@ -49,11 +49,11 @@ export class AddDictDialogComponent {
     private async readFile(file: File): Promise<Dictionary> {
         const tempFileReader = new FileReader();
         return new Promise((resolve) => {
-            tempFileReader.onload = (res) => {
-                if (res.target === null) {
+            tempFileReader.onload = (response) => {
+                if (response.target === null) {
                     return;
                 }
-                const resultString = res.target.result;
+                const resultString = response.target.result;
                 if (resultString === null) {
                     return;
                 }

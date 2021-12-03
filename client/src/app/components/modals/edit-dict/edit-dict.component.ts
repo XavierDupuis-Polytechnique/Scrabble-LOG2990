@@ -34,8 +34,8 @@ export class EditDictDialogComponent {
             return;
         }
         this.dictHttpService.editDict(this.dictionary, this.tempDict).subscribe(
-            (res) => {
-                if (res) {
+            (response) => {
+                if (response) {
                     this.close();
                     return;
                 }

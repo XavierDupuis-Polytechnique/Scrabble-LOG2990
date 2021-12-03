@@ -38,8 +38,8 @@ export class DictionaryService {
             return this.dictReady$;
         }
         this.dictReady$.next(false);
-        this.dictHttpService.getDict(dictTitle).subscribe((res) => {
-            const dictionary = res as Dictionary;
+        this.dictHttpService.getDict(dictTitle).subscribe((response) => {
+            const dictionary = response as Dictionary;
             this.addWords(dictionary);
             this.isDefaultDict = false;
             this.ready();
