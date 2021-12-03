@@ -30,7 +30,7 @@ export class GamePageComponent implements OnDestroy {
         public info: GameInfoService,
         private router: Router,
         public dialog: MatDialog,
-        private inputController: UIInputControllerService,
+        public inputController: UIInputControllerService,
     ) {
         try {
             this.gameManager.startGame();
@@ -67,9 +67,9 @@ export class GamePageComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
-        this.disconnected$$?.unsubscribe();
-        this.forfeited$$?.unsubscribe();
-        this.endOfGame$$?.unsubscribe();
+        this.disconnected$$.unsubscribe();
+        this.forfeited$$.unsubscribe();
+        this.endOfGame$$.unsubscribe();
     }
 
     receiveInput(input: UIInput) {
@@ -107,6 +107,7 @@ export class GamePageComponent implements OnDestroy {
     }
 
     get canExchange(): boolean {
+        console.log(this.inputController.canBeExecuted);
         return (
             this.isItMyTurn &&
             this.inputController.activeAction instanceof UIExchange &&
