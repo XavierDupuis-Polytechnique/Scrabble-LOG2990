@@ -21,7 +21,7 @@ export class WinnerDialogComponent {
         return `Le gagnant de la partie est ${winnerNames[0]}`;
     }
 
-    getCongradulationMessage(): string {
+    getCongratulationMessage(): string {
         const userIsWinner = this.winnerData.isWinner;
         if (userIsWinner) {
             return 'Félicitation!';

@@ -50,10 +50,10 @@ describe('WinnerDialogComponent', () => {
         expect(component.getWinnerMessage()).toBe('Le gagnant de la partie est a');
     });
 
-    it('should get the correct congradulation message', () => {
+    it('should get the correct congratulation message', () => {
         data.isWinner = true;
-        expect(component.getCongradulationMessage()).toBe('Félicitation!');
+        expect(component.getCongratulationMessage()).toBe('Félicitation!');
         data.isWinner = false;
-        expect(component.getCongradulationMessage()).toBe('Dommage...');
+        expect(component.getCongratulationMessage()).toBe('Dommage...');
     });
 });
