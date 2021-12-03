@@ -66,7 +66,7 @@ describe('GamePageComponent', () => {
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
         mockEndOfGame$ = new Subject<void>();
-        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame', 'isEndOfGame$']);
+        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame', 'isEndOfGame$', 'winner']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, DisconnectedFromServerComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
@@ -200,6 +200,10 @@ describe('GamePageComponent', () => {
     });
 
     it('#isEndOfGame should work properly', () => {
+        const mockPlayer = { name: 'allo' } as unknown as Player;
+        (Object.getOwnPropertyDescriptor(mockInfo, 'winner')?.get as jasmine.Spy<() => Player[]>).and.returnValue([mockPlayer]);
+        (Object.getOwnPropertyDescriptor(mockInfo, 'user')?.get as jasmine.Spy<() => Player>).and.returnValue(mockPlayer);
+        mockEndOfGame$.next();
         (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
         expect(component.isEndOfGame).toBeFalse();
     });
