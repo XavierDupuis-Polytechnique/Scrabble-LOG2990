@@ -47,7 +47,7 @@ export class DatabaseService {
 
     private async createLeaderboardCollection(collectionName: string): Promise<void> {
         try {
-            const checkCollectionExists = await this.collectionExists(collectionName);
+            const checkCollectionExists = await this.isCollectionInDb(collectionName);
             if (!checkCollectionExists) {
                 await this.db.createCollection(collectionName);
                 await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
@@ -58,7 +58,7 @@ export class DatabaseService {
         }
     }
 
-    private async collectionExists(name: string): Promise<boolean> {
+    private async isCollectionInDb(name: string): Promise<boolean> {
         const collections = await this.db.listCollections().toArray();
         const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === name);
         if (isCollectionExist === undefined) {
@@ -69,7 +69,7 @@ export class DatabaseService {
 
     private async createBotInfoCollection() {
         try {
-            const checkCollectionExists = await this.collectionExists(BOT_INFO_COLLECTION);
+            const checkCollectionExists = await this.isCollectionInDb(BOT_INFO_COLLECTION);
             if (checkCollectionExists) {
                 return;
             }

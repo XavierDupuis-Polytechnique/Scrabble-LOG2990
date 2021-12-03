@@ -48,28 +48,43 @@ export class AdminDropDbComponent {
 
     private async dropbotTable() {
         return new Promise<boolean>((resolve) => {
-            this.botHttpService.dropTable().subscribe((response) => {
-                const answer = JSON.parse(response.toString());
-                resolve(answer);
-            });
+            this.botHttpService.dropTable().subscribe(
+                (response) => {
+                    const answer = JSON.parse(response.toString());
+                    resolve(answer);
+                },
+                () => {
+                    resolve(false);
+                },
+            );
         });
     }
 
     private async dropDictTable() {
         return new Promise<boolean>((resolve) => {
-            this.dictHttpService.dropTable().subscribe((response) => {
-                const answer = JSON.parse(response.toString());
-                resolve(answer);
-            });
+            this.dictHttpService.dropTable().subscribe(
+                (response) => {
+                    const answer = JSON.parse(response.toString());
+                    resolve(answer);
+                },
+                () => {
+                    resolve(false);
+                },
+            );
         });
     }
 
     private async dropLeaderboardTables() {
         return new Promise<boolean>((resolve) => {
-            this.leaderboardService.dropCollections().subscribe((response) => {
-                const answer = response.ok;
-                resolve(answer);
-            });
+            this.leaderboardService.dropCollections().subscribe(
+                (response) => {
+                    const answer = response.ok;
+                    resolve(answer);
+                },
+                () => {
+                    resolve(false);
+                },
+            );
         });
     }
 
