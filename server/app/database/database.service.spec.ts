@@ -29,8 +29,6 @@ describe('Database service', () => {
 
     it('should connect to the database when start is called', async () => {
         await databaseService.start(mongoUri);
-        // TODO : Remove next line
-        expect(databaseService['client']).to.not.be.undefined;
         expect(databaseService['db'].databaseName).to.equal('scrabble');
     });
 
@@ -45,8 +43,6 @@ describe('Database service', () => {
 
     it('should no longer be connected if close is called', async () => {
         await databaseService.start(mongoUri);
-        // TODO : Remove next line
-        // await databaseService['closeConnection']();
         try {
             await databaseService['populateLeaderboardCollection'](LEADERBOARD_CLASSIC_COLLECTION);
         } catch (e) {
