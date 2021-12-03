@@ -6,6 +6,7 @@ import { GameCreator } from '@app/game/game-creator/game-creator';
 import { Action } from '@app/game/game-logic/actions/action';
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
+import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
 import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
