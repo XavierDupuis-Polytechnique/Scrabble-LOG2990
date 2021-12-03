@@ -43,7 +43,9 @@ export class DictionaryServerService {
     }
 
     getDictByTitle(dictTitle: string): DictionaryServer | undefined {
-        return this.allDictionary.find((dictionary) => dictionary.title === dictTitle);
+        return this.allDictionary.find(
+            (dictionary) => dictionary.title.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH) === dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH),
+        );
     }
 
     addDict(dictToAdd: DictionaryServer): boolean {
