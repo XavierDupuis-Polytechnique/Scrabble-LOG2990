@@ -52,8 +52,8 @@ export class AdminBotComponent implements OnInit {
 
     private updateList() {
         this.botHttpService.getDataInfo().subscribe(
-            (res) => {
-                const list = res as BotInfo[];
+            (response) => {
+                const list = response as BotInfo[];
                 this.botDataInfo = list;
                 this.dataSource = [...this.botDataInfo];
             },

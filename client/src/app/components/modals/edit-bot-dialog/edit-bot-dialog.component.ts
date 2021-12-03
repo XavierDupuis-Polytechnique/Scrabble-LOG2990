@@ -31,9 +31,9 @@ export class EditBotDialogComponent {
 
     editBot() {
         this.botHttpService.editBot(this.editBotInfo, this.bot).subscribe(
-            (res) => {
-                const ans = JSON.parse(res.toString());
-                if (!ans) {
+            (response) => {
+                const answer = JSON.parse(response.toString());
+                if (!answer) {
                     this.openErrorModal(ERROR_BOT_NAME_ALREADY_USED);
                 } else this.dialogRef.close();
             },
@@ -46,9 +46,9 @@ export class EditBotDialogComponent {
     }
 
     addBot() {
-        this.botHttpService.addBot(this.bot).subscribe((res) => {
-            const ans = JSON.parse(res.toString());
-            if (!ans) {
+        this.botHttpService.addBot(this.bot).subscribe((response) => {
+            const answer = JSON.parse(response.toString());
+            if (!answer) {
                 this.openErrorModal(ERROR_BOT_NAME_ALREADY_USED);
             } else this.dialogRef.close();
         });

@@ -39,8 +39,8 @@ export abstract class Bot extends Player {
         protected botType: BotType,
     ) {
         super('PlaceholderName');
-        this.botHttpService.getDataInfo().subscribe((ans) => {
-            const list = ans as BotInfo[];
+        this.botHttpService.getDataInfo().subscribe((answer) => {
+            const list = answer as BotInfo[];
             list.forEach((bot) => {
                 if (bot.type === botType) {
                     this.botNames.push(bot.name);
