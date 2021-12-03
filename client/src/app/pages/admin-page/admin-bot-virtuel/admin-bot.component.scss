@@ -24,3 +24,8 @@ table {
     background: white;
     color: black;
 }
+
+.overflow-name {
+    max-width: 200px;
+    overflow-wrap: break-word;
+}
