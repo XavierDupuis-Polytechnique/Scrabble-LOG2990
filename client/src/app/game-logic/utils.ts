@@ -1,3 +1,5 @@
+import { MatDialog } from '@angular/material/dialog';
+import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { BOARD_MAX_POSITION, BOARD_MIN_POSITION } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { Tile } from '@app/game-logic/game/board/tile';
@@ -121,4 +123,15 @@ export const wordifyString = (word: string): Tile[] => {
         return newTile;
     });
     return tileList;
+};
+
+export const openErrorDialog = (dialog: MatDialog, width: string, errorContent: string) => {
+    dialog.open(AlertDialogComponent, {
+        width,
+        data: {
+            message: errorContent,
+            button1: 'Ok',
+            button2: '',
+        },
+    });
 };

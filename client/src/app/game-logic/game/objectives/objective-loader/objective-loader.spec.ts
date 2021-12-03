@@ -2,7 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { PRIVATE_OBJECTIVE_COUNT, PUBLIC_OBJECTIVE_COUNT } from '@app/game-logic/constants';
 import { PlayerProgression } from '@app/game-logic/game/games/online-game/game-state';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
-import { ObjectiveConverter } from '@app/game-logic/game/objectives/objective-converter/objective-converter';
+import { ObjectiveLoader } from '@app/game-logic/game/objectives/objective-loader/objective-loader';
+import { PlayerNames } from '@app/game-logic/game/objectives/objective-loader/players-names.interface';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
 import { ObjectiveType } from '@app/game-logic/game/objectives/objective-creator/objective-type';
 import { ObjectiveNotifierService } from '@app/game-logic/game/objectives/objective-notifier/objective-notifier.service';
@@ -10,8 +11,8 @@ import { Objective } from '@app/game-logic/game/objectives/objectives/objective'
 import { HalfAlphabetProgression, TenWordsProgression, TransitionObjective } from '@app/game-logic/game/objectives/objectives/transition-objectives';
 import { Player } from '@app/game-logic/player/player';
 
-describe('ObjectiveConverter', () => {
-    let objectiveConverter: ObjectiveConverter;
+describe('ObjectiveLoader', () => {
+    let objectiveLoader: ObjectiveLoader;
     let game: SpecialOfflineGame;
     let objectiveNotifier: ObjectiveNotifierService;
 
@@ -20,7 +21,7 @@ describe('ObjectiveConverter', () => {
     const player2 = { name: 'player2name' } as Player;
     beforeEach(() => {
         transitionObjectives = [];
-        objectiveConverter = TestBed.inject(ObjectiveConverter);
+        objectiveLoader = TestBed.inject(ObjectiveLoader);
         const players = [player1, player2];
         const objectiveCreator = new ObjectiveCreator(objectiveNotifier);
         game = {
@@ -98,12 +99,14 @@ describe('ObjectiveConverter', () => {
     });
 
     it('should create appropriate number of public objectives', () => {
-        objectiveConverter.transitionObjectives(game, transitionObjectives, player1.name, 'Bot');
+        const playerNames: PlayerNames = { userName: player1.name, botName: 'Bot' };
+        objectiveLoader.loadObjectivesIntoGame(game, transitionObjectives, playerNames);
         expect(game.publicObjectives.length).toEqual(PUBLIC_OBJECTIVE_COUNT);
     });
 
     it('should create appropriate number of private objectives', () => {
-        objectiveConverter.transitionObjectives(game, transitionObjectives, player1.name, 'Bot');
+        const playerNames: PlayerNames = { userName: player1.name, botName: 'Bot' };
+        objectiveLoader.loadObjectivesIntoGame(game, transitionObjectives, playerNames);
         expect(game.privateObjectives.size).toEqual(PRIVATE_OBJECTIVE_COUNT);
     });
 
@@ -122,7 +125,8 @@ describe('ObjectiveConverter', () => {
             progressions: [playerProgression2],
         };
         transitionObjectives.push(fourCorners);
-        objectiveConverter.transitionObjectives(game, transitionObjectives, player1.name, 'Bot');
+        const playerNames: PlayerNames = { userName: player1.name, botName: 'Bot' };
+        objectiveLoader.loadObjectivesIntoGame(game, transitionObjectives, playerNames);
         expect(game.privateObjectives.size).toEqual(PRIVATE_OBJECTIVE_COUNT);
     });
 });

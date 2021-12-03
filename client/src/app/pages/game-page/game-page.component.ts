@@ -38,11 +38,13 @@ export class GamePageComponent implements OnDestroy {
         this.disconnected$$ = this.gameManager.disconnectedFromServer$.subscribe(() => {
             this.openDisconnected();
         });
+
         this.forfeited$$ = this.gameManager.forfeitGameState$.subscribe((forfeitedGameState) => {
             const data = 'Votre adversaire a abandonné la partie et sera remplacé par un joueur virtuel';
             const forfeitedDialogRef = this.dialog.open(ErrorDialogComponent, { disableClose: true, autoFocus: true, data });
+            this.gameManager.instanciateGameFromForfeitedState(forfeitedGameState);
             forfeitedDialogRef.afterClosed().subscribe(() => {
-                this.gameManager.instanciateGameFromForfeitedState(forfeitedGameState);
+                this.gameManager.startConvertedGame(forfeitedGameState);
             });
         });
     }
