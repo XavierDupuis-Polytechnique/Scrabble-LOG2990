@@ -1,6 +1,6 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import {
     DEFAULT_DICTIONARY_TITLE,
     DEFAULT_TIME_PER_TURN,
@@ -10,7 +10,6 @@ import {
     MIN_TIME_PER_TURN,
     STEP_TIME_PER_TURN,
 } from '@app/game-logic/constants';
-import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
 
@@ -46,7 +45,6 @@ export class NewSoloGameFormComponent implements AfterContentChecked, OnInit {
     isDictDeleted = false;
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: GameSettings,
         private dialogRef: MatDialogRef<NewSoloGameFormComponent>,
         private cdref: ChangeDetectorRef,
         private dictHttpService: DictHttpService,

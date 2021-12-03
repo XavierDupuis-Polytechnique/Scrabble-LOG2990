@@ -1,6 +1,6 @@
-import { AfterContentChecked, ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { AfterContentChecked, ChangeDetectorRef, Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import {
     DEFAULT_DICTIONARY_TITLE,
     DEFAULT_TIME_PER_TURN,
@@ -12,7 +12,6 @@ import {
 } from '@app/game-logic/constants';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { OnlineGameSettingsUI } from '@app/socket-handler/interfaces/game-settings-multi.interface';
 
 const NO_WHITE_SPACE_RGX = /^\S*$/;
 
@@ -45,7 +44,6 @@ export class NewOnlineGameFormComponent implements AfterContentChecked {
     dictList: DictInfo[] = [{ title: DEFAULT_DICTIONARY_TITLE, description: '' }] as DictInfo[];
 
     constructor(
-        @Inject(MAT_DIALOG_DATA) public data: OnlineGameSettingsUI,
         private dialogRef: MatDialogRef<NewOnlineGameFormComponent>,
         private cdref: ChangeDetectorRef,
         private dictHttpService: DictHttpService,
