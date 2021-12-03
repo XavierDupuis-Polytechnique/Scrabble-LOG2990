@@ -1,9 +1,19 @@
 import { PlayerProgression } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveType } from '@app/game/game-logic/objectives/objective-creator/objective-type';
+import { FourCorners } from '@app/game/game-logic/objectives/objectives/four-corners/four-corners';
 import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-alphabet/half-alphabet';
+import { NineLettersWord } from '@app/game/game-logic/objectives/objectives/nine-letters-word/nine-letters-word';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
-import { TransitionObjectives } from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
+import {
+    HalfAlphabetProgression,
+    TenWordsProgression,
+    TransitionObjectives,
+} from '@app/game/game-logic/objectives/objectives/objective-converter/transition-objectives';
+import { Palindrome } from '@app/game/game-logic/objectives/objectives/palindrome/palindrome';
+import { SameWordTwice } from '@app/game/game-logic/objectives/objectives/same-word-twice/same-word-twice';
 import { TenWords } from '@app/game/game-logic/objectives/objectives/ten-words/ten-words';
+import { ThreeSameLetters } from '@app/game/game-logic/objectives/objectives/three-same-letters/three-same-letters';
+import { TripleBonus } from '@app/game/game-logic/objectives/objectives/triple-bonus/triple-bonus';
 
 export class OnlineObjectiveConverter {
     convertObjectives(publicObjectives: Objective[], privateObjectives: Map<string, Objective[]>): TransitionObjectives[] {
@@ -26,56 +36,74 @@ export class OnlineObjectiveConverter {
     }
 
     private translateObjective(objective: Objective): TransitionObjectives {
-        // TODO CHANGE THIS
-        const objectiveType = objective.constructor.name;
         const progressions: PlayerProgression[] = [];
 
         objective.progressions.forEach((progression: number, playerName: string) => {
             progressions.push({ playerName, progression });
         });
 
+        const objectiveType = this.getObjectiveType(objective);
         const translatedObjective: TransitionObjectives = {
             owner: objective.owner,
             name: objective.name,
-            progressions,
-            objectiveType: 0,
             description: objective.description,
             points: objective.points,
+            objectiveType,
+            progressions,
         };
-        if (objectiveType === 'FourCorners') {
-            translatedObjective.objectiveType = ObjectiveType.FourCorners;
-        }
-        if (objectiveType === 'TripleBonus') {
-            translatedObjective.objectiveType = ObjectiveType.TripleBonus;
-        }
-        if (objectiveType === 'Palindrome') {
-            translatedObjective.objectiveType = ObjectiveType.Palindrome;
-        }
-        if (objectiveType === 'TenWords') {
-            translatedObjective.objectiveType = ObjectiveType.TenWords;
+
+        if (objective instanceof TenWords) {
             const wordCounts = (objective as TenWords).wordCounts;
-            translatedObjective.wordCounts = [];
+            const tempWordCounts: TenWordsProgression[] = [];
             wordCounts.forEach((wordCount, playerName) => {
-                translatedObjective.wordCounts?.push({ playerName, wordCount });
+                tempWordCounts.push({ playerName, wordCount });
             });
+            translatedObjective.wordCounts = tempWordCounts;
         }
-        if (objectiveType === 'NineLettersWord') {
-            translatedObjective.objectiveType = ObjectiveType.NineLettersWord;
-        }
-        if (objectiveType === 'HalfAlphabet') {
-            translatedObjective.objectiveType = ObjectiveType.HalfAlphabet;
+
+        if (objective instanceof HalfAlphabet) {
             const letters = (objective as HalfAlphabet).placedLetters;
-            translatedObjective.placedLetters = [];
+            const tempPlacedLetters: HalfAlphabetProgression[] = [];
             letters.forEach((placedLetters, playerName) => {
-                translatedObjective.placedLetters?.push({ playerName, placedLetters: [...placedLetters] });
+                tempPlacedLetters.push({ playerName, placedLetters: [...placedLetters] });
             });
-        }
-        if (objectiveType === 'SameWordTwice') {
-            translatedObjective.objectiveType = ObjectiveType.SameWordTwice;
-        }
-        if (objectiveType === 'ThreeSameLetters') {
-            translatedObjective.objectiveType = ObjectiveType.ThreeSameLetters;
+            translatedObjective.placedLetters = tempPlacedLetters;
         }
         return translatedObjective;
+    }
+
+    private getObjectiveType(objective: Objective) {
+        if (objective instanceof FourCorners) {
+            return ObjectiveType.FourCorners;
+        }
+
+        if (objective instanceof TripleBonus) {
+            return ObjectiveType.TripleBonus;
+        }
+
+        if (objective instanceof Palindrome) {
+            return ObjectiveType.Palindrome;
+        }
+
+        if (objective instanceof TenWords) {
+            return ObjectiveType.TenWords;
+        }
+
+        if (objective instanceof NineLettersWord) {
+            return ObjectiveType.NineLettersWord;
+        }
+
+        if (objective instanceof HalfAlphabet) {
+            return ObjectiveType.HalfAlphabet;
+        }
+
+        if (objective instanceof SameWordTwice) {
+            return ObjectiveType.SameWordTwice;
+        }
+
+        if (objective instanceof ThreeSameLetters) {
+            return ObjectiveType.ThreeSameLetters;
+        }
+        throw Error('objective not in objective type');
     }
 }

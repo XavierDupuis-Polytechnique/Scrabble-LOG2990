@@ -2,6 +2,7 @@ import { Tile } from '@app/game/game-logic/board/tile';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import {
+    ForfeitedGameState,
     GameState,
     LightObjective,
     LightPlayer,
@@ -10,6 +11,7 @@ import {
     SpecialGameState,
 } from '@app/game/game-logic/interface/game-state.interface';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
+import { OnlineObjectiveConverter } from '@app/game/game-logic/objectives/objectives/objective-converter/online-objective-converter';
 import { Player } from '@app/game/game-logic/player/player';
 import { Service } from 'typedi';
 
@@ -21,6 +23,26 @@ export class GameCompiler {
             return this.compileSpecialGameState(game, gameState);
         }
         return gameState;
+    }
+
+    compileForfeited(game: ServerGame): ForfeitedGameState {
+        const gameState = this.compile(game);
+        const lastGameState = gameState as ForfeitedGameState;
+        lastGameState.consecutivePass = game.consecutivePass;
+        lastGameState.letterBag = game.letterBag.gameLetters;
+        lastGameState.randomBonus = game.randomBonus;
+        lastGameState.objectives = this.compileForfeitedObjectives(game);
+        return lastGameState;
+    }
+
+    private compileForfeitedObjectives(game: ServerGame) {
+        if (!(game instanceof SpecialServerGame)) {
+            return [];
+        }
+        const objectiveConverter = new OnlineObjectiveConverter();
+        const publicObj = game.publicObjectives;
+        const privateObj = game.privateObjectives;
+        return objectiveConverter.convertObjectives(publicObj, privateObj);
     }
 
     private compileGameState(game: ServerGame): GameState {
