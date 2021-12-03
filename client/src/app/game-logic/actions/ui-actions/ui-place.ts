@@ -171,20 +171,9 @@ export class UIPlace implements UIAction {
         if (!this.pointerPosition) {
             return;
         }
-
-        let deltaX = 0;
-        let deltaY = 0;
-        if (this.direction === Direction.Horizontal) {
-            deltaX = 1;
-        } else {
-            deltaY = 1;
-        }
-
-        let x = this.pointerPosition.x;
-        let y = this.pointerPosition.y;
+        let [x, y] = [this.pointerPosition.x, this.pointerPosition.y];
         do {
-            x += deltaX;
-            y += deltaY;
+            [x, y] = this.direction === Direction.Horizontal ? [x + 1, y] : [x, y + 1];
             if (this.canPlaceALetterHere(x, y)) {
                 this.pointerPosition = { x, y };
                 return;

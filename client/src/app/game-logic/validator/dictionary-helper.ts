@@ -119,11 +119,7 @@ export class DictionaryHelper {
     placedWordReformat(placedLetters: string) {
         let placedWord = '';
         for (const letter of placedLetters) {
-            if (letter === '-') {
-                placedWord += '.';
-            } else {
-                placedWord += letter;
-            }
+            placedWord = letter === '-' ? placedWord + '.' : placedWord + letter;
         }
         return placedWord;
     }
@@ -228,12 +224,7 @@ export class DictionaryHelper {
     }
 
     private setStartingTile(partWord: ValidWord, newWord: ValidWord, foundIndex: number) {
-        if (partWord.isVertical) {
-            newWord.startingTileX = partWord.startingTileX;
-            newWord.startingTileY = partWord.startingTileY - foundIndex;
-        } else {
-            newWord.startingTileX = partWord.startingTileX - foundIndex;
-            newWord.startingTileY = partWord.startingTileY;
-        }
+        const [x, y] = [partWord.startingTileX, partWord.startingTileY];
+        [newWord.startingTileX, newWord.startingTileY] = partWord.isVertical ? [x, y - foundIndex] : [x - foundIndex, y];
     }
 }

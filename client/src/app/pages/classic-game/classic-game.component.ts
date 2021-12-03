@@ -177,12 +177,7 @@ export class ClassicGameComponent {
 
     private startSoloGame() {
         this.gameReady$$?.unsubscribe();
-        let gameReady$: BehaviorSubject<boolean>;
-        if (this.isSpecialGame) {
-            gameReady$ = this.gameManager.createSpecialGame(this.gameSettings);
-        } else {
-            gameReady$ = this.gameManager.createGame(this.gameSettings);
-        }
+        const gameReady$ = this.createGame(this.gameSettings);
         if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
         } else {
@@ -197,15 +192,18 @@ export class ClassicGameComponent {
         }
     }
 
+    private createGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
+        if (this.isSpecialGame) {
+            return this.gameManager.createSpecialGame(gameSettings);
+        }
+        return this.gameManager.createGame(gameSettings);
+    }
+
     get isSpecialGame() {
         return this.gameMode === GameMode.Special;
     }
 
     set isSpecialGame(value: boolean) {
-        if (value) {
-            this.gameMode = GameMode.Special;
-        } else {
-            this.gameMode = GameMode.Classic;
-        }
+        this.gameMode = value ? GameMode.Special : (this.gameMode = GameMode.Classic);
     }
 }

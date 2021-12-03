@@ -86,6 +86,7 @@ export class ActionValidatorService {
     private checkLettersCanBePlaced(action: PlaceLetter) {
         let x = action.placement.x;
         let y = action.placement.y;
+        const direction = action.placement.direction;
         let lettersNeeded = '';
 
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
@@ -105,11 +106,7 @@ export class ActionValidatorService {
                     return false;
                 }
             }
-            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
+            [x, y] = direction.toUpperCase() === Direction.Vertical ? [x, y + 1] : [x + 1, y];
         }
         if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
             let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
@@ -125,18 +122,16 @@ export class ActionValidatorService {
     }
 
     private checkBoardsLimits(action: PlaceLetter): boolean {
-        if (action.placement.y < 0 || action.placement.x < 0) {
+        const coords = { x: action.placement.x, y: action.placement.y };
+        if (coords.y < 0 || coords.x < 0) {
             return false;
         }
-        let concernedAxisValue;
-        if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-            concernedAxisValue = action.placement.y;
-        } else {
-            concernedAxisValue = action.placement.x;
-        }
-        const lastLetterPosition = concernedAxisValue + action.word.length - 1;
-        const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION;
-        if (doesLastPositionOverflow) {
+        const direction = action.placement.direction;
+        const word = action.word;
+
+        const startCoord = direction.toUpperCase() === Direction.Vertical ? coords.y : coords.x;
+        const lastLetterPosition = startCoord + word.length - 1;
+        if (lastLetterPosition > BOARD_MAX_POSITION) {
             this.sendErrorMessage('Commande impossible à réaliser : Les lettres déboderont de la grille');
             return false;
         }
@@ -145,6 +140,7 @@ export class ActionValidatorService {
 
     private checkPlaceLetterBoardRequirement(action: PlaceLetter, shouldCheckForNeighbors: boolean): boolean {
         const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
+        const direction = action.placement.direction;
         let isFillingPlacementCondition = false;
         let x = action.placement.x;
         let y = action.placement.y;
@@ -159,15 +155,10 @@ export class ActionValidatorService {
             if (isFillingPlacementCondition) {
                 return true;
             }
-
-            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
+            [x, y] = direction.toUpperCase() === Direction.Vertical ? [x, y + 1] : [x + 1, y];
         }
-
-        if (this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char === EMPTY_CHAR) {
+        const centerTile = this.boardService.board.grid[centerTilePosition][centerTilePosition];
+        if (centerTile.letterObject.char === EMPTY_CHAR) {
             this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
         } else {
             this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
@@ -177,11 +168,12 @@ export class ActionValidatorService {
     }
 
     private checkExchangeLetter(action: ExchangeLetter): boolean {
-        if (action.player instanceof HardBot && this.gameInfo.numberOfLettersRemaining >= action.lettersToExchange.length) {
+        const lettersLeft = this.gameInfo.numberOfLettersRemaining;
+        if (action.player instanceof HardBot && lettersLeft >= action.lettersToExchange.length) {
             return true;
         }
 
-        if (this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
+        if (lettersLeft < RACK_LETTER_COUNT) {
             this.sendErrorMessage(
                 'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de ' + RACK_LETTER_COUNT,
             );

@@ -94,16 +94,8 @@ export class PlaceLetter extends Action {
         this.lettersToRemoveInRack = [];
         this.affectedCoords = [];
         for (let wordIndex = 0; wordIndex < this.word.length; wordIndex++) {
-            let char: string;
-            let x = startX;
-            let y = startY;
-            if (direction === Direction.Horizontal) {
-                x = startX + wordIndex;
-                char = grid[y][x].letterObject.char;
-            } else {
-                y = startY + wordIndex;
-                char = grid[y][x].letterObject.char;
-            }
+            const [x, y] = direction === Direction.Horizontal ? [startX + wordIndex, startY] : [startX, startY + wordIndex];
+            const char = grid[y][x].letterObject.char;
 
             if (char === EMPTY_CHAR) {
                 const charToCreate = this.word[wordIndex];

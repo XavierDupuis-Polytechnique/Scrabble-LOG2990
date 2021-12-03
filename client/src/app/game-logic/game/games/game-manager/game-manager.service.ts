@@ -143,13 +143,8 @@ export class GameManagerService {
         const username = userAuth.playerName;
         const timePerTurn = Number(gameSettings.timePerTurn);
         const gameCreationParams: OnlineGameCreationParams = { id: gameSettings.id, timePerTurn, username };
-        let newGame;
-        if (gameSettings.gameMode === GameMode.Classic) {
-            newGame = this.gameCreator.createOnlineGame(gameCreationParams);
-        } else {
-            newGame = this.gameCreator.createSpecialOnlineGame(gameCreationParams);
-        }
-        this.game = newGame;
+
+        this.game = this.createOnlineGame(gameCreationParams, gameSettings.gameMode);
         const onlineGame = this.game as OnlineGame;
         const opponentName = gameSettings.playerName === username ? gameSettings.opponentName : gameSettings.playerName;
         const players = this.createOnlinePlayers(username, opponentName);
@@ -197,11 +192,21 @@ export class GameManagerService {
         const timePerTurn = (this.game as OnlineGame).timePerTurn;
         this.stopGame();
         const gameCreationParams: OfflineGameCreationParams = { timePerTurn, randomBonus: forfeitedGameState.randomBonus };
-        if (isSpecial) {
-            this.game = this.gameCreator.createSpecialOfflineGame(gameCreationParams, true);
-        } else {
-            this.game = this.gameCreator.createOfflineGame(gameCreationParams, true);
+        this.game = this.createOfflineGame(gameCreationParams, isSpecial);
+    }
+
+    private createOnlineGame(gameCreationParams: OnlineGameCreationParams, mode: GameMode) {
+        if (mode === GameMode.Classic) {
+            return this.gameCreator.createOnlineGame(gameCreationParams);
         }
+        return this.gameCreator.createSpecialOnlineGame(gameCreationParams);
+    }
+
+    private createOfflineGame(gameCreationParams: OfflineGameCreationParams, isSpecial: boolean) {
+        if (isSpecial) {
+            return this.gameCreator.createSpecialOfflineGame(gameCreationParams);
+        }
+        return this.gameCreator.createOfflineGame(gameCreationParams);
     }
 
     private transitionBoard(forfeitedGameState: ForfeitedGameState) {
@@ -233,7 +238,7 @@ export class GameManagerService {
 
     private updateLeaboardWhenGameEnds(game: Game, gameMode: GameMode) {
         game.isEndOfGame$.pipe(first()).subscribe(() => {
-            if (this.game === undefined) {
+            if (!this.game) {
                 return;
             }
             this.updateLeaderboard(this.game.players, gameMode);
@@ -253,7 +258,7 @@ export class GameManagerService {
     }
 
     private updateLeaderboard(players: Player[], mode: GameMode) {
-        if (players === undefined) {
+        if (!players) {
             return;
         }
         for (const player of players) {
