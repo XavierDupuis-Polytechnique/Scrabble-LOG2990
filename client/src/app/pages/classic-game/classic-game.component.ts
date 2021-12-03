@@ -116,13 +116,7 @@ export class ClassicGameComponent {
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
             if (botDifficulty) {
                 this.socketHandler.disconnectSocket();
-                this.gameSettings = {
-                    playerName: this.gameSettings.playerName,
-                    botDifficulty,
-                    randomBonus: this.gameSettings.randomBonus,
-                    timePerTurn: this.gameSettings.timePerTurn,
-                    dictTitle: this.gameSettings.dictTitle,
-                };
+                this.gameSettings.botDifficulty = botDifficulty;
                 this.startSoloGame();
             }
         });
@@ -177,12 +171,7 @@ export class ClassicGameComponent {
 
     private startSoloGame() {
         this.gameReady$$?.unsubscribe();
-        let gameReady$: BehaviorSubject<boolean>;
-        if (this.isSpecialGame) {
-            gameReady$ = this.gameManager.createSpecialGame(this.gameSettings);
-        } else {
-            gameReady$ = this.gameManager.createGame(this.gameSettings);
-        }
+        const gameReady$ = this.createGame(this.gameSettings);
         if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
         } else {
@@ -197,15 +186,18 @@ export class ClassicGameComponent {
         }
     }
 
+    private createGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
+        if (this.isSpecialGame) {
+            return this.gameManager.createSpecialGame(gameSettings);
+        }
+        return this.gameManager.createGame(gameSettings);
+    }
+
     get isSpecialGame() {
         return this.gameMode === GameMode.Special;
     }
 
     set isSpecialGame(value: boolean) {
-        if (value) {
-            this.gameMode = GameMode.Special;
-        } else {
-            this.gameMode = GameMode.Classic;
-        }
+        this.gameMode = value ? GameMode.Special : (this.gameMode = GameMode.Classic);
     }
 }

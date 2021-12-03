@@ -64,8 +64,8 @@ export class AdminDictComponent implements OnInit {
 
     private updateDictMap(): void {
         this.dictHttpService.getDictInfoList().subscribe(
-            (res) => {
-                const list = res as DictInfo[];
+            (response) => {
+                const list = response as DictInfo[];
                 this.dictDataSource = list;
             },
             () => {

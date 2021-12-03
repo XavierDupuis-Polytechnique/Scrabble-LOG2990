@@ -5,7 +5,6 @@ const DB_PSW = 'ACyZhkpcAUT812QB';
 const CLUSTER_URL = 'scrabblecluster.mqtnr.mongodb.net';
 export const DATABASE_URL = `mongodb+srv://${DB_USER}:${DB_PSW}@${CLUSTER_URL}/<dbname>?retryWrites=true&w=majority`;
 export const DATABASE_NAME = 'scrabble';
-export const BOT_NAME_COLLECTION = 'botNames';
 export const DICTIONARY_COLLECTION = 'dictionary';
 export const BOT_INFO_COLLECTION = 'botInfos';
 export const N_CORNERS = 4;

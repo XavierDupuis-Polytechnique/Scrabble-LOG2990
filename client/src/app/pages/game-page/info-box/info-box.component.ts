@@ -35,22 +35,7 @@ export class InfoBoxComponent implements OnInit {
         );
     }
 
-    showWinner(): string {
-        const winner = this.info.winner;
-        let winnerString = '';
-        if (winner.length !== 1) {
-            winnerString = winner[0].name + ' et ' + winner[1].name;
-        } else {
-            winnerString = winner[0].name;
-        }
-        return winnerString;
-    }
-
     get numberOfLettersRemaining(): number {
         return this.info.numberOfLettersRemaining;
-    }
-
-    get isEndOfGame(): boolean {
-        return this.info.isEndOfGame;
     }
 }

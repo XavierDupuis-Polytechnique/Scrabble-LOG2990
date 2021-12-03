@@ -32,7 +32,7 @@
                     </div>
                 </td>
             </ng-container>
-            <tr mat-header-row *matHeaderRowDef="dictDisplayedColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="dictDisplayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: dictDisplayedColumns"></tr>
         </table>
     </div>

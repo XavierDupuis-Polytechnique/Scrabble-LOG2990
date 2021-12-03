@@ -76,13 +76,13 @@ export class UIInputControllerService {
     }
 
     private processInputComponent(input: UIInput) {
-        if (input.from === undefined) {
-            if (this.activeComponent === InputComponent.Outside) {
-                this.activeComponent = UIInputControllerService.defaultComponent;
-            }
+        if (input.from) {
+            this.activeComponent = input.from;
             return;
         }
-        this.activeComponent = input.from;
+        if (this.activeComponent === InputComponent.Outside) {
+            this.activeComponent = UIInputControllerService.defaultComponent;
+        }
     }
 
     private updateActiveAction(inputType: InputType): void {

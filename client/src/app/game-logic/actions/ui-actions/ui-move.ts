@@ -74,19 +74,21 @@ export class UIMove implements UIAction {
     }
 
     private moveRight() {
-        if (this.canBeCreated) {
-            const currentLetterIndex = this.getCurrentIndex();
-            const rightLetterIndex = (currentLetterIndex + 1) % RACK_LETTER_COUNT;
-            this.swapLetters(currentLetterIndex, rightLetterIndex);
+        if (!this.canBeCreated) {
+            return;
         }
+        const currentLetterIndex = this.getCurrentIndex();
+        const rightLetterIndex = (currentLetterIndex + 1) % RACK_LETTER_COUNT;
+        this.swapLetters(currentLetterIndex, rightLetterIndex);
     }
 
     private moveLeft() {
-        if (this.canBeCreated) {
-            const currentLetterIndex = this.getCurrentIndex();
-            const leftLetterIndex = (currentLetterIndex + RACK_LETTER_COUNT - 1) % RACK_LETTER_COUNT;
-            this.swapLetters(currentLetterIndex, leftLetterIndex);
+        if (!this.canBeCreated) {
+            return;
         }
+        const currentLetterIndex = this.getCurrentIndex();
+        const leftLetterIndex = (currentLetterIndex + RACK_LETTER_COUNT - 1) % RACK_LETTER_COUNT;
+        this.swapLetters(currentLetterIndex, leftLetterIndex);
     }
 
     private swapLetters(oldIndex: number, newIndex: number) {

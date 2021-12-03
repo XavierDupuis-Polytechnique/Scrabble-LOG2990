@@ -137,7 +137,7 @@ export class ServerGame {
     }
 
     private startTurn() {
-        if (this.endReason !== undefined) {
+        if (this.endReason) {
             this.onEndOfGame(this.endReason);
             return;
         }
@@ -154,7 +154,7 @@ export class ServerGame {
             return;
         }
 
-        if (this.endReason !== undefined) {
+        if (this.endReason) {
             this.onEndOfGame(this.endReason);
             return;
         }

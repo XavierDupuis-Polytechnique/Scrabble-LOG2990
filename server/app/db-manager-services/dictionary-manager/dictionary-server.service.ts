@@ -41,14 +41,8 @@ export class DictionaryServerService {
         return '';
     }
 
-    getDictByTitle(dictTitle: string): DictionaryServer | boolean {
-        for (const dict of this.allDictionary) {
-            if (dict.title !== dictTitle) {
-                continue;
-            }
-            return dict;
-        }
-        return false;
+    getDictByTitle(dictTitle: string): DictionaryServer | undefined {
+        return this.allDictionary.find((dictionary) => dictionary.title === dictTitle);
     }
 
     addDict(dictToAdd: DictionaryServer): boolean {

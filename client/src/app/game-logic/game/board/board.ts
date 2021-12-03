@@ -164,10 +164,11 @@ export class Board {
             }
         }
         for (const elem of listMultiplicator) {
+            const tile = this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE];
             if (elem.type === MultiType.Letter) {
-                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
+                tile.letterMultiplicator = elem.v;
             } else {
-                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].wordMultiplicator = elem.v;
+                tile.wordMultiplicator = elem.v;
             }
         }
     }

@@ -20,14 +20,10 @@ export const DATABASE_NAME = 'scrabble';
 @Service()
 export class DatabaseService {
     private db: Db;
-    // TODO : Remove next line
-    private client: MongoClient;
 
     async start(url: string = DATABASE_URL) {
         try {
             const client = await MongoClient.connect(url);
-            // TODO : Remove next line
-            this.client = client;
             this.db = client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
@@ -38,9 +34,47 @@ export class DatabaseService {
         this.createBotInfoCollection();
     }
 
-    // TODO : Remove next function
-    async closeConnection(): Promise<void> {
-        return this.client.close();
+    private async createLeaderboardCollection(collectionName: string): Promise<void> {
+        try {
+            const collectionExists = await this.isCollectionInDb(collectionName);
+            if (collectionExists) {
+                return;
+            }
+            await this.db.createCollection(collectionName);
+            await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
+            await this.populateLeaderboardCollection(collectionName);
+        } catch (e) {
+            throw Error('Data base collection creation error');
+        }
+    }
+
+    private async isCollectionInDb(name: string): Promise<boolean> {
+        const collections = await this.db.listCollections().toArray();
+        const collection = collections.find((collectionInDb: CollectionInfo) => collectionInDb.name === name);
+        return collection !== undefined;
+    }
+
+    private async createBotInfoCollection() {
+        try {
+            const collectionExists = await this.isCollectionInDb(BOT_INFO_COLLECTION);
+            if (collectionExists) {
+                return;
+            }
+            await this.db.createCollection(BOT_INFO_COLLECTION);
+            await this.db.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
+            this.populateBotInfoCollection();
+        } catch (error) {
+            throw Error('Data base collection creation error');
+        }
+    }
+
+    private async populateBotInfoCollection() {
+        try {
+            await this.db.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
+            await this.db.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
+        } catch (error) {
+            throw Error('Data base collection population error');
+        }
     }
 
     private async populateLeaderboardCollection(name: string): Promise<void> {
@@ -50,51 +84,6 @@ export class DatabaseService {
                 await this.db.collection(name).insertMany(defaultPopulation);
             }
         } catch (e) {
-            throw Error('Data base collection population error');
-        }
-    }
-
-    private async createLeaderboardCollection(collectionName: string): Promise<void> {
-        try {
-            const checkCollectionExists = await this.collectionExists(collectionName);
-            if (!checkCollectionExists) {
-                await this.db.createCollection(collectionName);
-                await this.db.collection(collectionName).createIndex({ name: 1 }, { unique: true });
-                await this.populateLeaderboardCollection(collectionName);
-            }
-        } catch (e) {
-            throw Error('Data base collection creation error');
-        }
-    }
-
-    private async collectionExists(name: string): Promise<boolean> {
-        const collections = await this.db.listCollections().toArray();
-        const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === name);
-        if (isCollectionExist === undefined) {
-            return false;
-        }
-        return true;
-    }
-
-    private async createBotInfoCollection() {
-        try {
-            const checkCollectionExists = await this.collectionExists(BOT_INFO_COLLECTION);
-            if (checkCollectionExists) {
-                return;
-            }
-            await this.database.createCollection(BOT_INFO_COLLECTION);
-            await this.database.collection(BOT_INFO_COLLECTION).createIndex({ name: 1 }, { unique: true });
-            this.populateBotInfoCollection();
-        } catch (error) {
-            throw Error('Data base collection creation error');
-        }
-    }
-
-    private async populateBotInfoCollection() {
-        try {
-            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EASY_BOT);
-            await this.database.collection(BOT_INFO_COLLECTION).insertMany(DEFAULT_EXPERT_BOT);
-        } catch (error) {
             throw Error('Data base collection population error');
         }
     }

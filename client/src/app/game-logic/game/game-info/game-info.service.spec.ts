@@ -38,6 +38,7 @@ describe('GameInfoService', () => {
     const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
     const mockEndOfTurn$ = new Subject<void>();
+    const mockEndOfGame$ = new Subject<void>();
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }],
@@ -47,9 +48,10 @@ describe('GameInfoService', () => {
         board = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
-        specialGame = jasmine.createSpyObj('SpecialOfflineGame', ['start'], ['endTurn$']);
+        specialGame = jasmine.createSpyObj('SpecialOfflineGame', ['start'], ['endTurn$', 'isEndOfGame$']);
 
         (Object.getOwnPropertyDescriptor(specialGame, 'endTurn$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfTurn$);
+        (Object.getOwnPropertyDescriptor(specialGame, 'isEndOfGame$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfGame$);
 
         game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];

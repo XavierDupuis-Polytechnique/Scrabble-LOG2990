@@ -16,7 +16,14 @@ export class LeaderboardService {
     }
 
     updateLeaderboard(mode: GameMode, score: Score) {
-        this.http.post(`${this.url}/gameMode?gameMode=${mode}`, score, { responseType: 'text' }).subscribe();
+        this.http.post(`${this.url}/gameMode?gameMode=${mode}`, score, { responseType: 'text' }).subscribe(
+            () => {
+                return;
+            },
+            () => {
+                return;
+            },
+        );
     }
 
     dropCollections(): Observable<HttpResponse<number>> {

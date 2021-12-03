@@ -1,4 +1,3 @@
-import { Vec2 } from '@app/classes/vec2';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { PlaceLetter } from '@app/game/game-logic/actions/place-letter';
 import { Tile } from '@app/game/game-logic/board/tile';
@@ -64,23 +63,15 @@ export class PointCalculatorService {
     }
 
     private desactivateMultiplicators(action: PlaceLetter, grid: Tile[][]): void {
-        const startCoord: Vec2 = { x: action.placement.x, y: action.placement.y };
+        const [x, y] = [action.placement.x, action.placement.y];
         const direction = action.placement.direction;
         const word = action.word;
-        if (direction === Direction.Horizontal) {
-            const y = startCoord.y;
-            const wordEnd = startCoord.x + word.length;
-            for (let x = startCoord.x; x < wordEnd; x++) {
-                grid[y][x].letterMultiplicator = 1;
-                grid[y][x].wordMultiplicator = 1;
-            }
-        } else {
-            const x = startCoord.x;
-            const wordEnd = startCoord.y + word.length;
-            for (let y = startCoord.y; y < wordEnd; y++) {
-                grid[y][x].letterMultiplicator = 1;
-                grid[y][x].wordMultiplicator = 1;
-            }
+
+        let startCoord = direction === Direction.Horizontal ? x : y;
+        const wordEnd = startCoord + word.length;
+        for (startCoord; startCoord < wordEnd; startCoord++) {
+            grid[y][x].letterMultiplicator = 1;
+            grid[y][x].wordMultiplicator = 1;
         }
     }
 }

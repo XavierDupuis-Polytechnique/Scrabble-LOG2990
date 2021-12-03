@@ -24,9 +24,9 @@ export abstract class Player {
             const occcurences: Letter[] | undefined = lettersInRack.get(char);
             if (occcurences) {
                 occcurences.push(letter);
-            } else {
-                lettersInRack.set(char, [letter]);
+                continue;
             }
+            lettersInRack.set(char, [letter]);
         }
 
         const lettersFromRack = [];
@@ -39,9 +39,9 @@ export abstract class Player {
                     throw Error('Some letters are invalid');
                 }
                 lettersFromRack.push(letterToAdd);
-            } else {
-                throw Error('Some letters are invalid');
+                continue;
             }
+            throw Error('Some letters are invalid');
         }
         return lettersFromRack;
     }

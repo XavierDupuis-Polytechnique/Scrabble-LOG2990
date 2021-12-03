@@ -1,56 +1,26 @@
-input[type='file'] {
-    display: none;
-}
-
-#table{
-    width: 100%;
-}
-
 .uploadContainer {
     display: flex;
     align-items: center;
     flex-direction: column;
 }
 
-.fileContainer {
-    height: 350px;
-    width: 350px;
-    background-color: grey;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 50px;
-    padding: 10px;
-}
-
-.downloadIcon {
-    font-size: 50px;
-    height: 50px;
-    width: 50px;
-    padding: 35px;
-}
-
-
-.selectedFileText {
-    margin-top: 20px;
-    height: 60px;
-    color: black;
-}
-
 .container {
+    padding: 3%;
     display: flex;
     flex-direction: column;
-    height: 93vh !important;
 }
 
 .overflow {
-    // height: 50%;
+    max-height: 500px;
     overflow: auto;
 }
 
 .addButton {
-    left: 90%;
-    position: absolute;
-    top: 90%;
+    margin-left: 90%;
+    position: fixed;
+    margin-top: 75vh;
+}
+
+.mat-header-cell {
+    font-size: medium;
 }

@@ -25,20 +25,24 @@ export class AdminDropDbComponent {
                 width: '250px',
                 data: {
                     message: `
-                    Attention si vous continuez, vous aller perdre toutes les données de la base de données.
-                    Voullez-vous continuer le processus?`,
+                    Attention si vous continuez, vous allez perdre toutes les données de la base de données.
+                    Voulez-vous continuer le processus?`,
                     button1: 'Non',
                     button2: 'Oui',
                 },
             })
             .afterClosed()
-            .subscribe(async (ans) => {
-                if (ans === true) {
+            .subscribe(async (answer) => {
+                if (answer) {
                     const isbotDropOk = await this.dropbotTable();
                     const isDictOk = await this.dropDictTable();
                     const isDeleteLBOk = await this.dropLeaderboardTables();
                     if (!isbotDropOk || !isDictOk || !isDeleteLBOk) {
-                        openErrorDialog(this.dialog, '250px', 'Une erreur est survenue avec la base de données');
+                        openErrorDialog(
+                            this.dialog,
+                            '300px',
+                            'Une erreur est survenue avec la base de données. Impossible de réinitialiser les données.',
+                        );
                         return;
                     }
                     this.refresh();
@@ -48,28 +52,43 @@ export class AdminDropDbComponent {
 
     private async dropbotTable() {
         return new Promise<boolean>((resolve) => {
-            this.botHttpService.dropTable().subscribe((res) => {
-                const ans = JSON.parse(res.toString());
-                resolve(ans);
-            });
+            this.botHttpService.dropTable().subscribe(
+                (response) => {
+                    const answer = JSON.parse(response.toString());
+                    resolve(answer);
+                },
+                () => {
+                    resolve(false);
+                },
+            );
         });
     }
 
     private async dropDictTable() {
         return new Promise<boolean>((resolve) => {
-            this.dictHttpService.dropTable().subscribe((res) => {
-                const ans = JSON.parse(res.toString());
-                resolve(ans);
-            });
+            this.dictHttpService.dropTable().subscribe(
+                (response) => {
+                    const answer = JSON.parse(response.toString());
+                    resolve(answer);
+                },
+                () => {
+                    resolve(false);
+                },
+            );
         });
     }
 
     private async dropLeaderboardTables() {
         return new Promise<boolean>((resolve) => {
-            this.leaderboardService.dropCollections().subscribe((res) => {
-                const ans = res.ok;
-                resolve(ans);
-            });
+            this.leaderboardService.dropCollections().subscribe(
+                (response) => {
+                    const answer = response.ok;
+                    resolve(answer);
+                },
+                () => {
+                    resolve(false);
+                },
+            );
         });
     }
 

@@ -1,4 +1,5 @@
 /* eslint-disable dot-notation */
+import { HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
@@ -6,7 +7,7 @@ import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { BotHttpService } from '@app/services/bot-http.service';
 import { DictHttpService } from '@app/services/dict-http.service';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AdminDropDbComponent } from './admin-drop-db.component';
 
 describe('AdminDropDbComponent', () => {
@@ -26,7 +27,8 @@ describe('AdminDropDbComponent', () => {
         const dummyAnswer = of(true);
         botHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
         dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
-
+        const dummyHttpRes = new HttpResponse<number>({ status: 200 });
+        leaderboardServiceMock.dropCollections.and.returnValue(of(dummyHttpRes));
         await TestBed.configureTestingModule({
             imports: [AppMaterialModule],
             declarations: [AdminDropDbComponent],
@@ -44,14 +46,13 @@ describe('AdminDropDbComponent', () => {
         component = fixture.componentInstance;
         fixture.detectChanges();
         component['refresh'] = jasmine.createSpy('refresh');
-        component['dropLeaderboardTables'] = jasmine.createSpy('dropLeaderboardTables');
     });
 
     it('should create', () => {
         expect(component).toBeTruthy();
     });
 
-    it('dropTables should show alert dialog and call dropTable to service', () => {
+    it('dropTables should show alert dialog and call dropTable to service', async () => {
         matDialogMock.open.and.returnValue({
             afterClosed: () => {
                 return of(true);
@@ -76,8 +77,29 @@ describe('AdminDropDbComponent', () => {
     });
 
     it('dropTables cover if path', async () => {
+        const dummyAnswer = new HttpResponse<number>({ status: 404 });
+        leaderboardServiceMock.dropCollections.and.returnValue(of(dummyAnswer));
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        component.dropTables();
+        expect(matDialogMock.open).toHaveBeenCalled();
+    });
+    it('dropTables cover if path', async () => {
         const dummyAnswer = of(false);
         botHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        component.dropTables();
+        expect(matDialogMock.open).toHaveBeenCalled();
+    });
+    it('dropTables cover if path', async () => {
+        const dummyAnswer = of(false);
         dictHttpServiceMock.dropTable.and.returnValue(dummyAnswer);
         matDialogMock.open.and.returnValue({
             afterClosed: () => {
@@ -96,5 +118,19 @@ describe('AdminDropDbComponent', () => {
         } as MatDialogRef<AlertDialogComponent>);
         component.dropTables();
         expect(leaderboardServiceMock.dropCollections).not.toHaveBeenCalled();
+    });
+
+    it('all dropTable should resolve to false if http error', () => {
+        matDialogMock.open.and.returnValue({
+            afterClosed: () => {
+                return of(true);
+            },
+        } as MatDialogRef<AlertDialogComponent>);
+        botHttpServiceMock.dropTable.and.returnValues(throwError({ status: 404 }));
+        dictHttpServiceMock.dropTable.and.returnValues(throwError({ status: 404 }));
+        leaderboardServiceMock.dropCollections.and.returnValue(throwError({ status: 404 }));
+
+        component.dropTables();
+        expect(component['refresh']).not.toHaveBeenCalled();
     });
 });

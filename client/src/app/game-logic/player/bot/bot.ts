@@ -39,8 +39,8 @@ export abstract class Bot extends Player {
         protected botType: BotType,
     ) {
         super('PlaceholderName');
-        this.botHttpService.getDataInfo().subscribe((ans) => {
-            const list = ans as BotInfo[];
+        this.botHttpService.getDataInfo().subscribe((answer) => {
+            const list = answer as BotInfo[];
             list.forEach((bot) => {
                 if (bot.type === botType) {
                     this.botNames.push(bot.name);
@@ -66,15 +66,15 @@ export abstract class Bot extends Player {
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
-            if (action !== undefined) {
+            if (action) {
                 this.botMessage.sendAction(action);
-            } else {
-                this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
-                    if (chosenAction !== undefined) {
-                        this.botMessage.sendAction(chosenAction);
-                    }
-                });
+                return;
             }
+            this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+                if (chosenAction !== undefined) {
+                    this.botMessage.sendAction(chosenAction);
+                }
+            });
         });
     }
 
@@ -93,9 +93,9 @@ export abstract class Bot extends Player {
 
         if (letterInMiddleBox === ' ') {
             this.botCrawler.botFirstTurn();
-        } else {
-            this.botCrawler.boardCrawler(startingPosition, grid, startingDirection);
+            return this.validWordList;
         }
+        this.botCrawler.boardCrawler(startingPosition, grid, startingDirection);
         return this.validWordList;
     }
 

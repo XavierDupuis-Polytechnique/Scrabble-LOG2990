@@ -96,9 +96,9 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
     setSelectedRow(row: OnlineGameSettings): void {
         if (this.selectedRow === row) {
             this.selectedRow = undefined;
-        } else {
-            this.selectedRow = row;
+            return;
         }
+        this.selectedRow = row;
     }
 
     joinGame(): void {
@@ -135,11 +135,11 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
     }
 
-    get isTableEmpty(): boolean {
+    get isEmpty(): boolean {
         return this.dataSource.data.length === 0;
     }
 
-    get isTableOneGame(): boolean {
+    get hasOneGame(): boolean {
         return this.dataSource.data.length === 1;
     }
 

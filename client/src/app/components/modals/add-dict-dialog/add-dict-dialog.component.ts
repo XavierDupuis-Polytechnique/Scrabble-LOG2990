@@ -49,11 +49,11 @@ export class AddDictDialogComponent {
     private async readFile(file: File): Promise<Dictionary> {
         const tempFileReader = new FileReader();
         return new Promise((resolve) => {
-            tempFileReader.onload = (res) => {
-                if (res.target === null) {
+            tempFileReader.onload = (response) => {
+                if (response.target === null) {
                     return;
                 }
-                const resultString = res.target.result;
+                const resultString = response.target.result;
                 if (resultString === null) {
                     return;
                 }
@@ -65,7 +65,7 @@ export class AddDictDialogComponent {
     }
 
     private async uploadDictionary(dict: Dictionary) {
-        if (dict.title === undefined || null) {
+        if (!dict.title || dict.title === null) {
             this.openErrorModal('Le dictionnaire fournie ne contient pas de titre');
             return;
         }
@@ -75,12 +75,12 @@ export class AddDictDialogComponent {
             return;
         }
 
-        if (dict.description === undefined || null) {
+        if (!dict.description || dict.description === null) {
             this.openErrorModal('Le dictionnaire fournie ne contient pas de description');
             return;
         }
 
-        if (dict.words === undefined || null) {
+        if (!dict.words || dict.words === null) {
             this.openErrorModal('Le dictionnaire fournie ne contient pas une liste de mots');
             return;
         }

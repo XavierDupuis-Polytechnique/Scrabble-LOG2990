@@ -22,19 +22,23 @@ export class DebugController {
          *     description: get number of letter in the bag
          *
          */
-        this.router.get('/letterbag', async (req: Request, res: Response) => {
+        this.router.get('/letterbag', async (req: Request, response: Response) => {
             const gameId = req.query.gameId?.toString();
-            if (gameId) {
-                const game = this.gameManager.activeGames.get(gameId);
-                if (game) {
-                    const letterOccurence = game.letterBag.countLetters();
-                    const obj = {};
-                    letterOccurence.forEach((value, key) => {
-                        obj[key] = value;
-                    });
-                    res.json(obj);
-                } else res.sendStatus(StatusCodes.NOT_FOUND);
-            } else res.sendStatus(StatusCodes.BAD_REQUEST);
+            if (!gameId) {
+                response.sendStatus(StatusCodes.BAD_REQUEST);
+                return;
+            }
+            const game = this.gameManager.activeGames.get(gameId);
+            if (!game) {
+                response.sendStatus(StatusCodes.NOT_FOUND);
+                return;
+            }
+            const letterOccurence = game.letterBag.countLetters();
+            const obj = {};
+            letterOccurence.forEach((value, key) => {
+                obj[key] = value;
+            });
+            response.json(obj);
         });
     }
 }

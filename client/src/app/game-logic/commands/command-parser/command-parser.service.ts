@@ -1,19 +1,15 @@
 import { Injectable } from '@angular/core';
 import { PlaceLetterParameters } from '@app/game-logic/commands/command-parser/place-letter-parameters';
 import { Command, CommandType } from '@app/game-logic/commands/command.interface';
-import {
-    BOARD_DIMENSION,
-    CHARACTER_H,
-    CHARACTER_V,
-    MAX_PLACE_LETTER_ARG_SIZE,
-    MIN_PLACE_LETTER_ARG_SIZE,
-    RACK_LETTER_COUNT,
-} from '@app/game-logic/constants';
+import { BOARD_DIMENSION, MAX_PLACE_LETTER_ARG_SIZE, MIN_PLACE_LETTER_ARG_SIZE, RACK_LETTER_COUNT } from '@app/game-logic/constants';
+import { Direction } from '@app/game-logic/direction.enum';
+import { isStringALowerCaseLetter } from '@app/game-logic/utils';
 import { Observable, Subject } from 'rxjs';
 
 const INVALID_PLACE_LETTER = new RegExp('[^a-zA-Z]');
 const INVALID_EXCHANGE_LETTER = new RegExp('[^a-z*]');
 const SYNTAX_ERROR = 'erreur de syntax';
+const MIN_BOARD_VALUE = 1;
 @Injectable({
     providedIn: 'root',
 })
@@ -30,31 +26,30 @@ export class CommandParserService {
     }
 
     parse(message: string, from: string): CommandType | undefined {
-        const toVerify = message.split(' ').filter(Boolean);
-        const commandCondition = toVerify[0];
-        if (commandCondition[0] !== '!') {
+        if (!message) {
             return;
         }
+        const commandContent = message.split(' ').filter(Boolean);
+        const commandType = commandContent[0] as CommandType;
 
-        const commandType = commandCondition as CommandType;
-        if (!Object.values(CommandType).includes(commandType)) {
-            const errorContent = commandCondition + ' est une entrée invalide';
+        if (!this.isCommandTypeValid(commandType)) {
+            const errorContent = commandType + ' est une entrée invalide';
             this.sendErrorMessage(errorContent);
             return;
         }
-
-        let args: string[] | undefined = toVerify.slice(1, toVerify.length);
+        let commandArguments = commandContent.slice(1, commandContent.length);
         if (commandType === CommandType.Place) {
-            if (!this.isPlaceLetterArgValid(args)) {
+            if (!this.isPlaceLetterArgValid(commandArguments)) {
                 return;
             }
-            args = this.stringToPlaceLetterArguments(args);
-        } else if (commandType === CommandType.Exchange) {
-            if (!this.isExchangeLetterArgr(args[0])) {
+            commandArguments = this.stringToPlaceLetterArguments(commandArguments);
+        }
+        if (commandType === CommandType.Exchange) {
+            if (!this.isExchangeLetterArgr(commandArguments[0])) {
                 return;
             }
         }
-        const command = this.createCommand(from, args, commandType);
+        const command = this.createCommand(from, commandArguments, commandType);
         this.sendCommand(command);
         return commandType;
     }
@@ -72,19 +67,19 @@ export class CommandParserService {
         this.errorMessageContent$.next(message);
     }
 
-    private isPlaceLetterArgValid(command: string[]): boolean {
-        if (!this.isCommandPlaceLetterValid(command)) {
+    private isPlaceLetterArgValid(commandArguments: string[]): boolean {
+        if (!this.isCommandPlaceLetterValid(commandArguments)) {
             return false;
         }
 
-        if (!this.isPlaceLetterParameterValid(command)) {
+        if (!this.isPlaceLetterParameterValid(commandArguments)) {
             return false;
         }
         return true;
     }
 
     private isExchangeLetterArgr(word: string): boolean {
-        if (word === undefined || INVALID_EXCHANGE_LETTER.test(word)) {
+        if (!word || INVALID_EXCHANGE_LETTER.test(word)) {
             this.sendErrorMessage('les paramètres sont invalides');
             return false;
         }
@@ -93,6 +88,10 @@ export class CommandParserService {
             return false;
         }
         return true;
+    }
+
+    private isCommandTypeValid(commandType: CommandType): boolean {
+        return Object.values(CommandType).includes(commandType);
     }
 
     private isPlaceLetterParameterValid(command: string[]): boolean {
@@ -117,23 +116,18 @@ export class CommandParserService {
         return true;
     }
 
-    private isCommandPlaceLetterValid(commandPlaceLetter: string[]) {
-        if (commandPlaceLetter === undefined) {
-            this.sendErrorMessage(SYNTAX_ERROR + ': les paramètres sont invalides');
-            return false;
-        }
-
-        if (commandPlaceLetter.length < 2) {
+    private isCommandPlaceLetterValid(commandArguments: string[]) {
+        if (commandArguments.length < 2) {
             this.sendErrorMessage(SYNTAX_ERROR + ': mot ou emplacement manquant');
             return false;
         }
 
-        if (commandPlaceLetter.length > 2) {
+        if (commandArguments.length > 2) {
             this.sendErrorMessage(SYNTAX_ERROR + ': trop de paramètres entrés');
             return false;
         }
 
-        const parametersPlaceLetter = commandPlaceLetter[0];
+        const parametersPlaceLetter = commandArguments[0];
         if (parametersPlaceLetter.length < MIN_PLACE_LETTER_ARG_SIZE || parametersPlaceLetter.length > MAX_PLACE_LETTER_ARG_SIZE) {
             this.sendErrorMessage(SYNTAX_ERROR + ': les paramètres sont invalides');
             return false;
@@ -149,45 +143,21 @@ export class CommandParserService {
     }
 
     private isValidRow(row: string): boolean {
-        if (row === undefined) {
-            return false;
-        }
-        if (row > 'o') {
-            return false;
-        }
-        if (row < 'a') {
-            return false;
-        }
-        return true;
+        return row <= 'o' && row >= 'a';
     }
 
-    private isValidColumn(columns: number | undefined): boolean {
-        if (columns === undefined) {
-            return false;
-        }
-        if (columns > BOARD_DIMENSION) {
-            return false;
-        }
-        if (columns < 1) {
-            return false;
-        }
-        return true;
+    private isValidColumn(columns: number): boolean {
+        return columns <= BOARD_DIMENSION && columns >= MIN_BOARD_VALUE;
     }
 
     private isValidDirection(direction: string): boolean {
-        if (direction === undefined) {
+        if (!isStringALowerCaseLetter(direction)) {
             return false;
         }
-        if (direction !== CHARACTER_H && direction !== CHARACTER_V) {
-            return false;
-        }
-        return true;
+        return Object.values(Direction).includes(direction.toUpperCase() as Direction);
     }
 
     private isValidWord(word: string): boolean {
-        if (word === undefined) {
-            return false;
-        }
         if (word.length < 2) {
             return false;
         }

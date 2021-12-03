@@ -36,7 +36,7 @@ export class LeaderboardService {
         try {
             const collection = this.getLeaderboardCollection(mode);
             const currentScore = await collection.findOne({ name: score.name });
-            if (currentScore === undefined || currentScore === null) {
+            if (!currentScore || currentScore === null) {
                 await this.addScore(score, mode);
                 return true;
             }

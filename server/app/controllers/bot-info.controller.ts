@@ -15,58 +15,58 @@ export class BotInfoController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get('/', async (req, res) => {
+        this.router.get('/', async (req, response) => {
             try {
                 const botInfos = await this.botInfoService.getBotInfoList();
-                res.json(botInfos);
+                response.json(botInfos);
             } catch (e) {
-                res.sendStatus(StatusCodes.NOT_FOUND);
+                response.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
-        this.router.post('/', async (req, res) => {
+        this.router.post('/', async (req, response) => {
             try {
                 const clientBotInfo = req.body as BotInfo;
                 const isBotExist = await this.botInfoService.isBotExist(clientBotInfo.name);
                 if (!isBotExist) {
                     clientBotInfo.canEdit = true;
                     await this.botInfoService.addBot(clientBotInfo);
-                    res.send(true);
+                    response.send(true);
                 } else {
-                    res.send(false);
+                    response.send(false);
                 }
             } catch (e) {
-                res.sendStatus(StatusCodes.NOT_FOUND);
+                response.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
-        this.router.delete('/:botName', async (req, res) => {
+        this.router.delete('/:botName', async (req, response) => {
             try {
                 const botName = req.params.botName;
                 const botinfo = await this.botInfoService.getBotInfoByName(botName);
                 await this.botInfoService.deleteBot(botinfo);
-                res.sendStatus(StatusCodes.OK);
+                response.sendStatus(StatusCodes.OK);
             } catch (error) {
-                res.sendStatus(StatusCodes.NOT_FOUND);
+                response.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
-        this.router.put('/', async (req, res) => {
+        this.router.put('/', async (req, response) => {
             try {
                 const clientBotInfos = req.body as BotInfo[];
-                const ans = await this.botInfoService.updateBot(clientBotInfos[0], clientBotInfos[1]);
-                res.send(ans);
+                const answer = await this.botInfoService.updateBot(clientBotInfos[0], clientBotInfos[1]);
+                response.send(answer);
             } catch (e) {
-                res.sendStatus(StatusCodes.NOT_FOUND);
+                response.sendStatus(StatusCodes.NOT_FOUND);
             }
         });
 
-        this.router.get('/drop', async (req, res) => {
+        this.router.get('/drop', async (req, response) => {
             try {
                 await this.botInfoService.clearDropCollection();
-                res.send(true);
+                response.send(true);
             } catch (error) {
-                res.send(false);
+                response.send(false);
             }
         });
     }

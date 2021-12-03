@@ -69,7 +69,7 @@ describe('DictionaryServerService', () => {
     });
 
     it('should return false if the dict doesnt exist', () => {
-        expect(service.getDictByTitle('test')).to.equal(false);
+        expect(service.getDictByTitle('test')).to.equal(undefined);
     });
 
     it('should add a dict', () => {
@@ -86,7 +86,7 @@ describe('DictionaryServerService', () => {
         const newDict = { title: 'testTitle2', description: 'testDesc2', words: ['aa'] };
         service.updateDict(oldDict, newDict);
         const result1 = service.getDictByTitle('testTitle');
-        expect(result1).to.equal(false);
+        expect(result1).to.equal(undefined);
         const result2 = service.getDictByTitle('testTitle2') as DictionaryServer;
         expect(result2.title).to.equal(newDict.title);
     });
@@ -112,7 +112,7 @@ describe('DictionaryServerService', () => {
         expect(result1.title).to.equal('testTitle');
         service.deleteDict('testTitle');
         const result2 = service.getDictByTitle('testTitle');
-        expect(result2).to.equal(false);
+        expect(result2).to.equal(undefined);
     });
 
     it('should not delete the default dict', () => {
@@ -134,8 +134,8 @@ describe('DictionaryServerService', () => {
         const result1 = service.getDictByTitle(DEFAULT_DICTIONARY_TITLE) as DictionaryServer;
         expect(result1.title).to.equal(DEFAULT_DICTIONARY_TITLE);
         const result2 = service.getDictByTitle(dict1.title);
-        expect(result2).to.equal(false);
+        expect(result2).to.equal(undefined);
         const result3 = service.getDictByTitle(dict2.title);
-        expect(result3).to.equal(false);
+        expect(result3).to.equal(undefined);
     });
 });
