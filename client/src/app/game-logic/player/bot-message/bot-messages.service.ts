@@ -38,14 +38,14 @@ export class BotMessagesService {
             if (this.commandExecuter.isDebugModeActivated) {
                 if (action.player instanceof HardBot) {
                     this.sendNextBestWords((action.player as HardBot).bestWordList);
-                } else {
-                    this.sendAlternativeWords((action.player as Bot).validWordList);
+                    return;
                 }
+                this.sendAlternativeWords((action.player as Bot).validWordList);
             }
         }
     }
 
-    formatAlternativeWord(word: ValidWord): string {
+    private formatAlternativeWord(word: ValidWord): string {
         let posLetters = '';
         const formedWords: string[] = [];
         for (let wordIndex = 0; wordIndex < word.adjacentWords.length; wordIndex++) {
@@ -66,11 +66,7 @@ export class BotMessagesService {
         let y = word.startingTileY;
         for (const placedIndex of word.adjacentWords[0].index) {
             const placedChar = word.adjacentWords[0].letters[placedIndex].letterObject.char;
-            if (word.isVertical) {
-                y = word.startingTileY + placedIndex;
-            } else {
-                x = word.startingTileX + placedIndex;
-            }
+            [x, y] = word.isVertical ? [x, word.startingTileY + placedIndex] : [word.startingTileX + placedIndex, y];
             posLetters = posLetters.concat(String.fromCharCode(y + 'A'.charCodeAt(0)) + (x + 1) + ':' + placedChar + ' ');
         }
         let out = posLetters;
@@ -88,7 +84,7 @@ export class BotMessagesService {
         return out;
     }
 
-    sendAlternativeWords(validWordList: ValidWord[]) {
+    private sendAlternativeWords(validWordList: ValidWord[]) {
         let content = END_LINE;
         for (let i = 0; i < DEBUG_ALTERNATIVE_WORDS_COUNT; i++) {
             if (i === validWordList.length) {
@@ -101,7 +97,7 @@ export class BotMessagesService {
         this.messagesService.receiveSystemMessage(content);
     }
 
-    sendNextBestWords(bestWordList: ValidWord[]) {
+    private sendNextBestWords(bestWordList: ValidWord[]) {
         let content = END_LINE;
         for (let i = 1; i < bestWordList.length; i++) {
             const word = bestWordList[i];
@@ -110,13 +106,13 @@ export class BotMessagesService {
         this.messagesService.receiveSystemMessage(content);
     }
 
-    sendPlaceLetterMessage(pickedWord: string, placementSetting: PlacementSetting, name: string) {
+    private sendPlaceLetterMessage(pickedWord: string, placementSetting: PlacementSetting, name: string) {
         const placement = placementSettingsToString(placementSetting);
         const content = `${CommandType.Place} ${placement} ${pickedWord}`;
         this.messagesService.receiveMessageOpponent(name, content);
     }
 
-    sendExchangeLettersMessage(letters: Letter[], name: string) {
+    private sendExchangeLettersMessage(letters: Letter[], name: string) {
         let lettersString = '';
         letters.forEach((letter) => {
             const charToExchange = letter.char.toLowerCase();
@@ -126,7 +122,7 @@ export class BotMessagesService {
         this.messagesService.receiveMessageOpponent(name, content);
     }
 
-    sendPassTurnMessage(name: string) {
+    private sendPassTurnMessage(name: string) {
         const content: string = CommandType.Pass;
         this.messagesService.receiveMessageOpponent(name, content);
     }

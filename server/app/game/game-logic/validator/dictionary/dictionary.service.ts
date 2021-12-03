@@ -1,5 +1,5 @@
-import { LiveDict } from '@app/db-manager-services/dictionary-manager/default-dictionary';
-import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
+import { LiveDict } from '@app/dictionary-manager/default-dictionary';
+import { DictionaryServerService } from '@app/dictionary-manager/dictionary-server.service';
 import { MAX_WORD_LENGTH } from '@app/game/game-logic/constants';
 import { Dictionary } from '@app/game/game-logic/validator/dictionary/dictionary';
 import { Service } from 'typedi';
@@ -31,16 +31,17 @@ export class DictionaryService {
 
     deleteGameDictionary(gameToken: string) {
         const uniqueName = this.liveGamesMap.get(gameToken);
-        if (uniqueName) {
-            const liveDict = this.liveDictMap.get(uniqueName) as LiveDict;
-            liveDict.currentUsage--;
-            if (liveDict.currentUsage === 0) {
-                this.liveDictMap.delete(uniqueName);
-            } else {
-                this.liveDictMap.set(uniqueName, liveDict);
-            }
-            this.liveGamesMap.delete(gameToken);
+        if (!uniqueName) {
+            return;
         }
+        const liveDict = this.liveDictMap.get(uniqueName) as LiveDict;
+        liveDict.currentUsage--;
+        if (liveDict.currentUsage === 0) {
+            this.liveDictMap.delete(uniqueName);
+        } else {
+            this.liveDictMap.set(uniqueName, liveDict);
+        }
+        this.liveGamesMap.delete(gameToken);
     }
 
     isWordInDict(word: string, gameToken: string): boolean {

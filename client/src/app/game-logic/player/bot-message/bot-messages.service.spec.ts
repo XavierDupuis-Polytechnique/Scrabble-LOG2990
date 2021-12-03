@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { LocationStrategy } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -48,8 +50,8 @@ describe('bot message service', () => {
     });
 
     it('sendAction should call sendPassTurnMessage', () => {
-        spyOn(service, 'sendAlternativeWords');
-        const spy = spyOn(service, 'sendPassTurnMessage');
+        spyOn<any>(service, 'sendAlternativeWords');
+        const spy = spyOn<any>(service, 'sendPassTurnMessage');
         const player = {
             name: 'test',
         };
@@ -59,8 +61,8 @@ describe('bot message service', () => {
     });
 
     it('sendAction should call the correct function base on the instance of the action 1/2', () => {
-        spyOn(service, 'sendAlternativeWords');
-        const spy = spyOn(service, 'sendPlaceLetterMessage');
+        spyOn<any>(service, 'sendAlternativeWords');
+        const spy = spyOn<any>(service, 'sendPlaceLetterMessage');
         const player = {
             name: 'test',
         };
@@ -80,13 +82,13 @@ describe('bot message service', () => {
         (Object.getOwnPropertyDescriptor(commandExecuterServiceMock, 'isDebugModeActivated')?.get as jasmine.Spy<() => boolean>).and.returnValue(
             true,
         );
-        const spy2 = spyOn(service, 'sendAlternativeWords');
+        const spy2 = spyOn<any>(service, 'sendAlternativeWords');
         service.sendAction(action);
         expect(spy2).toHaveBeenCalled();
     });
 
     it('sendAction should call sendExchangeLettersMessage', () => {
-        const spy = spyOn(service, 'sendExchangeLettersMessage');
+        const spy = spyOn<any>(service, 'sendExchangeLettersMessage');
         const player = {
             name: 'test',
         };
@@ -97,25 +99,25 @@ describe('bot message service', () => {
     });
 
     it('sendPassTurnMessage should call receiveMessageOpponent', () => {
-        service.sendPassTurnMessage('houla');
+        service['sendPassTurnMessage']('houla');
         expect(messagesService.receiveMessageOpponent).toHaveBeenCalled();
     });
 
     it('sendExchangeLetter should call receiveMessageOpponent', () => {
         const lettersToExchange: Letter[] = [{ char: 'V', value: 1 }];
 
-        service.sendExchangeLettersMessage(lettersToExchange, 'houla');
+        service['sendExchangeLettersMessage'](lettersToExchange, 'houla');
         expect(messagesService.receiveMessageOpponent).toHaveBeenCalled();
     });
 
     it('sendPlaceLetter should call receiveMessageOpponent', () => {
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: 7, y: 7 };
-        service.sendPlaceLetterMessage('allo', placement, 'houla');
+        service['sendPlaceLetterMessage']('allo', placement, 'houla');
         expect(messagesService.receiveMessageOpponent).toHaveBeenCalled();
     });
 
     it('sendAction should call sendNextBestWords if the player is a hardBot', () => {
-        spyOn(service, 'formatAlternativeWord').and.returnValue('somethingValid');
+        spyOn<any>(service, 'formatAlternativeWord').and.returnValue('somethingValid');
         const player = TestBed.inject(BotCreatorService).createBot('Bot', 'hard');
         (Object.getOwnPropertyDescriptor(commandExecuterServiceMock, 'isDebugModeActivated')?.get as jasmine.Spy<() => boolean>).and.returnValue(
             true,
@@ -155,7 +157,7 @@ describe('bot message service', () => {
             { wordsPoints: [{ word: stringWordAvion, points: 25 }], totalPoints: 25, isBingo: true },
         );
         const expected = 'H8:A H9:V H10:I H11:O H12:N (25) \\n#A##V##I##O##N# (25) \\nBingo! (50)\\n\\n';
-        expect(service.formatAlternativeWord(validWordAvion)).toEqual(expected);
+        expect(service['formatAlternativeWord'](validWordAvion)).toEqual(expected);
     });
 
     it('formAlternativeWord should return correct output (Horizontal) (no index)', () => {
@@ -181,7 +183,7 @@ describe('bot message service', () => {
             { wordsPoints: [{ word: stringWordAvion, points: 25 }], totalPoints: 25, isBingo: true },
         );
         const expected = '(25) \\nAVION (25) \\nBingo! (50)\\n\\n';
-        expect(service.formatAlternativeWord(validWordAvion)).toEqual(expected);
+        expect(service['formatAlternativeWord'](validWordAvion)).toEqual(expected);
     });
 
     it('formAlternativeWord should return correct output (Vertical)', () => {
@@ -207,7 +209,7 @@ describe('bot message service', () => {
             { wordsPoints: [{ word: stringWordAvion, points: 25 }], totalPoints: 25, isBingo: false },
         );
         const expected = 'H8:A I8:V J8:I K8:O L8:N (25) \\n#A##V##I##O##N# (25) \\n\\n';
-        expect(service.formatAlternativeWord(validWordAvion)).toEqual(expected);
+        expect(service['formatAlternativeWord'](validWordAvion)).toEqual(expected);
     });
 
     it('sendAlternativeWords should call receiveSystemMessage', () => {
@@ -233,7 +235,7 @@ describe('bot message service', () => {
             { wordsPoints: [{ word: stringWordAvion, points: 25 }], totalPoints: 25, isBingo: false },
         );
 
-        service.sendAlternativeWords([validWordAvion]);
+        service['sendAlternativeWords']([validWordAvion]);
         expect(messagesService.receiveSystemMessage).toHaveBeenCalled();
     });
 });

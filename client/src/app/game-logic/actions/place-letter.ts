@@ -1,9 +1,9 @@
 import { Action } from '@app/game-logic/actions/action';
-import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constants';
+import { EMPTY_CHAR, JOKER_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { ObjectiveUpdateParams } from '@app/game-logic/game/objectives/objectives/objective-update-params.interface';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
@@ -29,7 +29,6 @@ export class PlaceLetter extends Action {
         super(player);
     }
 
-    // TODO : if possible, refactor this method
     protected perform(game: OfflineGame) {
         const previousGrid = copyGrid(game.board.grid);
         const validWordList = this.wordSearcher.listOfValidWord(this);
@@ -95,16 +94,8 @@ export class PlaceLetter extends Action {
         this.lettersToRemoveInRack = [];
         this.affectedCoords = [];
         for (let wordIndex = 0; wordIndex < this.word.length; wordIndex++) {
-            let char: string;
-            let x = startX;
-            let y = startY;
-            if (direction === Direction.Horizontal) {
-                x = startX + wordIndex;
-                char = grid[y][x].letterObject.char;
-            } else {
-                y = startY + wordIndex;
-                char = grid[y][x].letterObject.char;
-            }
+            const [x, y] = direction === Direction.Horizontal ? [startX + wordIndex, startY] : [startX, startY + wordIndex];
+            const char = grid[y][x].letterObject.char;
 
             if (char === EMPTY_CHAR) {
                 const charToCreate = this.word[wordIndex];
@@ -118,7 +109,7 @@ export class PlaceLetter extends Action {
     }
 
     private letterToRemove(char: string) {
-        return isCharUpperCase(char) ? this.letterFactory.createLetter('*') : this.letterFactory.createLetter(char);
+        return isCharUpperCase(char) ? this.letterFactory.createLetter(JOKER_CHAR) : this.letterFactory.createLetter(char);
     }
 
     private createNewLetter(char: string) {

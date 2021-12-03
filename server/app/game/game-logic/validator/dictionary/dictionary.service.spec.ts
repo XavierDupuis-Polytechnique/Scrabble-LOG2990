@@ -1,4 +1,4 @@
-import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
+import { DictionaryServerService } from '@app/dictionary-manager/dictionary-server.service';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { DictionaryService } from '@app/game/game-logic/validator/dictionary/dictionary.service';
 import { expect } from 'chai';

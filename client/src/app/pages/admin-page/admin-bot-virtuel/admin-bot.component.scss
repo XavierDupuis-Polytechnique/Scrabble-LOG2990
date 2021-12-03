@@ -4,18 +4,19 @@ table {
 
 .overflow {
     height: 50%;
+    max-height: 500px;
     overflow: auto;
 }
 
 .container {
+    padding: 3%;
     display: flex;
     flex-direction: column;
-    height: 93vh !important;
 }
 
 .buttoncontainer {
     display: flex;
-    height: 93vh;
+    margin-top: 5%;
     justify-content: center;
     align-items: center;
 }
@@ -24,3 +25,13 @@ table {
     background: white;
     color: black;
 }
+
+.overflow-name {
+    max-width: 200px;
+    overflow-wrap: break-word;
+}
+
+.mat-header-cell {
+    font-size: medium;
+}
+

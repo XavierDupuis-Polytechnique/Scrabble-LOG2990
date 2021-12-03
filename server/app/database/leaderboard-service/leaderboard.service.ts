@@ -14,11 +14,6 @@ import { Service } from 'typedi';
 export class LeaderboardService {
     constructor(private databaseService: DatabaseService) {}
 
-    getLeaderboardCollection(mode: GameMode): Collection<Score> {
-        const collectionName = mode === GameMode.Classic ? LEADERBOARD_CLASSIC_COLLECTION : LEADERBOARD_LOG_COLLECTION;
-        return this.databaseService.database.collection(collectionName);
-    }
-
     async getScores(mode: GameMode): Promise<Score[]> {
         const collection = this.getLeaderboardCollection(mode);
         const scores: Score[] = await collection.find({}).sort({ point: -1 }).toArray();
@@ -41,7 +36,7 @@ export class LeaderboardService {
         try {
             const collection = this.getLeaderboardCollection(mode);
             const currentScore = await collection.findOne({ name: score.name });
-            if (currentScore === undefined || currentScore === null) {
+            if (!currentScore || currentScore === null) {
                 await this.addScore(score, mode);
                 return true;
             }
@@ -54,6 +49,11 @@ export class LeaderboardService {
         } catch (e) {
             return false;
         }
+    }
+
+    private getLeaderboardCollection(mode: GameMode): Collection<Score> {
+        const collectionName = mode === GameMode.Classic ? LEADERBOARD_CLASSIC_COLLECTION : LEADERBOARD_LOG_COLLECTION;
+        return this.databaseService.database.collection(collectionName);
     }
 
     private async modifyScore(score: Score, mode: GameMode): Promise<void> {

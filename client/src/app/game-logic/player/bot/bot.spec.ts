@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActionCreatorService } from '@app/game-logic/actions/action-creator/action-creator.service';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
@@ -54,14 +55,13 @@ describe('Bot', () => {
         const numberOfTime = 1000;
         const opponentName = 'Jimmy';
         for (let i = 0; i < numberOfTime; i++) {
-            const botName = bot.generateBotName(opponentName);
+            const botName = bot['generateBotName'](opponentName);
             const sameName: boolean = botName === opponentName;
             expect(sameName).toBeFalsy();
         }
     });
 
     it('should play before 3 seconds', fakeAsync(() => {
-        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         bot.chooseAction(new PassTurn(bot));
         tick(TIME_BEFORE_PICKING_ACTION);
@@ -70,7 +70,6 @@ describe('Bot', () => {
     }));
 
     it('should play after 3 seconds', fakeAsync(() => {
-        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         bot.chooseAction(new PassTurn(bot));
@@ -79,7 +78,6 @@ describe('Bot', () => {
     }));
 
     it('should pass turn after 20 seconds', fakeAsync(() => {
-        // const spySendAction = spyOn(botMessage, 'sendAction');
         bot.startTimerAction();
         tick(TIME_BEFORE_PICKING_ACTION);
         tick(TIME_BEFORE_PASS);

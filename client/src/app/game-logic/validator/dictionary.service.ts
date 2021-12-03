@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { DEFAULT_DICTIONARY_TITLE, RACK_LETTER_COUNT, MAX_WORD_LENGTH, START_OF_STRING, RESET, NOT_FOUND } from '@app/game-logic/constants';
+import { DEFAULT_DICTIONARY_TITLE, MAX_WORD_LENGTH, NOT_FOUND, RACK_LETTER_COUNT, RESET, START_OF_STRING } from '@app/game-logic/constants';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { ValidWord } from '@app/game-logic/player/bot/valid-word';
 import {
     DictInitialSearchSettings,
+    DictRegexSettings,
     DictSubSearchSettings,
     DictWholeSearchSettings,
-    DictRegexSettings,
 } from '@app/game-logic/validator/dict-settings';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictionaryHelper } from '@app/game-logic/validator/dictionary-helper';
 import { DictHttpService } from '@app/services/dict-http.service';
-
 import { BehaviorSubject } from 'rxjs';
 import data from 'src/assets/dictionary.json';
 
@@ -39,8 +38,8 @@ export class DictionaryService {
             return this.dictReady$;
         }
         this.dictReady$.next(false);
-        this.dictHttpService.getDict(dictTitle).subscribe((res) => {
-            const dictionary = res as Dictionary;
+        this.dictHttpService.getDict(dictTitle).subscribe((response) => {
+            const dictionary = response as Dictionary;
             this.addWords(dictionary);
             this.isDefaultDict = false;
             this.ready();
@@ -61,7 +60,9 @@ export class DictionaryService {
 
         let maxDictWordLength = 0;
         const missingLetters = partWord.word.length - letterCountOfPartWord + partWord.leftCount + partWord.rightCount;
-        if (missingLetters === 0) return wordList;
+        if (missingLetters === 0) {
+            return wordList;
+        }
         if (missingLetters > RACK_LETTER_COUNT) {
             maxDictWordLength = letterCountOfPartWord + RACK_LETTER_COUNT;
         } else {
@@ -108,11 +109,7 @@ export class DictionaryService {
         placedWord = this.dictionaryHelper.validateMiddleOfPlacedWord(regexSettings);
         placedWord = this.dictionaryHelper.validateRightOfPlacedWord(regexSettings, wordLength);
 
-        if (dictWord.word === placedWord.toLowerCase()) {
-            return placedWord;
-        } else {
-            return 'false';
-        }
+        return dictWord.word === placedWord.toLowerCase() ? placedWord : 'false';
     }
 
     private addDefault() {

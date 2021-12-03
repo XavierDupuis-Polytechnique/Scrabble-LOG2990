@@ -64,7 +64,7 @@ export class GameSocketHandlerService {
         });
 
         this.socket.on('transitionGameState', (lastGameState: ForfeitedGameState) => {
-            this.receiveTransitionGameState(lastGameState);
+            this.receiveForfeitedGameState(lastGameState);
         });
     }
 
@@ -87,19 +87,19 @@ export class GameSocketHandlerService {
         this.socket = undefined as unknown as Socket;
     }
 
-    connectToSocket() {
+    private connectToSocket() {
         return io(environment.serverSocketUrl, { path: '/game' });
     }
 
-    receiveGameState(gameState: GameState) {
+    private receiveGameState(gameState: GameState) {
         this.gameStateSubject.next(gameState);
     }
 
-    receiveTimerControl(timerControl: TimerControls) {
+    private receiveTimerControl(timerControl: TimerControls) {
         this.timerControlsSubject.next(timerControl);
     }
 
-    receiveTransitionGameState(transitionGameState: ForfeitedGameState) {
-        this.forfeitGameState$.next(transitionGameState);
+    private receiveForfeitedGameState(forfeitedGameState: ForfeitedGameState) {
+        this.forfeitGameState$.next(forfeitedGameState);
     }
 }

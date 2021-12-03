@@ -39,14 +39,15 @@ export class UIPlace implements UIAction {
         if (this.isPlacementInProgress()) {
             return;
         }
-        if (this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
-            if (this.isSamePositionClicked(clickPosition)) {
-                this.toggleDirection();
-                return;
-            }
-            this.pointerPosition = clickPosition;
-            this.direction = Direction.Horizontal;
+        if (!this.canPlaceALetterHere(clickPosition.x, clickPosition.y)) {
+            return;
         }
+        if (this.isSamePositionClicked(clickPosition)) {
+            this.toggleDirection();
+            return;
+        }
+        this.pointerPosition = clickPosition;
+        this.direction = Direction.Horizontal;
     }
 
     receiveKey(key: string): void {
@@ -120,11 +121,7 @@ export class UIPlace implements UIAction {
         [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         do {
             currentTileChar = this.boardService.board.grid[y][x].letterObject;
-            if (currentTileChar.value === 0) {
-                word = currentTileChar.char.toUpperCase() + word;
-            } else {
-                word = currentTileChar.char.toLowerCase() + word;
-            }
+            word = currentTileChar.value === 0 ? currentTileChar.char.toUpperCase() + word : currentTileChar.char.toLowerCase() + word;
             [x, y] = this.direction === Direction.Horizontal ? [--x, y] : [x, --y];
         } while (this.isThereALetter(x, y));
         [x, y] = this.direction === Direction.Horizontal ? [++x, y] : [x, ++y];
@@ -164,27 +161,15 @@ export class UIPlace implements UIAction {
         }
         concernedTile.letterObject = this.letterCreator.createLetter(usedChar);
         concernedTile.letterObject.isTemp = true;
-        return;
     }
 
     private moveForwards(): void {
         if (!this.pointerPosition) {
             return;
         }
-
-        let deltaX = 0;
-        let deltaY = 0;
-        if (this.direction === Direction.Horizontal) {
-            deltaX = 1;
-        } else {
-            deltaY = 1;
-        }
-
-        let x = this.pointerPosition.x;
-        let y = this.pointerPosition.y;
+        let [x, y] = [this.pointerPosition.x, this.pointerPosition.y];
         do {
-            x += deltaX;
-            y += deltaY;
+            [x, y] = this.direction === Direction.Horizontal ? [x + 1, y] : [x, y + 1];
             if (this.canPlaceALetterHere(x, y)) {
                 this.pointerPosition = { x, y };
                 return;
@@ -228,7 +213,7 @@ export class UIPlace implements UIAction {
 
     private moveBackwards(): void {
         const lastLetter = this.orderedIndexes.pop();
-        if (lastLetter === undefined) {
+        if (!lastLetter) {
             return;
         }
         const newBlankLetter = this.letterCreator.createBlankLetter(' ');

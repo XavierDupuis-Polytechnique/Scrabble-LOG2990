@@ -71,7 +71,7 @@ describe('EditDictDialogComponent', () => {
         expect(matDialog.open).toHaveBeenCalled();
     });
 
-    it('uploadEdit should not open dialog if error not NOT_FOUND', () => {
+    it('uploadEdit should open error dialog if error not NOT_FOUND', () => {
         dictHttpMock.editDict.and.returnValue(throwError({ status: HttpStatusCode.RequestTimeout }));
         component.tempDict.title = 'test';
         component.uploadEdit();

@@ -7,11 +7,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DisconnectedFromServerComponent } from '@app/components/modals/disconnected-from-server/disconnected-from-server.component';
 import { ActionValidatorService } from '@app/game-logic/actions/action-validator/action-validator.service';
+import { UIExchange } from '@app/game-logic/actions/ui-actions/ui-exchange';
 import { UIInputControllerService } from '@app/game-logic/actions/ui-actions/ui-input-controller.service';
+import { UIPlace } from '@app/game-logic/actions/ui-actions/ui-place';
+import { BoardService } from '@app/game-logic/game/board/board.service';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
 import { GameManagerService } from '@app/game-logic/game/games/game-manager/game-manager.service';
 import { InputType, UIInput } from '@app/game-logic/interfaces/ui-input';
 import { Player } from '@app/game-logic/player/player';
+import { PointCalculatorService } from '@app/game-logic/point-calculator/point-calculator.service';
+import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
 import { routes } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -25,6 +30,7 @@ describe('GamePageComponent', () => {
     let uiInput: UIInput;
     let mockObservableDisconnect: Subject<void>;
     let mockObservableForfeited: Subject<void>;
+    let mockEndOfGame$: Subject<void>;
     let mockClosedModal$: Subject<void>;
     let mockInfo: jasmine.SpyObj<GameInfoService>;
     class ActionValidatorServiceMock {
@@ -45,6 +51,9 @@ describe('GamePageComponent', () => {
         pass() {
             return;
         }
+        get canBeExecuted() {
+            return true;
+        }
     }
 
     class MatDialogMock {
@@ -60,11 +69,16 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         mockClosedModal$ = new Subject();
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'forfeitGameState$']);
+        gameManagerServiceSpy = jasmine.createSpyObj(
+            'GameManagerService',
+            ['stopGame', 'instanciateGameFromForfeitedState', 'startConvertedGame'],
+            ['disconnectedFromServer$', 'forfeitGameState$'],
+        );
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
-        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame']);
+        mockEndOfGame$ = new Subject<void>();
+        mockInfo = jasmine.createSpyObj('GameInfoService', [], ['user', 'activePlayer', 'isEndOfGame', 'isEndOfGame$', 'winner']);
         await TestBed.configureTestingModule({
             declarations: [GamePageComponent, DisconnectedFromServerComponent],
             imports: [RouterTestingModule.withRoutes(routes), AppMaterialModule, CommonModule],
@@ -85,6 +99,7 @@ describe('GamePageComponent', () => {
         (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'forfeitGameState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
             mockObservableForfeited,
         );
+        (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfGame$);
 
         fixture = TestBed.createComponent(GamePageComponent);
         uiInput = { type: InputType.LeftClick };
@@ -110,7 +125,7 @@ describe('GamePageComponent', () => {
     });
 
     it('confirming to abandon should open dialog', () => {
-        const dialogSpy = spyOn(component.dialog, 'open');
+        const dialogSpy = spyOn(component['dialog'], 'open');
         component.abandon();
         expect(dialogSpy).toHaveBeenCalled();
     });
@@ -130,12 +145,6 @@ describe('GamePageComponent', () => {
         const inputControllerSpy = spyOn(component['inputController'], 'confirm');
         component.confirm();
         expect(inputControllerSpy).toBeTruthy();
-    });
-
-    it('should call cancel', () => {
-        const inputControllerSpy = spyOn(component['inputController'], 'cancel');
-        component.cancel();
-        expect(inputControllerSpy).toHaveBeenCalled();
     });
 
     it('should call cancel', () => {
@@ -197,7 +206,37 @@ describe('GamePageComponent', () => {
     });
 
     it('#isEndOfGame should work properly', () => {
+        const mockPlayer = { name: 'allo' } as unknown as Player;
+        (Object.getOwnPropertyDescriptor(mockInfo, 'winner')?.get as jasmine.Spy<() => Player[]>).and.returnValue([mockPlayer]);
+        (Object.getOwnPropertyDescriptor(mockInfo, 'user')?.get as jasmine.Spy<() => Player>).and.returnValue(mockPlayer);
+        mockEndOfGame$.next();
         (Object.getOwnPropertyDescriptor(mockInfo, 'isEndOfGame')?.get as jasmine.Spy<() => boolean>).and.returnValue(false);
         expect(component.isEndOfGame).toBeFalse();
+    });
+
+    it('should receive forfeited game state properly', () => {
+        mockObservableForfeited.next();
+        mockClosedModal$.next();
+        expect(gameManagerServiceSpy.instanciateGameFromForfeitedState).toHaveBeenCalled();
+        expect(gameManagerServiceSpy.startConvertedGame).toHaveBeenCalled();
+    });
+
+    it('canPlace coverage', () => {
+        const spyWordSearcher: jasmine.SpyObj<WordSearcher> = jasmine.createSpyObj('WordSearcher', ['']);
+        const spyGameInfo: jasmine.SpyObj<GameInfoService> = jasmine.createSpyObj('WordSearcher', ['']);
+        const spyPointCalc: jasmine.SpyObj<PointCalculatorService> = jasmine.createSpyObj('WordSearcher', ['']);
+        const spyBoard: jasmine.SpyObj<BoardService> = jasmine.createSpyObj('WordSearcher', ['']);
+
+        spyOnProperty(component, 'isItMyTurn').and.returnValue(true);
+        component['inputController'].activeAction = new UIPlace(spyGameInfo, spyPointCalc, spyWordSearcher, spyBoard);
+        const ans = component.canPlace;
+        expect(ans as unknown).toEqual(true);
+    });
+
+    it('canExchange coverage', () => {
+        const spyPlayer: jasmine.SpyObj<Player> = jasmine.createSpyObj('Player', ['']);
+        component['inputController'].activeAction = new UIExchange(spyPlayer);
+        const ans = component.canExchange;
+        expect(ans as unknown).toEqual(false);
     });
 });

@@ -6,8 +6,8 @@ import { TestBed } from '@angular/core/testing';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { DEFAULT_TIME_PER_TURN, EMPTY_CHAR, NOT_FOUND } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
@@ -38,6 +38,7 @@ describe('GameInfoService', () => {
     const dict = jasmine.createSpyObj('DictionaryService', ['getDictionary']);
     const randomBonus = false;
     const mockEndOfTurn$ = new Subject<void>();
+    const mockEndOfGame$ = new Subject<void>();
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [{ provide: DictionaryService, useValue: dict }],
@@ -47,9 +48,10 @@ describe('GameInfoService', () => {
         board = TestBed.inject(BoardService);
         pointCalculator = TestBed.inject(PointCalculatorService);
         messages = TestBed.inject(MessagesService);
-        specialGame = jasmine.createSpyObj('SpecialOfflineGame', ['start'], ['endTurn$']);
+        specialGame = jasmine.createSpyObj('SpecialOfflineGame', ['start'], ['endTurn$', 'isEndOfGame$']);
 
         (Object.getOwnPropertyDescriptor(specialGame, 'endTurn$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfTurn$);
+        (Object.getOwnPropertyDescriptor(specialGame, 'isEndOfGame$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(mockEndOfGame$);
 
         game = new OfflineGame(randomBonus, DEFAULT_TIME_PER_TURN, timer, pointCalculator, board, messages);
         game.players = [new User('p1'), new User('p2')];

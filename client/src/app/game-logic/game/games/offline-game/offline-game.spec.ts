@@ -1,9 +1,10 @@
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { ExchangeLetter } from '@app/game-logic/actions/exchange-letter';
 import { PassTurn } from '@app/game-logic/actions/pass-turn';
 import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { BoardService } from '@app/game-logic/game/board/board.service';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
 import { User } from '@app/game-logic/player/user';
@@ -76,7 +77,7 @@ describe('Game', () => {
         user1.letterRack = [];
         expect(game.isEndOfGame()).toBe(true);
         if (game.isEndOfGame()) {
-            game.onEndOfGame();
+            game['onEndOfGame']();
         }
         expect(messageSpy.receiveSystemMessage).toHaveBeenCalled();
     });
@@ -99,7 +100,7 @@ describe('Game', () => {
     it('next player should return next player', () => {
         game.start();
         const currentPlayer = game.getActivePlayer();
-        game.nextPlayer();
+        game['nextPlayer']();
         const nextPlayer = game.getActivePlayer();
         const isSamePlayer = currentPlayer === nextPlayer;
         expect(isSamePlayer).toBeFalse();

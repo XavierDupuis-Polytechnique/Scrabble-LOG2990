@@ -1,6 +1,6 @@
 import { Application } from '@app/app';
-import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
-import { DictionaryServerService } from '@app/db-manager-services/dictionary-manager/dictionary-server.service';
+import { DictionaryServer } from '@app/dictionary-manager/default-dictionary';
+import { DictionaryServerService } from '@app/dictionary-manager/dictionary-server.service';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import * as sinon from 'sinon';
@@ -47,7 +47,7 @@ describe('DictionaryController', () => {
     });
 
     it('get should return not found if dict doesnt exist', async () => {
-        dictionaryServerService.getDictByTitle.returns(false);
+        dictionaryServerService.getDictByTitle.returns(undefined);
         return supertest(expressApp).get('/api/dictionary?title=Test').expect(StatusCodes.NOT_FOUND);
     });
 

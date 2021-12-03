@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatRipple, RippleConfig } from '@angular/material/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { LoadingGameComponent } from '@app/components/modals/loading-game/loading-game.component';
 import { NewOnlineGameFormComponent } from '@app/components/modals/new-online-game-form/new-online-game-form.component';
 import { NewSoloGameFormComponent } from '@app/components/modals/new-solo-game-form/new-solo-game-form.component';
 import { PendingGamesComponent } from '@app/components/modals/pending-games/pending-games.component';
@@ -15,13 +16,12 @@ import { NewOnlineGameSocketHandler } from '@app/socket-handler/new-online-game-
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { first, takeWhile } from 'rxjs/operators';
 
-// TODO: change name to new-game-component (page)
 @Component({
-    selector: 'app-classic-game',
-    templateUrl: './classic-game.component.html',
-    styleUrls: ['./classic-game.component.scss'],
+    selector: 'app-new-game-page',
+    templateUrl: './new-game-page.component.html',
+    styleUrls: ['./new-game-page.component.scss'],
 })
-export class ClassicGameComponent {
+export class NewGamePageComponent {
     @ViewChild(MatRipple) ripple: MatRipple;
 
     gameSettings: GameSettings;
@@ -115,13 +115,7 @@ export class ClassicGameComponent {
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
             if (botDifficulty) {
                 this.socketHandler.disconnectSocket();
-                this.gameSettings = {
-                    playerName: this.gameSettings.playerName,
-                    botDifficulty,
-                    randomBonus: this.gameSettings.randomBonus,
-                    timePerTurn: this.gameSettings.timePerTurn,
-                    dictTitle: this.gameSettings.dictTitle,
-                };
+                this.gameSettings.botDifficulty = botDifficulty;
                 this.startSoloGame();
             }
         });
@@ -152,7 +146,21 @@ export class ClassicGameComponent {
             });
     }
 
-    startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
+    openLoadingGame(): MatDialogRef<LoadingGameComponent> {
+        const loadingGameDialogConfig = new MatDialogConfig();
+        loadingGameDialogConfig.disableClose = true;
+        loadingGameDialogConfig.width = '255px';
+        const loadingGameDialog = this.dialog.open(LoadingGameComponent, loadingGameDialogConfig);
+        loadingGameDialog.afterClosed().subscribe((isCanceled) => {
+            if (isCanceled) {
+                this.gameReady$$.unsubscribe();
+                this.gameManager.stopGame();
+            }
+        });
+        return loadingGameDialog;
+    }
+
+    private startOnlineGame(userName: string, onlineGameSettings: OnlineGameSettings) {
         const gameToken = onlineGameSettings.id;
         const userAuth: UserAuth = { playerName: userName, gameToken };
         this.socketHandler.resetGameToken();
@@ -160,14 +168,9 @@ export class ClassicGameComponent {
         this.router.navigate(['/game']);
     }
 
-    startSoloGame() {
+    private startSoloGame() {
         this.gameReady$$?.unsubscribe();
-        let gameReady$: BehaviorSubject<boolean>;
-        if (this.isSpecialGame) {
-            gameReady$ = this.gameManager.createSpecialGame(this.gameSettings);
-        } else {
-            gameReady$ = this.gameManager.createGame(this.gameSettings);
-        }
+        const gameReady$ = this.createGame(this.gameSettings);
         if (gameReady$.getValue()) {
             this.router.navigate(['/game']);
         } else {
@@ -175,10 +178,18 @@ export class ClassicGameComponent {
                 if (!gameReady) {
                     return;
                 }
+                loadingScreen.close();
                 this.router.navigate(['/game']);
             });
+            const loadingScreen = this.openLoadingGame();
         }
-        // TODO - add loading screen?
+    }
+
+    private createGame(gameSettings: GameSettings): BehaviorSubject<boolean> {
+        if (this.isSpecialGame) {
+            return this.gameManager.createSpecialGame(gameSettings);
+        }
+        return this.gameManager.createGame(gameSettings);
     }
 
     get isSpecialGame() {
@@ -186,10 +197,6 @@ export class ClassicGameComponent {
     }
 
     set isSpecialGame(value: boolean) {
-        if (value) {
-            this.gameMode = GameMode.Special;
-        } else {
-            this.gameMode = GameMode.Classic;
-        }
+        this.gameMode = value ? GameMode.Special : (this.gameMode = GameMode.Classic);
     }
 }

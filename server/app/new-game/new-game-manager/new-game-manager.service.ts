@@ -32,7 +32,7 @@ export class NewGameManagerService {
         if (!gameSettings) {
             return;
         }
-        if (gameSettings.opponentName !== undefined) {
+        if (gameSettings.opponentName) {
             return;
         }
         gameSettings.opponentName = name;
@@ -40,10 +40,6 @@ export class NewGameManagerService {
         const gameToken = this.generateGameToken(onlineGameSettingsUI);
         this.startGame(gameToken, this.toOnlineGameSettings(id, onlineGameSettingsUI));
         return id;
-    }
-
-    isPendingGame(id: string): boolean {
-        return this.pendingGames.has(id);
     }
 
     deletePendingGame(id: string) {
@@ -60,6 +56,10 @@ export class NewGameManagerService {
         }
         const onlineGameSetting = this.toOnlineGameSettings(id, this.pendingGames.get(id));
         return onlineGameSetting;
+    }
+
+    private isPendingGame(id: string): boolean {
+        return this.pendingGames.has(id);
     }
 
     private startGame(gameToken: string, gameSettings: OnlineGameSettings) {

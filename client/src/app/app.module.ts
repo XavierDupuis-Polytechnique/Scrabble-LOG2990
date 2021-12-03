@@ -21,11 +21,10 @@ import { PreventContextMenuDirective } from '@app/directives/prevent-context-men
 import { CommandExecuterService } from '@app/game-logic/commands/command-executer/command-executer.service';
 import { AppRoutingModule } from '@app/modules/app-routing.module';
 import { AppMaterialModule } from '@app/modules/material.module';
-import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { AdminBotComponent } from '@app/pages/admin-page/admin-bot-virtuel/admin-bot.component';
+import { AdminDictComponent } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { AdminPageComponent } from '@app/pages/admin-page/admin-page.component';
 import { AppComponent } from '@app/pages/app/app.component';
-import { ClassicGameComponent } from '@app/pages/classic-game/classic-game.component';
 import { BoardComponent } from '@app/pages/game-page/board/board.component';
 import { ChatBoxComponent } from '@app/pages/game-page/chat-box/chat-box.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
@@ -34,13 +33,16 @@ import { InfoBoxComponent } from '@app/pages/game-page/info-box/info-box.compone
 import { ObjectiveComponent } from '@app/pages/game-page/objectives/objective-component/objective.component';
 import { PlayerInfoComponent } from '@app/pages/game-page/player-info/player-info.component';
 import { HomepageComponent } from '@app/pages/homepage/homepage.component';
+import { NewGamePageComponent } from '@app/pages/new-game-page/new-game-page.component';
 import { BoldPipe } from '@app/pipes/bold-pipe/bold.pipe';
+import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
 import { AlertDialogComponent } from './components/modals/alert-dialog/alert-dialog.component';
-import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
 import { EditBotDialogComponent } from './components/modals/edit-bot-dialog/edit-bot-dialog.component';
+import { EditDictDialogComponent } from './components/modals/edit-dict/edit-dict.component';
+import { LoadingGameComponent } from './components/modals/loading-game/loading-game.component';
+import { WinnerDialogComponent } from './components/modals/winner-dialog/winner-dialog.component';
 import { AdminDropDbComponent } from './pages/admin-page/admin-drop-db/admin-drop-db.component';
 import { ObjectivesListComponent } from './pages/game-page/objectives/objectives-list.component';
-import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-dict-dialog.component';
 
 /**
  * Main module that is used in main.ts.
@@ -61,7 +63,7 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         NewSoloGameFormComponent,
         NewOnlineGameFormComponent,
         HomepageComponent,
-        ClassicGameComponent,
+        NewGamePageComponent,
         HeaderBarComponent,
         BoldPipe,
         PreventContextMenuDirective,
@@ -87,6 +89,8 @@ import { AddDictDialogComponent } from './components/modals/add-dict-dialog/add-
         ObjectiveComponent,
         AddDictDialogComponent,
         AbandonDialogComponent,
+        LoadingGameComponent,
+        WinnerDialogComponent,
     ],
     imports: [
         AppMaterialModule,

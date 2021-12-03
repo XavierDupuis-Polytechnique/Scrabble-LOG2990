@@ -34,11 +34,11 @@ export class EasyBot extends Bot {
         });
     }
 
-    randomActionPicker(): Action {
+    private randomActionPicker(): Action {
         const randomValue = Math.random();
         if (randomValue <= EasyBot.actionProbability.play) {
             let action = this.playAction();
-            if (action === undefined) {
+            if (!action) {
                 action = this.passAction();
             }
             return action;
@@ -52,7 +52,7 @@ export class EasyBot extends Bot {
         }
     }
 
-    randomWordPicker(validWordsList: ValidWord[]): ValidWord {
+    private randomWordPicker(validWordsList: ValidWord[]): ValidWord {
         const randomValue = Math.random();
         const validWordList: ValidWord[] = validWordsList;
         const wordP6: ValidWord[] = [];
@@ -86,10 +86,10 @@ export class EasyBot extends Bot {
         }
     }
 
-    playAction(): Action {
+    private playAction(): Action {
         const validWordsList = this.bruteForceStart();
         const pickedWord: ValidWord = this.randomWordPicker(validWordsList);
-        if (pickedWord !== undefined) {
+        if (pickedWord) {
             const placeSetting: PlacementSetting = {
                 x: pickedWord.startingTileX,
                 y: pickedWord.startingTileY,
@@ -100,7 +100,7 @@ export class EasyBot extends Bot {
         return this.passAction();
     }
 
-    exchangeAction(): Action {
+    private exchangeAction(): Action {
         const numberOfLettersToExchange = this.getRandomInt(LetterBag.playerLetterCount, 1);
         let lettersToExchangeIndex;
         const lettersToExchange = [];
@@ -118,7 +118,7 @@ export class EasyBot extends Bot {
         return this.actionCreator.createExchange(this, lettersToExchange);
     }
 
-    passAction(): Action {
+    private passAction(): Action {
         return this.actionCreator.createPassTurn(this);
     }
 

@@ -5,7 +5,7 @@ import { Board } from '@app/game/game-logic/board/board';
 import { LetterBag } from '@app/game/game-logic/board/letter-bag';
 import { MAX_CONSECUTIVE_PASS } from '@app/game/game-logic/constants';
 import { EndOfGame, EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
-import { ForfeitedGameState, GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
+import { GameStateToken } from '@app/game/game-logic/interface/game-state.interface';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
 import { TimerController } from '@app/game/game-logic/timer/timer-controller.service';
@@ -23,13 +23,9 @@ export class ServerGame {
     timer: Timer;
     winnerByForfeitedIndex: number;
 
-    forfeitedGameState$ = new Subject<ForfeitedGameState>();
     isEnded$ = new Subject<undefined>();
     endReason: EndOfGameReason;
-    // TODO Checkez ca
-    get lastGameState() {
-        return this.forfeitedGameState$;
-    }
+
     constructor(
         timerController: TimerController,
         public randomBonus: boolean,
@@ -68,10 +64,6 @@ export class ServerGame {
         this.isEnded$.next(undefined);
     }
 
-    nextPlayer() {
-        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
-    }
-
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
@@ -88,15 +80,6 @@ export class ServerGame {
 
     getActivePlayer() {
         return this.players[this.activePlayerIndex];
-    }
-
-    onEndOfGame(reason: EndOfGameReason) {
-        this.pointCalculator.endOfGamePointDeduction(this);
-        this.displayLettersLeft();
-        this.emitGameState();
-        if (reason === EndOfGameReason.GameEnded) {
-            this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
-        }
     }
 
     doAction(action: Action) {
@@ -128,6 +111,19 @@ export class ServerGame {
         return winners;
     }
 
+    private onEndOfGame(reason: EndOfGameReason) {
+        this.pointCalculator.endOfGamePointDeduction(this);
+        this.displayLettersLeft();
+        this.emitGameState();
+        if (reason === EndOfGameReason.GameEnded) {
+            this.endGameSubject.next({ gameToken: this.gameToken, reason, players: this.players });
+        }
+    }
+
+    private nextPlayer() {
+        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
+    }
+
     private pickFirstPlayer() {
         const max = this.players.length;
         const firstPlayer = Math.floor(Math.random() * max);
@@ -141,7 +137,7 @@ export class ServerGame {
     }
 
     private startTurn() {
-        if (this.endReason !== undefined) {
+        if (this.endReason) {
             this.onEndOfGame(this.endReason);
             return;
         }
@@ -158,7 +154,7 @@ export class ServerGame {
             return;
         }
 
-        if (this.endReason !== undefined) {
+        if (this.endReason) {
             this.onEndOfGame(this.endReason);
             return;
         }

@@ -54,20 +54,10 @@ export class ChatBoxComponent implements AfterViewInit {
         this.scrollDownChat();
     }
 
-    resetMessageContent() {
-        this.messageContent = '';
-    }
-
-    get messages$(): Observable<Message[]> {
-        return this.messageService.messages$;
-    }
-
-    isMessageValid(messageContent: string): boolean {
-        if (messageContent === undefined) {
-            return false;
-        }
-        const content = messageContent;
-        return content.length !== 0 && content.length <= MAX_MESSAGE_LENGTH && NOT_ONLY_SPACE_RGX.test(content);
+    generateMessageContentHTML(content: string) {
+        let transformedContent = this.boldPipe.transform(content);
+        transformedContent = this.newlinePipe.transform(transformedContent);
+        return transformedContent;
     }
 
     isError(length: number) {
@@ -77,14 +67,24 @@ export class ChatBoxComponent implements AfterViewInit {
         return false;
     }
 
-    scrollDownChat() {
-        const chatNativeElement = this.chat.nativeElement;
-        chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
+    private resetMessageContent() {
+        this.messageContent = '';
     }
 
-    generateMessageContentHTML(content: string) {
-        let transformedContent = this.boldPipe.transform(content);
-        transformedContent = this.newlinePipe.transform(transformedContent);
-        return transformedContent;
+    get messages$(): Observable<Message[]> {
+        return this.messageService.messages$;
+    }
+
+    private isMessageValid(messageContent: string): boolean {
+        if (!messageContent) {
+            return false;
+        }
+        const content = messageContent;
+        return content.length !== 0 && content.length <= MAX_MESSAGE_LENGTH && NOT_ONLY_SPACE_RGX.test(content);
+    }
+
+    private scrollDownChat() {
+        const chatNativeElement = this.chat.nativeElement;
+        chatNativeElement.scrollTop = chatNativeElement.scrollHeight;
     }
 }

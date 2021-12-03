@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
-import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
-import { Dictionary } from '@app/game-logic/validator/dictionary';
+import { openErrorDialog } from '@app/game-logic/utils';
 import { DictHttpService } from '@app/services/dict-http.service';
 
 export interface DictInfo {
@@ -18,10 +17,6 @@ export interface DictInfo {
     styleUrls: ['./admin-dict.component.scss'],
 })
 export class AdminDictComponent implements OnInit {
-    listDict: Dictionary[];
-    selectedFile: string = '';
-    displayedColumns: string[] = ['position', 'name', 'weight', 'edit', 'delete'];
-
     dictDataSource: DictInfo[];
     dictDisplayedColumns: string[] = ['title', 'description', 'edit', 'delete'];
 
@@ -64,24 +59,17 @@ export class AdminDictComponent implements OnInit {
 
     private updateDictMap(): void {
         this.dictHttpService.getDictInfoList().subscribe(
-            (res) => {
-                const list = res as DictInfo[];
+            (response) => {
+                const list = response as DictInfo[];
                 this.dictDataSource = list;
             },
             () => {
-                this.errorModal('Le connection avec le serveur a échoué');
+                this.openErrorModal('Le connection avec le serveur a échoué');
             },
         );
     }
 
-    private errorModal(error: string) {
-        this.dialog.open(AlertDialogComponent, {
-            width: '250px',
-            data: {
-                message: error,
-                button1: 'Ok',
-                button2: '',
-            },
-        });
+    private openErrorModal(errorContent: string) {
+        openErrorDialog(this.dialog, '250px', errorContent);
     }
 }

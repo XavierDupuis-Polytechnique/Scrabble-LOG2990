@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
@@ -13,7 +14,7 @@ describe('online chat handler', () => {
         TestBed.configureTestingModule({ providers: [{ provide: GameInfoService, useValue: gameInfo }] });
         service = TestBed.inject(OnlineChatHandlerService);
         (service.socket as any) = new SocketMock();
-        service.joinChatRoom('1', 'bob');
+        service['joinChatRoom']('1', 'bob');
     });
 
     it('should be created', () => {
@@ -21,27 +22,27 @@ describe('online chat handler', () => {
     });
 
     it('should call error when servit emit error', () => {
-        const spy = spyOn(service, 'receiveChatServerError');
+        const spy = spyOn<any>(service, 'receiveChatServerError');
         (service.socket as any).peerSideEmit('error', 'test');
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('should call receiveServerMessage when servit emit roomMessage', () => {
-        const spy = spyOn(service, 'receiveServerMessage');
+        const spy = spyOn<any>(service, 'receiveServerMessage');
         const message: ChatMessage = { content: 'hello there', from: 'General Kenoby' };
         (service.socket as any).peerSideEmit('roomMessages', message);
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('should call receiveSystemMessage when servit emit systemMessages', () => {
-        const spy = spyOn(service, 'receiveSystemMessage');
+        const spy = spyOn<any>(service, 'receiveSystemMessage');
         (service.socket as any).peerSideEmit('systemMessages', 'test');
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
     it('joinChatRoomWithUser should call joinChatRoom', () => {
-        const spy = spyOn(service, 'joinChatRoom');
-        service.joinChatRoomWithUser('1');
+        const spy = spyOn<any>(service, 'joinChatRoom');
+        service['joinChatRoomWithUser']('1');
         expect(spy).toHaveBeenCalledTimes(1);
     });
 
@@ -61,7 +62,7 @@ describe('online chat handler', () => {
         service.errorMessage$.pipe(take(1)).subscribe((value) => {
             test = value;
         });
-        service.receiveChatServerError('Huston we got a problem');
+        service['receiveChatServerError']('Huston we got a problem');
         expect(test).toEqual('Huston we got a problem');
     });
 
@@ -71,7 +72,7 @@ describe('online chat handler', () => {
             test = value;
         });
         const message: ChatMessage = { content: 'Hello There', from: 'General Kenobi' };
-        service.receiveServerMessage(message);
+        service['receiveServerMessage'](message);
         expect(test).toEqual(message);
     });
 
@@ -81,7 +82,7 @@ describe('online chat handler', () => {
             test = value;
         });
         const message = 'Dont look directly on the sun';
-        service.receiveSystemMessage(message);
+        service['receiveSystemMessage'](message);
         expect(test).toEqual(message);
     });
 
@@ -92,8 +93,8 @@ describe('online chat handler', () => {
         service.opponentMessage$.subscribe((value) => {
             getter = value;
         });
-        service.receiveServerMessage(messageOpponent);
-        service.receiveServerMessage(messageMe);
+        service['receiveServerMessage'](messageOpponent);
+        service['receiveServerMessage'](messageMe);
         expect(getter).toEqual(messageOpponent);
     });
 
@@ -114,7 +115,7 @@ describe('online chat handler', () => {
     it('should not throw when joining two time a game', () => {
         (service.socket as unknown) = undefined;
         expect(() => {
-            service.joinChatRoom('1', 'bob');
+            service['joinChatRoom']('1', 'bob');
         }).not.toThrowError();
     });
 });

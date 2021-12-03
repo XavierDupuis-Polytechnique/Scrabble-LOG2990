@@ -76,10 +76,10 @@ describe('AdminbotComponent', () => {
         expect(matDialogMock.open).toHaveBeenCalled();
     });
 
-    it('updatelist should open dialog if error', () => {
+    it('updatelist should return if error', () => {
         botHttpServiceMock.getDataInfo.and.returnValues(throwError({ status: 404 }));
         // eslint-disable-next-line dot-notation
         component['updateList']();
-        expect(matDialogMock.open).toHaveBeenCalled();
+        expect(matDialogMock.open).not.toHaveBeenCalled();
     });
 });

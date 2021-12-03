@@ -47,80 +47,6 @@ export class UIInputControllerService {
         this.processInput(input);
     }
 
-    processInput(input: UIInput) {
-        this.processInputComponent(input);
-        this.updateActiveAction(input.type);
-        this.processInputType(input);
-    }
-
-    processInputComponent(input: UIInput) {
-        if (input.from === undefined) {
-            if (this.activeComponent === InputComponent.Outside) {
-                this.activeComponent = UIInputControllerService.defaultComponent;
-            }
-            return;
-        }
-        this.activeComponent = input.from;
-    }
-
-    updateActiveAction(inputType: InputType): void {
-        switch (this.activeComponent) {
-            case InputComponent.Board:
-                if (!(this.activeAction instanceof UIPlace)) {
-                    this.discardAction();
-                    this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
-                    return;
-                }
-                break;
-            case InputComponent.Horse:
-                if (inputType === InputType.RightClick) {
-                    if (!(this.activeAction instanceof UIExchange)) {
-                        this.discardAction();
-                        this.activeAction = new UIExchange(this.info.user);
-                        return;
-                    }
-                } else {
-                    // LEFTCLICK or KEYPRESS or MOUSEWHEEL
-                    if (!(this.activeAction instanceof UIMove)) {
-                        this.discardAction();
-                        this.activeAction = new UIMove(this.info.user);
-                        return;
-                    }
-                }
-                break;
-            case InputComponent.Chatbox:
-                if (this.activeAction) {
-                    this.discardAction();
-                    return;
-                }
-                break;
-            case InputComponent.Outside:
-                if (this.activeAction) {
-                    this.discardAction();
-                    this.activeComponent = InputComponent.Outside;
-                }
-        }
-    }
-
-    processInputType(input: UIInput) {
-        switch (input.type) {
-            case InputType.LeftClick:
-                this.processLeftCLick(input.args);
-                break;
-            case InputType.RightClick:
-                this.processRightCLick(input.args as number);
-                break;
-            case InputType.KeyPress:
-                this.processKeyPress(input.args);
-                break;
-            case InputType.MouseRoll:
-                this.processMouseRoll(input.args as WheelRoll);
-                break;
-            default:
-                throw Error('Unresolved input of type ' + input.type);
-        }
-    }
-
     cancel() {
         this.discardAction();
         this.activeComponent = InputComponent.Outside;
@@ -143,6 +69,79 @@ export class UIInputControllerService {
         this.avs.sendAction(new PassTurn(user));
     }
 
+    private processInput(input: UIInput) {
+        this.processInputComponent(input);
+        this.updateActiveAction(input.type);
+        this.processInputType(input);
+    }
+
+    private processInputComponent(input: UIInput) {
+        if (input.from) {
+            this.activeComponent = input.from;
+            return;
+        }
+        if (this.activeComponent === InputComponent.Outside) {
+            this.activeComponent = UIInputControllerService.defaultComponent;
+        }
+    }
+
+    private updateActiveAction(inputType: InputType): void {
+        switch (this.activeComponent) {
+            case InputComponent.Board:
+                if (!(this.activeAction instanceof UIPlace)) {
+                    this.discardAction();
+                    this.activeAction = new UIPlace(this.info, this.pointCalculator, this.wordSearcher, this.boardService);
+                    return;
+                }
+                break;
+            case InputComponent.Horse:
+                if (inputType === InputType.RightClick) {
+                    if (!(this.activeAction instanceof UIExchange)) {
+                        this.discardAction();
+                        this.activeAction = new UIExchange(this.info.user);
+                        return;
+                    }
+                } else {
+                    if (!(this.activeAction instanceof UIMove)) {
+                        this.discardAction();
+                        this.activeAction = new UIMove(this.info.user);
+                        return;
+                    }
+                }
+                break;
+            case InputComponent.Chatbox:
+                if (this.activeAction) {
+                    this.discardAction();
+                    return;
+                }
+                break;
+            case InputComponent.Outside:
+                if (this.activeAction) {
+                    this.discardAction();
+                    this.activeComponent = InputComponent.Outside;
+                }
+        }
+    }
+
+    private processInputType(input: UIInput) {
+        switch (input.type) {
+            case InputType.LeftClick:
+                this.processLeftCLick(input.args);
+                break;
+            case InputType.RightClick:
+                this.processRightCLick(input.args as number);
+                break;
+            case InputType.KeyPress:
+                this.processKeyPress(input.args);
+                break;
+            case InputType.MouseRoll:
+                this.processMouseRoll(input.args as WheelRoll);
+                break;
+            default:
+                throw Error('Unresolved input of type ' + input.type);
+        }
+    }
+
     private discardAction() {
         if (this.activeAction) {
             this.activeAction.destroy();
@@ -160,6 +159,9 @@ export class UIInputControllerService {
         const keyPressed = args as string;
         switch (keyPressed) {
             case ESCAPE:
+                if (this.activeComponent === InputComponent.Chatbox) {
+                    return;
+                }
                 this.discardAction();
                 this.activeComponent = InputComponent.Outside;
                 break;

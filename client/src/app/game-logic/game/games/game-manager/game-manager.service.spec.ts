@@ -10,9 +10,9 @@ import { Letter } from '@app/game-logic/game/board/letter.interface';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { Game } from '@app/game-logic/game/games/game';
 import { GameSettings } from '@app/game-logic/game/games/game-settings.interface';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { ForfeitedGameState, LightPlayer } from '@app/game-logic/game/games/online-game/game-state';
 import { OnlineGame } from '@app/game-logic/game/games/online-game/online-game';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
 import { SpecialOfflineGame } from '@app/game-logic/game/games/special-games/special-offline-game';
 import { SpecialOnlineGame } from '@app/game-logic/game/games/special-games/special-online-game';
 import { ObjectiveCreator } from '@app/game-logic/game/objectives/objective-creator/objective-creator.service';
@@ -178,7 +178,7 @@ describe('GameManagerService Online Edition', () => {
     mockBotHttpService.getDataInfo.and.returnValue(obs);
     const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
     const dict = new DictionaryService(dictHttpServiceMock);
-    const timer: TimerService = jasmine.createSpyObj('TimerService', ['start']);
+    const timer: TimerService = jasmine.createSpyObj('TimerService', ['start', 'stop']);
     const board: BoardService = jasmine.createSpyObj('BoardService', [], ['board']);
     const actionCompiler: OnlineActionCompilerService = jasmine.createSpyObj('OnlineActionCompilerService', ['compileActionOnline']);
     const objectiveCreator: ObjectiveCreator = jasmine.createSpyObj('ObjectiveCreator', ['chooseObjectives']);
@@ -228,6 +228,7 @@ describe('GameManagerService Online Edition', () => {
         lettersRemaining: letterBag.length,
         isEndOfGame: false,
         winnerIndex: [],
+        objectives: [],
     };
 
     const objective: TransitionObjective = {
@@ -434,6 +435,7 @@ describe('GameManagerService Online Edition', () => {
             return;
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
+        service.startConvertedGame(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(OfflineGame);
         expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
         expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
@@ -448,6 +450,7 @@ describe('GameManagerService Online Edition', () => {
             return;
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
+        service.startConvertedGame(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(SpecialOfflineGame);
         expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
         expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
@@ -461,12 +464,6 @@ describe('GameManagerService Online Edition', () => {
             service['resumeGame'](0);
         }).toThrowError('No game created yet');
     });
-
-    // it('should not be able to start a converted game if there is no game', () => {
-    //     const updateLeaboardWhenGameEndsSpy = spyOn(service, 'updateLeaboardWhenGameEnds');
-    //     service['startConvertedGame'](0, GameMode.Classic);
-    //     expect(updateLeaboardWhenGameEndsSpy).not.toHaveBeenCalled();
-    // });
 
     it('should not allocate players if there is no game', () => {
         service['allocatePlayers']([new User('p1'), new User('p2')]);

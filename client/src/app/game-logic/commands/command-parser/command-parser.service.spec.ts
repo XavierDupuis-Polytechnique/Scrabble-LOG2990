@@ -215,10 +215,7 @@ describe('CommandParser', () => {
 
     it('should be of type Exchange as the args are valid ', () => {
         message.content = '!échanger abc';
-        const returnType: CommandType | undefined = service.parse(message.content, message.from);
-        if (returnType !== undefined) {
-            expect(returnType).toEqual(CommandType.Exchange);
-        }
+        expect(service.parse(message.content, message.from)).toEqual(CommandType.Exchange);
     });
 
     it("should send error message error 'les parametres sont invalide as' upperCases are not accepted", () => {
@@ -233,22 +230,8 @@ describe('CommandParser', () => {
 
     it('should be of type !échanger as 7 letters is the maximum', () => {
         message.content = '!échanger aaaaaaa';
-        const returnType: CommandType | undefined = service.parse(message.content, message.from);
-        if (returnType !== undefined) {
-            expect(returnType).toEqual(CommandType.Exchange);
-        }
+        expect(service.parse(message.content, message.from)).toEqual(CommandType.Exchange);
     });
-
-    it('should send error message error as 7 letters is the maximum', () => {
-        message.content = '!échanger aaaaaaaaa';
-
-        errorMessage = 'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé';
-        service.errorMessage$.subscribe((error) => {
-            errorMessageTest(error, errorMessage);
-        });
-        service.parse(message.content, message.from);
-    });
-
     it('should send error message error as 7 letters is the maximum', () => {
         message.content = '!échanger baaaaaaaaac';
         errorMessage = 'Commande impossible à réaliser: un maximum de 7 lettres peuvent être échangé';
@@ -258,34 +241,13 @@ describe('CommandParser', () => {
         service.parse(message.content, message.from);
     });
 
-    it('should send error message when message content is empty', () => {
-        service.errorMessage$.subscribe((error) => {
-            errorMessageTest(error, syntaxError1);
-        });
-        const placeLetterParams: string[] = [];
-        service['isCommandPlaceLetterValid'](placeLetterParams);
-    });
-
     it('should send error when place letter params arent valid', () => {
         errorMessage = 'erreur de syntax: direction invalide';
         service.errorMessage$.subscribe((error) => {
             errorMessageTest(error, errorMessage);
         });
-        const placeLetterParams = ['aaa', 'b', 'c', 'd'];
+        const placeLetterParams = ['a1a', 'b', 'c', 'd'];
         service['isPlaceLetterParameterValid'](placeLetterParams);
-    });
-
-    it('should return false if the command is undefined', () => {
-        const command = undefined as unknown as string[];
-        service.errorMessage$.subscribe((error) => {
-            errorMessageTest(error, syntaxError6);
-        });
-        service['isCommandPlaceLetterValid'](command);
-    });
-
-    it('should not validate a row with a undefined value', () => {
-        const row = undefined as unknown as string;
-        expect(service['isValidRow'](row)).toBeFalse();
     });
 
     it('should not validate a row with a value more then o', () => {
@@ -293,23 +255,8 @@ describe('CommandParser', () => {
         expect(service['isValidRow'](row)).toBeFalse();
     });
 
-    it('should not validate word when col is undefined', () => {
-        const col = undefined as unknown as number;
-        expect(service['isValidColumn'](col)).toBeFalse();
-    });
-
     it('should not validate word when column is not in board delimitation', () => {
         const col = 0;
         expect(service['isValidColumn'](col)).toBeFalse();
-    });
-
-    it('should not validate word when word is undefined', () => {
-        const word = undefined as unknown as string;
-        expect(service['isValidWord'](word)).toBeFalse();
-    });
-
-    it('should not validate direction when direction is undefined', () => {
-        const direction = undefined as unknown as string;
-        expect(service['isValidDirection'](direction)).toBeFalse();
     });
 });

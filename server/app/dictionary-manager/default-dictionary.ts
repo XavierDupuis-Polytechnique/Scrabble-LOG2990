@@ -1,5 +1,3 @@
-// import * as data from 'assets/dictionary.json';
-
 export interface DictionaryServer {
     title: string;
     description: string;

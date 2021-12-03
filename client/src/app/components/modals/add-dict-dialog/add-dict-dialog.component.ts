@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { NOT_FOUND } from '@app/game-logic/constants';
+import { openErrorDialog } from '@app/game-logic/utils';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
 
@@ -30,7 +30,7 @@ export class AddDictDialogComponent {
         }
         const fileName = file[0].name;
         if (!fileName.includes('.json')) {
-            this.errorModal("Le fichier sélectionné n'est pas un fichier JSON");
+            this.openErrorModal("Le fichier sélectionné n'est pas un fichier JSON");
             return;
         }
         this.selectedFile = fileName;
@@ -49,11 +49,11 @@ export class AddDictDialogComponent {
     private async readFile(file: File): Promise<Dictionary> {
         const tempFileReader = new FileReader();
         return new Promise((resolve) => {
-            tempFileReader.onload = (res) => {
-                if (res.target === null) {
+            tempFileReader.onload = (response) => {
+                if (response.target === null) {
                     return;
                 }
-                const resultString = res.target.result;
+                const resultString = response.target.result;
                 if (resultString === null) {
                     return;
                 }
@@ -65,23 +65,23 @@ export class AddDictDialogComponent {
     }
 
     private async uploadDictionary(dict: Dictionary) {
-        if (dict.title === undefined || null) {
-            this.errorModal('Le dictionnaire fournie ne contient pas de titre');
+        if (!dict.title || dict.title === null) {
+            this.openErrorModal('Le dictionnaire fournie ne contient pas de titre');
             return;
         }
 
         if (dict.title.search('[^A-Za-z0-9 ]') !== NOT_FOUND) {
-            this.errorModal('Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.');
+            this.openErrorModal('Le titre du dictionnaire contient un ou des caractères spéciaux. Ceux-ci ne sont pas permis.');
             return;
         }
 
-        if (dict.description === undefined || null) {
-            this.errorModal('Le dictionnaire fournie ne contient pas de description');
+        if (!dict.description || dict.description === null) {
+            this.openErrorModal('Le dictionnaire fournie ne contient pas de description');
             return;
         }
 
-        if (dict.words === undefined || null) {
-            this.errorModal('Le dictionnaire fournie ne contient pas une liste de mots');
+        if (!dict.words || dict.words === null) {
+            this.openErrorModal('Le dictionnaire fournie ne contient pas une liste de mots');
             return;
         }
 
@@ -89,19 +89,12 @@ export class AddDictDialogComponent {
             if (value) {
                 this.dialogRef.close();
             } else {
-                this.errorModal('Un dictionnaire avec le même titre existe déjà sur le serveur');
+                this.openErrorModal('Un dictionnaire avec le même titre existe déjà sur le serveur');
             }
         });
     }
 
-    private errorModal(error: string) {
-        this.dialog.open(AlertDialogComponent, {
-            width: '250px',
-            data: {
-                message: error,
-                button1: 'Ok',
-                button2: '',
-            },
-        });
+    private openErrorModal(errorContent: string) {
+        openErrorDialog(this.dialog, '250px', errorContent);
     }
 }

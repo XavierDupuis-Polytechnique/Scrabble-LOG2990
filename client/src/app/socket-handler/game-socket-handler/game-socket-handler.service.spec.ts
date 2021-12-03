@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { ForfeitedGameState, GameState } from '@app/game-logic/game/games/online-game/game-state';
@@ -13,8 +14,8 @@ describe('GameSocketHandlerService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(GameSocketHandlerService);
-        service.connectToSocket = jasmine.createSpy().and.returnValue(new SocketMock());
-        service.connectToSocket();
+        service['connectToSocket'] = jasmine.createSpy().and.returnValue(new SocketMock());
+        service['connectToSocket']();
         const userAuth: UserAuth = { playerName: 'Test', gameToken: '1' };
         service.joinGame(userAuth);
     });
@@ -31,14 +32,21 @@ describe('GameSocketHandlerService', () => {
     });
 
     it('on gameState should call receiveGameState', () => {
-        const spy = spyOn(service, 'receiveGameState');
+        const spy = spyOn<any>(service, 'receiveGameState');
         const mockGameState = {};
         (service.socket as any).peerSideEmit('gameState', mockGameState);
         expect(spy).toHaveBeenCalled();
     });
 
+    it('on transitionGameState should call receiveForfeitedGameState', () => {
+        const spy = spyOn<any>(service, 'receiveForfeitedGameState');
+        const mockGameState = {};
+        (service.socket as any).peerSideEmit('transitionGameState', mockGameState);
+        expect(spy).toHaveBeenCalled();
+    });
+
     it('on timerControl should call receiveTimerControl', () => {
-        const spy = spyOn(service, 'receiveTimerControl');
+        const spy = spyOn<any>(service, 'receiveTimerControl');
         const mockTimerControl: TimerControls = TimerControls.Start;
         (service.socket as any).peerSideEmit('timerControl', mockTimerControl);
         expect(spy).toHaveBeenCalled();
@@ -49,7 +57,7 @@ describe('GameSocketHandlerService', () => {
         service.timerControls$.subscribe((value: TimerControls) => {
             expect(value).toEqual(timerControl);
         });
-        service.receiveTimerControl(timerControl);
+        service['receiveTimerControl'](timerControl);
     });
 
     it('playAction should emit nextAction', () => {
@@ -88,8 +96,18 @@ describe('GameSocketHandlerService', () => {
             gameStateSubject = value;
         });
         const gameState = { isEndOfGame: false } as GameState;
-        service.receiveGameState(gameState);
+        service['receiveGameState'](gameState);
         expect(gameStateSubject.isEndOfGame).toBeFalse();
+    });
+
+    it('receiveTransitionGameState should set forfeitGameStateSubject', () => {
+        let forfeitGameStateSubject: ForfeitedGameState = {} as ForfeitedGameState;
+        service.forfeitGameState$.pipe(take(1)).subscribe((value) => {
+            forfeitGameStateSubject = value;
+        });
+        const forfeitGameState = { lettersRemaining: 3 } as ForfeitedGameState;
+        service['receiveForfeitedGameState'](forfeitGameState);
+        expect(forfeitGameStateSubject.lettersRemaining).toEqual(3);
     });
 
     it('should receive disconnected event and handle it properly', (done) => {

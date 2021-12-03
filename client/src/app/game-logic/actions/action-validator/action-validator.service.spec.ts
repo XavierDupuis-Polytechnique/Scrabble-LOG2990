@@ -20,7 +20,7 @@ import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { GameInfoService } from '@app/game-logic/game/game-info/game-info.service';
-import { OfflineGame } from '@app/game-logic/game/games/solo-game/offline-game';
+import { OfflineGame } from '@app/game-logic/game/games/offline-game/offline-game';
 import { TimerService } from '@app/game-logic/game/timer/timer.service';
 import { PlacementSetting } from '@app/game-logic/interfaces/placement-setting.interface';
 import { MessagesService } from '@app/game-logic/messages/messages.service';
@@ -101,7 +101,6 @@ describe('ActionValidatorService', () => {
         expect(service).toBeTruthy();
     });
 
-    /// INVALID ACTION TYPE TESTS ///
     it('should throw error when receiving an unrecognized action type', () => {
         const action = new UnknownAction(currentPlayer);
         service['checkAction'](action);
@@ -114,18 +113,14 @@ describe('ActionValidatorService', () => {
         service.sendAction(action);
         expect(playerSpy).not.toHaveBeenCalled();
     });
-    /// ////////////////// ///
 
-    /// SEND VALID ACTION TO PLAYER TESTS ///
     it('should propagate a valid action to the player', () => {
         const action = new PassTurn(currentPlayer);
         const spy = spyOn(currentPlayer, 'play');
         service.sendAction(action);
         expect(spy).toHaveBeenCalledWith(action);
     });
-    /// ////////////////// ///
 
-    /// TURN + PASSTURN TESTS ///
     it('should validate a valid PassTurn', () => {
         const action = new PassTurn(currentPlayer);
         expect(service['checkAction'](action)).toBeTruthy();
@@ -154,9 +149,7 @@ describe('ActionValidatorService', () => {
         );
         expect(service['checkAction'](action)).not.toBeTruthy();
     });
-    /// ////////////////// ///
 
-    /// EXCHANGELETTER TESTS ///
     it('should validate a valid ExchangeLetter because 7 letters from the player rack can be exchanged', () => {
         const action = new ExchangeLetter(currentPlayer, currentPlayer.letterRack);
         expect(service['checkAction'](action)).toBeTruthy();
@@ -238,7 +231,6 @@ describe('ActionValidatorService', () => {
     it('checkExchangeLetter should return true when a hardBot exchange letters while theres less than 7 letters left', () => {
         game.letterBag.drawGameLetters(game.letterBag.gameLetters.length - 5);
         const letterCreator = new LetterCreator();
-        // game.letterBag.gameLetters = [letterCreator.createLetter('a'), letterCreator.createLetter('b'), letterCreator.createLetter('c')];
         const letterRack = [letterCreator.createLetter('c'), letterCreator.createLetter('d')];
         const hardBot = TestBed.inject(BotCreatorService).createBot('testHardBot', 'hard') as HardBot;
         hardBot.letterRack = letterRack;
@@ -246,9 +238,7 @@ describe('ActionValidatorService', () => {
         const result = service['checkExchangeLetter'](action);
         expect(result).toBeTruthy();
     });
-    /// ////////////////// ///
 
-    /// PLACELETTER TESTS ///
     it('should validate a valid PlaceLetter because the letter Tile is empty (horizontal)', () => {
         const word = 'a';
         const placement: PlacementSetting = { direction: Direction.Horizontal, x: centerPosition, y: centerPosition };
@@ -507,9 +497,7 @@ describe('ActionValidatorService', () => {
 
         expect(game.board.grid[0][beginPos + 3].letterObject.char).toBe(EMPTY_CHAR);
     });
-    /// ////////////////// ///
 
-    /// ACTIONS SYSTEM/ERROR MESSAGES ///
     it('should send correct message format for PassTurn action', () => {
         const action = new PassTurn(currentPlayer);
         service['sendActionArgsMessage'](action);
@@ -545,5 +533,4 @@ describe('ActionValidatorService', () => {
         const expected = currentPlayer.name + ' place le mot ' + word + ' en h8v';
         expect(messagesSpy.receiveSystemMessage).toHaveBeenCalledWith(expected);
     });
-    /// ////////////////// ///
 });
