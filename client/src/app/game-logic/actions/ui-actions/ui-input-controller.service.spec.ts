@@ -18,13 +18,17 @@ import { PointCalculatorService } from '@app/game-logic/point-calculator/point-c
 import { getRandomInt } from '@app/game-logic/utils';
 import { DictionaryService } from '@app/game-logic/validator/dictionary.service';
 import { WordSearcher } from '@app/game-logic/validator/word-search/word-searcher.service';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { UIInputControllerService } from './ui-input-controller.service';
 
 class MockGameInfoService {
     players: Player[];
     activePlayerIndex: number = 0;
     user: Player;
+    endOfTurnMockSubject = new Subject<void>();
+    get endTurn$(): Observable<void> {
+        return this.endOfTurnMockSubject;
+    }
     get activePlayer() {
         return this.user;
     }
@@ -38,7 +42,6 @@ describe('UIInputControllerService', () => {
     let pointCalculator: PointCalculatorService;
     let wordSearcher: WordSearcher;
     let boardService: BoardService;
-    const endOfTurnMockSubject = new Subject<void>();
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -64,7 +67,6 @@ describe('UIInputControllerService', () => {
         info = TestBed.inject(GameInfoService);
         info.players = [player];
         info.user = player;
-        spyOnProperty<any>(info, 'endTurnSubject').and.returnValue(endOfTurnMockSubject);
         service = TestBed.inject(UIInputControllerService);
     });
 
@@ -72,9 +74,9 @@ describe('UIInputControllerService', () => {
         expect(service).toBeTruthy();
     });
 
-    fit('should discard current UIPlace action on end of turn', () => {
+    it('should discard current UIPlace action on end of turn', () => {
         service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
-        endOfTurnMockSubject.next();
+        (info as any as MockGameInfoService).endOfTurnMockSubject.next();
         expect(service.activeAction).toBeNull();
     });
 
