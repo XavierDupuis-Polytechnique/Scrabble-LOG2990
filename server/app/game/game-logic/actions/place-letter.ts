@@ -37,26 +37,26 @@ export class PlaceLetter extends Action {
         const currentGrid = game.board.grid;
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
         const wordValid = validWordList.length !== 0;
-        if (wordValid) {
-            this.pointCalculator.placeLetterCalculation(this, formedWords, game.board.grid);
-            this.drawLettersForPlayer(game);
-            if (game instanceof SpecialServerGame) {
-                const updateObjectiveParams: ObjectiveUpdateParams = {
-                    previousGrid,
-                    currentGrid,
-                    lettersToPlace: this.lettersToRemoveInRack,
-                    formedWords,
-                    affectedCoords: this.affectedCoords,
-                };
-                (game as SpecialServerGame).updateObjectives(this, updateObjectiveParams);
-            }
-            this.end();
-        } else {
+        if (!wordValid) {
             timer(TIME_FOR_REVERT).subscribe(() => {
                 this.revert(game);
                 this.end();
             });
+            return;
         }
+        this.pointCalculator.placeLetterCalculation(this, formedWords, game.board.grid);
+        this.drawLettersForPlayer(game);
+        if (game instanceof SpecialServerGame) {
+            const updateObjectiveParams: ObjectiveUpdateParams = {
+                previousGrid,
+                currentGrid,
+                lettersToPlace: this.lettersToRemoveInRack,
+                formedWords,
+                affectedCoords: this.affectedCoords,
+            };
+            (game as SpecialServerGame).updateObjectives(this, updateObjectiveParams);
+        }
+        this.end();
     }
 
     private revert(game: ServerGame) {

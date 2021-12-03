@@ -31,16 +31,17 @@ export class DictionaryService {
 
     deleteGameDictionary(gameToken: string) {
         const uniqueName = this.liveGamesMap.get(gameToken);
-        if (uniqueName) {
-            const liveDict = this.liveDictMap.get(uniqueName) as LiveDict;
-            liveDict.currentUsage--;
-            if (liveDict.currentUsage === 0) {
-                this.liveDictMap.delete(uniqueName);
-            } else {
-                this.liveDictMap.set(uniqueName, liveDict);
-            }
-            this.liveGamesMap.delete(gameToken);
+        if (!uniqueName) {
+            return;
         }
+        const liveDict = this.liveDictMap.get(uniqueName) as LiveDict;
+        liveDict.currentUsage--;
+        if (liveDict.currentUsage === 0) {
+            this.liveDictMap.delete(uniqueName);
+        } else {
+            this.liveDictMap.set(uniqueName, liveDict);
+        }
+        this.liveGamesMap.delete(gameToken);
     }
 
     isWordInDict(word: string, gameToken: string): boolean {
