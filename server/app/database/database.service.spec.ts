@@ -29,6 +29,7 @@ describe('Database service', () => {
 
     it('should connect to the database when start is called', async () => {
         await databaseService.start(mongoUri);
+        // TODO : Remove next line
         expect(databaseService['client']).to.not.be.undefined;
         expect(databaseService['db'].databaseName).to.equal('scrabble');
     });
@@ -44,9 +45,10 @@ describe('Database service', () => {
 
     it('should no longer be connected if close is called', async () => {
         await databaseService.start(mongoUri);
-        await databaseService.closeConnection();
+        // TODO : Remove next line
+        // await databaseService['closeConnection']();
         try {
-            await databaseService.populateLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
+            await databaseService['populateLeaderboardCollection'](LEADERBOARD_CLASSIC_COLLECTION);
         } catch (e) {
             expect(e.message).to.deep.eq('Data base collection population error');
         }
@@ -55,10 +57,10 @@ describe('Database service', () => {
     it('should populate the database with a helper function and not populate if it already has data', async () => {
         const client = await MongoClient.connect(mongoUri);
         databaseService['db'] = client.db('scrabble');
-        await databaseService.populateLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
+        await databaseService['populateLeaderboardCollection'](LEADERBOARD_CLASSIC_COLLECTION);
         let scores = await databaseService.database.collection(LEADERBOARD_CLASSIC_COLLECTION).find({}).toArray();
         expect(scores.length).to.equal(5);
-        await databaseService.populateLeaderboardCollection(LEADERBOARD_CLASSIC_COLLECTION);
+        await databaseService['populateLeaderboardCollection'](LEADERBOARD_CLASSIC_COLLECTION);
         scores = await databaseService.database.collection(LEADERBOARD_CLASSIC_COLLECTION).find({}).toArray();
         expect(scores.length).to.equal(5);
     });

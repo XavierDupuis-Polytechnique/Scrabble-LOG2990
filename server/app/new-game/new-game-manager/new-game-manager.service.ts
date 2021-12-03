@@ -42,10 +42,6 @@ export class NewGameManagerService {
         return id;
     }
 
-    isPendingGame(id: string): boolean {
-        return this.pendingGames.has(id);
-    }
-
     deletePendingGame(id: string) {
         const gameStarted = this.gameMaster.activeGames.has(id);
         if (!gameStarted) {
@@ -60,6 +56,10 @@ export class NewGameManagerService {
         }
         const onlineGameSetting = this.toOnlineGameSettings(id, this.pendingGames.get(id));
         return onlineGameSetting;
+    }
+
+    private isPendingGame(id: string): boolean {
+        return this.pendingGames.has(id);
     }
 
     private startGame(gameToken: string, gameSettings: OnlineGameSettings) {

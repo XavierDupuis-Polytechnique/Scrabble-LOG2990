@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { ActionCompilerService } from '@app/game/game-logic/actions/action-compiler.service';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { ExchangeLetter } from '@app/game/game-logic/actions/exchange-letter';
@@ -121,7 +122,7 @@ describe('ActionCompilerService', () => {
             letterRack: letters,
         };
 
-        actionCompiler.letterRackUpdateValidator(command, player);
+        actionCompiler['letterRackUpdateValidator'](command, player);
         expect(player.letterRack).to.be.equal(playerLetters);
     });
 

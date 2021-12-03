@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { openErrorDialog } from '@app/game-logic/utils';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { BotHttpService } from '@app/services/bot-http.service';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -37,10 +38,7 @@ export class AdminDropDbComponent {
                     const isDictOk = await this.dropDictTable();
                     const isDeleteLBOk = await this.dropLeaderboardTables();
                     if (!isbotDropOk || !isDictOk || !isDeleteLBOk) {
-                        this.dialog.open(AlertDialogComponent, {
-                            width: '250px',
-                            data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },
-                        });
+                        openErrorDialog(this.dialog, '250px', 'Une erreur est survenue avec la base de données');
                         return;
                     }
                     this.refresh();
