@@ -1,3 +1,4 @@
+import { MAX_FILE_LENGTH } from '@app/constants';
 import { DictionaryServer } from '@app/db-manager-services/dictionary-manager/default-dictionary';
 import { NOT_FOUND } from '@app/game/game-logic/constants';
 import * as fs from 'fs';
@@ -13,7 +14,7 @@ export class DictionaryServerService {
 
     isDictExist(dictTitle: string): boolean {
         for (const dict of this.allDictionary) {
-            if (dict.title.replace(/\s/g, '') === dictTitle.replace(/\s/g, '')) {
+            if (dict.title.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH) === dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH)) {
                 return true;
             }
         }
@@ -73,7 +74,9 @@ export class DictionaryServerService {
     }
 
     deleteDict(dictTitle: string): boolean {
-        const index = this.allDictionary.findIndex((dict) => dict.title === dictTitle);
+        const index = this.allDictionary.findIndex(
+            (dict) => dict.title.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH) === dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH),
+        );
         const dictionary = this.allDictionary[index];
         if (!dictionary) {
             return false;
@@ -97,12 +100,14 @@ export class DictionaryServerService {
     }
 
     private deleteFile(dictTitle: string) {
-        const filePath = (this.folderPath + dictTitle + '.json').replace(/\s/g, '');
+        const title = dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH);
+        const filePath = this.folderPath + title + '.json';
         fs.unlinkSync(filePath);
     }
 
     private saveToFile(dictTitle: string) {
-        const fileName = (this.folderPath + dictTitle + '.json').replace(/\s/g, '');
+        const title = dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH);
+        const fileName = this.folderPath + title + '.json';
         fs.writeFileSync(fileName, JSON.stringify(this.getDictByTitle(dictTitle)));
     }
 

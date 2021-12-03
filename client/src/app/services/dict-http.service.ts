@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MAX_FILE_LENGTH } from '@app/game-logic/constants';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictInfo } from '@app/pages/admin-page/admin-dict/admin-dict.component';
 import { environment } from 'src/environments/environment';
@@ -11,7 +12,8 @@ export class DictHttpService {
     constructor(private http: HttpClient) {}
 
     getDict(dictTitle: string) {
-        return this.http.get(`${environment.serverUrl}/dictionary?title=${dictTitle}`);
+        const title = dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH);
+        return this.http.get(`${environment.serverUrl}/dictionary?title=${title}`);
     }
 
     getDictInfoList() {
@@ -27,7 +29,8 @@ export class DictHttpService {
     }
 
     deleteDict(dictTitle: string) {
-        return this.http.delete(`${environment.serverUrl}/dictionary?title=${dictTitle}`, { responseType: 'text' });
+        const title = dictTitle.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH);
+        return this.http.delete(`${environment.serverUrl}/dictionary?title=${title}`, { responseType: 'text' });
     }
 
     dropTable() {

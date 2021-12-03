@@ -72,3 +72,4 @@ export const THREE_SAME_LETTERS_NUMBER_OF_OCCURENCES = 3;
 export const TRIPLE_BONUS_NUMBER_OF_BONUS = 3;
 export const HIGHSCORES_TO_DISPLAY = 5;
 export const NOT_ONLY_SPACE_RGX = new RegExp('.*[^ ].*');
+export const MAX_FILE_LENGTH = 235;
