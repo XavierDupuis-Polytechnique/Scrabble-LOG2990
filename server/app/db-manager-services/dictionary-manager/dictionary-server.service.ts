@@ -6,12 +6,8 @@ import { Service } from 'typedi';
 @Service()
 export class DictionaryServerService {
     allDictionary: DictionaryServer[] = [];
-    private folderPath = 'assets/';
 
-    constructor(path?: string) {
-        if (path) {
-            this.folderPath = path;
-        }
+    constructor(private folderPath = 'assets/') {
         this.loadFromFile();
     }
 
@@ -45,14 +41,8 @@ export class DictionaryServerService {
         return '';
     }
 
-    getDictByTitle(dictTitle: string): DictionaryServer | boolean {
-        for (const dict of this.allDictionary) {
-            if (dict.title !== dictTitle) {
-                continue;
-            }
-            return dict;
-        }
-        return false;
+    getDictByTitle(dictTitle: string): DictionaryServer | undefined {
+        return this.allDictionary.find((dictionary) => dictionary.title === dictTitle);
     }
 
     addDict(dictToAdd: DictionaryServer): boolean {

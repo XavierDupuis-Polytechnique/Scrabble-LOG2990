@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-// import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { ASCII_CODE, BOARD_DIMENSION } from '@app/game-logic/constants';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
@@ -7,7 +6,6 @@ import { isCharUpperCase } from '@app/game-logic/utils';
 import { Board, MULTIPLICATORS, MultiType } from './board';
 
 class MockLetterCreator extends LetterCreator {
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     static readonly gameLettersValue = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 10, 1, 2, 1, 1, 3, 8, 1, 1, 1, 1, 4, 10, 10, 10, 10, 0];
     indexRectifier = 'A'.charCodeAt(0);
 

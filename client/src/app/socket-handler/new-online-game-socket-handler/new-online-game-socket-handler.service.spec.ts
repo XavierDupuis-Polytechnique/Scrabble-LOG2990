@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TestBed } from '@angular/core/testing';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game-logic/constants';
@@ -15,10 +16,9 @@ describe('NewOnlineGameSocketHandler', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(NewOnlineGameSocketHandler);
-        createSocketFunction = service.connectToSocket;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        service.connectToSocket = jasmine.createSpy().and.returnValue(new SocketMock());
-        service.connect();
+        createSocketFunction = service['connectToSocket'];
+        service['connectToSocket'] = jasmine.createSpy().and.returnValue(new SocketMock());
+        service['connect']();
     });
 
     it('should be created', () => {
@@ -33,7 +33,7 @@ describe('NewOnlineGameSocketHandler', () => {
     });
 
     it('createGame should emit createGame if game settings are valid and receive pendingGameId', () => {
-        const spyWaitingForPlayer = spyOn(service, 'waitForSecondPlayer').and.callThrough();
+        const spyWaitingForPlayer = spyOn<any>(service, 'waitForSecondPlayer').and.callThrough();
         const gameSettings = {
             playerName: 'allo',
             randomBonus: false,
@@ -61,13 +61,13 @@ describe('NewOnlineGameSocketHandler', () => {
         const gameSettings = { id: '1', playerName: 'allo', randomBonus: false, timePerTurn: 65000 };
 
         spyOnProperty(service.socket, 'connected', 'get').and.returnValue(true);
-        spyOn(service, 'listenForGameToken').and.callThrough();
+        spyOn<any>(service, 'listenForGameToken').and.callThrough();
         spyOn(service, 'disconnectSocket').and.callThrough();
         service.joinPendingGame('abc', 'allo1');
-        expect(service.listenForGameToken).toHaveBeenCalled();
+        expect(service['listenForGameToken']).toHaveBeenCalled();
 
         (service.socket as any).peerSideEmit('gameJoined', gameSettings);
-        service.listenForGameToken();
+        service['listenForGameToken']();
         service.startGame$.pipe(first()).subscribe((gameSettingsServer) => {
             expect(gameSettingsServer).not.toBeUndefined();
         });
@@ -89,12 +89,12 @@ describe('NewOnlineGameSocketHandler', () => {
         service.error$.pipe(first()).subscribe((value: string) => {
             expect(value).toMatch(errorMessage);
         });
-        service.listenErrorMessage();
+        service['listenErrorMessage']();
         (service.socket as any).peerSideEmit('error', errorMessage);
     });
 
     it('disconnect if connect to server fail', () => {
-        service.connect();
+        service['connect']();
         service.isDisconnected$.pipe(take(1)).subscribe((value) => {
             expect(value).toBeTrue();
         });

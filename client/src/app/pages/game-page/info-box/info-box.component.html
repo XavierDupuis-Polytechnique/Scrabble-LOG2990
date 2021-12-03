@@ -5,9 +5,9 @@
 
         <p id="timer">{{ timeLeft$ | async | date: 'm:ss' }}</p>
     </div>
-    <p id="letters-in-bag">Il reste {{ info.numberOfLettersRemaining }} lettres dans le sac</p>
+    <p id="letters-in-bag">Il reste {{ numberOfLettersRemaining }} lettres dans le sac</p>
 </mat-card>
 
-<div *ngIf="info.isEndOfGame">
+<div *ngIf="isEndOfGame">
     <H1>Félicitation à: {{ this.showWinner() }}</H1>
 </div>

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
 import { EditBotDialogComponent } from '@app/components/modals/edit-bot-dialog/edit-bot-dialog.component';
 import { BotHttpService, BotInfo } from '@app/services/bot-http.service';
+import { openErrorDialog } from '@app/game-logic/utils';
 
 @Component({
     selector: 'app-admin-bot',
@@ -52,21 +52,13 @@ export class AdminBotComponent implements OnInit {
 
     private updateList() {
         this.botHttpService.getDataInfo().subscribe(
-            (res) => {
-                const list = res as BotInfo[];
+            (response) => {
+                const list = response as BotInfo[];
                 this.botDataInfo = list;
                 this.dataSource = [...this.botDataInfo];
             },
             () => {
-                this.dialog.open(AlertDialogComponent, {
-                    width: '250px',
-                    data: {
-                        message: 'Le connection avec le serveur a échoué pour les joueurs virtuels',
-                        button1: 'Ok',
-                        button2: '',
-                    },
-                    id: '404',
-                });
+                openErrorDialog(this.dialog, '250px', 'Le connection avec le serveur a échoué pour les joueurs virtuels');
             },
         );
     }

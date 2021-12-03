@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import { Action } from '@app/game-logic/actions/action';
 import { OnlineActionCompilerService } from '@app/game-logic/actions/online-actions/online-action-compiler.service';
 import { PlaceLetter } from '@app/game-logic/actions/place-letter';
@@ -46,7 +45,7 @@ export class OnlineGame extends Game {
     ) {
         super();
         this.boardService.board = new Board();
-        this.userName = userName;
+
         this.gameState$$ = this.onlineSocket.gameState$.subscribe((gameState: GameState) => {
             this.receiveState(gameState);
         });
@@ -69,6 +68,7 @@ export class OnlineGame extends Game {
     }
 
     stop() {
+        this.timer.stop();
         this.forfeit();
         this.close();
     }
@@ -99,13 +99,6 @@ export class OnlineGame extends Game {
         });
     }
 
-    forfeit() {
-        if (!this.onlineSocket.socket) {
-            return;
-        }
-        this.onlineSocket.disconnect();
-    }
-
     getWinner() {
         const winners = this.winnerNames.map((name) => {
             const playerWithIndex = this.playersWithIndex.get(name);
@@ -123,6 +116,13 @@ export class OnlineGame extends Game {
         this.updatePlayers(gameState);
         this.updateLettersRemaining(gameState);
         this.updateEndOfGame(gameState);
+    }
+
+    private forfeit() {
+        if (!this.onlineSocket.socket) {
+            return;
+        }
+        this.onlineSocket.disconnect();
     }
 
     private setupPlayersWithIndex() {
@@ -153,16 +153,8 @@ export class OnlineGame extends Game {
         const grid = this.boardService.board.grid;
         const player = action.player;
         for (let wordIndex = 0; wordIndex < word.length; wordIndex++) {
-            let char: string;
-            let x = startX;
-            let y = startY;
-            if (direction === Direction.Horizontal) {
-                x = startX + wordIndex;
-                char = grid[y][x].letterObject.char;
-            } else {
-                y = startY + wordIndex;
-                char = grid[y][x].letterObject.char;
-            }
+            const [x, y] = direction === Direction.Horizontal ? [startX + wordIndex, startY] : [startX, startY + wordIndex];
+            const char = grid[y][x].letterObject.char;
 
             if (char === EMPTY_CHAR) {
                 const charToCreate = word[wordIndex];
@@ -269,9 +261,9 @@ export class OnlineGame extends Game {
             const letterCount = mapRack.get(letter.char);
             if (letterCount !== undefined) {
                 mapRack.set(letter.char, letterCount + 1);
-            } else {
-                mapRack.set(letter.char, 1);
+                continue;
             }
+            mapRack.set(letter.char, 1);
         }
         return mapRack;
     }

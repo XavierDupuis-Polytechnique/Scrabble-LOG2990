@@ -1,3 +1,4 @@
+import { JOKER_CHAR, NOT_FOUND } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { Tile } from '@app/game-logic/game/board/tile';
 import { Vec2 } from '@app/game-logic/interfaces/vec2';
@@ -25,7 +26,7 @@ export class BotCrawler {
         for (let rackIndex = 0; rackIndex < this.bot.letterRack.length; rackIndex++) {
             if (this.bot.timesUp) break;
             const startingLetter = this.bot.letterRack[rackIndex].char.toLowerCase();
-            if (startingLetter !== '*') {
+            if (startingLetter !== JOKER_CHAR) {
                 const placedLetter: ValidWord[] = [];
                 const initialWord = new ValidWord(startingLetter);
                 const tmpLetter = this.bot.letterRack.splice(rackIndex, 1);
@@ -56,17 +57,11 @@ export class BotCrawler {
         let y = startingPosition.y;
         let isVertical = isVerticalFlag;
         let letterInBox = grid[y][x].letterObject.char;
-
         while (letterInBox === ' ') {
-            if (isVertical) {
-                if (y !== END_OF_BOARD) {
-                    y++;
-                } else break;
-            } else {
-                if (x !== END_OF_BOARD) {
-                    x++;
-                } else break;
-            }
+            const coord = isVertical ? y : x;
+            if (coord !== END_OF_BOARD) {
+                [x, y] = isVertical ? [x, y + 1] : [x + 1, y];
+            } else break;
             letterInBox = grid[y][x].letterObject.char;
         }
         if (letterInBox !== ' ') {
@@ -101,9 +96,8 @@ export class BotCrawler {
         }
     }
 
-    getAllPossibilitiesOnLine(lettersOnLine: ValidWord): ValidWord[] {
+    private getAllPossibilitiesOnLine(lettersOnLine: ValidWord): ValidWord[] {
         const allPossibilities: ValidWord[] = [];
-        const notFound = -1;
         const startOfLine = 0;
         let leftIndex = startOfLine;
         let rightIndex = startOfLine;
@@ -113,13 +107,13 @@ export class BotCrawler {
         let emptyBox = lettersOnLine.word.indexOf('-');
         let index = emptyBox;
 
-        if (emptyBox === notFound) {
+        if (emptyBox === NOT_FOUND) {
             lettersOnLine.word = lettersOnLine.word.toLowerCase();
             allPossibilities.push(lettersOnLine);
         } else {
             let maxGroupSize = 1;
 
-            while (emptyBox !== notFound) {
+            while (emptyBox !== NOT_FOUND) {
                 maxGroupSize++;
 
                 while (lettersOnLine.word.charAt(index) === '-') {
@@ -150,7 +144,7 @@ export class BotCrawler {
                 }
                 rightIndex = index;
 
-                while (emptyBox !== notFound) {
+                while (emptyBox !== NOT_FOUND) {
                     tmpSubWord = new ValidWord('');
                     subWord = lettersOnLine.word.substring(leftIndex, rightIndex);
                     tmpSubWord.word = subWord.toLowerCase();
@@ -217,11 +211,8 @@ export class BotCrawler {
         const lettersOnLine: ValidWord = new ValidWord('');
         let lastLetterOfLine: number;
         let rightCount = 0;
-        if (position.isVertical) {
-            lettersOnLine.leftCount = position.y;
-        } else {
-            lettersOnLine.leftCount = position.x;
-        }
+
+        lettersOnLine.leftCount = position.isVertical ? position.y : position.x;
         lettersOnLine.isVertical = position.isVertical;
         lettersOnLine.startingTileX = position.x;
         lettersOnLine.startingTileY = position.y;
@@ -266,11 +257,7 @@ export class BotCrawler {
     }
 
     private emptyCheck(letterInBox: string): string {
-        if (letterInBox !== ' ') {
-            return letterInBox;
-        } else {
-            return '-';
-        }
+        return letterInBox !== ' ' ? letterInBox : '-';
     }
 
     private possibleWordsGenerator(allPlacedLettersCombination: ValidWord[]): ValidWord[] {
@@ -308,13 +295,14 @@ export class BotCrawler {
             const placement = { x: wordData.startingTileX, y: wordData.startingTileY, direction };
             const validWords = this.wordValidator.listOfValidWord({ word: wordData.word, placement });
             const wordIsValid = validWords.length > EMPTY;
-            if (wordIsValid) {
-                const words = validWords.map((validWord) => validWord.letters);
-                const pointEstimation = this.botCalculatorService.testPlaceLetterCalculation(wordData.numberOfLettersPlaced, words);
-                wordData.value = pointEstimation;
-                wordData.adjacentWords = validWords;
-                this.bot.validWordList.push(wordData);
+            if (!wordIsValid) {
+                continue;
             }
+            const words = validWords.map((validWord) => validWord.letters);
+            const pointEstimation = this.botCalculatorService.testPlaceLetterCalculation(wordData.numberOfLettersPlaced, words);
+            wordData.value = pointEstimation;
+            wordData.adjacentWords = validWords;
+            this.bot.validWordList.push(wordData);
         }
     }
 }

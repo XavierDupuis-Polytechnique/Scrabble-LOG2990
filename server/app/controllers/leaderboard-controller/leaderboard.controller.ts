@@ -15,45 +15,45 @@ export class LeaderboardController {
     private configureRouter(): void {
         this.router = Router();
 
-        this.router.get('/:gameMode', async (req: Request, res: Response) => {
+        this.router.get('/:gameMode', async (req: Request, response: Response) => {
             const gameMode = req.query.gameMode;
             try {
                 const scores = await this.leaderboardService.getScores(gameMode as GameMode);
                 if (scores.length === 0) {
-                    res.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                    response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
                     return;
                 }
-                res.send(scores);
+                response.send(scores);
             } catch (e) {
-                res.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
             }
         });
 
-        this.router.post('/:gameMode', async (req: Request, res: Response) => {
+        this.router.post('/:gameMode', async (req: Request, response: Response) => {
             const gameMode = req.query.gameMode;
             try {
                 const score = { name: req.body.name, point: req.body.point };
                 const isSuccesful = await this.leaderboardService.updateLeaderboard(score, gameMode as GameMode);
                 if (!isSuccesful) {
-                    res.sendStatus(StatusCodes.BAD_REQUEST);
+                    response.sendStatus(StatusCodes.BAD_REQUEST);
                     return;
                 }
-                res.sendStatus(StatusCodes.OK);
+                response.sendStatus(StatusCodes.OK);
             } catch (e) {
-                res.sendStatus(StatusCodes.BAD_REQUEST);
+                response.sendStatus(StatusCodes.BAD_REQUEST);
             }
         });
 
-        this.router.delete('/', async (req: Request, res: Response) => {
+        this.router.delete('/', async (req: Request, response: Response) => {
             try {
                 const isSuccessful = await this.leaderboardService.deleteScores();
                 if (!isSuccessful) {
-                    res.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                    response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
                     return;
                 }
-                res.status(StatusCodes.OK).send({ status: 'OK' });
+                response.status(StatusCodes.OK).send({ status: 'OK' });
             } catch (e) {
-                res.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
+                response.sendStatus(StatusCodes.BAD_REQUEST).send({ status: 'BAD_REQUEST' });
             }
         });
     }

@@ -16,6 +16,7 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
     spinnerDiameter = SPINNER_DIAMETER;
     botDifficulty: string;
     isSoloStarted: boolean = false;
+
     constructor(
         private dialogRef: MatDialogRef<WaitingForPlayerComponent>,
         private dialog: MatDialog,
@@ -35,11 +36,12 @@ export class WaitingForPlayerComponent implements AfterContentChecked {
 
         const botDifficultyForm = this.dialog.open(ConvertToSoloFormComponent, dialogConfig);
         botDifficultyForm.afterClosed().subscribe((botDifficulty: string) => {
-            if (botDifficulty) {
-                this.botDifficulty = botDifficulty;
-                this.isSoloStarted = true;
-                this.dialogRef.close(this.botDifficulty);
+            if (!botDifficulty) {
+                return;
             }
+            this.botDifficulty = botDifficulty;
+            this.isSoloStarted = true;
+            this.dialogRef.close(this.botDifficulty);
         });
     }
 

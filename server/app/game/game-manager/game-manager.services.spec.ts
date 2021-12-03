@@ -13,6 +13,7 @@ import { PassTurn } from '@app/game/game-logic/actions/pass-turn';
 import { DEFAULT_DICTIONARY_TITLE } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { EndOfGameReason } from '@app/game/game-logic/interface/end-of-game.interface';
+import { ForfeitedGameState } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveCreator } from '@app/game/game-logic/objectives/objective-creator/objective-creator.service';
 import { Player } from '@app/game/game-logic/player/player';
 import { PointCalculatorService } from '@app/game/game-logic/point-calculator/point-calculator.service';
@@ -25,7 +26,7 @@ import { UserAuth } from '@app/game/game-socket-handler/user-auth.interface';
 import { OnlineAction, OnlineActionType } from '@app/game/online-action.interface';
 import { SystemMessagesService } from '@app/messages-service/system-messages-service/system-messages.service';
 import { OnlineGameSettings } from '@app/new-game/online-game.interface';
-import { createSinonStubInstance } from '@app/test.util';
+import { createSinonStubInstance, StubbedClass } from '@app/test.util';
 import { expect } from 'chai';
 import { before } from 'mocha';
 import { Observable } from 'rxjs';
@@ -37,7 +38,7 @@ describe('GameManagerService', () => {
     let stubMessageService: SystemMessagesService;
     let stubActionCompiler: ActionCompilerService;
     let stubTimerController: TimerController;
-    let stubGameCompiler: GameCompiler;
+    let stubGameCompiler: StubbedClass<GameCompiler>;
     let stubGameActionNotifierService: GameActionNotifierService;
     let stubObjectiveCreator: ObjectiveCreator;
     let stubLeaderboardService: LeaderboardService;
@@ -558,11 +559,11 @@ describe('GameManagerService', () => {
         expect(service.activeGames.size).to.be.equal(0);
     });
 
-    it('should update leaderboard when it finishes on forfeit', () => {
+    it('should not update leaderboard when it finishes on forfeit', () => {
         const player = new Player('test01');
         const gameToken = '1';
         const gameSettings: OnlineGameSettings = {
-            gameMode: GameMode.Classic,
+            gameMode: GameMode.Special,
             id: gameToken,
             timePerTurn: 60000,
             randomBonus: false,
@@ -571,42 +572,21 @@ describe('GameManagerService', () => {
             dictTitle: DEFAULT_DICTIONARY_TITLE,
         };
         service.createGame(gameToken, gameSettings);
-        service['endGame$'].next({ gameToken, reason: EndOfGameReason.Forfeit, players: [player] });
+        service['endGame$'].next({ gameToken, reason: EndOfGameReason.GameEnded, players: [player] });
         expect(service.activeGames.size).to.be.equal(0);
     });
 
-    // it('should create appropriate transition objectives', () => {
-    //     const testObjectives = new Set<string>();
-    //     service.lastGameState$.subscribe((transitionObjectives) => {
-    //         (transitionObjectives.gameState as ForfeitedGameSate).objectives?.forEach((objectives) => testObjectives.add(objectives.name));
-    //     });
-    //     const gameToken = '1';
-    //     const playerName = 'test1';
-    //     const opponentName = 'test2';
-    //     const gameMode = GameMode.Special;
-    //     const gameSettings: OnlineGameSettings = {
-    //         id: gameToken,
-    //         timePerTurn: 60000,
-    //         randomBonus: false,
-    //         playerName,
-    //         opponentName,
-    //         gameMode,
-    //     };
-
-    //     service.createGame(gameToken, gameSettings);
-    //     const userAuth: UserAuth = {
-    //         gameToken: '1',
-    //         playerName: opponentName,
-    //     };
-    //     const userId1 = 'abc';
-    //     service.addPlayerToGame(userId1, userAuth);
-    //     const specialGame = service.activeGames.get(gameToken) as SpecialServerGame;
-    //     const privateobjectives = specialGame.privateObjectives.get(opponentName);
-    //     const publicObjectives = specialGame.publicObjectives;
-    //     const allObjectives = new Set<string>();
-    //     privateobjectives?.forEach((objective) => allObjectives.add(objective.name));
-    //     publicObjectives?.forEach((objective) => allObjectives.add(objective.name));
-    //     service.removePlayerFromGame(userId1);
-    //     expect(allObjectives).to.equal(testObjectives);
-    // });
+    it('should create appropriate transition objectives', (done) => {
+        const mockGame = {
+            activePlayerIndex: 0,
+        } as unknown as ServerGame;
+        const mockGameState = {} as unknown as ForfeitedGameState;
+        service.forfeitedGameState$.subscribe((forfeitedGameState) => {
+            expect(forfeitedGameState).to.equal(mockGameState);
+            done();
+        });
+        stubGameCompiler.compileForfeited.returns(mockGameState);
+        service['sendForfeitedGameState'](mockGame);
+        done();
+    });
 });

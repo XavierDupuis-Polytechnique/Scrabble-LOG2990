@@ -17,7 +17,7 @@ export class OfflineGame extends Game {
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
     board: Board;
-    activePlayerIndex: number;
+    activePlayerIndex: number = 0;
     consecutivePass: number = 0;
     turnNumber: number = 0;
 
@@ -63,10 +63,6 @@ export class OfflineGame extends Game {
         this.timer.stop();
     }
 
-    nextPlayer() {
-        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
-    }
-
     isEndOfGame() {
         if (this.letterBag.isEmpty) {
             for (const player of this.players) {
@@ -85,18 +81,12 @@ export class OfflineGame extends Game {
         return this.players[this.activePlayerIndex];
     }
 
-    onEndOfGame() {
-        this.pointCalculator.endOfGamePointDeduction(this);
-        this.displayLettersLeft();
-        this.isEndOfGameSubject.next();
-    }
-
     doAction(action: Action) {
         if (action instanceof PassTurn) {
             this.consecutivePass += 1;
-        } else {
-            this.consecutivePass = 0;
+            return;
         }
+        this.consecutivePass = 0;
     }
 
     getWinner(): Player[] {
@@ -112,6 +102,16 @@ export class OfflineGame extends Game {
             }
         }
         return winners;
+    }
+
+    private onEndOfGame() {
+        this.pointCalculator.endOfGamePointDeduction(this);
+        this.displayLettersLeft();
+        this.isEndOfGameSubject.next();
+    }
+
+    private nextPlayer() {
+        this.activePlayerIndex = (this.activePlayerIndex + 1) % this.players.length;
     }
 
     private pickFirstPlayer() {

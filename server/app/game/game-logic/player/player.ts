@@ -8,13 +8,10 @@ export class Player {
     action$: Subject<Action> = new Subject();
 
     points: number = 0;
-    name: string = '';
     isActive: boolean;
     letterRack: Letter[] = [];
 
-    constructor(name: string) {
-        this.name = name;
-    }
+    constructor(public name: string) {}
 
     play(action: Action) {
         this.action$.next(action);
@@ -27,24 +24,23 @@ export class Player {
             const occcurences: Letter[] | undefined = lettersInRack.get(char);
             if (occcurences) {
                 occcurences.push(letter);
-            } else {
-                lettersInRack.set(char, [letter]);
+                continue;
             }
+            lettersInRack.set(char, [letter]);
         }
 
         const lettersFromRack = [];
         for (const letterToFind of lettersToFind) {
             const charToFind = letterToFind.char;
             const lettersLeft = lettersInRack.get(charToFind);
-            if (lettersLeft) {
-                const letterToAdd = lettersLeft.shift();
-                if (!letterToAdd) {
-                    throw Error('Some letters are invalid');
-                }
-                lettersFromRack.push(letterToAdd);
-            } else {
+            if (!lettersLeft) {
                 throw Error('Some letters are invalid');
             }
+            const letterToAdd = lettersLeft.shift();
+            if (!letterToAdd) {
+                throw Error('Some letters are invalid');
+            }
+            lettersFromRack.push(letterToAdd);
         }
         return lettersFromRack;
     }

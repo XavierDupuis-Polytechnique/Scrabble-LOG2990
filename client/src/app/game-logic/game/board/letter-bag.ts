@@ -1,4 +1,4 @@
-import { RACK_LETTER_COUNT } from '@app/game-logic/constants';
+import { JOKER_CHAR, RACK_LETTER_COUNT } from '@app/game-logic/constants';
 import { LetterCreator } from './letter-creator';
 import { Letter } from './letter.interface';
 
@@ -7,13 +7,9 @@ export class LetterBag {
 
     gameLetters: Letter[] = [];
     private letterCreator: LetterCreator = new LetterCreator();
+
     constructor() {
-        for (let letterIndex = 0; letterIndex < LetterCreator.gameLetters.length; letterIndex++) {
-            for (let count = 0; count < LetterCreator.gameLettersCount[letterIndex]; count++) {
-                const letter = LetterCreator.gameLetters[letterIndex];
-                this.gameLetters.push(this.letterCreator.createLetter(letter));
-            }
-        }
+        this.initGameLetters();
     }
 
     drawEmptyRackLetters(): Letter[] {
@@ -38,7 +34,7 @@ export class LetterBag {
     countLetters(): Map<string, number> {
         const LETTER_A_CODE = 'A'.charCodeAt(0);
         const LETTER_Z_CODE = 'Z'.charCodeAt(0);
-        const letters: [string, number][] = [['*', 0]];
+        const letters: [string, number][] = [[JOKER_CHAR, 0]];
         for (let code = LETTER_A_CODE; code <= LETTER_Z_CODE; code++) {
             letters.push([String.fromCharCode(code), 0]);
         }
@@ -48,9 +44,9 @@ export class LetterBag {
             const occurrence = occurrences.get(char);
             if (occurrence === undefined) {
                 occurrences.set(char, 1);
-            } else {
-                occurrences.set(char, occurrence + 1);
+                continue;
             }
+            occurrences.set(char, occurrence + 1);
         }
         return occurrences;
     }
@@ -61,5 +57,14 @@ export class LetterBag {
 
     get isEmpty(): boolean {
         return this.gameLetters.length === 0;
+    }
+
+    private initGameLetters() {
+        for (let letterIndex = 0; letterIndex < LetterCreator.gameLetters.length; letterIndex++) {
+            for (let count = 0; count < LetterCreator.gameLettersCount[letterIndex]; count++) {
+                const letter = LetterCreator.gameLetters[letterIndex];
+                this.gameLetters.push(this.letterCreator.createLetter(letter));
+            }
+        }
     }
 }

@@ -86,6 +86,7 @@ export class ActionValidatorService {
     private checkLettersCanBePlaced(action: PlaceLetter) {
         let x = action.placement.x;
         let y = action.placement.y;
+        const direction = action.placement.direction;
         let lettersNeeded = '';
 
         for (let letterIndex = 0; letterIndex < action.word.length; letterIndex++) {
@@ -105,38 +106,29 @@ export class ActionValidatorService {
                     return false;
                 }
             }
-            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
+            [x, y] = direction.toUpperCase() === Direction.Vertical ? [x, y + 1] : [x + 1, y];
         }
-        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
-            let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
-            if (this.hasAJoker(action.player.letterRack)) {
-                message = message.concat(
-                    ' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.',
-                );
-            }
-            this.sendErrorMessage(message);
-            return false;
+        if (this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
+            return true;
         }
-        return true;
+        let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
+        if (this.hasAJoker(action.player.letterRack)) {
+            message = message.concat(' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.');
+        }
+        this.sendErrorMessage(message);
+        return false;
     }
 
     private checkBoardsLimits(action: PlaceLetter): boolean {
-        if (action.placement.y < 0 || action.placement.x < 0) {
+        const coords = { x: action.placement.x, y: action.placement.y };
+        if (coords.y < 0 || coords.x < 0) {
             return false;
         }
-        let concernedAxisValue;
-        if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-            concernedAxisValue = action.placement.y;
-        } else {
-            concernedAxisValue = action.placement.x;
-        }
-        const lastLetterPosition = concernedAxisValue + action.word.length - 1;
-        const doesLastPositionOverflow = lastLetterPosition > BOARD_MAX_POSITION;
-        if (doesLastPositionOverflow) {
+        const direction = action.placement.direction;
+        const word = action.word;
+        const startCoord = direction.toUpperCase() === Direction.Vertical ? coords.y : coords.x;
+        const lastLetterPosition = startCoord + word.length - 1;
+        if (lastLetterPosition > BOARD_MAX_POSITION) {
             this.sendErrorMessage('Commande impossible à réaliser : Les lettres déboderont de la grille');
             return false;
         }
@@ -145,29 +137,23 @@ export class ActionValidatorService {
 
     private checkPlaceLetterBoardRequirement(action: PlaceLetter, shouldCheckForNeighbors: boolean): boolean {
         const centerTilePosition: number = Math.floor(BOARD_DIMENSION / 2);
+        const direction = action.placement.direction;
         let isFillingPlacementCondition = false;
         let x = action.placement.x;
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
-            if (shouldCheckForNeighbors) {
-                isFillingPlacementCondition = this.boardService.board.hasNeighbour(x, y);
-            } else {
-                isFillingPlacementCondition = x === centerTilePosition && y === centerTilePosition;
-            }
+            isFillingPlacementCondition = shouldCheckForNeighbors
+                ? this.boardService.board.hasNeighbour(x, y)
+                : x === centerTilePosition && y === centerTilePosition;
 
             if (isFillingPlacementCondition) {
                 return true;
             }
-
-            if (action.placement.direction.charAt(0).toUpperCase() === Direction.Vertical) {
-                y++;
-            } else {
-                x++;
-            }
+            [x, y] = direction.toUpperCase() === Direction.Vertical ? [x, y + 1] : [x + 1, y];
         }
-
-        if (this.boardService.board.grid[centerTilePosition][centerTilePosition].letterObject.char === EMPTY_CHAR) {
+        const centerTile = this.boardService.board.grid[centerTilePosition][centerTilePosition];
+        if (centerTile.letterObject.char === EMPTY_CHAR) {
             this.sendErrorMessage("Commande impossible à réaliser : Aucun mot n'est pas placé sur la tuile centrale");
         } else {
             this.sendErrorMessage("Commande impossible à réaliser : Le mot placé n'est pas adjacent à un autre mot");
@@ -177,11 +163,12 @@ export class ActionValidatorService {
     }
 
     private checkExchangeLetter(action: ExchangeLetter): boolean {
-        if (action.player instanceof HardBot && this.gameInfo.numberOfLettersRemaining >= action.lettersToExchange.length) {
+        const lettersLeft = this.gameInfo.numberOfLettersRemaining;
+        if (action.player instanceof HardBot && lettersLeft >= action.lettersToExchange.length) {
             return true;
         }
 
-        if (this.gameInfo.numberOfLettersRemaining < RACK_LETTER_COUNT) {
+        if (lettersLeft < RACK_LETTER_COUNT) {
             this.sendErrorMessage(
                 'Commande impossible à réaliser : Aucun échange de lettres lorsque la réserve en contient moins de ' + RACK_LETTER_COUNT,
             );
@@ -215,25 +202,27 @@ export class ActionValidatorService {
             if (occurence) {
                 occurence++;
                 rackCharsOccurences.set(lowerChar, occurence);
-            } else {
-                rackCharsOccurences.set(lowerChar, 1);
+                continue;
             }
+            rackCharsOccurences.set(lowerChar, 1);
         }
 
-        for (let char of actionChars) {
+        for (const char of actionChars) {
             let occurence = rackCharsOccurences.get(char);
-            if (occurence === undefined || occurence === 0) {
-                if (isStringALowerCaseLetter(char)) {
-                    return false;
-                }
-                occurence = rackCharsOccurences.get(JOKER_CHAR);
-                char = JOKER_CHAR;
-                if (occurence === undefined || occurence === 0) {
-                    return false;
-                }
+            if (occurence !== undefined && occurence > 0) {
+                occurence--;
+                rackCharsOccurences.set(char, occurence);
+                continue;
             }
-            occurence--;
-            rackCharsOccurences.set(char, occurence);
+            if (isStringALowerCaseLetter(char)) {
+                return false;
+            }
+            let jokerOccurence = rackCharsOccurences.get(JOKER_CHAR);
+            if (jokerOccurence === undefined || jokerOccurence === 0) {
+                return false;
+            }
+            jokerOccurence--;
+            rackCharsOccurences.set(JOKER_CHAR, jokerOccurence);
         }
         return true;
     }

@@ -1,12 +1,12 @@
-/* tslint:disable:no-unused-variable */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AppMaterialModule } from '@app/modules/material.module';
 import { ErrorDialogComponent } from './error-dialog.component';
 
 const mockDialogRef = {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    close: jasmine.createSpy('close').and.returnValue(() => {}),
+    close: jasmine.createSpy('close').and.returnValue(() => {
+        return;
+    }),
 };
 
 describe('ErrorDialogComponent', () => {

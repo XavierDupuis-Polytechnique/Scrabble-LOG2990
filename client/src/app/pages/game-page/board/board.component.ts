@@ -28,6 +28,7 @@ export class BoardComponent implements AfterViewInit, DoCheck {
     canvasDrawer: CanvasDrawer;
     canvasContext: CanvasRenderingContext2D;
     canvasElement: HTMLElement | null;
+
     constructor(private boardService: BoardService, private inputController: UIInputControllerService) {
         this.board = this.boardService.board;
         this.fontSize = (this.minFontSize + this.maxFontSize) / 2;
@@ -48,29 +49,22 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         this.canvasDrawer.drawGrid(this.board, this.fontSize);
     }
 
-    setupCanvasDrawer() {
-        if (this.canvasElement) {
-            this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
-            this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
-            this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
-        }
-    }
-
     ngDoCheck() {
-        if (this.canvasDrawer) {
-            if (this.inputController.activeAction instanceof UIPlace) {
-                if (this.inputController.activeAction.pointerPosition) {
-                    this.canvasDrawer.setIndicator(
-                        this.inputController.activeAction.pointerPosition.x,
-                        this.inputController.activeAction.pointerPosition.y,
-                    );
-                    this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
-                }
-            } else {
-                this.canvasDrawer.setIndicator(NOT_FOUND, NOT_FOUND);
-            }
-            this.canvasDrawer.drawGrid(this.board, this.fontSize);
+        if (!this.canvasDrawer) {
+            return;
         }
+        if (this.inputController.activeAction instanceof UIPlace) {
+            if (this.inputController.activeAction.pointerPosition) {
+                this.canvasDrawer.setIndicator(
+                    this.inputController.activeAction.pointerPosition.x,
+                    this.inputController.activeAction.pointerPosition.y,
+                );
+                this.canvasDrawer.setDirection(this.inputController.activeAction.direction);
+            }
+        } else {
+            this.canvasDrawer.setIndicator(NOT_FOUND, NOT_FOUND);
+        }
+        this.canvasDrawer.drawGrid(this.board, this.fontSize);
     }
 
     getFont(): string {
@@ -92,5 +86,13 @@ export class BoardComponent implements AfterViewInit, DoCheck {
         const pos = this.canvasDrawer.coordToTilePosition(event.offsetX, event.offsetY);
         const input: UIInput = { from: this.self, type: InputType.LeftClick, args: { x: pos.indexI, y: pos.indexJ } };
         this.clickTile.emit(input);
+    }
+
+    private setupCanvasDrawer() {
+        if (this.canvasElement) {
+            this.canvasElement.setAttribute('width', this.canvasElement.clientWidth.toString());
+            this.canvasElement.setAttribute('height', this.canvasElement.clientWidth.toString());
+            this.canvasDrawer = new CanvasDrawer(this.canvasContext, this.canvasElement.clientWidth, this.canvasElement.clientHeight);
+        }
     }
 }

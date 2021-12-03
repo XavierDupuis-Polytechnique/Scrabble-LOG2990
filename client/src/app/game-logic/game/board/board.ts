@@ -101,15 +101,7 @@ export class Board {
     grid: Tile[][];
 
     constructor(public randomBonus: boolean = false) {
-        this.grid = [];
-        for (let i = 0; i < BOARD_DIMENSION; i++) {
-            this.grid[i] = [];
-            for (let j = 0; j < BOARD_DIMENSION; j++) {
-                this.grid[i][j] = new Tile();
-                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
-            }
-        }
-        this.generateMultiplicators(randomBonus);
+        this.initGrid(randomBonus);
     }
 
     hasNeighbour(x: number, y: number): boolean {
@@ -136,6 +128,18 @@ export class Board {
         return false;
     }
 
+    private initGrid(randomBonus: boolean) {
+        this.grid = [];
+        for (let i = 0; i < BOARD_DIMENSION; i++) {
+            this.grid[i] = [];
+            for (let j = 0; j < BOARD_DIMENSION; j++) {
+                this.grid[i][j] = new Tile();
+                this.grid[i][j].letterObject = { char: EMPTY_CHAR, value: 1 };
+            }
+        }
+        this.generateMultiplicators(randomBonus);
+    }
+
     private randomMultiplicators(): BoardSettingPosition[] {
         const newMultiplicators: BoardSettingPosition[] = [];
         const values: number[] = [];
@@ -160,10 +164,11 @@ export class Board {
             }
         }
         for (const elem of listMultiplicator) {
+            const tile = this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE];
             if (elem.type === MultiType.Letter) {
-                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].letterMultiplicator = elem.v;
+                tile.letterMultiplicator = elem.v;
             } else {
-                this.grid[elem.x - 1][elem.y.charCodeAt(0) - ASCII_CODE].wordMultiplicator = elem.v;
+                tile.wordMultiplicator = elem.v;
             }
         }
     }

@@ -14,6 +14,7 @@ import { Subject } from 'rxjs';
 export class SpecialServerGame extends ServerGame {
     privateObjectives: Map<string, Objective[]>;
     publicObjectives: Objective[];
+
     constructor(
         timerController: TimerController,
         public randomBonus: boolean,
@@ -38,12 +39,28 @@ export class SpecialServerGame extends ServerGame {
             endGameSubject,
         );
     }
+
     start() {
         this.allocateObjectives();
         super.start();
     }
 
-    allocateObjectives() {
+    updateObjectives(action: Action, params: ObjectiveUpdateParams) {
+        for (const publicObjective of this.publicObjectives) {
+            publicObjective.update(action, params);
+        }
+
+        const playerObjectives = this.privateObjectives.get(action.player.name);
+        if (!playerObjectives) {
+            return;
+        }
+
+        for (const privateObjective of playerObjectives) {
+            privateObjective.update(action, params);
+        }
+    }
+
+    private allocateObjectives() {
         const generatedObjectives = this.objectiveCreator.chooseObjectives(this.gameToken);
         this.publicObjectives = generatedObjectives.publicObjectives;
         for (const objective of this.publicObjectives) {
@@ -59,21 +76,6 @@ export class SpecialServerGame extends ServerGame {
             for (const objective of privateObjectives) {
                 objective.progressions.set(playerName, 0);
             }
-        }
-    }
-
-    updateObjectives(action: Action, params: ObjectiveUpdateParams) {
-        for (const publicObjective of this.publicObjectives) {
-            publicObjective.update(action, params);
-        }
-
-        const playerObjectives = this.privateObjectives.get(action.player.name);
-        if (!playerObjectives) {
-            return;
-        }
-
-        for (const privateObjective of playerObjectives) {
-            privateObjective.update(action, params);
         }
     }
 }

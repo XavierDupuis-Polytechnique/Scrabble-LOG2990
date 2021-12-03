@@ -3,7 +3,7 @@ import { Action } from '@app/game/game-logic/actions/action';
 import { Direction } from '@app/game/game-logic/actions/direction.enum';
 import { LetterCreator } from '@app/game/game-logic/board/letter-creator';
 import { Letter } from '@app/game/game-logic/board/letter.interface';
-import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/game/game-logic/constants';
+import { EMPTY_CHAR, JOKER_CHAR, TIME_FOR_REVERT } from '@app/game/game-logic/constants';
 import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { PlacementSetting } from '@app/game/game-logic/interface/placement-setting.interface';
@@ -37,26 +37,26 @@ export class PlaceLetter extends Action {
         const currentGrid = game.board.grid;
         this.player.removeLetterFromRack(this.lettersToRemoveInRack);
         const wordValid = validWordList.length !== 0;
-        if (wordValid) {
-            this.pointCalculator.placeLetterCalculation(this, formedWords, game.board.grid);
-            this.drawLettersForPlayer(game);
-            if (game instanceof SpecialServerGame) {
-                const updateObjectiveParams: ObjectiveUpdateParams = {
-                    previousGrid,
-                    currentGrid,
-                    lettersToPlace: this.lettersToRemoveInRack,
-                    formedWords,
-                    affectedCoords: this.affectedCoords,
-                };
-                (game as SpecialServerGame).updateObjectives(this, updateObjectiveParams);
-            }
-            this.end();
-        } else {
+        if (!wordValid) {
             timer(TIME_FOR_REVERT).subscribe(() => {
                 this.revert(game);
                 this.end();
             });
+            return;
         }
+        this.pointCalculator.placeLetterCalculation(this, formedWords, game.board.grid);
+        this.drawLettersForPlayer(game);
+        if (game instanceof SpecialServerGame) {
+            const updateObjectiveParams: ObjectiveUpdateParams = {
+                previousGrid,
+                currentGrid,
+                lettersToPlace: this.lettersToRemoveInRack,
+                formedWords,
+                affectedCoords: this.affectedCoords,
+            };
+            (game as SpecialServerGame).updateObjectives(this, updateObjectiveParams);
+        }
+        this.end();
     }
 
     private revert(game: ServerGame) {
@@ -118,7 +118,7 @@ export class PlaceLetter extends Action {
 
     private letterToRemove(char: string) {
         if (isCharUpperCase(char)) {
-            return this.letterFactory.createLetter('*');
+            return this.letterFactory.createLetter(JOKER_CHAR);
         }
         return this.letterFactory.createLetter(char);
     }

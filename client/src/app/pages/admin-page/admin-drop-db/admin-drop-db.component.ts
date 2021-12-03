@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
+import { openErrorDialog } from '@app/game-logic/utils';
 import { LeaderboardService } from '@app/leaderboard/leaderboard.service';
 import { BotHttpService } from '@app/services/bot-http.service';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -31,16 +32,13 @@ export class AdminDropDbComponent {
                 },
             })
             .afterClosed()
-            .subscribe(async (ans) => {
-                if (ans === true) {
+            .subscribe(async (answer) => {
+                if (answer) {
                     const isbotDropOk = await this.dropbotTable();
                     const isDictOk = await this.dropDictTable();
                     const isDeleteLBOk = await this.dropLeaderboardTables();
                     if (!isbotDropOk || !isDictOk || !isDeleteLBOk) {
-                        this.dialog.open(AlertDialogComponent, {
-                            width: '250px',
-                            data: { message: 'Une erreur est survenue avec la base de données', button1: 'Ok', button2: '' },
-                        });
+                        openErrorDialog(this.dialog, '250px', 'Une erreur est survenue avec la base de données');
                         return;
                     }
                     this.refresh();
@@ -50,27 +48,27 @@ export class AdminDropDbComponent {
 
     private async dropbotTable() {
         return new Promise<boolean>((resolve) => {
-            this.botHttpService.dropTable().subscribe((res) => {
-                const ans = JSON.parse(res.toString());
-                resolve(ans);
+            this.botHttpService.dropTable().subscribe((response) => {
+                const answer = JSON.parse(response.toString());
+                resolve(answer);
             });
         });
     }
 
     private async dropDictTable() {
         return new Promise<boolean>((resolve) => {
-            this.dictHttpService.dropTable().subscribe((res) => {
-                const ans = JSON.parse(res.toString());
-                resolve(ans);
+            this.dictHttpService.dropTable().subscribe((response) => {
+                const answer = JSON.parse(response.toString());
+                resolve(answer);
             });
         });
     }
 
     private async dropLeaderboardTables() {
         return new Promise<boolean>((resolve) => {
-            this.leaderboardService.dropCollections().subscribe((res) => {
-                const ans = res.ok;
-                resolve(ans);
+            this.leaderboardService.dropCollections().subscribe((response) => {
+                const answer = response.ok;
+                resolve(answer);
             });
         });
     }

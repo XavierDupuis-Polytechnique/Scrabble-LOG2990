@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+/* eslint-disable dot-notation */
 import { TestBed } from '@angular/core/testing';
 import { Direction } from '@app/game-logic/direction.enum';
 import { BoardService } from '@app/game-logic/game/board/board.service';
@@ -75,13 +75,13 @@ describe('PointCalculatorService', () => {
         for (const letter of rack) {
             totalPointsInRack += letter.value;
         }
-        expect(pointCalculator.calculatePointsOfRack(player1)).toBe(totalPointsInRack);
+        expect(pointCalculator['calculatePointsOfRack'](player1)).toBe(totalPointsInRack);
     });
 
     it('should calculate the correct points of players empty rack', () => {
         const totalPointsInRack = 0;
         player2.letterRack = emptyRack;
-        expect(pointCalculator.calculatePointsOfRack(player2)).toBe(totalPointsInRack);
+        expect(pointCalculator['calculatePointsOfRack'](player2)).toBe(totalPointsInRack);
     });
 
     it('should calculate the correct points of a word with letter multiplicator', () => {
@@ -105,7 +105,7 @@ describe('PointCalculatorService', () => {
             { char: 'X', value: 8 },
         ];
         action.execute(game);
-        expect(pointCalculator.calculatePointsOfWord(word)).toBe(totalPointsOfWord);
+        expect(pointCalculator['calculatePointsOfWord'](word)).toBe(totalPointsOfWord);
     });
 
     it('should calculate the correct points of a word with word multiplicator', () => {
@@ -129,7 +129,7 @@ describe('PointCalculatorService', () => {
             { char: 'X', value: 8 },
         ];
         action.execute(game);
-        expect(pointCalculator.calculatePointsOfWord(word)).toBe(totalPointsOfWord);
+        expect(pointCalculator['calculatePointsOfWord'](word)).toBe(totalPointsOfWord);
     });
 
     it('should calculate the correct points of a word when placing all the players letters if >=7', () => {
@@ -318,8 +318,8 @@ describe('PointCalculatorService', () => {
         game.players = [game.activePlayer, game.otherPlayer];
         expect(pointCalculator.placeLetterCalculation(action, listOfWord)).toBe(totalPointsOfWord);
         expect(game.activePlayer.points).toBe(initialPointPlayer1 + totalPointsOfWord);
-        const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + pointCalculator.calculatePointsOfRack(game.otherPlayer);
-        const otherPlayerEOGamePoints = initialPointPlayer2 - pointCalculator.calculatePointsOfRack(game.otherPlayer);
+        const activePlayerEOGamePoints = initialPointPlayer1 + totalPointsOfWord + pointCalculator['calculatePointsOfRack'](game.otherPlayer);
+        const otherPlayerEOGamePoints = initialPointPlayer2 - pointCalculator['calculatePointsOfRack'](game.otherPlayer);
         pointCalculator.endOfGamePointDeduction(game as OfflineGame);
         expect(game.activePlayer.points).toBe(activePlayerEOGamePoints);
         expect(game.otherPlayer.points).toBe(otherPlayerEOGamePoints);

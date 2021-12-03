@@ -37,7 +37,7 @@ export interface ForfeitedGameState extends GameState {
     letterBag: Letter[];
     consecutivePass: number;
     randomBonus: boolean;
-    objectives?: TransitionObjectives[];
+    objectives: TransitionObjectives[];
 }
 
 export interface PrivateLightObjectives {

@@ -47,23 +47,45 @@ export class UIInputControllerService {
         this.processInput(input);
     }
 
-    processInput(input: UIInput) {
+    cancel() {
+        this.discardAction();
+        this.activeComponent = InputComponent.Outside;
+    }
+
+    confirm() {
+        if (!this.activeAction || !this.canBeExecuted) {
+            return;
+        }
+        const newAction: Action | null = this.activeAction.create();
+        if (!newAction) {
+            return;
+        }
+        this.discardAction();
+        this.avs.sendAction(newAction);
+        this.activeComponent = InputComponent.Outside;
+    }
+
+    pass(user: User) {
+        this.avs.sendAction(new PassTurn(user));
+    }
+
+    private processInput(input: UIInput) {
         this.processInputComponent(input);
         this.updateActiveAction(input.type);
         this.processInputType(input);
     }
 
-    processInputComponent(input: UIInput) {
-        if (input.from === undefined) {
-            if (this.activeComponent === InputComponent.Outside) {
-                this.activeComponent = UIInputControllerService.defaultComponent;
-            }
+    private processInputComponent(input: UIInput) {
+        if (input.from) {
+            this.activeComponent = input.from;
             return;
         }
-        this.activeComponent = input.from;
+        if (this.activeComponent === InputComponent.Outside) {
+            this.activeComponent = UIInputControllerService.defaultComponent;
+        }
     }
 
-    updateActiveAction(inputType: InputType): void {
+    private updateActiveAction(inputType: InputType): void {
         switch (this.activeComponent) {
             case InputComponent.Board:
                 if (!(this.activeAction instanceof UIPlace)) {
@@ -102,7 +124,7 @@ export class UIInputControllerService {
         }
     }
 
-    processInputType(input: UIInput) {
+    private processInputType(input: UIInput) {
         switch (input.type) {
             case InputType.LeftClick:
                 this.processLeftCLick(input.args);
@@ -119,28 +141,6 @@ export class UIInputControllerService {
             default:
                 throw Error('Unresolved input of type ' + input.type);
         }
-    }
-
-    cancel() {
-        this.discardAction();
-        this.activeComponent = InputComponent.Outside;
-    }
-
-    confirm() {
-        if (!this.activeAction || !this.canBeExecuted) {
-            return;
-        }
-        const newAction: Action | null = this.activeAction.create();
-        if (!newAction) {
-            return;
-        }
-        this.discardAction();
-        this.avs.sendAction(newAction);
-        this.activeComponent = InputComponent.Outside;
-    }
-
-    pass(user: User) {
-        this.avs.sendAction(new PassTurn(user));
     }
 
     private discardAction() {
@@ -160,6 +160,9 @@ export class UIInputControllerService {
         const keyPressed = args as string;
         switch (keyPressed) {
             case ESCAPE:
+                if (this.activeComponent === InputComponent.Chatbox) {
+                    return;
+                }
                 this.discardAction();
                 this.activeComponent = InputComponent.Outside;
                 break;

@@ -73,13 +73,6 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         ];
     }
 
-    getToolTip(form: OnlineGameSettings, columnDef: string): string {
-        if (columnDef === 'dictionary') {
-            return form.dictDesc as string;
-        }
-        return '';
-    }
-
     ngOnInit() {
         this.pendingGames$.subscribe((gameSettings) => {
             const filteredGameSettings = gameSettings.filter((gameSetting) => gameSetting.gameMode === this.gameMode);
@@ -103,9 +96,9 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
     setSelectedRow(row: OnlineGameSettings): void {
         if (this.selectedRow === row) {
             this.selectedRow = undefined;
-        } else {
-            this.selectedRow = row;
+            return;
         }
+        this.selectedRow = row;
     }
 
     joinGame(): void {
@@ -138,6 +131,10 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         });
     }
 
+    announceSortChange(sortState: Sort) {
+        this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    }
+
     get isTableEmpty(): boolean {
         return this.dataSource.data.length === 0;
     }
@@ -150,7 +147,10 @@ export class PendingGamesComponent implements AfterContentChecked, OnInit, After
         return this.onlineSocketHandler.pendingGames$;
     }
 
-    announceSortChange(sortState: Sort) {
-        this.liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    private getToolTip(form: OnlineGameSettings, columnDef: string): string {
+        if (columnDef === 'dictionary') {
+            return form.dictDesc as string;
+        }
+        return '';
     }
 }

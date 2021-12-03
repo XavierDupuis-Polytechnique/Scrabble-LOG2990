@@ -8,6 +8,7 @@ import { ServerGame } from '@app/game/game-logic/game/server-game';
 import { SpecialServerGame } from '@app/game/game-logic/game/special-server-game';
 import { SpecialGameState } from '@app/game/game-logic/interface/game-state.interface';
 import { ObjectiveNotifierService } from '@app/game/game-logic/objectives/objective-notifier/objective-notifier.service';
+import { HalfAlphabet } from '@app/game/game-logic/objectives/objectives/half-alphabet/half-alphabet';
 import { Objective } from '@app/game/game-logic/objectives/objectives/objective';
 import { Player } from '@app/game/game-logic/player/player';
 import { createSinonStubInstance, StubbedClass } from '@app/test.util';
@@ -104,5 +105,32 @@ describe('GameCompilerService', () => {
             );
             expect(playerPrivateLightObjectives?.privateObjectives.length).to.equal(privateObjective.length);
         }
+    });
+
+    it('should compile forfeited game state correctly for normal game', () => {
+        const gameState = gameCompilerService.compileForfeited(game);
+        expect(gameState.objectives.length).to.equal(0);
+        expect(gameState.randomBonus).to.equal(game.randomBonus);
+        expect(gameState.letterBag).to.deep.equal(game.letterBag.gameLetters);
+    });
+
+    it('should compile forfeited game state correctly for special game', () => {
+        const specialGame = createSinonStubInstance<SpecialServerGame>(SpecialServerGame);
+        const p1 = new Player('Joueur1');
+        const p2 = new Player('Joueur2');
+        specialGame.players = [p1, p2];
+        specialGame.activePlayerIndex = 0;
+        specialGame.board = createSinonStubInstance<Board>(Board);
+        specialGame.letterBag = letterBag;
+        const mockObjective = new HalfAlphabet(gameToken, objectiveNotifierStub);
+        specialGame.publicObjectives = [mockObjective, mockObjective];
+        specialGame.privateObjectives = new Map<string, Objective[]>();
+        specialGame.privateObjectives.set(p1.name, [mockObjective]);
+        specialGame.privateObjectives.set(p2.name, [mockObjective]);
+
+        const gameState = gameCompilerService.compileForfeited(specialGame);
+        expect(gameState.objectives.length).to.equal(4);
+        expect(gameState.randomBonus).to.equal(game.randomBonus);
+        expect(gameState.letterBag).to.deep.equal(game.letterBag.gameLetters);
     });
 });

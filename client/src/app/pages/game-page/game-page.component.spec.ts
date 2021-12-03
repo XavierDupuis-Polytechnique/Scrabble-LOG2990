@@ -60,7 +60,7 @@ describe('GamePageComponent', () => {
 
     beforeEach(async () => {
         mockClosedModal$ = new Subject();
-        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'disconnectedState$']);
+        gameManagerServiceSpy = jasmine.createSpyObj('GameManagerService', ['stopGame'], ['disconnectedFromServer$', 'forfeitGameState$']);
         cdRefSpy = jasmine.createSpyObj('ChangeDetectorRef', ['detectChanges']);
         mockObservableDisconnect = new Subject<void>();
         mockObservableForfeited = new Subject<void>();
@@ -82,7 +82,7 @@ describe('GamePageComponent', () => {
         (
             Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'disconnectedFromServer$')?.get as jasmine.Spy<() => Observable<void>>
         ).and.returnValue(mockObservableDisconnect);
-        (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'disconnectedState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
+        (Object.getOwnPropertyDescriptor(gameManagerServiceSpy, 'forfeitGameState$')?.get as jasmine.Spy<() => Observable<void>>).and.returnValue(
             mockObservableForfeited,
         );
 
@@ -145,37 +145,37 @@ describe('GamePageComponent', () => {
     });
 
     it('should open the DisconnectedModal when calling the openDisconnected method', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
         mockClosedModal$.next();
-        expect(component.dialogRef).toBeUndefined();
+        expect(component['dialogRef']).toBeUndefined();
     });
 
     it('should not open the DisconnectedModal a second time when calling the openDisconnected method if the modal is opened', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
 
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledOnceWith();
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
     });
 
     it('should open the DisconnectedModal a second time when calling the openDisconnected method if the modal was closed', () => {
-        component.dialogRef = undefined;
+        component['dialogRef'] = undefined;
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(1);
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
 
         mockClosedModal$.next();
-        expect(component.dialogRef).toBeUndefined();
+        expect(component['dialogRef']).toBeUndefined();
 
         component.openDisconnected();
         expect(gameManagerServiceSpy.stopGame).toHaveBeenCalledTimes(2);
-        expect(component.dialogRef).toBeDefined();
+        expect(component['dialogRef']).toBeDefined();
     });
 
     it('should open disconnected modal', () => {
