@@ -132,8 +132,6 @@ export class GameManagerService {
             };
             this.objectiveLoader.loadObjectivesIntoGame(this.game, forfeitedGameState.objectives, playerNames);
         }
-        const gameMode = wasSpecial ? GameMode.Special : GameMode.Classic;
-        this.startConvertedGame(forfeitedGameState.activePlayerIndex, gameMode);
     }
 
     joinOnlineGame(userAuth: UserAuth, gameSettings: OnlineGameSettings) {
@@ -182,20 +180,22 @@ export class GameManagerService {
         this.game = undefined;
     }
 
+    startConvertedGame(forfeitedGameState: ForfeitedGameState) {
+        if (!this.game) {
+            return;
+        }
+        const activePlayerIndex = forfeitedGameState.activePlayerIndex;
+        this.resumeGame(activePlayerIndex);
+        const gameMode = this.game instanceof SpecialOfflineGame ? GameMode.Special : GameMode.Classic;
+        this.updateLeaboardWhenGameEnds(this.game, gameMode);
+    }
+
     private resumeGame(activePlayerIndex: number) {
         this.resetServices();
         if (!this.game) {
             throw Error('No game created yet');
         }
         (this.game as OfflineGame).resume(activePlayerIndex);
-    }
-
-    private startConvertedGame(activePlayerIndex: number, gameMode: GameMode) {
-        if (!this.game) {
-            return;
-        }
-        this.resumeGame(activePlayerIndex);
-        this.updateLeaboardWhenGameEnds(this.game, gameMode);
     }
 
     private createConvertedGame(forfeitedGameState: ForfeitedGameState, isSpecial: boolean) {

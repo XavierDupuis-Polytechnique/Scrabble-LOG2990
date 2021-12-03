@@ -178,7 +178,7 @@ describe('GameManagerService Online Edition', () => {
     mockBotHttpService.getDataInfo.and.returnValue(obs);
     const dictHttpServiceMock = jasmine.createSpyObj('DictHttpService', ['getDictionary']);
     const dict = new DictionaryService(dictHttpServiceMock);
-    const timer: TimerService = jasmine.createSpyObj('TimerService', ['start']);
+    const timer: TimerService = jasmine.createSpyObj('TimerService', ['start', 'stop']);
     const board: BoardService = jasmine.createSpyObj('BoardService', [], ['board']);
     const actionCompiler: OnlineActionCompilerService = jasmine.createSpyObj('OnlineActionCompilerService', ['compileActionOnline']);
     const objectiveCreator: ObjectiveCreator = jasmine.createSpyObj('ObjectiveCreator', ['chooseObjectives']);
@@ -435,6 +435,7 @@ describe('GameManagerService Online Edition', () => {
             return;
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
+        service.startConvertedGame(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(OfflineGame);
         expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
         expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
@@ -449,6 +450,7 @@ describe('GameManagerService Online Edition', () => {
             return;
         });
         service.instanciateGameFromForfeitedState(forfeitedGameState);
+        service.startConvertedGame(forfeitedGameState);
         expect(service['game']).toBeInstanceOf(SpecialOfflineGame);
         expect(service['game']['activePlayerIndex']).toBe(forfeitedGameState.activePlayerIndex);
         expect(service['boardService'].board.grid[MIDDLE_OF_BOARD][MIDDLE_OF_BOARD].letterObject.char).toBe(
