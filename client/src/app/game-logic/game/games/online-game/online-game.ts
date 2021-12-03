@@ -68,6 +68,7 @@ export class OnlineGame extends Game {
     }
 
     stop() {
+        this.timer.stop();
         this.forfeit();
         this.close();
     }

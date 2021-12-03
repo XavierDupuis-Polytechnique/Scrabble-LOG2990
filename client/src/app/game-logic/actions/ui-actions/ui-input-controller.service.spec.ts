@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /* eslint-disable max-lines */
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -84,7 +85,8 @@ describe('UIInputControllerService', () => {
 
     it('should call processInputComponent upon receiving an input', () => {
         const input: UIInput = { type: InputType.LeftClick };
-        const processInputSpy = spyOn(service, 'processInput').and.callFake(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const processInputSpy = spyOn<any>(service, 'processInput').and.callFake(() => {
             return;
         });
         service.receive(input);
@@ -99,116 +101,127 @@ describe('UIInputControllerService', () => {
         const letterIndex = getRandomInt(RACK_LETTER_COUNT - 1);
         player.letterRack[letterIndex].char = args;
         const firstInput: UIInput = { type: InputType.KeyPress, args };
-        service.processInput(firstInput);
+        service['processInput'](firstInput);
         expect(service.activeComponent).toBe(InputComponent.Horse);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
         expect(service.activeAction.concernedIndexes.has(letterIndex)).toBeTruthy();
 
         const secondInput: UIInput = { from: InputComponent.Chatbox, type: InputType.LeftClick };
-        service.processInput(secondInput);
+        service['processInput'](secondInput);
         expect(service.activeComponent).toBe(InputComponent.Chatbox);
         expect(service.activeAction).toBeNull();
 
-        service.processInput(firstInput);
+        service['processInput'](firstInput);
+        expect(service.activeComponent).toBe(InputComponent.Chatbox);
+        expect(service.activeAction).toBeNull();
+    });
+
+    it('should not escape from ChatBox when the Escape key is pressed', () => {
+        service.activeComponent = InputComponent.Chatbox;
+        service.activeAction = null;
+
+        const args = ESCAPE;
+        const input: UIInput = { type: InputType.KeyPress, args };
+        service['processInput'](input);
         expect(service.activeComponent).toBe(InputComponent.Chatbox);
         expect(service.activeAction).toBeNull();
     });
       
     it('should update activeComponent with the correct default component when "from" is not provided', () => {
         const input: UIInput = { type: InputType.LeftClick };
-        service.processInputComponent(input);
+        service['processInputComponent'](input);
         expect(service.activeComponent).toBe(InputComponent.Chatbox);
     });
 
     it('should update activeComponent with the provided InputComponent.Board parameter', () => {
         const component = InputComponent.Board;
         const input: UIInput = { from: component, type: InputType.LeftClick };
-        service.processInputComponent(input);
+        service['processInputComponent'](input);
         expect(service.activeComponent).toBe(component);
     });
 
     it('should update activeComponent with the provided InputComponent.Horse parameter', () => {
         const component = InputComponent.Horse;
         const input: UIInput = { from: component, type: InputType.LeftClick };
-        service.processInputComponent(input);
+        service['processInputComponent'](input);
         expect(service.activeComponent).toBe(component);
     });
 
     it('should update activeComponent with the provided InputComponent.Outside parameter', () => {
         const component = InputComponent.Outside;
         const input: UIInput = { from: component, type: InputType.LeftClick };
-        service.processInputComponent(input);
+        service['processInputComponent'](input);
         expect(service.activeComponent).toBe(component);
     });
       
     it('should create a new UIPlace action if the activeAction is null', () => {
         service.activeComponent = InputComponent.Board;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
     });
 
     it('should create a new UIExchange action if the activeAction is null', () => {
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.RightClick);
+        service['updateActiveAction'](InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
     });
 
     it('should create a new UIMove action if the activeAction is null (with click)', () => {
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
     it('should create a new UIMove action if the activeAction is null (with keypress)', () => {
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.KeyPress);
+        service['updateActiveAction'](InputType.KeyPress);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
     it('should set the activeAction null if the InputComponent was "Outside"', () => {
         service.activeAction = new UIExchange(player);
         service.activeComponent = InputComponent.Outside;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction).toBeNull();
     });
 
     it('should not create a new UIPlace action if the activeAction is already a UIPlace', () => {
         service.activeComponent = InputComponent.Board;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
 
         service.activeComponent = InputComponent.Board;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIPlace).toBeTruthy();
     });
 
     it('should not create a new UIExchange action if the activeAction is already a UIExchange', () => {
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.RightClick);
+        service['updateActiveAction'](InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
 
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.RightClick);
+        service['updateActiveAction'](InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
     });
 
     it('should not create a new UIMove action if the activeAction is already a UIMove (double LeftClick)', () => {
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
 
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
     it('should not create a new UIMove action if the activeAction is already a UIMove (LeftClick, then KeyPress)', () => {
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
 
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.KeyPress);
+        service['updateActiveAction'](InputType.KeyPress);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
     });
 
@@ -223,7 +236,7 @@ describe('UIInputControllerService', () => {
         (service.activeAction as UIPlace).orderedIndexes.push({ rackIndex: 0, x: pos, y: pos });
 
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.LeftClick);
+        service['updateActiveAction'](InputType.LeftClick);
         expect(service.activeAction instanceof UIMove).toBeTruthy();
         expect(board.grid[pos][pos].letterObject.char).toBe(EMPTY_CHAR);
     });
@@ -239,7 +252,7 @@ describe('UIInputControllerService', () => {
         (service.activeAction as UIPlace).orderedIndexes.push({ rackIndex: 0, x: pos, y: pos });
 
         service.activeComponent = InputComponent.Horse;
-        service.updateActiveAction(InputType.RightClick);
+        service['updateActiveAction'](InputType.RightClick);
         expect(service.activeAction instanceof UIExchange).toBeTruthy();
         expect(board.grid[pos][pos].letterObject.char).toBe(EMPTY_CHAR);
     });
@@ -250,7 +263,7 @@ describe('UIInputControllerService', () => {
         const args = getRandomInt(RACK_LETTER_COUNT - 1);
         const input: UIInput = { from: InputComponent.Horse, type: InputType.LeftClick, args };
         const receiveLeftClickSpy = spyOn(service.activeAction, 'receiveLeftClick').and.callThrough();
-        service.processInputType(input);
+        service['processInputType'](input);
         expect(receiveLeftClickSpy).toHaveBeenCalledWith(args);
         expect(service.activeAction.concernedIndexes.has(args)).toBeTruthy();
     });
@@ -261,7 +274,7 @@ describe('UIInputControllerService', () => {
         const args = getRandomInt(RACK_LETTER_COUNT - 1);
         const input: UIInput = { from: InputComponent.Horse, type: InputType.RightClick, args };
         const receiveRightClickSpy = spyOn(service.activeAction, 'receiveRightClick').and.callThrough();
-        service.processInputType(input);
+        service['processInputType'](input);
         expect(receiveRightClickSpy).toHaveBeenCalledWith(args);
         expect(service.activeAction.concernedIndexes.has(args)).toBeTruthy();
     });
@@ -274,7 +287,7 @@ describe('UIInputControllerService', () => {
         player.letterRack[letterIndex].char = args;
         const input: UIInput = { type: InputType.KeyPress, args };
         const receiveKeySpy = spyOn(service.activeAction, 'receiveKey').and.callThrough();
-        service.processInputType(input);
+        service['processInputType'](input);
         expect(receiveKeySpy).toHaveBeenCalledWith(args);
         expect(service.activeAction.concernedIndexes.has(letterIndex)).toBeTruthy();
     });
@@ -284,7 +297,7 @@ describe('UIInputControllerService', () => {
         service.activeComponent = InputComponent.Horse;
         const args = ESCAPE;
         const input: UIInput = { type: InputType.KeyPress, args };
-        service.processInputType(input);
+        service['processInputType'](input);
         expect(service.activeAction).toBeNull();
         expect(service.activeComponent).toBe(InputComponent.Outside);
     });
@@ -293,16 +306,16 @@ describe('UIInputControllerService', () => {
         service.activeAction = new UIPlace(info, pointCalculator, wordSearcher, boardService);
         service.activeComponent = InputComponent.Board;
         const input1: UIInput = { type: InputType.LeftClick, from: InputComponent.Board, args: { x: MIDDLE_OF_BOARD, y: MIDDLE_OF_BOARD } };
-        service.processInput(input1);
+        service['processInput'](input1);
         player.letterRack[0].char = 'A';
         const input2: UIInput = { type: InputType.KeyPress, args: player.letterRack[0].char.toLowerCase() };
-        service.processInput(input2);
+        service['processInput'](input2);
         const args = ENTER;
         const input3: UIInput = { type: InputType.KeyPress, args };
         const sendActionSpy = spyOn(TestBed.inject(ActionValidatorService), 'sendAction').and.callFake(() => {
             return false;
         });
-        service.processInputType(input3);
+        service['processInputType'](input3);
         expect(sendActionSpy).toHaveBeenCalled();
         expect(service.activeAction).toBeNull();
         expect(service.activeComponent).toBe(InputComponent.Outside);
@@ -314,7 +327,7 @@ describe('UIInputControllerService', () => {
         const args = WheelRoll.UP;
         const input: UIInput = { from: InputComponent.Horse, type: InputType.MouseRoll, args };
         const receiveRightClickSpy = spyOn(service.activeAction, 'receiveRoll').and.callThrough();
-        service.processInputType(input);
+        service['processInputType'](input);
         expect(receiveRightClickSpy).toHaveBeenCalledWith(args);
     });
 

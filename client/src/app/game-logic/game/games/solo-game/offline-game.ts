@@ -17,7 +17,7 @@ export class OfflineGame extends Game {
     letterBag: LetterBag = new LetterBag();
     players: Player[] = [];
     board: Board;
-    activePlayerIndex: number;
+    activePlayerIndex: number = 0;
     consecutivePass: number = 0;
     turnNumber: number = 0;
 
