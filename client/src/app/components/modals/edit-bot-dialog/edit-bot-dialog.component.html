@@ -1,4 +1,4 @@
-<mat-dialog-content style="display: flex; flex-direction: column">
+<mat-dialog-content id='content'>
     <mat-form-field>
         <input matInput autocomplete="off" [(ngModel)]="bot.name" placeholder="Nom du bot" />
     </mat-form-field>
@@ -11,11 +11,11 @@
     <mat-form-field *ngIf="isEdit">
         <input matInput autocomplete="off" placeholder="Difficulté" readonly [value]="bot.type" />
     </mat-form-field>
-    <div style="display: flex; flex-direction: row" *ngIf="isEdit">
+    <div class='button' *ngIf="isEdit">
         <button mat-button color="primary" (click)="editBot()" [disabled]="!isValuesValid">Modifier le nom</button>
     </div>
 
-    <div style="display: flex; flex-direction: row" *ngIf="!isEdit">
+    <div class='button' *ngIf="!isEdit">
         <button mat-button (click)="addBot()" [disabled]="!isValuesValid">Créer</button>
     </div>
 </mat-dialog-content>
