@@ -1,5 +1,5 @@
 import { Action } from '@app/game-logic/actions/action';
-import { EMPTY_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constants';
+import { EMPTY_CHAR, JOKER_CHAR, TIME_FOR_REVERT } from '@app/game-logic/constants';
 import { Direction } from '@app/game-logic/direction.enum';
 import { LetterCreator } from '@app/game-logic/game/board/letter-creator';
 import { Letter } from '@app/game-logic/game/board/letter.interface';
@@ -109,7 +109,7 @@ export class PlaceLetter extends Action {
     }
 
     private letterToRemove(char: string) {
-        return isCharUpperCase(char) ? this.letterFactory.createLetter('*') : this.letterFactory.createLetter(char);
+        return isCharUpperCase(char) ? this.letterFactory.createLetter(JOKER_CHAR) : this.letterFactory.createLetter(char);
     }
 
     private createNewLetter(char: string) {
