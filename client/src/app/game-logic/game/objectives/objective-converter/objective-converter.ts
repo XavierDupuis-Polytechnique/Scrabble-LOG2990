@@ -48,7 +48,7 @@ export class ObjectiveConverter {
     }
 
     private transitionHalfAlphabetLetters(game: SpecialOfflineGame, transition: TransitionObjective, objective: Objective) {
-        if (transition.placedLetters === undefined) {
+        if (!transition.placedLetters) {
             return objective;
         }
         (objective as HalfAlphabet).placedLetters = new Map<string, Set<string>>();

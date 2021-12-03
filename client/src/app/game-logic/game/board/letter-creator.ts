@@ -42,7 +42,7 @@ export class LetterCreator {
     createLetters(chars: string[]) {
         const lettersToExchange: Letter[] = [];
 
-        if (chars === undefined || chars.length === 0) {
+        if (!chars || chars.length === 0) {
             throw Error('No chars were given');
         }
 
@@ -54,7 +54,7 @@ export class LetterCreator {
     }
 
     createLetter(char: string): Letter {
-        if (char === undefined || char.length !== 1) {
+        if (!char || char.length !== 1) {
             throw Error('Invalid char entered');
         }
         char = char.toUpperCase();

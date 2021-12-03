@@ -106,11 +106,11 @@ export class GameManagerService {
         }
 
         const linkedClientsInGame = this.linkedClients.get(gameToken);
-        if (linkedClientsInGame === undefined) {
+        if (!linkedClientsInGame) {
             throw Error(`Can't add player, GameToken ${gameToken} is not in active game`);
         }
         const clientFound = linkedClientsInGame.find((client: BindedSocket) => client.name === playerName);
-        if (clientFound !== undefined) {
+        if (clientFound) {
             throw Error(`Can't add player, someone else is already linked to ${gameToken} with ${playerName}`);
         }
 
@@ -160,7 +160,7 @@ export class GameManagerService {
     private startInactiveGameDestructionTimer(gameToken: string) {
         setTimeout(() => {
             const currentLinkedClient = this.linkedClients.get(gameToken);
-            if (currentLinkedClient === undefined) {
+            if (!currentLinkedClient) {
                 this.deleteInactiveGame(gameToken);
                 return;
             }

@@ -31,8 +31,8 @@ export class AdminDropDbComponent {
                 },
             })
             .afterClosed()
-            .subscribe(async (ans) => {
-                if (ans === true) {
+            .subscribe(async (canDropTable: boolean) => {
+                if (canDropTable) {
                     const isbotDropOk = await this.dropbotTable();
                     const isDictOk = await this.dropDictTable();
                     const isDeleteLBOk = await this.dropLeaderboardTables();

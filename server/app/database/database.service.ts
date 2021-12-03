@@ -66,11 +66,8 @@ export class DatabaseService {
 
     private async collectionExists(name: string): Promise<boolean> {
         const collections = await this.db.listCollections().toArray();
-        const isCollectionExist = collections.find((collection: CollectionInfo) => collection.name === name);
-        if (isCollectionExist === undefined) {
-            return false;
-        }
-        return true;
+        const collection = collections.find((collectionInDb: CollectionInfo) => collectionInDb.name === name);
+        return collection !== undefined;
     }
 
     private async createBotInfoCollection() {
