@@ -32,7 +32,7 @@ export class NewGameManagerService {
         if (!gameSettings) {
             return;
         }
-        if (gameSettings.opponentName !== undefined) {
+        if (gameSettings.opponentName) {
             return;
         }
         gameSettings.opponentName = name;

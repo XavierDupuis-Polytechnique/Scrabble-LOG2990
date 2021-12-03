@@ -116,13 +116,7 @@ export class ClassicGameComponent {
         secondDialogRef.afterClosed().subscribe((botDifficulty) => {
             if (botDifficulty) {
                 this.socketHandler.disconnectSocket();
-                this.gameSettings = {
-                    playerName: this.gameSettings.playerName,
-                    botDifficulty,
-                    randomBonus: this.gameSettings.randomBonus,
-                    timePerTurn: this.gameSettings.timePerTurn,
-                    dictTitle: this.gameSettings.dictTitle,
-                };
+                this.gameSettings.botDifficulty = botDifficulty;
                 this.startSoloGame();
             }
         });

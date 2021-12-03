@@ -207,7 +207,7 @@ export class OnlineGame extends Game {
         const activePlayerIndex = gameState.activePlayerIndex;
         const activePlayerName = gameState.players[activePlayerIndex].name;
         const playerWithIndex = this.playersWithIndex.get(activePlayerName);
-        if (playerWithIndex === undefined) {
+        if (!playerWithIndex) {
             throw Error('Players received with game state are not matching with those of the first turn');
         }
         this.activePlayerIndex = playerWithIndex.index;
@@ -259,7 +259,7 @@ export class OnlineGame extends Game {
         const mapRack = new Map<string, number>();
         for (const letter of letterRack) {
             const letterCount = mapRack.get(letter.char);
-            if (letterCount !== undefined) {
+            if (letterCount) {
                 mapRack.set(letter.char, letterCount + 1);
                 continue;
             }

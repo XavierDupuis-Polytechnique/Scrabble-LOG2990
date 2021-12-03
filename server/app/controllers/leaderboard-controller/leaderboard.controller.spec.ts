@@ -37,7 +37,7 @@ describe('LeaderboardController', () => {
         return supertest(expressApp).get('/api/scores/gameMode?gameMode=classic').expect(StatusCodes.BAD_REQUEST);
     });
 
-    it('should return NOT FOUND if get throws', async () => {
+    it('should return BAD REQUEST if get throws', async () => {
         leaderboardService.getScores.throws();
         return supertest(expressApp).get('/api/scores/gameMode?').expect(StatusCodes.BAD_REQUEST);
     });

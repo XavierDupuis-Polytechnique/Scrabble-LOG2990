@@ -27,7 +27,7 @@ export class ObjectiveComponent {
     }
 
     get status(): ObjectiveStatus {
-        if (this.objective.owner === undefined) {
+        if (!this.objective.owner) {
             return ObjectiveStatus.NotClaimed;
         }
 

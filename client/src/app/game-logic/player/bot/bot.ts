@@ -66,7 +66,7 @@ export abstract class Bot extends Player {
         });
         timer(TIME_BEFORE_PICKING_ACTION).subscribe(() => {
             const action = this.chosenAction$.value;
-            if (action !== undefined) {
+            if (action) {
                 this.botMessage.sendAction(action);
                 return;
             }

@@ -213,7 +213,7 @@ export class UIPlace implements UIAction {
 
     private moveBackwards(): void {
         const lastLetter = this.orderedIndexes.pop();
-        if (lastLetter === undefined) {
+        if (!lastLetter) {
             return;
         }
         const newBlankLetter = this.letterCreator.createBlankLetter(' ');
