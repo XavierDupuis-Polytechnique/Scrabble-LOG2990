@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
+import { JOKER_CHAR } from '@app/game-logic/constants';
 import { Letter } from 'src/app/game-logic/game/board/letter.interface';
 
 const GAME_LETTERS = [
@@ -28,7 +29,7 @@ const GAME_LETTERS = [
     'X',
     'Y',
     'Z',
-    '*',
+    JOKER_CHAR,
 ];
 
 const INDEX_RECTIFIER = 'A'.charCodeAt(0);
@@ -58,7 +59,7 @@ export class LetterCreator {
             throw Error('Invalid char entered');
         }
         char = char.toUpperCase();
-        if (char === '*') {
+        if (char === JOKER_CHAR) {
             return {
                 char,
                 value: LetterCreator.gameLettersValue[LetterCreator.gameLettersValue.length - 1],

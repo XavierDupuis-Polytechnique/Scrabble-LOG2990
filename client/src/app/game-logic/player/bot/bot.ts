@@ -68,13 +68,13 @@ export abstract class Bot extends Player {
             const action = this.chosenAction$.value;
             if (action) {
                 this.botMessage.sendAction(action);
-            } else {
-                this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
-                    if (chosenAction) {
-                        this.botMessage.sendAction(chosenAction);
-                    }
-                });
+                return;
             }
+            this.chosenAction$.pipe(takeUntil(timerPass)).subscribe((chosenAction) => {
+                if (chosenAction !== undefined) {
+                    this.botMessage.sendAction(chosenAction);
+                }
+            });
         });
     }
 
@@ -93,9 +93,9 @@ export abstract class Bot extends Player {
 
         if (letterInMiddleBox === ' ') {
             this.botCrawler.botFirstTurn();
-        } else {
-            this.botCrawler.boardCrawler(startingPosition, grid, startingDirection);
+            return this.validWordList;
         }
+        this.botCrawler.boardCrawler(startingPosition, grid, startingDirection);
         return this.validWordList;
     }
 

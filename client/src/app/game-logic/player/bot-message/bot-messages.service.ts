@@ -38,9 +38,9 @@ export class BotMessagesService {
             if (this.commandExecuter.isDebugModeActivated) {
                 if (action.player instanceof HardBot) {
                     this.sendNextBestWords((action.player as HardBot).bestWordList);
-                } else {
-                    this.sendAlternativeWords((action.player as Bot).validWordList);
+                    return;
                 }
+                this.sendAlternativeWords((action.player as Bot).validWordList);
             }
         }
     }
@@ -66,11 +66,7 @@ export class BotMessagesService {
         let y = word.startingTileY;
         for (const placedIndex of word.adjacentWords[0].index) {
             const placedChar = word.adjacentWords[0].letters[placedIndex].letterObject.char;
-            if (word.isVertical) {
-                y = word.startingTileY + placedIndex;
-            } else {
-                x = word.startingTileX + placedIndex;
-            }
+            [x, y] = word.isVertical ? [x, word.startingTileY + placedIndex] : [word.startingTileX + placedIndex, y];
             posLetters = posLetters.concat(String.fromCharCode(y + 'A'.charCodeAt(0)) + (x + 1) + ':' + placedChar + ' ');
         }
         let out = posLetters;
