@@ -253,15 +253,15 @@ export class GameManagerService {
     }
 
     private updateLeaderboard(players: Player[], mode: GameMode) {
-        if (players === undefined) {
+        if (!players) {
             return;
         }
-        for (const player of players) {
+        players.forEach((player) => {
             if (player instanceof User) {
-                const score = { mode: GameMode.Classic, name: player.name, point: player.points };
+                const score = { mode, name: player.name, point: player.points };
                 this.leaderboardService.updateLeaderboard(mode, score);
             }
-        }
+        });
     }
 
     private createOfflinePlayers(playerName: string, botDifficulty: string): Player[] {
