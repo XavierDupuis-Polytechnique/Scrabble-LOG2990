@@ -38,9 +38,9 @@ export class BotMessagesService {
             if (this.commandExecuter.isDebugModeActivated) {
                 if (action.player instanceof HardBot) {
                     this.sendNextBestWords((action.player as HardBot).bestWordList);
-                } else {
-                    this.sendAlternativeWords((action.player as Bot).validWordList);
+                    return;
                 }
+                this.sendAlternativeWords((action.player as Bot).validWordList);
             }
         }
     }

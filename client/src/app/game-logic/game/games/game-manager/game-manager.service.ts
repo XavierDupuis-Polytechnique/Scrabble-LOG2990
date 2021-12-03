@@ -197,21 +197,7 @@ export class GameManagerService {
         const timePerTurn = (this.game as OnlineGame).timePerTurn;
         this.stopGame();
         const gameCreationParams: OfflineGameCreationParams = { timePerTurn, randomBonus: forfeitedGameState.randomBonus };
-        this.game = this.createOfflineGame(gameCreationParams, isSpecial);
-    }
-
-    private createOnlineGame(gameCreationParams: OnlineGameCreationParams, mode: GameMode) {
-        if (mode === GameMode.Classic) {
-            return this.gameCreator.createOnlineGame(gameCreationParams);
-        }
-        return this.gameCreator.createSpecialOnlineGame(gameCreationParams);
-    }
-
-    private createOfflineGame(gameCreationParams: OfflineGameCreationParams, isSpecial: boolean) {
-        if (isSpecial) {
-            return this.gameCreator.createSpecialOfflineGame(gameCreationParams);
-        }
-        return this.gameCreator.createOfflineGame(gameCreationParams);
+        this.game = this.createLoadedGame(gameCreationParams, isSpecial);
     }
 
     private loadBoard(forfeitedGameState: ForfeitedGameState) {
@@ -293,5 +279,20 @@ export class GameManagerService {
             return;
         }
         this.game.players = players;
+    }
+
+    private createOnlineGame(gameCreationParams: OnlineGameCreationParams, mode: GameMode) {
+        if (mode === GameMode.Classic) {
+            return this.gameCreator.createOnlineGame(gameCreationParams);
+        }
+        return this.gameCreator.createSpecialOnlineGame(gameCreationParams);
+    }
+
+    private createLoadedGame(gameCreationParams: OfflineGameCreationParams, isSpecial: boolean) {
+        const isLoaded = true;
+        if (isSpecial) {
+            return this.gameCreator.createSpecialOfflineGame(gameCreationParams, isLoaded);
+        }
+        return this.gameCreator.createOfflineGame(gameCreationParams, isLoaded);
     }
 }

@@ -261,9 +261,9 @@ export class OnlineGame extends Game {
             const letterCount = mapRack.get(letter.char);
             if (letterCount !== undefined) {
                 mapRack.set(letter.char, letterCount + 1);
-            } else {
-                mapRack.set(letter.char, 1);
+                continue;
             }
+            mapRack.set(letter.char, 1);
         }
         return mapRack;
     }

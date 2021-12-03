@@ -295,13 +295,14 @@ export class BotCrawler {
             const placement = { x: wordData.startingTileX, y: wordData.startingTileY, direction };
             const validWords = this.wordValidator.listOfValidWord({ word: wordData.word, placement });
             const wordIsValid = validWords.length > EMPTY;
-            if (wordIsValid) {
-                const words = validWords.map((validWord) => validWord.letters);
-                const pointEstimation = this.botCalculatorService.testPlaceLetterCalculation(wordData.numberOfLettersPlaced, words);
-                wordData.value = pointEstimation;
-                wordData.adjacentWords = validWords;
-                this.bot.validWordList.push(wordData);
+            if (!wordIsValid) {
+                continue;
             }
+            const words = validWords.map((validWord) => validWord.letters);
+            const pointEstimation = this.botCalculatorService.testPlaceLetterCalculation(wordData.numberOfLettersPlaced, words);
+            wordData.value = pointEstimation;
+            wordData.adjacentWords = validWords;
+            this.bot.validWordList.push(wordData);
         }
     }
 }

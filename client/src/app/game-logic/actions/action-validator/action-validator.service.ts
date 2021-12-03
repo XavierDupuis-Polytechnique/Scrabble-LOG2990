@@ -108,17 +108,15 @@ export class ActionValidatorService {
             }
             [x, y] = direction.toUpperCase() === Direction.Vertical ? [x, y + 1] : [x + 1, y];
         }
-        if (!this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
-            let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
-            if (this.hasAJoker(action.player.letterRack)) {
-                message = message.concat(
-                    ' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.',
-                );
-            }
-            this.sendErrorMessage(message);
-            return false;
+        if (this.hasLettersInRack(action.player.letterRack, lettersNeeded)) {
+            return true;
         }
-        return true;
+        let message = 'Commande impossible à réaliser : Le joueur ne possède pas toutes les lettres concernées.';
+        if (this.hasAJoker(action.player.letterRack)) {
+            message = message.concat(' Vous avez au moins une lettre blanche (*). Utilisez une lettre Majuscule pour la représenter dans votre mot.');
+        }
+        this.sendErrorMessage(message);
+        return false;
     }
 
     private checkBoardsLimits(action: PlaceLetter): boolean {
@@ -128,7 +126,6 @@ export class ActionValidatorService {
         }
         const direction = action.placement.direction;
         const word = action.word;
-
         const startCoord = direction.toUpperCase() === Direction.Vertical ? coords.y : coords.x;
         const lastLetterPosition = startCoord + word.length - 1;
         if (lastLetterPosition > BOARD_MAX_POSITION) {
@@ -146,11 +143,9 @@ export class ActionValidatorService {
         let y = action.placement.y;
         let index = 0;
         while (index++ < action.word.length) {
-            if (shouldCheckForNeighbors) {
-                isFillingPlacementCondition = this.boardService.board.hasNeighbour(x, y);
-            } else {
-                isFillingPlacementCondition = x === centerTilePosition && y === centerTilePosition;
-            }
+            isFillingPlacementCondition = shouldCheckForNeighbors
+                ? this.boardService.board.hasNeighbour(x, y)
+                : x === centerTilePosition && y === centerTilePosition;
 
             if (isFillingPlacementCondition) {
                 return true;
@@ -207,25 +202,27 @@ export class ActionValidatorService {
             if (occurence) {
                 occurence++;
                 rackCharsOccurences.set(lowerChar, occurence);
-            } else {
-                rackCharsOccurences.set(lowerChar, 1);
+                continue;
             }
+            rackCharsOccurences.set(lowerChar, 1);
         }
 
-        for (let char of actionChars) {
+        for (const char of actionChars) {
             let occurence = rackCharsOccurences.get(char);
-            if (occurence === undefined || occurence === 0) {
-                if (isStringALowerCaseLetter(char)) {
-                    return false;
-                }
-                occurence = rackCharsOccurences.get(JOKER_CHAR);
-                char = JOKER_CHAR;
-                if (occurence === undefined || occurence === 0) {
-                    return false;
-                }
+            if (occurence !== undefined && occurence > 0) {
+                occurence--;
+                rackCharsOccurences.set(char, occurence);
+                continue;
             }
-            occurence--;
-            rackCharsOccurences.set(char, occurence);
+            if (isStringALowerCaseLetter(char)) {
+                return false;
+            }
+            let jokerOccurence = rackCharsOccurences.get(JOKER_CHAR);
+            if (jokerOccurence === undefined || jokerOccurence === 0) {
+                return false;
+            }
+            jokerOccurence--;
+            rackCharsOccurences.set(JOKER_CHAR, jokerOccurence);
         }
         return true;
     }
