@@ -71,13 +71,14 @@ export class PointCalculatorService {
     }
 
     private desactivateMultiplicators(action: PlaceLetter): void {
-        const [x, y] = [action.placement.x, action.placement.y];
+        let [x, y] = [action.placement.x, action.placement.y];
         const direction = action.placement.direction;
         const word = action.word;
 
         let startCoord = direction === Direction.Horizontal ? x : y;
         const wordEnd = startCoord + word.length;
         for (startCoord; startCoord < wordEnd; startCoord++) {
+            [x, y] = direction === Direction.Horizontal ? [startCoord, y] : [x, startCoord];
             this.grid[y][x].letterMultiplicator = 1;
             this.grid[y][x].wordMultiplicator = 1;
         }
