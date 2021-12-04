@@ -9,7 +9,7 @@ import { AdminDictComponent, DictInfo } from '@app/pages/admin-page/admin-dict/a
 import { DictHttpService } from '@app/services/dict-http.service';
 import { of, throwError } from 'rxjs';
 
-fdescribe('admin-dictionary component', () => {
+describe('admin-dictionary component', () => {
     let component: AdminDictComponent;
     let fixture: ComponentFixture<AdminDictComponent>;
     let dictHttpServiceMock: jasmine.SpyObj<DictHttpService>;
