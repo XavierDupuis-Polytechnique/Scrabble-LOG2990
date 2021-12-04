@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
@@ -87,5 +88,22 @@ describe('admin-dictionary component', () => {
         // eslint-disable-next-line dot-notation
         component['updateDictMap']();
         expect(matDialog.open).toHaveBeenCalled();
+    });
+
+    it('downloadDict should download the dictionary', () => {
+        const testDictInfo = { title: 'testTitle', description: 'testDescription' } as DictInfo;
+        const testDict = { title: 'testTitle', description: 'testDescription', words: ['test1', 'test2', 'test3'], canEdit: true, date: '0' };
+        dictHttpServiceMock.getDict.and.returnValue(of(testDict));
+        const downloadRefSpy = spyOn(component, 'downloadDict').and.callThrough();
+        component.downloadDict(testDictInfo);
+        expect(downloadRefSpy).toHaveBeenCalled();
+    });
+
+    it('downloadDict should download the dictionary', () => {
+        const testDictInfo = { title: 'testTitle', description: 'testDescription' } as DictInfo;
+        dictHttpServiceMock.getDict.and.returnValue(throwError('error'));
+        const downloadRefSpy = spyOn(component, 'downloadDict').and.callThrough();
+        component.downloadDict(testDictInfo);
+        expect(downloadRefSpy).toHaveBeenCalled();
     });
 });
