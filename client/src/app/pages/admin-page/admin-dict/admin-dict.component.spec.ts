@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ElementRef } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
@@ -26,6 +26,7 @@ describe('admin-dictionary component', () => {
                 { provide: DictHttpService, useValue: dictHttpServiceMock },
                 { provide: MatDialog, useValue: matDialog },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         });
 
         fixture = TestBed.createComponent(AdminDictComponent);

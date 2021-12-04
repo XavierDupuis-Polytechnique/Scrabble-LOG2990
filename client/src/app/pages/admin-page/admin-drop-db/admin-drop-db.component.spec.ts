@@ -1,5 +1,6 @@
 /* eslint-disable dot-notation */
 import { HttpResponse } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AlertDialogComponent } from '@app/components/modals/alert-dialog/alert-dialog.component';
@@ -38,6 +39,7 @@ describe('AdminDropDbComponent', () => {
                 { provide: LeaderboardService, useValue: leaderboardServiceMock },
                 { provide: MatDialog, useValue: matDialogMock },
             ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
         }).compileComponents();
     });
 
