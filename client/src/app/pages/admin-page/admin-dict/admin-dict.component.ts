@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AddDictDialogComponent } from '@app/components/modals/add-dict-dialog/add-dict-dialog.component';
 import { EditDictDialogComponent } from '@app/components/modals/edit-dict/edit-dict.component';
+import { MAX_FILE_LENGTH } from '@app/game-logic/constants';
 import { dictionaryToDownloadedDict, openErrorDialog } from '@app/game-logic/utils';
 import { Dictionary } from '@app/game-logic/validator/dictionary';
 import { DictHttpService } from '@app/services/dict-http.service';
@@ -75,7 +76,8 @@ export class AdminDictComponent implements OnInit {
                 const url = window.URL.createObjectURL(blob);
                 const downloadAncher = this.downloadRef.nativeElement as HTMLAnchorElement;
                 downloadAncher.href = url;
-                downloadAncher.download = downloadedDict.title;
+                const title = downloadedDict.title.replace(/\s/g, '').slice(0, MAX_FILE_LENGTH);
+                downloadAncher.download = title;
                 downloadAncher.click();
             },
             () => {
